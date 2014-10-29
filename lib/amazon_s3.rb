@@ -1,4 +1,4 @@
-require_relative 'amazon_s3/converter'
+require_relative 'converter'
 
 class AmazonS3
   attr_reader :s3_client
