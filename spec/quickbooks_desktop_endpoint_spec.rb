@@ -5,7 +5,7 @@ describe QuickbooksDesktopEndpoint do
     request = Factory.orders
     headers = auth.merge("HTTP_X_HUB_STORE" => "x123")
 
-    VCR.use_cassette "add_orders/#{Time.now.to_i}" do
+    VCR.use_cassette "add_orders/1414614344" do
       post "add_orders", request.to_json, headers
       expect(json_response[:summary]).to match "waiting for"
       expect(last_response.status).to be 200

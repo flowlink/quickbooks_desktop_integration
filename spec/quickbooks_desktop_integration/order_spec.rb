@@ -8,7 +8,7 @@ module QuickbooksDesktopIntegration
     subject { described_class.new config, orders }
 
     it "process orders" do
-      VCR.use_cassette "order/1414612360" do
+      VCR.use_cassette "order/1414614890" do
         subject.start_processing
       end
     end
