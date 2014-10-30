@@ -111,6 +111,7 @@ PLATFORMS
 
 DEPENDENCIES
   aws-sdk
+  dotenv
   endpoint_base!
   foreman
   pry
