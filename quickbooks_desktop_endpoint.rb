@@ -1,3 +1,5 @@
+require 'endpoint_base'
+
 class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
   set :logging, true
 
