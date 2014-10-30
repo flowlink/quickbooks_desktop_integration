@@ -1,0 +1,130 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/?versioning=
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby/1.57.0 ruby/2.0.0 x86_64-darwin14.0.0
+      Date:
+      - Thu, 30 Oct 2014 20:46:13 GMT
+      Authorization:
+      - AUTHORIZATION
+      Accept:
+      - '*/*'
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amz-Id-2:
+      - LerNbXnechnz+X9DHRS0+Yz8atzUN4dfuszH+A0rqVmysPZvVrm/nbaao4mXN8p3
+      X-Amz-Request-Id:
+      - A1A9DB4A99D2FA0B
+      Date:
+      - Thu, 30 Oct 2014 20:46:15 GMT
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: |-
+        <?xml version="1.0" encoding="UTF-8"?>
+        <VersioningConfiguration xmlns="http://s3.amazonaws.com/doc/2006-03-01/"/>
+    http_version:
+  recorded_at: Thu, 30 Oct 2014 20:46:14 GMT
+- request:
+    method: head
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/to_be_integrated/x123_orders.csv
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby/1.57.0 ruby/2.0.0 x86_64-darwin14.0.0
+      Date:
+      - Thu, 30 Oct 2014 20:46:14 GMT
+      Authorization:
+      - AUTHORIZATION
+      Accept:
+      - '*/*'
+  response:
+    status:
+      code: 404
+      message: Not Found
+    headers:
+      X-Amz-Request-Id:
+      - 258D10E783794E2B
+      X-Amz-Id-2:
+      - +qbnZYQR7ybx7bPTLZJ7qmWwMOZyn4dIyZv3k7yVxB146vf2ke7huWxgVI4re7CK
+      Content-Type:
+      - application/xml
+      Transfer-Encoding:
+      - chunked
+      Date:
+      - Thu, 30 Oct 2014 20:46:14 GMT
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: ''
+    http_version:
+  recorded_at: Thu, 30 Oct 2014 20:46:14 GMT
+- request:
+    method: put
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/to_be_integrated/x123_orders.csv
+    body:
+      encoding: ASCII-8BIT
+      string: |-
+        id,status,channel,email,currency,placed_on,totals.item,totals.adjustment,totals.tax,totals.shipping,totals.payment,totals.order,line_items.0.product_id,line_items.0.name,line_items.0.quantity,line_items.0.price,adjustments.0.name,adjustments.0.value,shipping_address.firstname,shipping_address.lastname,shipping_address.address1,shipping_address.address2,shipping_address.zipcode,shipping_address.city,shipping_address.state,shipping_address.country,shipping_address.phone,billing_address.firstname,billing_address.lastname,billing_address.address1,billing_address.address2,billing_address.zipcode,billing_address.city,billing_address.state,billing_address.country,billing_address.phone,payments.0.number,payments.0.status,payments.0.amount,payments.0.payment_method
+        R154085346708777,complete,spree,spree@example.com,USD,2014-02-03T17:29:15.219Z,200,10,10,0,210,210,SPREE-T-SHIRT,Spree T-Shirt,2,100,Tax,10,Joe,Smith,1234 Awesome Street,,90210,Hollywood,California,US,0000000000,Joe,Smith,1234 Awesome Street,,90210,Hollywood,California,US,0000000000,63,completed,210,Credit Card
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      Content-Length:
+      - '1079'
+      User-Agent:
+      - aws-sdk-ruby/1.57.0 ruby/2.0.0 x86_64-darwin14.0.0
+      Date:
+      - Thu, 30 Oct 2014 20:46:14 GMT
+      Authorization:
+      - AUTHORIZATION
+      Accept:
+      - '*/*'
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amz-Id-2:
+      - QCNSZjlgu6soC59uoLdmQimW3uaPlxJvt+xrDMVWoYcXOeH4g7subSTTje4sfLIf
+      X-Amz-Request-Id:
+      - 959E16EAE5D385B3
+      Date:
+      - Thu, 30 Oct 2014 20:46:16 GMT
+      Etag:
+      - '"02f0dff02496c0e106344513954d79ec"'
+      Content-Length:
+      - '0'
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: ''
+    http_version:
+  recorded_at: Thu, 30 Oct 2014 20:46:15 GMT
+recorded_with: VCR 2.9.3

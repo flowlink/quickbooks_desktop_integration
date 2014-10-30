@@ -1,0 +1,180 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/?versioning=
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby/1.57.0 ruby/2.0.0 x86_64-darwin14.0.0
+      Date:
+      - Thu, 30 Oct 2014 20:46:09 GMT
+      Authorization:
+      - AUTHORIZATION
+      Accept:
+      - '*/*'
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amz-Id-2:
+      - DGLNNV9w3ZLZjJGIq3WZQePJxfmbLFawb6n6fC11voFkREgJhaJ2ujdJltZhMp+r
+      X-Amz-Request-Id:
+      - 9E4172BF19871891
+      Date:
+      - Thu, 30 Oct 2014 20:46:11 GMT
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: |-
+        <?xml version="1.0" encoding="UTF-8"?>
+        <VersioningConfiguration xmlns="http://s3.amazonaws.com/doc/2006-03-01/"/>
+    http_version: 
+  recorded_at: Thu, 30 Oct 2014 20:46:10 GMT
+- request:
+    method: head
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/to_be_integrated/x123_notifications.csv
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby/1.57.0 ruby/2.0.0 x86_64-darwin14.0.0
+      Date:
+      - Thu, 30 Oct 2014 20:46:10 GMT
+      Authorization:
+      - AUTHORIZATION
+      Accept:
+      - '*/*'
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amz-Id-2:
+      - V8v1txY4TQ3X3znGfd8WX002mt2w8xOmpFol71WuQTyRjsZgkF34iZRfFbWvSG4X
+      X-Amz-Request-Id:
+      - DDD78B1DFD89E69F
+      Date:
+      - Thu, 30 Oct 2014 20:46:12 GMT
+      Last-Modified:
+      - Thu, 30 Oct 2014 15:07:19 GMT
+      Etag:
+      - '"7af0cfecd726913b0ee259d97e3931c3"'
+      Accept-Ranges:
+      - bytes
+      Content-Type:
+      - ''
+      Content-Length:
+      - '96'
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: ''
+    http_version: 
+  recorded_at: Thu, 30 Oct 2014 20:46:11 GMT
+- request:
+    method: get
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/?max-keys=1000&prefix=to_be_integrated/x123_notifications(
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby/1.57.0 ruby/2.0.0 x86_64-darwin14.0.0
+      Date:
+      - Thu, 30 Oct 2014 20:46:11 GMT
+      Authorization:
+      - AUTHORIZATION
+      Accept:
+      - '*/*'
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amz-Id-2:
+      - Q08INzrmw2lAsvcLm2m2rx/tmK2lFKa/iLkS+Jo3IUJ30vGpVrQDMeQoO51+prrO
+      X-Amz-Request-Id:
+      - B12D3EF63B4A342C
+      Date:
+      - Thu, 30 Oct 2014 20:46:13 GMT
+      Content-Type:
+      - application/xml
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: |-
+        <?xml version="1.0" encoding="UTF-8"?>
+        <ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>quickbooks-desktop-integration</Name><Prefix>to_be_integrated/x123_notifications(</Prefix><Marker></Marker><MaxKeys>1000</MaxKeys><IsTruncated>false</IsTruncated><Contents><Key>to_be_integrated/x123_notifications(1).csv</Key><LastModified>2014-10-30T20:31:19.000Z</LastModified><ETag>&quot;7af0cfecd726913b0ee259d97e3931c3&quot;</ETag><Size>96</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>aws</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents></ListBucketResult>
+    http_version: 
+  recorded_at: Thu, 30 Oct 2014 20:46:12 GMT
+- request:
+    method: put
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/to_be_integrated/x123_notifications(2).csv
+    body:
+      encoding: ASCII-8BIT
+      string: |-
+        0,1
+        connection_id,x123
+        some_kind_of_reference,Status code or a message for succcesfull / failure
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      Content-Length:
+      - '96'
+      User-Agent:
+      - aws-sdk-ruby/1.57.0 ruby/2.0.0 x86_64-darwin14.0.0
+      Date:
+      - Thu, 30 Oct 2014 20:46:12 GMT
+      Authorization:
+      - AUTHORIZATION
+      Accept:
+      - '*/*'
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amz-Id-2:
+      - OdHEwt6c7ZB8CQW1AA2Rfj6qj1HjXvocN51mjmgb8obAuRGM+5cr6p1XaPBco4lt
+      X-Amz-Request-Id:
+      - 72111C5C5CB6C1F5
+      Date:
+      - Thu, 30 Oct 2014 20:46:14 GMT
+      Etag:
+      - '"7af0cfecd726913b0ee259d97e3931c3"'
+      Content-Length:
+      - '0'
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: ''
+    http_version: 
+  recorded_at: Thu, 30 Oct 2014 20:46:13 GMT
+recorded_with: VCR 2.9.3

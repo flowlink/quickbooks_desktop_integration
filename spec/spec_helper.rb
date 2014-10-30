@@ -14,10 +14,6 @@ require 'spree/testing_support/controllers'
 
 Sinatra::Base.environment = 'test'
 
-ENV['S3_ACCESS_KEY_ID'] ||= '123'
-ENV['S3_SECRET_ACCESS_KEY'] ||= 'key'
-ENV['S3_REGION'] ||= 'region'
-
 VCR.configure do |c|
   c.allow_http_connections_when_no_cassette = false
   c.cassette_library_dir = 'spec/cassettes'
@@ -25,9 +21,11 @@ VCR.configure do |c|
 
   #c.force_utf8_encoding = true
 
-  c.filter_sensitive_data("S3_ACCESS_KEY_ID") { ENV["S3_ACCESS_KEY_ID"] }
-  c.filter_sensitive_data("S3_SECRET_ACCESS_KEY") { ENV["S3_SECRET_ACCESS_KEY"] }
-  c.filter_sensitive_data("S3_REGION") { ENV["S3_REGION"] }
+  c.filter_sensitive_data("SECRET_SAUCE") { ENV["S3_SECRET_ACCESS_KEY"] }
+  c.filter_sensitive_data("SHHHHHHHHHHH") { ENV["S3_ACCESS_KEY_ID"] }
+  c.filter_sensitive_data("AUTHORIZATION") do |interaction|
+    interaction.request.headers['Authorization'][0]
+  end
 end
 
 RSpec.configure do |config|
