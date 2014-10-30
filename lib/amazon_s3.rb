@@ -13,7 +13,7 @@ class AmazonS3
     @bucket_name = "quickbooks-desktop-integration"
   end
 
-  def export(file_name:, objects:)
+  def export(file_name: nil, objects: nil)
     verify_bucket!
 
     s3_object = find_next_s3_object(file_name)
@@ -21,7 +21,7 @@ class AmazonS3
     s3_object
   end
 
-  def import(file_name:)
+  def import(file_name: nil)
     verify_bucket!
 
     objects = convert_download(extension(file_name), read_file!(file_name))
