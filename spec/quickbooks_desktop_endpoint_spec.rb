@@ -11,4 +11,17 @@ describe QuickbooksDesktopEndpoint do
       expect(last_response.status).to be 200
     end
   end
+
+  it "save callback response as notifications to s3" do
+    request = {
+      "connection_id" => "x123",
+      "some_kind_of_reference" => "Status code or a message for succcesfull / failure"
+    }
+
+    VCR.use_cassette "requests/1414681635" do
+      post "/qb_response_callback", request.to_json
+      expect(json_response[:summary]).to eq nil
+      expect(last_response.status).to eq 200
+    end
+  end
 end

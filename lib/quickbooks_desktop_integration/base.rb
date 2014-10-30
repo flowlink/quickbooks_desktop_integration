@@ -13,6 +13,9 @@ module QuickbooksDesktopIntegration
     #
     # NOTE In case we dont send in batches perhaps we could append the
     # object.id on the file name
+    #
+    # NOTE AmazonS3 will append a number to the end of the file. e.g. orders(1)
+    # if it already exists. Consider using a passing a timestamp here instead
     def save_to_s3
       file = "#{to_be_integrated}/#{base_name}.csv"
       amazon_s3.export file_name: file, objects: objects
