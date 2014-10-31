@@ -50,11 +50,13 @@ module QuickbooksDesktopIntegration
 
       collection.with_prefix(prefix).enum(limit: 10).map do |s3_object|
         folder, filename = s3_object.key.split("/")
-
-        file = "#{next_folder}/#{filename}"
-        s3_object.copy_to amazon_s3.bucket.objects[file]
+        new_filename = "#{next_folder}/#{filename}"
 
         contents = s3_object.read
+
+        next_s3_object = amazon_s3.find_next_s3_object new_filename
+        next_s3_object.write contents
+
         # NOTE Consider deleting all objects at once, makes it faster
         s3_object.delete
 
