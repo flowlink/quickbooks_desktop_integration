@@ -15,11 +15,33 @@ describe QuickbooksDesktopEndpoint do
   it "save callback response as notifications to s3" do
     request = {
       "connection_id" => "x123",
-      "some_kind_of_reference" => "Status code or a message for succcesfull / failure"
+      "response" => [
+        {
+          "result" => "fail",
+          "object_ref" => "1414728530",
+          "summary" => "1414728530 object notification yay message"
+        }
+      ]
     }
 
-    VCR.use_cassette "requests/1414681635" do
+    VCR.use_cassette "requests/1414728530" do
       post "/qb_response_callback", request.to_json
+      expect(json_response[:summary]).to eq nil
+      expect(last_response.status).to eq 200
+    end
+  end
+
+  it "returns notifications in batch format" do
+    headers = auth.merge("HTTP_X_HUB_STORE" => "x123")
+
+    request = {
+      parameters: {
+        object_type: "orders"
+      }
+    }
+
+    VCR.use_cassette "requests/334534253425" do
+      post "/get_notifications", request.to_json, headers
       expect(json_response[:summary]).to eq nil
       expect(last_response.status).to eq 200
     end

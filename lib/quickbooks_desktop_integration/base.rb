@@ -2,6 +2,10 @@ module QuickbooksDesktopIntegration
   class Base
     attr_reader :config, :objects, :payload_key, :amazon_s3
 
+    # +objects+ has to be an array of hashes
+    #
+    #   e.g. [{ id: "123" }, { id: "123" }]
+    #
     def initialize(config = nil, payload = {})
       @payload_key = payload.keys.first
       @objects = payload[payload_key]
@@ -15,7 +19,7 @@ module QuickbooksDesktopIntegration
     # object.id on the file name
     #
     # NOTE AmazonS3 will append a number to the end of the file. e.g. orders(1)
-    # if it already exists. Consider using a passing a timestamp here instead
+    # if it already exists. Consider using a timestamp here instead
     def save_to_s3
       file = "#{to_be_integrated}/#{base_name}.csv"
       amazon_s3.export file_name: file, objects: objects
@@ -34,13 +38,18 @@ module QuickbooksDesktopIntegration
     #
     # NOTE Figure ordering, older files should come first
     #
+    # # NOTE Route folder strings through some kind of method to validate
+    # so only to_be_integrated / processing / integrated are allowed?
+    #
+    # NOTE Rescue and move file back if an exception happens
+    #
     # Return a collection array of records
-    def start_processing
+    def start_processing(next_folder = "processing")
       prefix = "#{to_be_integrated}/#{base_name}"
       amazon_s3.bucket.objects.with_prefix(prefix).map do |s3_object|
         folder, filename = s3_object.key.split("/")
 
-        file = "processing/#{filename}"
+        file = "#{next_folder}/#{filename}"
         s3_object.copy_to amazon_s3.bucket.objects[file]
 
         contents = s3_object.read
