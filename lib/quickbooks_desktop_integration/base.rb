@@ -46,7 +46,9 @@ module QuickbooksDesktopIntegration
     # Return a collection array of records
     def start_processing(next_folder = "processing")
       prefix = "#{to_be_integrated}/#{base_name}"
-      amazon_s3.bucket.objects.with_prefix(prefix).map do |s3_object|
+      collection = amazon_s3.bucket.objects
+
+      collection.with_prefix(prefix).enum(limit: 10).map do |s3_object|
         folder, filename = s3_object.key.split("/")
 
         file = "#{next_folder}/#{filename}"
