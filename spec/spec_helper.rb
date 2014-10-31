@@ -21,8 +21,8 @@ VCR.configure do |c|
 
   #c.force_utf8_encoding = true
 
-  c.filter_sensitive_data("SECRET_SAUCE") { ENV["S3_SECRET_ACCESS_KEY"] }
-  c.filter_sensitive_data("SHHHHHHHHHHH") { ENV["S3_ACCESS_KEY_ID"] }
+  c.filter_sensitive_data("SECRET_SAUCE") { ENV["AWS_SECRET_ACCESS_KEY"] }
+  c.filter_sensitive_data("SHHHHHHHHHHH") { ENV["AWS_ACCESS_KEY_ID"] }
   c.filter_sensitive_data("AUTHORIZATION") do |interaction|
     interaction.request.headers['Authorization'][0]
   end

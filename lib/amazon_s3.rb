@@ -4,12 +4,7 @@ class AmazonS3
   attr_reader :s3_client
 
   def initialize(s3_client: nil)
-    @s3_client = s3_client || AWS::S3.new(
-      access_key_id: ENV['S3_ACCESS_KEY_ID'],
-      secret_access_key: ENV['S3_SECRET_ACCESS_KEY'],
-      region: ENV['S3_REGION']
-    )
-
+    @s3_client = s3_client || AWS::S3.new
     @bucket_name = "quickbooks-desktop-integration"
   end
 
