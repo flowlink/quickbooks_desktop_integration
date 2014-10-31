@@ -1,0 +1,18 @@
+<%
+# <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:dev="http://developer.intuit.com/">
+# <soapenv:Header/>
+# <soapenv:Body>
+# <dev:closeConnection>
+# <!--Optional:-->
+# <dev:ticket>?</dev:ticket>
+# </dev:closeConnection>
+# </soapenv:Body>
+# </soapenv:Envelope>
+%>
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <soap:Body>
+    <closeConnectionResponse xmlns="http://developer.intuit.com/">
+      <closeConnectionResult>Connection closed</closeConnectionResult>
+    </closeConnectionResponse>
+  </soap:Body>
+</soap:Envelope>

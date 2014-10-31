@@ -1,0 +1,24 @@
+<%
+# <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:dev="http://developer.intuit.com/">
+# <soap:Header/>
+# <soap:Body>
+# <dev:receiveResponseXML>
+# <!--Optional:-->
+# <dev:ticket>?</dev:ticket>
+# <!--Optional:-->
+# <dev:response>?</dev:response>
+# <!--Optional:-->
+# <dev:hresult>?</dev:hresult>
+# <!--Optional:-->
+# <dev:message>?</dev:message>
+# </dev:receiveResponseXML>
+# </soap:Body>
+# </soap:Envelope>
+%>
+<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+   <soap:Body>
+      <receiveResponseXMLResponse xmlns="http://developer.intuit.com/">
+         <receiveResponseXMLResult>-101</receiveResponseXMLResult>
+      </receiveResponseXMLResponse>
+   </soap:Body>
+</soap:Envelope>

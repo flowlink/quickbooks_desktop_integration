@@ -1,0 +1,23 @@
+<%
+# <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:dev="http://developer.intuit.com/">
+# <soapenv:Header/>
+# <soapenv:Body>
+# <dev:authenticate>
+# <!--Optional:-->
+# <dev:strUserName>?</dev:strUserName>
+# <!--Optional:-->
+# <dev:strPassword>?</dev:strPassword>
+# </dev:authenticate>
+# </soapenv:Body>
+# </soapenv:Envelope>
+%>
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <soap:Body>
+    <authenticateResponse xmlns="http://developer.intuit.com/">
+    <authenticateResult>
+    <string>354f40b4-b661-4472-a13f-8abf13a743c3</string> <% # token for the current session %>
+    <string></string> <% # nvu for not found, empty for the current opened company, or the company file name %>
+    </authenticateResult>
+    </authenticateResponse>
+  </soap:Body>
+</soap:Envelope>

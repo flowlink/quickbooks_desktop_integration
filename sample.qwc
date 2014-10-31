@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<QBWCXML>
+  <AppName>Wombat Quickbooks Desktop Integration</AppName>
+  <AppID>WombatQBDesktop</AppID>
+  <AppURL>https://wombat.co/qbwc</AppURL>
+  <AppDescription>Pablo's integration</AppDescription>
+  <AppSupport>https://wombat.co/support</AppSupport>
+  <UserName>test</UserName>
+  <OwnerID>{A9A83089-7DA7-4d27-A08C-7E1626E9395A}</OwnerID>
+  <FileID>{AE931E67-4AA5-4374-A32D-8EA4BEC91981}</FileID>
+  <QBType>QBFS</QBType>
+  <Style>Document</Style>
+  <AuthFlags>0xF</AuthFlags>
+</QBWCXML>

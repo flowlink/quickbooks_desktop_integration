@@ -40,6 +40,7 @@ GEM
     dotenv (0.11.1)
       dotenv-deployment (~> 0.0.2)
     dotenv-deployment (0.0.2)
+    fast_xs (0.8.0)
     foreman (0.75.0)
       dotenv (~> 0.11.1)
       thor (~> 0.19.1)
@@ -140,6 +141,7 @@ DEPENDENCIES
   aws-sdk
   dotenv
   endpoint_base!
+  fast_xs
   foreman
   pry
   pry-byebug

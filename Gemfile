@@ -9,6 +9,7 @@ gem 'unicorn'
 gem 'savon'
 gem 'aws-sdk'
 gem 'rake'
+gem 'fast_xs'
 
 group :development do
   gem 'pry'

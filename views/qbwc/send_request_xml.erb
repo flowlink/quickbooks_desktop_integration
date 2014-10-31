@@ -1,0 +1,26 @@
+<%
+# <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:dev="http://developer.intuit.com/">
+# <soap:Header/>
+# <soap:Body>
+# <dev:sendRequestXML>
+# <!--Optional:-->
+# <dev:ticket>?</dev:ticket>
+# <!--Optional:-->
+# <dev:strHCPResponse>?</dev:strHCPResponse>
+# <!--Optional:-->
+# <dev:strCompanyFileName>?</dev:strCompanyFileName>
+# <!--Optional:-->
+# <dev:qbXMLCountry>?</dev:qbXMLCountry>
+# <dev:qbXMLMajorVers>?</dev:qbXMLMajorVers>
+# <dev:qbXMLMinorVers>?</dev:qbXMLMinorVers>
+# </dev:sendRequestXML>
+# </soap:Body>
+# </soap:Envelope>
+%>
+<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+  <soap:Body>
+    <sendRequestXMLResponse xmlns="http://developer.intuit.com/">
+      <sendRequestXMLResult><%= @qbxml.fast_xs %></sendRequestXMLResult>
+    </sendRequestXMLResponse>
+  </soap:Body>
+</soap:Envelope>

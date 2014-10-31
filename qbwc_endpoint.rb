@@ -1,5 +1,7 @@
 require 'pry-byebug'
-require 'nori'
+# require 'nori'
+require 'nokogiri'
+require 'fast_xs'
 
 class QBWCEndpoint < Sinatra::Base
   set :logging, true
@@ -16,191 +18,82 @@ class QBWCEndpoint < Sinatra::Base
     end
   end
 
-  post '/' do
-    nori = Nori.new
 
-    hash = nori.parse request.body.read
+  get '/' do
+    'ok'
+    send_request_xml
+  end
+
+  post '/' do
+    content_type 'text/xml'
+
+    body = request.body.read
+    doc = Nokogiri::XML(body)
+    # nori = Nori.new
+    # hash = nori.parse body
 
     # poor parser / TODO refactor it
     # => {"soapenv:Envelope"=>
     # {"soapenv:Header"=>nil, "soapenv:Body"=>{"fe5:closeConnection"=>{"fe5:ticket"=>"?"}}, "@xmlns:soapenv"=>"http://schemas.xmlsoap.org/soap/envelope/", "@xmlns:fe5"=>"https://fe533b4.ngrok.com/"}}
-    op = hash['soapenv:Envelope']['soapenv:Body'].keys.first.split(':').last.underscore
+    # operation = hash['soap:Envelope']['soap:Body'].keys.first.split(':').last.underscore
+    operation = doc.children.first.children.first.children.first.name.underscore
 
-    send op
+    # server_version
+    # client_version
+    # authenticate
+    # send_request_xml
+    # get_last_error
+    # close_connection
+
+    puts operation
+    # puts body
+    puts '*' * 100
+    send operation, body
   end
 
-  def server_version
-    # <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:dev="http://developer.intuit.com/">
-    # <soap:Header/>
-    # <soap:Body>
-    # <dev:serverVersion/>
-    # </soap:Body>
-    # </soap:Envelope>
+  def server_version(body)
+    erb :'qbwc/server_version'
   end
 
-  def client_version
-    # <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:dev="http://developer.intuit.com/">
-    # <soapenv:Header/>
-    # <soapenv:Body>
-    # <dev:clientVersion>
-    # <!--Optional:-->
-    # <dev:strVersion>?</dev:strVersion>
-    # </dev:clientVersion>
-    # </soapenv:Body>
-    # </soapenv:Envelope>
-    '<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-   <soap:Body>
-      <soap:Fault>
-         <faultcode>soap:Server</faultcode>
-         <faultstring>Server was unable to process request. ---> Input string was not in a correct format.</faultstring>
-         <detail/>
-      </soap:Fault>
-   </soap:Body>
-</soap:Envelope>'
+
+  def client_version(body)
+    erb :'qbwc/client_version'
   end
 
-  def authenticate
-    # <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:dev="http://developer.intuit.com/">
-    # <soapenv:Header/>
-    # <soapenv:Body>
-    # <dev:authenticate>
-    # <!--Optional:-->
-    # <dev:strUserName>?</dev:strUserName>
-    # <!--Optional:-->
-    # <dev:strPassword>?</dev:strPassword>
-    # </dev:authenticate>
-    # </soapenv:Body>
-    # </soapenv:Envelope>
-    '<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-   <soap:Body>
-      <authenticateResponse xmlns="http://developer.intuit.com/">
-         <authenticateResult>
-            <string>354f40b4-b661-4472-a13f-8abf13a743c3</string>
-            <string>nvu</string>
-            <string xsi:nil="true"/>
-            <string xsi:nil="true"/>
-         </authenticateResult>
-      </authenticateResponse>
-   </soap:Body>
-</soap:Envelope>'
+  def authenticate(body)
+    erb :'qbwc/authenticate'
   end
 
-  def connection_error
-    # <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:dev="http://developer.intuit.com/">
-    # <soap:Header/>
-    # <soap:Body>
-    # <dev:connectionError>
-    # <!--Optional:-->
-    # <dev:ticket>?</dev:ticket>
-    # <!--Optional:-->
-    # <dev:hresult>?</dev:hresult>
-    # <!--Optional:-->
-    # <dev:message>?</dev:message>
-    # </dev:connectionError>
-    # </soap:Body>
-    # </soap:Envelope>
-    '<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-   <soap:Body>
-      <connectionErrorResponse xmlns="http://developer.intuit.com/">
-         <connectionErrorResult>c:\Program Files\Intuit\QuickBooks\sample_product-based business.qbw</connectionErrorResult>
-      </connectionErrorResponse>
-   </soap:Body>
-</soap:Envelope>'
+  def connection_error(body)
+    erb :'qbwc/connection_error'
   end
 
-  def send_request_xml
-    # <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:dev="http://developer.intuit.com/">
-    # <soap:Header/>
-    # <soap:Body>
-    # <dev:sendRequestXML>
-    # <!--Optional:-->
-    # <dev:ticket>?</dev:ticket>
-    # <!--Optional:-->
-    # <dev:strHCPResponse>?</dev:strHCPResponse>
-    # <!--Optional:-->
-    # <dev:strCompanyFileName>?</dev:strCompanyFileName>
-    # <!--Optional:-->
-    # <dev:qbXMLCountry>?</dev:qbXMLCountry>
-    # <dev:qbXMLMajorVers>?</dev:qbXMLMajorVers>
-    # <dev:qbXMLMinorVers>?</dev:qbXMLMinorVers>
-    # </dev:sendRequestXML>
-    # </soap:Body>
-    # </soap:Envelope>
-    '<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-   <soap:Body>
-      <soap:Fault>
-         <soap:Code>
-            <soap:Value>soap:Sender</soap:Value>
-         </soap:Code>
-         <soap:Reason>
-            <soap:Text xml:lang="en">Server was unable to read request. ---> There is an error in XML document (13, 52). ---> Input string was not in a correct format.</soap:Text>
-         </soap:Reason>
-         <soap:Detail/>
-      </soap:Fault>
-   </soap:Body>
-</soap:Envelope>'
+  def send_request_xml(body)
+    @qbxml = <<-XML
+<?xml version="1.0" ?>
+<?qbxml version="5.0" ?>
+<QBXML>
+  <QBXMLMsgsRq onError="continueOnError">
+    <CustomerQueryRq requestID="1">
+      <MaxReturned>10</MaxReturned>
+      <IncludeRetElement>Name</IncludeRetElement>
+    </CustomerQueryRq>
+  </QBXMLMsgsRq>
+</QBXML>
+XML
+    erb :'qbwc/send_request_xml'
   end
 
-  def receive_response_xml
-    # <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:dev="http://developer.intuit.com/">
-    # <soap:Header/>
-    # <soap:Body>
-    # <dev:receiveResponseXML>
-    # <!--Optional:-->
-    # <dev:ticket>?</dev:ticket>
-    # <!--Optional:-->
-    # <dev:response>?</dev:response>
-    # <!--Optional:-->
-    # <dev:hresult>?</dev:hresult>
-    # <!--Optional:-->
-    # <dev:message>?</dev:message>
-    # </dev:receiveResponseXML>
-    # </soap:Body>
-    # </soap:Envelope>
-    '<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-   <soap:Body>
-      <receiveResponseXMLResponse xmlns="http://developer.intuit.com/">
-         <receiveResponseXMLResult>-101</receiveResponseXMLResult>
-      </receiveResponseXMLResponse>
-   </soap:Body>
-</soap:Envelope>'
+  def receive_response_xml(body)
+    puts body
+    erb :'qbwc/receive_response_xml'
   end
 
-  def get_last_error
-    # <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:dev="http://developer.intuit.com/">
-    # <soap:Header/>
-    # <soap:Body>
-    # <dev:getLastError>
-    # <!--Optional:-->
-    # <dev:ticket>?</dev:ticket>
-    # </dev:getLastError>
-    # </soap:Body>
-    # </soap:Envelope>
-    '<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-   <soap:Body>
-      <getLastErrorResponse xmlns="http://developer.intuit.com/">
-         <getLastErrorResult>Error!</getLastErrorResult>
-      </getLastErrorResponse>
-   </soap:Body>
-</soap:Envelope>'
+  def get_last_error(body)
+    erb :'qbwc/get_last_error'
   end
 
-  def close_connection
-    # <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:dev="http://developer.intuit.com/">
-    # <soapenv:Header/>
-    # <soapenv:Body>
-    # <dev:closeConnection>
-    # <!--Optional:-->
-    # <dev:ticket>?</dev:ticket>
-    # </dev:closeConnection>
-    # </soapenv:Body>
-    # </soapenv:Envelope>
-    '<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-   <soap:Body>
-      <closeConnectionResponse xmlns="http://developer.intuit.com/">
-         <closeConnectionResult>Troubleshoot session ended successfully.</closeConnectionResult>
-      </closeConnectionResponse>
-   </soap:Body>
-</soap:Envelope>'
+  def close_connection(body)
+    erb :'qbwc/close_connection'
   end
 end

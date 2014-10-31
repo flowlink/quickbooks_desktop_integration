@@ -1,0 +1,22 @@
+<%
+# <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:dev="http://developer.intuit.com/">
+# <soap:Header/>
+# <soap:Body>
+# <dev:connectionError>
+# <!--Optional:-->
+# <dev:ticket>?</dev:ticket>
+# <!--Optional:-->
+# <dev:hresult>?</dev:hresult>
+# <!--Optional:-->
+# <dev:message>?</dev:message>
+# </dev:connectionError>
+# </soap:Body>
+# </soap:Envelope>
+%>
+<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+   <soap:Body>
+      <connectionErrorResponse xmlns="http://developer.intuit.com/">
+      <!-- <connectionErrorResult>c:\Program Files\Intuit\QuickBooks\sample_product-based business.qbw</connectionErrorResult> -->
+      </connectionErrorResponse>
+   </soap:Body>
+</soap:Envelope>

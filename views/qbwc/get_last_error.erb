@@ -1,0 +1,18 @@
+<%
+# <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:dev="http://developer.intuit.com/">
+# <soap:Header/>
+# <soap:Body>
+# <dev:getLastError>
+# <!--Optional:-->
+# <dev:ticket>?</dev:ticket>
+# </dev:getLastError>
+# </soap:Body>
+# </soap:Envelope>
+%>
+<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+   <soap:Body>
+      <getLastErrorResponse xmlns="http://developer.intuit.com/">
+      <!-- <getLastErrorResult>Error!</getLastErrorResult> -->
+      </getLastErrorResponse>
+   </soap:Body>
+</soap:Envelope>
