@@ -34,6 +34,9 @@ class AmazonS3
 
     # file.csv exists?
     # save it to file(1).csv or file(next_id).csv
+    #
+    # NOTE if you got a long list this will probably take a while to fetch all
+    # files with the prefix?
     if s3_object.exists?
       prefix = file_name.gsub(".#{extension}", "(")
       copies = bucket.objects.with_prefix(prefix).map do |s3_object|
