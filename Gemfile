@@ -6,12 +6,10 @@ gem 'tilt-jbuilder', require: 'sinatra/jbuilder'
 gem 'endpoint_base', github: 'spree/endpoint_base'
 gem 'foreman'
 gem 'unicorn'
-gem 'savon'
+gem 'nori'
 gem 'aws-sdk'
 gem 'rake'
 gem 'fast_xs'
-
-gem 'qbxml', github: 'huoxito/qbxml'
 
 group :development do
   gem 'pry'
