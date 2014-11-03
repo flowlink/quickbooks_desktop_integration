@@ -2,24 +2,33 @@ module QuickbooksDesktopIntegration
   class Base
     attr_reader :config, :objects, :payload_key, :amazon_s3
 
-    # +objects+ has to be an array of hashes
+    # +payload+ might have a collection of records when writing to s3
     #
-    #   e.g. [{ id: "123" }, { id: "123" }]
+    #   e.g. { orders: [{ id: "123" }, { id: "123" }] }
+    # 
+    # or just the key when reading from s3
     #
-    def initialize(config = nil, payload = {})
+    #   e.g. { orders: {} }
+    #
+    # +config+ should tell the :origin and the :account_id
+    #
+    #   e.g. { origin: 'quickbooks', account_id: 'x123' }
+    #
+    def initialize(config = {}, payload = {})
       @payload_key = payload.keys.first
       @objects = payload[payload_key]
       @config = config
       @amazon_s3 = AmazonS3.new
     end
 
-    # NOTE It doesn't check whether the record is already in s3
-    #
-    # NOTE In case we dont send in batches perhaps we could append the
-    # object.id on the file name
+    # It doesn't check whether the record (s) is already in s3
     #
     # AmazonS3 will append a number to the end of the file. e.g. orders_123123(1)
     # if it already exists.
+    #
+    #   e.g. wombat_to_be_integrated/x123_orders_1234567.csv
+    #   e.g. quickbooks_to_be_integrated/x123_orders_1234567.csv
+    #
     def save_to_s3
       file = "#{to_be_integrated}/#{base_name}_#{current_time}.csv"
       amazon_s3.export file_name: file, objects: objects
@@ -50,7 +59,7 @@ module QuickbooksDesktopIntegration
 
       collection.with_prefix(prefix).enum(limit: 10).map do |s3_object|
         folder, filename = s3_object.key.split("/")
-        new_filename = "#{next_folder}/#{filename}"
+        new_filename = "#{config[:origin]}_#{next_folder}/#{filename}"
 
         contents = s3_object.read
 
@@ -66,11 +75,11 @@ module QuickbooksDesktopIntegration
     end
 
     def base_name
-      "#{config[:connection_id]}_#{payload_key}"
+      "#{config[:account_id]}_#{payload_key}"
     end
 
     def to_be_integrated
-      "to_be_integrated"
+      "#{config[:origin]}_to_be_integrated"
     end
 
     def current_time

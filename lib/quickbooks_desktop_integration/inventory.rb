@@ -15,12 +15,12 @@ module QuickbooksDesktopIntegration
     end
 
     def mapped_records
-      records.each do |record|
+      records.map do |record|
         {
           id: record['Name'],
           sku: record['Name'],
           product_id: record['Name'],
-          quantity: record['QuantityOnHand']
+          quantity: record['QuantityOnHand'],
           quickbooks: record
         }
       end
