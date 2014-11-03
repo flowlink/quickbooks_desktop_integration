@@ -1,7 +1,9 @@
 require 'pry-byebug'
-# require 'nori'
+require 'nori'
 require 'nokogiri'
 require 'fast_xs'
+
+require File.expand_path(File.dirname(__FILE__) + '/lib/quickbooks_desktop_integration')
 
 class QBWCEndpoint < Sinatra::Base
   set :logging, true
@@ -17,7 +19,6 @@ class QBWCEndpoint < Sinatra::Base
       end
     end
   end
-
 
   get '/' do
     'ok'
@@ -74,10 +75,10 @@ class QBWCEndpoint < Sinatra::Base
 <?qbxml version="5.0" ?>
 <QBXML>
   <QBXMLMsgsRq onError="continueOnError">
-    <CustomerQueryRq requestID="1">
-      <MaxReturned>10</MaxReturned>
-      <IncludeRetElement>Name</IncludeRetElement>
-    </CustomerQueryRq>
+    <ItemInventoryQueryRq requestID="1">
+      <MaxReturned>50</MaxReturned>
+      <!-- <IncludeRetElement>Name</IncludeRetElement> -->
+    </ItemInventoryQueryRq>
   </QBXMLMsgsRq>
 </QBXML>
 XML
@@ -85,7 +86,23 @@ XML
   end
 
   def receive_response_xml(body)
-    puts body
+    puts body = CGI.unescapeHTML(body)
+
+    # NOTE Make it generic. Probably figure the operation name,
+    # e.g. ItemInventoryQueryRs, and decide from there what to do
+    inventory = QuickbooksDesktopIntegration::Inventory.new body
+    if inventory.records.any?
+      config = { origin: 'quickbooks', account_id: 'x123' }
+      payload = { inventories: inventory.mapped_records }
+
+      integration = QuickbooksDesktopIntegration::Base.new config, payload
+      s3_object = integration.save_to_s3
+
+      logger.info "File #{s3_object.key} persisted on s3"
+    else
+      logger.info "Nothing to persist on s3"
+    end
+
     erb :'qbwc/receive_response_xml'
   end
 

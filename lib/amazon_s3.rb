@@ -1,4 +1,5 @@
 require_relative 'converter'
+require 'aws-sdk'
 
 class AmazonS3
   attr_reader :s3_client
