@@ -21,7 +21,7 @@ class QBWCEndpoint < Sinatra::Base
 
   get '/' do
     'ok'
-    send_request_xml
+    # send_request_xml
   end
 
   post '/' do
