@@ -5,3 +5,4 @@ require 'quickbooks_desktop_helper'
 
 require 'quickbooks_desktop_integration/base'
 require 'quickbooks_desktop_integration/order'
+require 'quickbooks_desktop_integration/product'

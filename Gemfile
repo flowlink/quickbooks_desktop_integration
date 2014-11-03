@@ -11,6 +11,8 @@ gem 'aws-sdk'
 gem 'rake'
 gem 'fast_xs'
 
+gem 'qbxml', github: 'huoxito/qbxml'
+
 group :development do
   gem 'pry'
   gem 'shotgun'

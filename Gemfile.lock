@@ -1,4 +1,13 @@
 GIT
+  remote: git://github.com/huoxito/qbxml.git
+  revision: 5697757f8a43af123be848c181aed830bb73279c
+  specs:
+    qbxml (0.1.5)
+      activesupport (>= 3.2.9)
+      builder (~> 3.0)
+      nokogiri (~> 1.5)
+
+GIT
   remote: git://github.com/spree/endpoint_base.git
   revision: 5a819541b20ade1b7ec6eb19f38fbab7eaf3e14e
   specs:
@@ -145,6 +154,7 @@ DEPENDENCIES
   foreman
   pry
   pry-byebug
+  qbxml!
   rack-test
   rake
   rspec
