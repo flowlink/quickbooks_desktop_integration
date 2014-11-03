@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-in stance">
+  <soap:Body>
+    <receiveResponseXML xmlns="http://developer.intuit.com/">
+      <ticket>354f40b4-b661-4472-a13f-8 abf13a743c3</ticket>
+      <response>
+        <?xml version="1.0" ?>
+        <QBXML>
+          <QBXMLMsgsRs>
+            <ItemInventoryQueryRs requestID="1" statusCode="0" statusSeverity="Info" statusMessage="Status OK">
+              <ItemInventoryRet>
+                <ListID>80000002-1415025717</ListID>
+                <TimeCreated>2014-11-03T12:41:57-02:00</TimeCreated>
+                <TimeModified>2014-11-03T12:41:58-02:00</TimeModified>
+                <EditSequence>1415025717</EditSequence>
+                <Name>Ruby T-Shirt</Name>
+                <FullName>Ruby T-Shirt</FullName>
+                <IsActive>true</IsActive>
+                <Sublevel>0</Sublevel>
+                <SalesPrice>11.00</SalesPrice>
+                <IncomeAccountRef>
+                  <ListID>8000001B-1415022649</ListID>
+                  <FullName>Cost of Goods Sold</FullName>
+                </IncomeAccountRef>
+                <PurchaseCost>10.00</PurchaseCost>
+                <COGSAccountRef>
+                  <ListID>8000001B-1415022649</ListID>
+                  <FullName>Cost of Goods Sold</FullName>
+                </COGSAccountRef>
+                <AssetAccountRef>
+                  <ListID>8000001A-1415022649</ListID>
+                  <FullName>Inventory Asset</FullName>
+                </AssetAccountRef>
+                <QuantityOnHand>200</QuantityOnHand>
+                <AverageCost>10.00</AverageCost>
+                <QuantityOnOrder>0</QuantityOnOrder>
+                <QuantityOnSalesOrder>0</QuantityOnSalesOrder>
+              </ItemInventoryRet>
+            </ItemInventoryQueryRs>
+          </QBXMLMsgsRs>
+        </QBXML>
+      </response>
+      <hresult />
+      <message />
+    </receiveResponseXML>
+  </soap:Body>
+</soap:Envelope>

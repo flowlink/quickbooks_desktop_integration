@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <soap:Body>
+    <receiveResponseXML xmlns="http://developer.intuit.com/">
+      <ticket>354f40b4-b661-4472-a13f-8abf13a743c3</ticket>
+      <response>
+        <?xml version="1.0" ?>
+        <QBXML>
+          <QBXMLMsgsRs>
+            <ItemInventoryQueryRs requestID="1" statusCode="1" statusSeverity="Info" statusMessage="A query request did not find a matching object in QuickBooks" />
+          </QBXMLMsgsRs>
+        </QBXML>
+      </response>
+      <hresult />
+      <message />
+    </receiveResponseXML>
+  </soap:Body>
+</soap:Envelope>
