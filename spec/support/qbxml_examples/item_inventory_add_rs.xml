@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+   <soap:Body>
+      <receiveResponseXML xmlns="http://developer.intuit.com/">
+         <ticket>354f40b4-b661-4472-a13f-8abf13a743c3</ticket>
+         <response>
+            <QBXML>
+               <QBXMLMsgsRs>
+                  <ItemInventoryAddRs statusCode="0" statusSeverity="Info" statusMessage="Status OK">
+                     <ItemInventoryRet>
+                        <ListID>80000005-1415103643</ListID>
+                        <TimeCreated>2014-11-04T10:20:43-02:00</TimeCreated>
+                        <TimeModified>2014-11-04T10:20:43-02:00</TimeModified>
+                        <EditSequence>1415103643</EditSequence>
+                        <Name>SPREE-T-SHIRT-1</Name>
+                        <FullName>SPREE-T-SHIRT-1</FullName>
+                        <IsActive>true</IsActive>
+                        <Sublevel>0</Sublevel>
+                        <SalesPrice>0.00</SalesPrice>
+                        <IncomeAccountRef>
+                           <ListID>8000001A-1415022649</ListID>
+                           <FullName>Inventory Asset</FullName>
+                        </IncomeAccountRef>
+                        <PurchaseCost>0.00</PurchaseCost>
+                        <COGSAccountRef>
+                           <ListID>8000001A-1415022649</ListID>
+                           <FullName>Inventory Asset</FullName>
+                        </COGSAccountRef>
+                        <AssetAccountRef>
+                           <ListID>8000001A-1415022649</ListID>
+                           <FullName>Inventory Asset</FullName>
+                        </AssetAccountRef>
+                        <QuantityOnHand>0</QuantityOnHand>
+                        <AverageCost>0.00</AverageCost>
+                        <QuantityOnOrder>0</QuantityOnOrder>
+                        <QuantityOnSalesOrder>0</QuantityOnSalesOrder>
+                     </ItemInventoryRet>
+                  </ItemInventoryAddRs>
+               </QBXMLMsgsRs>
+            </QBXML>
+         </response>
+         <hresult />
+         <message />
+      </receiveResponseXML>
+   </soap:Body>
+</soap:Envelope>
