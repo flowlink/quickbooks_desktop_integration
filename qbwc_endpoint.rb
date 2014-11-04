@@ -90,19 +90,20 @@ XML
 
     # NOTE Make it generic. Probably figure the operation name,
     # e.g. ItemInventoryQueryRs, and decide from there what to do
-    inventory = QuickbooksDesktopIntegration::Inventory.new body
-    if inventory.records.any?
-      config = { origin: 'quickbooks', account_id: 'x123' }
-      payload = { inventories: inventory.mapped_records }
+    # inventory = QuickbooksDesktopIntegration::Inventory.new body
+    # if inventory.records.any?
+      # config = { origin: 'quickbooks', account_id: 'x123' }
+      # payload = { inventories: inventory.mapped_records }
 
-      integration = QuickbooksDesktopIntegration::Base.new config, payload
-      s3_object = integration.save_to_s3
+      # integration = QuickbooksDesktopIntegration::Base.new config, payload
+      # s3_object = integration.save_to_s3
 
-      logger.info "File #{s3_object.key} persisted on s3"
-    else
-      logger.info "Nothing to persist on s3"
-    end
+      # logger.info "File #{s3_object.key} persisted on s3"
+    # else
+      # logger.info "Nothing to persist on s3"
+    # end
 
+    product = QuickbooksDesktopIntegration::ProductQuery.new body
     erb :'qbwc/receive_response_xml'
   end
 
