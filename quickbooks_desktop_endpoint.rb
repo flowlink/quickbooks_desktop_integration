@@ -69,21 +69,4 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
     end
   end
 
-  post %r{(add_product|update_product)$} do
-    # TODO Drop the hardcoded account id ..
-    config = { account_id: 'x123', origin: 'quickbooks' }
-    payload = { products: {} }
-
-    integration = QuickbooksDesktopIntegration::Base.new config, payload
-    products = integration.start_processing "integrated"
-
-    if products.any?
-      count = products.count
-      add_value 'products', products
-      result 200, "#{"product".pluralize count} stored to send to Quickbooks Desktop"
-    else
-      result 200
-    end
-  end
-
 end
