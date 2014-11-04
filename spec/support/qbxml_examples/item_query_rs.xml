@@ -1,1005 +1,148 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?qbxml version="13.0"?>
-<QBXML>
-  <QBXMLMsgsRs>
-    <ItemQueryRs statusCode="INTTYPE" statusSeverity="STRTYPE" statusMessage="STRTYPE" retCount="INTTYPE" iteratorRemainingCount="INTTYPE" iteratorID="UUIDTYPE">
-      <!-- BEGIN OR -->
-      <ItemServiceRet>
-        <!-- optional -->
-        <ListID>IDTYPE</ListID>
-        <!-- required -->
-        <TimeCreated>DATETIMETYPE</TimeCreated>
-        <!-- required -->
-        <TimeModified>DATETIMETYPE</TimeModified>
-        <!-- required -->
-        <EditSequence>STRTYPE</EditSequence>
-        <!-- required -->
-        <Name>STRTYPE</Name>
-        <!-- required -->
-        <FullName>STRTYPE</FullName>
-        <!-- required -->
-        <BarCodeValue>STRTYPE</BarCodeValue>
-        <!-- optional -->
-        <IsActive>BOOLTYPE</IsActive>
-        <!-- optional -->
-        <ClassRef>
-          <!-- optional -->
-          <ListID>IDTYPE</ListID>
-          <!-- optional -->
-          <FullName>STRTYPE</FullName>
-          <!-- optional -->
-        </ClassRef>
-        <ParentRef>
-          <!-- optional -->
-          <ListID>IDTYPE</ListID>
-          <!-- optional -->
-          <FullName>STRTYPE</FullName>
-          <!-- optional -->
-        </ParentRef>
-        <Sublevel>INTTYPE</Sublevel>
-        <!-- required -->
-        <UnitOfMeasureSetRef>
-          <!-- optional -->
-          <ListID>IDTYPE</ListID>
-          <!-- optional -->
-          <FullName>STRTYPE</FullName>
-          <!-- optional -->
-        </UnitOfMeasureSetRef>
-        <SalesTaxCodeRef>
-          <!-- optional -->
-          <ListID>IDTYPE</ListID>
-          <!-- optional -->
-          <FullName>STRTYPE</FullName>
-          <!-- optional -->
-        </SalesTaxCodeRef>
-        <!-- BEGIN OR -->
-        <SalesOrPurchase>
-          <!-- optional -->
-          <Desc>STRTYPE</Desc>
-          <!-- optional -->
-          <!-- BEGIN OR -->
-          <Price>PRICETYPE</Price>
-          <!-- optional -->
-          <!-- OR -->
-          <PricePercent>PERCENTTYPE</PricePercent>
-          <!-- optional -->
-          <!-- END OR -->
-          <AccountRef>
-            <!-- optional -->
-            <ListID>IDTYPE</ListID>
-            <!-- optional -->
-            <FullName>STRTYPE</FullName>
-            <!-- optional -->
-          </AccountRef>
-        </SalesOrPurchase>
-        <!-- OR -->
-        <SalesAndPurchase>
-          <!-- optional -->
-          <SalesDesc>STRTYPE</SalesDesc>
-          <!-- optional -->
-          <SalesPrice>PRICETYPE</SalesPrice>
-          <!-- optional -->
-          <IncomeAccountRef>
-            <!-- optional -->
-            <ListID>IDTYPE</ListID>
-            <!-- optional -->
-            <FullName>STRTYPE</FullName>
-            <!-- optional -->
-          </IncomeAccountRef>
-          <PurchaseDesc>STRTYPE</PurchaseDesc>
-          <!-- optional -->
-          <PurchaseCost>PRICETYPE</PurchaseCost>
-          <!-- optional -->
-          <ExpenseAccountRef>
-            <!-- optional -->
-            <ListID>IDTYPE</ListID>
-            <!-- optional -->
-            <FullName>STRTYPE</FullName>
-            <!-- optional -->
-          </ExpenseAccountRef>
-          <PrefVendorRef>
-            <!-- optional -->
-            <ListID>IDTYPE</ListID>
-            <!-- optional -->
-            <FullName>STRTYPE</FullName>
-            <!-- optional -->
-          </PrefVendorRef>
-        </SalesAndPurchase>
-        <!-- END OR -->
-        <ExternalGUID>GUIDTYPE</ExternalGUID>
-        <!-- optional -->
-        <DataExtRet>
-          <!-- optional, may repeat -->
-          <OwnerID>GUIDTYPE</OwnerID>
-          <!-- optional -->
-          <DataExtName>STRTYPE</DataExtName>
-          <!-- required -->
-          <!-- DataExtType may have one of the following values: AMTTYPE, DATETIMETYPE, INTTYPE, PERCENTTYPE, PRICETYPE, QUANTYPE, STR1024TYPE, STR255TYPE -->
-          <DataExtType>ENUMTYPE</DataExtType>
-          <!-- required -->
-          <DataExtValue>STRTYPE</DataExtValue>
-          <!-- required -->
-        </DataExtRet>
-      </ItemServiceRet>
-      <!-- OR -->
-      <ItemNonInventoryRet>
-        <!-- optional -->
-        <ListID>IDTYPE</ListID>
-        <!-- required -->
-        <TimeCreated>DATETIMETYPE</TimeCreated>
-        <!-- required -->
-        <TimeModified>DATETIMETYPE</TimeModified>
-        <!-- required -->
-        <EditSequence>STRTYPE</EditSequence>
-        <!-- required -->
-        <Name>STRTYPE</Name>
-        <!-- required -->
-        <FullName>STRTYPE</FullName>
-        <!-- required -->
-        <BarCodeValue>STRTYPE</BarCodeValue>
-        <!-- optional -->
-        <IsActive>BOOLTYPE</IsActive>
-        <!-- optional -->
-        <ClassRef>
-          <!-- optional -->
-          <ListID>IDTYPE</ListID>
-          <!-- optional -->
-          <FullName>STRTYPE</FullName>
-          <!-- optional -->
-        </ClassRef>
-        <ParentRef>
-          <!-- optional -->
-          <ListID>IDTYPE</ListID>
-          <!-- optional -->
-          <FullName>STRTYPE</FullName>
-          <!-- optional -->
-        </ParentRef>
-        <Sublevel>INTTYPE</Sublevel>
-        <!-- required -->
-        <ManufacturerPartNumber>STRTYPE</ManufacturerPartNumber>
-        <!-- optional -->
-        <UnitOfMeasureSetRef>
-          <!-- optional -->
-          <ListID>IDTYPE</ListID>
-          <!-- optional -->
-          <FullName>STRTYPE</FullName>
-          <!-- optional -->
-        </UnitOfMeasureSetRef>
-        <SalesTaxCodeRef>
-          <!-- optional -->
-          <ListID>IDTYPE</ListID>
-          <!-- optional -->
-          <FullName>STRTYPE</FullName>
-          <!-- optional -->
-        </SalesTaxCodeRef>
-        <!-- BEGIN OR -->
-        <SalesOrPurchase>
-          <!-- optional -->
-          <Desc>STRTYPE</Desc>
-          <!-- optional -->
-          <!-- BEGIN OR -->
-          <Price>PRICETYPE</Price>
-          <!-- optional -->
-          <!-- OR -->
-          <PricePercent>PERCENTTYPE</PricePercent>
-          <!-- optional -->
-          <!-- END OR -->
-          <AccountRef>
-            <!-- optional -->
-            <ListID>IDTYPE</ListID>
-            <!-- optional -->
-            <FullName>STRTYPE</FullName>
-            <!-- optional -->
-          </AccountRef>
-        </SalesOrPurchase>
-        <!-- OR -->
-        <SalesAndPurchase>
-          <!-- optional -->
-          <SalesDesc>STRTYPE</SalesDesc>
-          <!-- optional -->
-          <SalesPrice>PRICETYPE</SalesPrice>
-          <!-- optional -->
-          <IncomeAccountRef>
-            <!-- optional -->
-            <ListID>IDTYPE</ListID>
-            <!-- optional -->
-            <FullName>STRTYPE</FullName>
-            <!-- optional -->
-          </IncomeAccountRef>
-          <PurchaseDesc>STRTYPE</PurchaseDesc>
-          <!-- optional -->
-          <PurchaseCost>PRICETYPE</PurchaseCost>
-          <!-- optional -->
-          <ExpenseAccountRef>
-            <!-- optional -->
-            <ListID>IDTYPE</ListID>
-            <!-- optional -->
-            <FullName>STRTYPE</FullName>
-            <!-- optional -->
-          </ExpenseAccountRef>
-          <PrefVendorRef>
-            <!-- optional -->
-            <ListID>IDTYPE</ListID>
-            <!-- optional -->
-            <FullName>STRTYPE</FullName>
-            <!-- optional -->
-          </PrefVendorRef>
-        </SalesAndPurchase>
-        <!-- END OR -->
-        <ExternalGUID>GUIDTYPE</ExternalGUID>
-        <!-- optional -->
-        <DataExtRet>
-          <!-- optional, may repeat -->
-          <OwnerID>GUIDTYPE</OwnerID>
-          <!-- optional -->
-          <DataExtName>STRTYPE</DataExtName>
-          <!-- required -->
-          <!-- DataExtType may have one of the following values: AMTTYPE, DATETIMETYPE, INTTYPE, PERCENTTYPE, PRICETYPE, QUANTYPE, STR1024TYPE, STR255TYPE -->
-          <DataExtType>ENUMTYPE</DataExtType>
-          <!-- required -->
-          <DataExtValue>STRTYPE</DataExtValue>
-          <!-- required -->
-        </DataExtRet>
-      </ItemNonInventoryRet>
-      <!-- OR -->
-      <ItemOtherChargeRet>
-        <!-- optional -->
-        <ListID>IDTYPE</ListID>
-        <!-- required -->
-        <TimeCreated>DATETIMETYPE</TimeCreated>
-        <!-- required -->
-        <TimeModified>DATETIMETYPE</TimeModified>
-        <!-- required -->
-        <EditSequence>STRTYPE</EditSequence>
-        <!-- required -->
-        <Name>STRTYPE</Name>
-        <!-- required -->
-        <FullName>STRTYPE</FullName>
-        <!-- required -->
-        <BarCodeValue>STRTYPE</BarCodeValue>
-        <!-- optional -->
-        <IsActive>BOOLTYPE</IsActive>
-        <!-- optional -->
-        <ClassRef>
-          <!-- optional -->
-          <ListID>IDTYPE</ListID>
-          <!-- optional -->
-          <FullName>STRTYPE</FullName>
-          <!-- optional -->
-        </ClassRef>
-        <ParentRef>
-          <!-- optional -->
-          <ListID>IDTYPE</ListID>
-          <!-- optional -->
-          <FullName>STRTYPE</FullName>
-          <!-- optional -->
-        </ParentRef>
-        <Sublevel>INTTYPE</Sublevel>
-        <!-- required -->
-        <SalesTaxCodeRef>
-          <!-- optional -->
-          <ListID>IDTYPE</ListID>
-          <!-- optional -->
-          <FullName>STRTYPE</FullName>
-          <!-- optional -->
-        </SalesTaxCodeRef>
-        <!-- BEGIN OR -->
-        <SalesOrPurchase>
-          <!-- optional -->
-          <Desc>STRTYPE</Desc>
-          <!-- optional -->
-          <!-- BEGIN OR -->
-          <Price>PRICETYPE</Price>
-          <!-- optional -->
-          <!-- OR -->
-          <PricePercent>PERCENTTYPE</PricePercent>
-          <!-- optional -->
-          <!-- END OR -->
-          <AccountRef>
-            <!-- optional -->
-            <ListID>IDTYPE</ListID>
-            <!-- optional -->
-            <FullName>STRTYPE</FullName>
-            <!-- optional -->
-          </AccountRef>
-        </SalesOrPurchase>
-        <!-- OR -->
-        <SalesAndPurchase>
-          <!-- optional -->
-          <SalesDesc>STRTYPE</SalesDesc>
-          <!-- optional -->
-          <SalesPrice>PRICETYPE</SalesPrice>
-          <!-- optional -->
-          <IncomeAccountRef>
-            <!-- optional -->
-            <ListID>IDTYPE</ListID>
-            <!-- optional -->
-            <FullName>STRTYPE</FullName>
-            <!-- optional -->
-          </IncomeAccountRef>
-          <PurchaseDesc>STRTYPE</PurchaseDesc>
-          <!-- optional -->
-          <PurchaseCost>PRICETYPE</PurchaseCost>
-          <!-- optional -->
-          <ExpenseAccountRef>
-            <!-- optional -->
-            <ListID>IDTYPE</ListID>
-            <!-- optional -->
-            <FullName>STRTYPE</FullName>
-            <!-- optional -->
-          </ExpenseAccountRef>
-          <PrefVendorRef>
-            <!-- optional -->
-            <ListID>IDTYPE</ListID>
-            <!-- optional -->
-            <FullName>STRTYPE</FullName>
-            <!-- optional -->
-          </PrefVendorRef>
-        </SalesAndPurchase>
-        <!-- END OR -->
-        <!-- SpecialItemType may have one of the following values: FinanceCharge, ReimbursableExpenseGroup, ReimbursableExpenseSubtotal -->
-        <SpecialItemType>ENUMTYPE</SpecialItemType>
-        <!-- optional -->
-        <ExternalGUID>GUIDTYPE</ExternalGUID>
-        <!-- optional -->
-        <DataExtRet>
-          <!-- optional, may repeat -->
-          <OwnerID>GUIDTYPE</OwnerID>
-          <!-- optional -->
-          <DataExtName>STRTYPE</DataExtName>
-          <!-- required -->
-          <!-- DataExtType may have one of the following values: AMTTYPE, DATETIMETYPE, INTTYPE, PERCENTTYPE, PRICETYPE, QUANTYPE, STR1024TYPE, STR255TYPE -->
-          <DataExtType>ENUMTYPE</DataExtType>
-          <!-- required -->
-          <DataExtValue>STRTYPE</DataExtValue>
-          <!-- required -->
-        </DataExtRet>
-      </ItemOtherChargeRet>
-      <!-- OR -->
-      <ItemInventoryRet>
-        <!-- optional -->
-        <ListID>IDTYPE</ListID>
-        <!-- required -->
-        <TimeCreated>DATETIMETYPE</TimeCreated>
-        <!-- required -->
-        <TimeModified>DATETIMETYPE</TimeModified>
-        <!-- required -->
-        <EditSequence>STRTYPE</EditSequence>
-        <!-- required -->
-        <Name>STRTYPE</Name>
-        <!-- required -->
-        <FullName>STRTYPE</FullName>
-        <!-- required -->
-        <BarCodeValue>STRTYPE</BarCodeValue>
-        <!-- optional -->
-        <IsActive>BOOLTYPE</IsActive>
-        <!-- optional -->
-        <ClassRef>
-          <!-- optional -->
-          <ListID>IDTYPE</ListID>
-          <!-- optional -->
-          <FullName>STRTYPE</FullName>
-          <!-- optional -->
-        </ClassRef>
-        <ParentRef>
-          <!-- optional -->
-          <ListID>IDTYPE</ListID>
-          <!-- optional -->
-          <FullName>STRTYPE</FullName>
-          <!-- optional -->
-        </ParentRef>
-        <Sublevel>INTTYPE</Sublevel>
-        <!-- required -->
-        <ManufacturerPartNumber>STRTYPE</ManufacturerPartNumber>
-        <!-- optional -->
-        <UnitOfMeasureSetRef>
-          <!-- optional -->
-          <ListID>IDTYPE</ListID>
-          <!-- optional -->
-          <FullName>STRTYPE</FullName>
-          <!-- optional -->
-        </UnitOfMeasureSetRef>
-        <SalesTaxCodeRef>
-          <!-- optional -->
-          <ListID>IDTYPE</ListID>
-          <!-- optional -->
-          <FullName>STRTYPE</FullName>
-          <!-- optional -->
-        </SalesTaxCodeRef>
-        <SalesDesc>STRTYPE</SalesDesc>
-        <!-- optional -->
-        <SalesPrice>PRICETYPE</SalesPrice>
-        <!-- optional -->
-        <IncomeAccountRef>
-          <!-- optional -->
-          <ListID>IDTYPE</ListID>
-          <!-- optional -->
-          <FullName>STRTYPE</FullName>
-          <!-- optional -->
-        </IncomeAccountRef>
-        <PurchaseDesc>STRTYPE</PurchaseDesc>
-        <!-- optional -->
-        <PurchaseCost>PRICETYPE</PurchaseCost>
-        <!-- optional -->
-        <COGSAccountRef>
-          <!-- optional -->
-          <ListID>IDTYPE</ListID>
-          <!-- optional -->
-          <FullName>STRTYPE</FullName>
-          <!-- optional -->
-        </COGSAccountRef>
-        <PrefVendorRef>
-          <!-- optional -->
-          <ListID>IDTYPE</ListID>
-          <!-- optional -->
-          <FullName>STRTYPE</FullName>
-          <!-- optional -->
-        </PrefVendorRef>
-        <AssetAccountRef>
-          <!-- optional -->
-          <ListID>IDTYPE</ListID>
-          <!-- optional -->
-          <FullName>STRTYPE</FullName>
-          <!-- optional -->
-        </AssetAccountRef>
-        <ReorderPoint>QUANTYPE</ReorderPoint>
-        <!-- optional -->
-        <Max>QUANTYPE</Max>
-        <!-- optional -->
-        <QuantityOnHand>QUANTYPE</QuantityOnHand>
-        <!-- optional -->
-        <AverageCost>PRICETYPE</AverageCost>
-        <!-- optional -->
-        <QuantityOnOrder>QUANTYPE</QuantityOnOrder>
-        <!-- optional -->
-        <QuantityOnSalesOrder>QUANTYPE</QuantityOnSalesOrder>
-        <!-- optional -->
-        <ExternalGUID>GUIDTYPE</ExternalGUID>
-        <!-- optional -->
-        <DataExtRet>
-          <!-- optional, may repeat -->
-          <OwnerID>GUIDTYPE</OwnerID>
-          <!-- optional -->
-          <DataExtName>STRTYPE</DataExtName>
-          <!-- required -->
-          <!-- DataExtType may have one of the following values: AMTTYPE, DATETIMETYPE, INTTYPE, PERCENTTYPE, PRICETYPE, QUANTYPE, STR1024TYPE, STR255TYPE -->
-          <DataExtType>ENUMTYPE</DataExtType>
-          <!-- required -->
-          <DataExtValue>STRTYPE</DataExtValue>
-          <!-- required -->
-        </DataExtRet>
-      </ItemInventoryRet>
-      <!-- OR -->
-      <ItemInventoryAssemblyRet>
-        <!-- optional -->
-        <ListID>IDTYPE</ListID>
-        <!-- required -->
-        <TimeCreated>DATETIMETYPE</TimeCreated>
-        <!-- required -->
-        <TimeModified>DATETIMETYPE</TimeModified>
-        <!-- required -->
-        <EditSequence>STRTYPE</EditSequence>
-        <!-- required -->
-        <Name>STRTYPE</Name>
-        <!-- required -->
-        <FullName>STRTYPE</FullName>
-        <!-- required -->
-        <BarCodeValue>STRTYPE</BarCodeValue>
-        <!-- optional -->
-        <IsActive>BOOLTYPE</IsActive>
-        <!-- optional -->
-        <ClassRef>
-          <!-- optional -->
-          <ListID>IDTYPE</ListID>
-          <!-- optional -->
-          <FullName>STRTYPE</FullName>
-          <!-- optional -->
-        </ClassRef>
-        <ParentRef>
-          <!-- optional -->
-          <ListID>IDTYPE</ListID>
-          <!-- optional -->
-          <FullName>STRTYPE</FullName>
-          <!-- optional -->
-        </ParentRef>
-        <Sublevel>INTTYPE</Sublevel>
-        <!-- required -->
-        <ManufacturerPartNumber>STRTYPE</ManufacturerPartNumber>
-        <!-- optional -->
-        <UnitOfMeasureSetRef>
-          <!-- optional -->
-          <ListID>IDTYPE</ListID>
-          <!-- optional -->
-          <FullName>STRTYPE</FullName>
-          <!-- optional -->
-        </UnitOfMeasureSetRef>
-        <SalesTaxCodeRef>
-          <!-- optional -->
-          <ListID>IDTYPE</ListID>
-          <!-- optional -->
-          <FullName>STRTYPE</FullName>
-          <!-- optional -->
-        </SalesTaxCodeRef>
-        <SalesDesc>STRTYPE</SalesDesc>
-        <!-- optional -->
-        <SalesPrice>PRICETYPE</SalesPrice>
-        <!-- optional -->
-        <IncomeAccountRef>
-          <!-- optional -->
-          <ListID>IDTYPE</ListID>
-          <!-- optional -->
-          <FullName>STRTYPE</FullName>
-          <!-- optional -->
-        </IncomeAccountRef>
-        <PurchaseDesc>STRTYPE</PurchaseDesc>
-        <!-- optional -->
-        <PurchaseCost>PRICETYPE</PurchaseCost>
-        <!-- optional -->
-        <COGSAccountRef>
-          <!-- optional -->
-          <ListID>IDTYPE</ListID>
-          <!-- optional -->
-          <FullName>STRTYPE</FullName>
-          <!-- optional -->
-        </COGSAccountRef>
-        <PrefVendorRef>
-          <!-- optional -->
-          <ListID>IDTYPE</ListID>
-          <!-- optional -->
-          <FullName>STRTYPE</FullName>
-          <!-- optional -->
-        </PrefVendorRef>
-        <AssetAccountRef>
-          <!-- optional -->
-          <ListID>IDTYPE</ListID>
-          <!-- optional -->
-          <FullName>STRTYPE</FullName>
-          <!-- optional -->
-        </AssetAccountRef>
-        <BuildPoint>QUANTYPE</BuildPoint>
-        <!-- optional -->
-        <Max>QUANTYPE</Max>
-        <!-- optional -->
-        <QuantityOnHand>QUANTYPE</QuantityOnHand>
-        <!-- optional -->
-        <AverageCost>PRICETYPE</AverageCost>
-        <!-- optional -->
-        <QuantityOnOrder>QUANTYPE</QuantityOnOrder>
-        <!-- optional -->
-        <QuantityOnSalesOrder>QUANTYPE</QuantityOnSalesOrder>
-        <!-- optional -->
-        <ExternalGUID>GUIDTYPE</ExternalGUID>
-        <!-- optional -->
-        <ItemInventoryAssemblyLine>
-          <!-- optional, may repeat -->
-          <ItemInventoryRef>
-            <!-- required -->
-            <ListID>IDTYPE</ListID>
-            <!-- optional -->
-            <FullName>STRTYPE</FullName>
-            <!-- optional -->
-          </ItemInventoryRef>
-          <Quantity>QUANTYPE</Quantity>
-          <!-- optional -->
-        </ItemInventoryAssemblyLine>
-        <DataExtRet>
-          <!-- optional, may repeat -->
-          <OwnerID>GUIDTYPE</OwnerID>
-          <!-- optional -->
-          <DataExtName>STRTYPE</DataExtName>
-          <!-- required -->
-          <!-- DataExtType may have one of the following values: AMTTYPE, DATETIMETYPE, INTTYPE, PERCENTTYPE, PRICETYPE, QUANTYPE, STR1024TYPE, STR255TYPE -->
-          <DataExtType>ENUMTYPE</DataExtType>
-          <!-- required -->
-          <DataExtValue>STRTYPE</DataExtValue>
-          <!-- required -->
-        </DataExtRet>
-      </ItemInventoryAssemblyRet>
-      <!-- OR -->
-      <ItemFixedAssetRet>
-        <!-- optional -->
-        <ListID>IDTYPE</ListID>
-        <!-- required -->
-        <TimeCreated>DATETIMETYPE</TimeCreated>
-        <!-- required -->
-        <TimeModified>DATETIMETYPE</TimeModified>
-        <!-- required -->
-        <EditSequence>STRTYPE</EditSequence>
-        <!-- required -->
-        <Name>STRTYPE</Name>
-        <!-- required -->
-        <BarCodeValue>STRTYPE</BarCodeValue>
-        <!-- optional -->
-        <IsActive>BOOLTYPE</IsActive>
-        <!-- optional -->
-        <ClassRef>
-          <!-- optional -->
-          <ListID>IDTYPE</ListID>
-          <!-- optional -->
-          <FullName>STRTYPE</FullName>
-          <!-- optional -->
-        </ClassRef>
-        <!-- AcquiredAs may have one of the following values: New, Old -->
-        <AcquiredAs>ENUMTYPE</AcquiredAs>
-        <!-- required -->
-        <PurchaseDesc>STRTYPE</PurchaseDesc>
-        <!-- required -->
-        <PurchaseDate>DATETYPE</PurchaseDate>
-        <!-- required -->
-        <PurchaseCost>PRICETYPE</PurchaseCost>
-        <!-- optional -->
-        <VendorOrPayeeName>STRTYPE</VendorOrPayeeName>
-        <!-- optional -->
-        <AssetAccountRef>
-          <!-- optional -->
-          <ListID>IDTYPE</ListID>
-          <!-- optional -->
-          <FullName>STRTYPE</FullName>
-          <!-- optional -->
-        </AssetAccountRef>
-        <FixedAssetSalesInfo>
-          <!-- optional -->
-          <SalesDesc>STRTYPE</SalesDesc>
-          <!-- required -->
-          <SalesDate>DATETYPE</SalesDate>
-          <!-- required -->
-          <SalesPrice>PRICETYPE</SalesPrice>
-          <!-- optional -->
-          <SalesExpense>PRICETYPE</SalesExpense>
-          <!-- optional -->
-        </FixedAssetSalesInfo>
-        <AssetDesc>STRTYPE</AssetDesc>
-        <!-- optional -->
-        <Location>STRTYPE</Location>
-        <!-- optional -->
-        <PONumber>STRTYPE</PONumber>
-        <!-- optional -->
-        <SerialNumber>STRTYPE</SerialNumber>
-        <!-- optional -->
-        <WarrantyExpDate>DATETYPE</WarrantyExpDate>
-        <!-- optional -->
-        <Notes>STRTYPE</Notes>
-        <!-- optional -->
-        <AssetNumber>STRTYPE</AssetNumber>
-        <!-- optional -->
-        <CostBasis>AMTTYPE</CostBasis>
-        <!-- optional -->
-        <YearEndAccumulatedDepreciation>AMTTYPE</YearEndAccumulatedDepreciation>
-        <!-- optional -->
-        <YearEndBookValue>AMTTYPE</YearEndBookValue>
-        <!-- optional -->
-        <ExternalGUID>GUIDTYPE</ExternalGUID>
-        <!-- optional -->
-        <DataExtRet>
-          <!-- optional, may repeat -->
-          <OwnerID>GUIDTYPE</OwnerID>
-          <!-- optional -->
-          <DataExtName>STRTYPE</DataExtName>
-          <!-- required -->
-          <!-- DataExtType may have one of the following values: AMTTYPE, DATETIMETYPE, INTTYPE, PERCENTTYPE, PRICETYPE, QUANTYPE, STR1024TYPE, STR255TYPE -->
-          <DataExtType>ENUMTYPE</DataExtType>
-          <!-- required -->
-          <DataExtValue>STRTYPE</DataExtValue>
-          <!-- required -->
-        </DataExtRet>
-      </ItemFixedAssetRet>
-      <!-- OR -->
-      <ItemSubtotalRet>
-        <!-- optional -->
-        <ListID>IDTYPE</ListID>
-        <!-- required -->
-        <TimeCreated>DATETIMETYPE</TimeCreated>
-        <!-- required -->
-        <TimeModified>DATETIMETYPE</TimeModified>
-        <!-- required -->
-        <EditSequence>STRTYPE</EditSequence>
-        <!-- required -->
-        <Name>STRTYPE</Name>
-        <!-- required -->
-        <BarCodeValue>STRTYPE</BarCodeValue>
-        <!-- optional -->
-        <IsActive>BOOLTYPE</IsActive>
-        <!-- optional -->
-        <ItemDesc>STRTYPE</ItemDesc>
-        <!-- optional -->
-        <!-- SpecialItemType may have one of the following values: FinanceCharge, ReimbursableExpenseGroup, ReimbursableExpenseSubtotal -->
-        <SpecialItemType>ENUMTYPE</SpecialItemType>
-        <!-- optional -->
-        <ExternalGUID>GUIDTYPE</ExternalGUID>
-        <!-- optional -->
-        <DataExtRet>
-          <!-- optional, may repeat -->
-          <OwnerID>GUIDTYPE</OwnerID>
-          <!-- optional -->
-          <DataExtName>STRTYPE</DataExtName>
-          <!-- required -->
-          <!-- DataExtType may have one of the following values: AMTTYPE, DATETIMETYPE, INTTYPE, PERCENTTYPE, PRICETYPE, QUANTYPE, STR1024TYPE, STR255TYPE -->
-          <DataExtType>ENUMTYPE</DataExtType>
-          <!-- required -->
-          <DataExtValue>STRTYPE</DataExtValue>
-          <!-- required -->
-        </DataExtRet>
-      </ItemSubtotalRet>
-      <!-- OR -->
-      <ItemDiscountRet>
-        <!-- optional -->
-        <ListID>IDTYPE</ListID>
-        <!-- required -->
-        <TimeCreated>DATETIMETYPE</TimeCreated>
-        <!-- required -->
-        <TimeModified>DATETIMETYPE</TimeModified>
-        <!-- required -->
-        <EditSequence>STRTYPE</EditSequence>
-        <!-- required -->
-        <Name>STRTYPE</Name>
-        <!-- required -->
-        <FullName>STRTYPE</FullName>
-        <!-- required -->
-        <BarCodeValue>STRTYPE</BarCodeValue>
-        <!-- optional -->
-        <IsActive>BOOLTYPE</IsActive>
-        <!-- optional -->
-        <ClassRef>
-          <!-- optional -->
-          <ListID>IDTYPE</ListID>
-          <!-- optional -->
-          <FullName>STRTYPE</FullName>
-          <!-- optional -->
-        </ClassRef>
-        <ParentRef>
-          <!-- optional -->
-          <ListID>IDTYPE</ListID>
-          <!-- optional -->
-          <FullName>STRTYPE</FullName>
-          <!-- optional -->
-        </ParentRef>
-        <Sublevel>INTTYPE</Sublevel>
-        <!-- required -->
-        <ItemDesc>STRTYPE</ItemDesc>
-        <!-- optional -->
-        <SalesTaxCodeRef>
-          <!-- optional -->
-          <ListID>IDTYPE</ListID>
-          <!-- optional -->
-          <FullName>STRTYPE</FullName>
-          <!-- optional -->
-        </SalesTaxCodeRef>
-        <!-- BEGIN OR -->
-        <DiscountRate>PRICETYPE</DiscountRate>
-        <!-- optional -->
-        <!-- OR -->
-        <DiscountRatePercent>PERCENTTYPE</DiscountRatePercent>
-        <!-- optional -->
-        <!-- END OR -->
-        <AccountRef>
-          <!-- optional -->
-          <ListID>IDTYPE</ListID>
-          <!-- optional -->
-          <FullName>STRTYPE</FullName>
-          <!-- optional -->
-        </AccountRef>
-        <ExternalGUID>GUIDTYPE</ExternalGUID>
-        <!-- optional -->
-        <DataExtRet>
-          <!-- optional, may repeat -->
-          <OwnerID>GUIDTYPE</OwnerID>
-          <!-- optional -->
-          <DataExtName>STRTYPE</DataExtName>
-          <!-- required -->
-          <!-- DataExtType may have one of the following values: AMTTYPE, DATETIMETYPE, INTTYPE, PERCENTTYPE, PRICETYPE, QUANTYPE, STR1024TYPE, STR255TYPE -->
-          <DataExtType>ENUMTYPE</DataExtType>
-          <!-- required -->
-          <DataExtValue>STRTYPE</DataExtValue>
-          <!-- required -->
-        </DataExtRet>
-      </ItemDiscountRet>
-      <!-- OR -->
-      <ItemPaymentRet>
-        <!-- optional -->
-        <ListID>IDTYPE</ListID>
-        <!-- required -->
-        <TimeCreated>DATETIMETYPE</TimeCreated>
-        <!-- required -->
-        <TimeModified>DATETIMETYPE</TimeModified>
-        <!-- required -->
-        <EditSequence>STRTYPE</EditSequence>
-        <!-- required -->
-        <Name>STRTYPE</Name>
-        <!-- required -->
-        <BarCodeValue>STRTYPE</BarCodeValue>
-        <!-- optional -->
-        <IsActive>BOOLTYPE</IsActive>
-        <!-- optional -->
-        <ClassRef>
-          <!-- optional -->
-          <ListID>IDTYPE</ListID>
-          <!-- optional -->
-          <FullName>STRTYPE</FullName>
-          <!-- optional -->
-        </ClassRef>
-        <ItemDesc>STRTYPE</ItemDesc>
-        <!-- optional -->
-        <DepositToAccountRef>
-          <!-- optional -->
-          <ListID>IDTYPE</ListID>
-          <!-- optional -->
-          <FullName>STRTYPE</FullName>
-          <!-- optional -->
-        </DepositToAccountRef>
-        <PaymentMethodRef>
-          <!-- optional -->
-          <ListID>IDTYPE</ListID>
-          <!-- optional -->
-          <FullName>STRTYPE</FullName>
-          <!-- optional -->
-        </PaymentMethodRef>
-        <ExternalGUID>GUIDTYPE</ExternalGUID>
-        <!-- optional -->
-        <DataExtRet>
-          <!-- optional, may repeat -->
-          <OwnerID>GUIDTYPE</OwnerID>
-          <!-- optional -->
-          <DataExtName>STRTYPE</DataExtName>
-          <!-- required -->
-          <!-- DataExtType may have one of the following values: AMTTYPE, DATETIMETYPE, INTTYPE, PERCENTTYPE, PRICETYPE, QUANTYPE, STR1024TYPE, STR255TYPE -->
-          <DataExtType>ENUMTYPE</DataExtType>
-          <!-- required -->
-          <DataExtValue>STRTYPE</DataExtValue>
-          <!-- required -->
-        </DataExtRet>
-      </ItemPaymentRet>
-      <!-- OR -->
-      <ItemSalesTaxRet>
-        <!-- optional -->
-        <ListID>IDTYPE</ListID>
-        <!-- required -->
-        <TimeCreated>DATETIMETYPE</TimeCreated>
-        <!-- required -->
-        <TimeModified>DATETIMETYPE</TimeModified>
-        <!-- required -->
-        <EditSequence>STRTYPE</EditSequence>
-        <!-- required -->
-        <Name>STRTYPE</Name>
-        <!-- required -->
-        <BarCodeValue>STRTYPE</BarCodeValue>
-        <!-- optional -->
-        <IsActive>BOOLTYPE</IsActive>
-        <!-- optional -->
-        <ClassRef>
-          <!-- optional -->
-          <ListID>IDTYPE</ListID>
-          <!-- optional -->
-          <FullName>STRTYPE</FullName>
-          <!-- optional -->
-        </ClassRef>
-        <ItemDesc>STRTYPE</ItemDesc>
-        <!-- optional -->
-        <TaxRate>PERCENTTYPE</TaxRate>
-        <!-- optional -->
-        <TaxVendorRef>
-          <!-- optional -->
-          <ListID>IDTYPE</ListID>
-          <!-- optional -->
-          <FullName>STRTYPE</FullName>
-          <!-- optional -->
-        </TaxVendorRef>
-        <ExternalGUID>GUIDTYPE</ExternalGUID>
-        <!-- optional -->
-        <DataExtRet>
-          <!-- optional, may repeat -->
-          <OwnerID>GUIDTYPE</OwnerID>
-          <!-- optional -->
-          <DataExtName>STRTYPE</DataExtName>
-          <!-- required -->
-          <!-- DataExtType may have one of the following values: AMTTYPE, DATETIMETYPE, INTTYPE, PERCENTTYPE, PRICETYPE, QUANTYPE, STR1024TYPE, STR255TYPE -->
-          <DataExtType>ENUMTYPE</DataExtType>
-          <!-- required -->
-          <DataExtValue>STRTYPE</DataExtValue>
-          <!-- required -->
-        </DataExtRet>
-      </ItemSalesTaxRet>
-      <!-- OR -->
-      <ItemSalesTaxGroupRet>
-        <!-- optional -->
-        <ListID>IDTYPE</ListID>
-        <!-- required -->
-        <TimeCreated>DATETIMETYPE</TimeCreated>
-        <!-- required -->
-        <TimeModified>DATETIMETYPE</TimeModified>
-        <!-- required -->
-        <EditSequence>STRTYPE</EditSequence>
-        <!-- required -->
-        <Name>STRTYPE</Name>
-        <!-- required -->
-        <BarCodeValue>STRTYPE</BarCodeValue>
-        <!-- optional -->
-        <IsActive>BOOLTYPE</IsActive>
-        <!-- optional -->
-        <ItemDesc>STRTYPE</ItemDesc>
-        <!-- optional -->
-        <ExternalGUID>GUIDTYPE</ExternalGUID>
-        <!-- optional -->
-        <ItemSalesTaxRef>
-          <!-- optional, may repeat -->
-          <ListID>IDTYPE</ListID>
-          <!-- optional -->
-          <FullName>STRTYPE</FullName>
-          <!-- optional -->
-        </ItemSalesTaxRef>
-        <DataExtRet>
-          <!-- optional, may repeat -->
-          <OwnerID>GUIDTYPE</OwnerID>
-          <!-- optional -->
-          <DataExtName>STRTYPE</DataExtName>
-          <!-- required -->
-          <!-- DataExtType may have one of the following values: AMTTYPE, DATETIMETYPE, INTTYPE, PERCENTTYPE, PRICETYPE, QUANTYPE, STR1024TYPE, STR255TYPE -->
-          <DataExtType>ENUMTYPE</DataExtType>
-          <!-- required -->
-          <DataExtValue>STRTYPE</DataExtValue>
-          <!-- required -->
-        </DataExtRet>
-      </ItemSalesTaxGroupRet>
-      <!-- OR -->
-      <ItemGroupRet>
-        <!-- optional -->
-        <ListID>IDTYPE</ListID>
-        <!-- required -->
-        <TimeCreated>DATETIMETYPE</TimeCreated>
-        <!-- required -->
-        <TimeModified>DATETIMETYPE</TimeModified>
-        <!-- required -->
-        <EditSequence>STRTYPE</EditSequence>
-        <!-- required -->
-        <Name>STRTYPE</Name>
-        <!-- required -->
-        <BarCodeValue>STRTYPE</BarCodeValue>
-        <!-- optional -->
-        <IsActive>BOOLTYPE</IsActive>
-        <!-- optional -->
-        <ItemDesc>STRTYPE</ItemDesc>
-        <!-- optional -->
-        <UnitOfMeasureSetRef>
-          <!-- optional -->
-          <ListID>IDTYPE</ListID>
-          <!-- optional -->
-          <FullName>STRTYPE</FullName>
-          <!-- optional -->
-        </UnitOfMeasureSetRef>
-        <IsPrintItemsInGroup>BOOLTYPE</IsPrintItemsInGroup>
-        <!-- optional -->
-        <!-- SpecialItemType may have one of the following values: FinanceCharge, ReimbursableExpenseGroup, ReimbursableExpenseSubtotal -->
-        <SpecialItemType>ENUMTYPE</SpecialItemType>
-        <!-- optional -->
-        <ExternalGUID>GUIDTYPE</ExternalGUID>
-        <!-- optional -->
-        <ItemGroupLine>
-          <!-- optional, may repeat -->
-          <ItemRef>
-            <!-- optional -->
-            <ListID>IDTYPE</ListID>
-            <!-- optional -->
-            <FullName>STRTYPE</FullName>
-            <!-- optional -->
-          </ItemRef>
-          <Quantity>QUANTYPE</Quantity>
-          <!-- optional -->
-          <UnitOfMeasure>STRTYPE</UnitOfMeasure>
-          <!-- optional -->
-        </ItemGroupLine>
-        <DataExtRet>
-          <!-- optional, may repeat -->
-          <OwnerID>GUIDTYPE</OwnerID>
-          <!-- optional -->
-          <DataExtName>STRTYPE</DataExtName>
-          <!-- required -->
-          <!-- DataExtType may have one of the following values: AMTTYPE, DATETIMETYPE, INTTYPE, PERCENTTYPE, PRICETYPE, QUANTYPE, STR1024TYPE, STR255TYPE -->
-          <DataExtType>ENUMTYPE</DataExtType>
-          <!-- required -->
-          <DataExtValue>STRTYPE</DataExtValue>
-          <!-- required -->
-        </DataExtRet>
-      </ItemGroupRet>
-      <!-- END OR -->
-    </ItemQueryRs>
-  </QBXMLMsgsRs>
-</QBXML>
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <soap:Body>
+        <receiveResponseXML xmlns="http://developer.intuit.com/">
+            <ticket>354f40b4-b661-4472-a13f-8abf13a743c3</ticket>
+            <response>
+                <?xml version="1.0"?>
+                <QBXML>
+                    <QBXMLMsgsRs>
+                        <ItemQueryRs requestID="1" statusCode="0" statusSeverity="Info" statusMessage="Status OK">
+                            <ItemServiceRet>
+                                <ListID>80000001-1415022718</ListID>
+                                <TimeCreated>2014-11-03T11:51:58-02:00</TimeCreated>
+                                <TimeModified>2014-11-03T11:51:58-02:00</TimeModified>
+                                <EditSequence>1415022718</EditSequence>
+                                <Name>Spree T-SHIRT</Name>
+                                <FullName>Spree T-SHIRT</FullName>
+                                <IsActive>true</IsActive>
+                                <Sublevel>0</Sublevel>
+                                <SalesOrPurchase>
+                                    <Price>11.00</Price>
+                                    <AccountRef>
+                                        <ListID>80000006-1414518234</ListID>
+                                        <FullName>Sales</FullName>
+                                    </AccountRef>
+                                </SalesOrPurchase>
+                            </ItemServiceRet>
+                            <ItemInventoryRet>
+                                <ListID>80000004-1415047582</ListID>
+                                <TimeCreated>2014-11-03T18:46:22-02:00</TimeCreated>
+                                <TimeModified>2014-11-03T18:46:22-02:00</TimeModified>
+                                <EditSequence>1415047582</EditSequence>
+                                <Name>Haskell T-Shirt</Name>
+                                <FullName>Haskell T-Shirt</FullName>
+                                <IsActive>true</IsActive>
+                                <Sublevel>0</Sublevel>
+                                <SalesPrice>55.00</SalesPrice>
+                                <IncomeAccountRef>
+                                    <ListID>8000001B-1415022649</ListID>
+                                    <FullName>Cost of Goods Sold</FullName>
+                                </IncomeAccountRef>
+                                <PurchaseCost>4.00</PurchaseCost>
+                                <COGSAccountRef>
+                                    <ListID>8000001B-1415022649</ListID>
+                                    <FullName>Cost of Goods Sold</FullName>
+                                </COGSAccountRef>
+                                <AssetAccountRef>
+                                    <ListID>8000001A-1415022649</ListID>
+                                    <FullName>Inventory Asset</FullName>
+                                </AssetAccountRef>
+                                <QuantityOnHand>300</QuantityOnHand>
+                                <AverageCost>4.00</AverageCost>
+                                <QuantityOnOrder>0</QuantityOnOrder>
+                                <QuantityOnSalesOrder>0</QuantityOnSalesOrder>
+                            </ItemInventoryRet>
+                            <ItemInventoryRet>
+                                <ListID>80000002-1415025717</ListID>
+                                <TimeCreated>2014-11-03T12:41:57-02:00</TimeCreated>
+                                <TimeModified>2014-11-03T12:41:58-02:00</TimeModified>
+                                <EditSequence>1415025717</EditSequence>
+                                <Name>Ruby T-Shirt</Name>
+                                <FullName>Ruby T-Shirt</FullName>
+                                <IsActive>true</IsActive>
+                                <Sublevel>0</Sublevel>
+                                <SalesPrice>11.00</SalesPrice>
+                                <IncomeAccountRef>
+                                    <ListID>8000001B-1415022649</ListID>
+                                    <FullName>Cost of Goods Sold</FullName>
+                                </IncomeAccountRef>
+                                <PurchaseCost>10.00</PurchaseCost>
+                                <COGSAccountRef>
+                                    <ListID>8000001B-1415022649</ListID>
+                                    <FullName>Cost of Goods Sold</FullName>
+                                </COGSAccountRef>
+                                <AssetAccountRef>
+                                    <ListID>8000001A-1415022649</ListID>
+                                    <FullName>Inventory Asset</FullName>
+                                </AssetAccountRef>
+                                <QuantityOnHand>200</QuantityOnHand>
+                                <AverageCost>10.00</AverageCost>
+                                <QuantityOnOrder>0</QuantityOnOrder>
+                                <QuantityOnSalesOrder>0</QuantityOnSalesOrder>
+                            </ItemInventoryRet>
+                            <ItemInventoryRet>
+                                <ListID>80000003-1415028434</ListID>
+                                <TimeCreated>2014-11-03T13:27:14-02:00</TimeCreated>
+                                <TimeModified>2014-11-03T13:27:14-02:00</TimeModified>
+                                <EditSequence>1415028434</EditSequence>
+                                <Name>Sinatra T-Shirt</Name>
+                                <FullName>Sinatra T-Shirt</FullName>
+                                <IsActive>true</IsActive>
+                                <Sublevel>0</Sublevel>
+                                <SalesPrice>5.00</SalesPrice>
+                                <IncomeAccountRef>
+                                    <ListID>8000001B-1415022649</ListID>
+                                    <FullName>Cost of Goods Sold</FullName>
+                                </IncomeAccountRef>
+                                <PurchaseCost>2.00</PurchaseCost>
+                                <COGSAccountRef>
+                                    <ListID>8000001B-1415022649</ListID>
+                                    <FullName>Cost of Goods Sold</FullName>
+                                </COGSAccountRef>
+                                <AssetAccountRef>
+                                    <ListID>8000001A-1415022649</ListID>
+                                    <FullName>Inventory Asset</FullName>
+                                </AssetAccountRef>
+                                <QuantityOnHand>100</QuantityOnHand>
+                                <AverageCost>2.00</AverageCost>
+                                <QuantityOnOrder>0</QuantityOnOrder>
+                                <QuantityOnSalesOrder>0</QuantityOnSalesOrder>
+                            </ItemInventoryRet>
+                            <ItemInventoryRet>
+                                <ListID>80000005-1415103643</ListID>
+                                <TimeCreated>2014-11-04T10:20:43-02:00</TimeCreated>
+                                <TimeModified>2014-11-04T10:20:43-02:00</TimeModified>
+                                <EditSequence>1415103643</EditSequence>
+                                <Name>SPREE-T-SHIRT-1</Name>
+                                <FullName>SPREE-T-SHIRT-1</FullName>
+                                <IsActive>true</IsActive>
+                                <Sublevel>0</Sublevel>
+                                <SalesPrice>0.00</SalesPrice>
+                                <IncomeAccountRef>
+                                    <ListID>8000001A-1415022649</ListID>
+                                    <FullName>Inventory Asset</FullName>
+                                </IncomeAccountRef>
+                                <PurchaseCost>0.00</PurchaseCost>
+                                <COGSAccountRef>
+                                    <ListID>8000001A-1415022649</ListID>
+                                    <FullName>Inventory Asset</FullName>
+                                </COGSAccountRef>
+                                <AssetAccountRef>
+                                    <ListID>8000001A-1415022649</ListID>
+                                    <FullName>Inventory Asset</FullName>
+                                </AssetAccountRef>
+                                <QuantityOnHand>0</QuantityOnHand>
+                                <AverageCost>0.00</AverageCost>
+                                <QuantityOnOrder>0</QuantityOnOrder>
+                                <QuantityOnSalesOrder>0</QuantityOnSalesOrder>
+                            </ItemInventoryRet>
+                        </ItemQueryRs>
+                    </QBXMLMsgsRs>
+                </QBXML>
+            </response>
+            <hresult />
+            <message />
+        </receiveResponseXML>
+    </soap:Body>
+</soap:Envelope>
