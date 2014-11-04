@@ -25,7 +25,7 @@ module QuickbooksDesktopIntegration
           cost_price: record['AverageCost'],
           available_on: record['TimeModified'],
           income_account_id: record['IncomeAccountRef']['FullName'],
-          quickbooks_id: record['ListID']
+          quickbooks_id: record['ListID'],
           quickbooks_version: record['EditSequence']
         }
       end
