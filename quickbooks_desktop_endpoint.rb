@@ -1,5 +1,7 @@
 require 'endpoint_base'
 
+require File.expand_path(File.dirname(__FILE__) + '/lib/quickbooks_desktop_integration')
+
 class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
   set :logging, true
 
@@ -48,5 +50,21 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
     end
 
     result 200
+  end
+
+  post "/get_inventory" do
+    # TODO Drop the hardcoded account id ..
+    config = { account_id: 'x123', origin: 'quickbooks' }
+    payload = { inventories: {} }
+
+    integration = QuickbooksDesktopIntegration::Base.new config, payload
+    inventories = integration.start_processing "integrated"
+
+    if inventories.any?
+      count = inventories.count
+      result 200, "Received #{count} #{"inventory".pluralize count} from Quickbooks Desktop"
+    else
+      result 200
+    end
   end
 end

@@ -46,4 +46,20 @@ describe QuickbooksDesktopEndpoint do
       expect(last_response.status).to eq 200
     end
   end
+
+  it "gets inventory" do
+    VCR.use_cassette "requests/438787962387562345" do
+      post "/get_inventory", {}.to_json, auth
+      expect(json_response[:summary]).to match "inventories from Quickbooks Desktop"
+      expect(last_response.status).to eq 200
+    end
+  end
+
+  it "gets no inventory" do
+    VCR.use_cassette "requests/43535345325" do
+      post "/get_inventory", {}.to_json, auth
+      expect(json_response[:summary]).to eq nil
+      expect(last_response.status).to eq 200
+    end
+  end
 end
