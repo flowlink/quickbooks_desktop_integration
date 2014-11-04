@@ -2,6 +2,17 @@ require 'spec_helper'
 
 module QuickbooksDesktopIntegration
   describe Base do
+    it "defaults to wombat on config origin" do
+      subject = described_class.new
+      expect(subject.config[:origin]).to eq 'wombat'
+
+      subject = described_class.new {}
+      expect(subject.config[:origin]).to eq 'wombat'
+
+      subject = described_class.new origin: 'quickbooks'
+      expect(subject.config[:origin]).to eq 'quickbooks'
+    end
+
     it "persists s3 file" do
       xml = Factory.item_inventory_query_rs_multiple_qbxml
       inventory = Inventory.new xml

@@ -17,7 +17,7 @@ module QuickbooksDesktopIntegration
     def initialize(config = {}, payload = {})
       @payload_key = payload.keys.first
       @objects = payload[payload_key]
-      @config = config
+      @config = { origin: 'wombat' }.merge config
       @amazon_s3 = AmazonS3.new
     end
 
