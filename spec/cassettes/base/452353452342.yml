@@ -1,0 +1,46 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/?max-keys=10&prefix=quickbooks_to_be_integrated/x123_inventories
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby/1.57.0 ruby/2.0.0 x86_64-darwin14.0.0
+      Date:
+      - Tue, 04 Nov 2014 21:02:43 GMT
+      Authorization:
+      - AUTHORIZATION
+      Accept:
+      - '*/*'
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amz-Id-2:
+      - KDtwugiGtF2ELcm9r+QvpoGgoCJZ5tX/hcWlvBR8+x1pHVJxozCM3Psxs20U5FEs
+      X-Amz-Request-Id:
+      - CA5CEB0D7136AC23
+      Date:
+      - Tue, 04 Nov 2014 21:02:45 GMT
+      Content-Type:
+      - application/xml
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: |-
+        <?xml version="1.0" encoding="UTF-8"?>
+        <ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>quickbooks-desktop-integration</Name><Prefix>quickbooks_to_be_integrated/x123_inventories</Prefix><Marker></Marker><MaxKeys>10</MaxKeys><IsTruncated>false</IsTruncated></ListBucketResult>
+    http_version: 
+  recorded_at: Tue, 04 Nov 2014 21:02:44 GMT
+recorded_with: VCR 2.9.3

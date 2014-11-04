@@ -1,0 +1,131 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/?versioning=
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby/1.57.0 ruby/2.0.0 x86_64-darwin14.0.0
+      Date:
+      - Tue, 04 Nov 2014 21:02:44 GMT
+      Authorization:
+      - AUTHORIZATION
+      Accept:
+      - '*/*'
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amz-Id-2:
+      - GzTXKcWUoOJ5I6AJ1AHb5BK6Ont91h/I0uhwkxHg9jHMalGlmNn1Cj3DIjdbZBBE
+      X-Amz-Request-Id:
+      - 13A0BB8E895A90EC
+      Date:
+      - Tue, 04 Nov 2014 21:02:45 GMT
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: |-
+        <?xml version="1.0" encoding="UTF-8"?>
+        <VersioningConfiguration xmlns="http://s3.amazonaws.com/doc/2006-03-01/"/>
+    http_version: 
+  recorded_at: Tue, 04 Nov 2014 21:02:44 GMT
+- request:
+    method: head
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/quickbooks_to_be_integrated/x123_inventories_1415134964.csv
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby/1.57.0 ruby/2.0.0 x86_64-darwin14.0.0
+      Date:
+      - Tue, 04 Nov 2014 21:02:44 GMT
+      Authorization:
+      - AUTHORIZATION
+      Accept:
+      - '*/*'
+  response:
+    status:
+      code: 404
+      message: Not Found
+    headers:
+      X-Amz-Request-Id:
+      - 5897B6B61FB12F24
+      X-Amz-Id-2:
+      - YLHQ59ih6Y4ykYEEVQh6kr8y+7sp4a1ByKG5hvknnnxDdGjmdsqRh8qcGAEwHd/E
+      Content-Type:
+      - application/xml
+      Transfer-Encoding:
+      - chunked
+      Date:
+      - Tue, 04 Nov 2014 21:02:45 GMT
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: ''
+    http_version: 
+  recorded_at: Tue, 04 Nov 2014 21:02:45 GMT
+- request:
+    method: put
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/quickbooks_to_be_integrated/x123_inventories_1415134964.csv
+    body:
+      encoding: ASCII-8BIT
+      string: |-
+        id,sku,product_id,quantity,quickbooks.ListID,quickbooks.TimeCreated,quickbooks.TimeModified,quickbooks.EditSequence,quickbooks.Name,quickbooks.FullName,quickbooks.IsActive,quickbooks.Sublevel,quickbooks.SalesPrice,quickbooks.IncomeAccountRef.ListID,quickbooks.IncomeAccountRef.FullName,quickbooks.PurchaseCost,quickbooks.COGSAccountRef.ListID,quickbooks.COGSAccountRef.FullName,quickbooks.AssetAccountRef.ListID,quickbooks.AssetAccountRef.FullName,quickbooks.QuantityOnHand,quickbooks.AverageCost,quickbooks.QuantityOnOrder,quickbooks.QuantityOnSalesOrder
+        Ruby T-Shirt,Ruby T-Shirt,Ruby T-Shirt,200,80000002-1415025717,2014-11-03T12:41:57-02:00,2014-11-03T12:41:58-02:00,1415025717,Ruby T-Shirt,Ruby T-Shirt,true,0,11.00,8000001B-1415022649,Cost of Goods Sold,10.00,8000001B-1415022649,Cost of Goods Sold,8000001A-1415022649,Inventory Asset,200,10.00,0,0
+        Sinatra T-Shirt,Sinatra T-Shirt,Sinatra T-Shirt,100,80000003-1415028434,2014-11-03T13:27:14-02:00,2014-11-03T13:27:14-02:00,1415028434,Sinatra T-Shirt,Sinatra T-Shirt,true,0,5.00,8000001B-1415022649,Cost of Goods Sold,2.00,8000001B-1415022649,Cost of Goods Sold,8000001A-1415022649,Inventory Asset,100,2.00,0,0
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      Content-Length:
+      - '1165'
+      User-Agent:
+      - aws-sdk-ruby/1.57.0 ruby/2.0.0 x86_64-darwin14.0.0
+      Date:
+      - Tue, 04 Nov 2014 21:02:45 GMT
+      Authorization:
+      - AUTHORIZATION
+      Accept:
+      - '*/*'
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amz-Id-2:
+      - PzZXmoafe00hO2tRHwTHyMxWrrtuzHcfjd5n6c87SRC7qpyEkwqcdu+fCJGZnvuS
+      X-Amz-Request-Id:
+      - 9B40CF242C2EE26B
+      Date:
+      - Tue, 04 Nov 2014 21:02:47 GMT
+      Etag:
+      - '"96d90053beee2fe4c5b14e9fc030b711"'
+      Content-Length:
+      - '0'
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: ''
+    http_version: 
+  recorded_at: Tue, 04 Nov 2014 21:02:46 GMT
+recorded_with: VCR 2.9.3

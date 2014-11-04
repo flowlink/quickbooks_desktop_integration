@@ -1,0 +1,218 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/?max-keys=10&prefix=wombat_to_be_integrated/_notification_orders
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby/1.57.0 ruby/2.0.0 x86_64-darwin14.0.0
+      Date:
+      - Tue, 04 Nov 2014 21:02:39 GMT
+      Authorization:
+      - AUTHORIZATION
+      Accept:
+      - '*/*'
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amz-Id-2:
+      - zrpMdW/CQB9b8dxZEroDVXUytTt5OBRmPZ3zJ6vmudcBbSZfZK80llBbDhCCdvli
+      X-Amz-Request-Id:
+      - 08B9AD907E207B8B
+      Date:
+      - Tue, 04 Nov 2014 21:02:41 GMT
+      Content-Type:
+      - application/xml
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: |-
+        <?xml version="1.0" encoding="UTF-8"?>
+        <ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>quickbooks-desktop-integration</Name><Prefix>wombat_to_be_integrated/_notification_orders</Prefix><Marker></Marker><MaxKeys>10</MaxKeys><IsTruncated>false</IsTruncated><Contents><Key>wombat_to_be_integrated/_notification_orders_1415134955.csv</Key><LastModified>2014-11-04T21:02:39.000Z</LastModified><ETag>&quot;d614b97efc293fe61a6799b65ba459d9&quot;</ETag><Size>84</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>aws</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents></ListBucketResult>
+    http_version: 
+  recorded_at: Tue, 04 Nov 2014 21:02:40 GMT
+- request:
+    method: get
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/wombat_to_be_integrated/_notification_orders_1415134955.csv
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby/1.57.0 ruby/2.0.0 x86_64-darwin14.0.0
+      Date:
+      - Tue, 04 Nov 2014 21:02:40 GMT
+      Authorization:
+      - AUTHORIZATION
+      Accept:
+      - '*/*'
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amz-Id-2:
+      - hvoeoeH0uwzg80L/6uuXLi+w04WhnnwMwvzPRWwBStRcYYYvn32liWkEmyUtjrVy
+      X-Amz-Request-Id:
+      - E4BFE6AAD57355D7
+      Date:
+      - Tue, 04 Nov 2014 21:02:42 GMT
+      Last-Modified:
+      - Tue, 04 Nov 2014 21:02:39 GMT
+      Etag:
+      - '"d614b97efc293fe61a6799b65ba459d9"'
+      Accept-Ranges:
+      - bytes
+      Content-Type:
+      - ''
+      Content-Length:
+      - '84'
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: |-
+        result,object_ref,summary
+        fail,1414728530,1414728530 object notification yay message
+    http_version: 
+  recorded_at: Tue, 04 Nov 2014 21:02:41 GMT
+- request:
+    method: head
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/wombat_integrated/_notification_orders_1415134955.csv
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby/1.57.0 ruby/2.0.0 x86_64-darwin14.0.0
+      Date:
+      - Tue, 04 Nov 2014 21:02:41 GMT
+      Authorization:
+      - AUTHORIZATION
+      Accept:
+      - '*/*'
+  response:
+    status:
+      code: 404
+      message: Not Found
+    headers:
+      X-Amz-Request-Id:
+      - A612E62DEA28B207
+      X-Amz-Id-2:
+      - 7k6qWxkLNsZMEAvtjtl9azYnPQM0lCDXxKtbB/d8P1kpoByKY3pfr8CQ8+pIW8Gc
+      Content-Type:
+      - application/xml
+      Transfer-Encoding:
+      - chunked
+      Date:
+      - Tue, 04 Nov 2014 21:02:41 GMT
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: ''
+    http_version: 
+  recorded_at: Tue, 04 Nov 2014 21:02:41 GMT
+- request:
+    method: put
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/wombat_integrated/_notification_orders_1415134955.csv
+    body:
+      encoding: ASCII-8BIT
+      string: |-
+        result,object_ref,summary
+        fail,1414728530,1414728530 object notification yay message
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      Content-Length:
+      - '84'
+      User-Agent:
+      - aws-sdk-ruby/1.57.0 ruby/2.0.0 x86_64-darwin14.0.0
+      Date:
+      - Tue, 04 Nov 2014 21:02:41 GMT
+      Authorization:
+      - AUTHORIZATION
+      Accept:
+      - '*/*'
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amz-Id-2:
+      - HbA73o9JtehMt2sQnlxTUieM2APYYgylRLi3CvJHW8siChWwfe3Sacp1Rh9AfhNZ
+      X-Amz-Request-Id:
+      - 905FA8B8481AC247
+      Date:
+      - Tue, 04 Nov 2014 21:02:43 GMT
+      Etag:
+      - '"d614b97efc293fe61a6799b65ba459d9"'
+      Content-Length:
+      - '0'
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: ''
+    http_version: 
+  recorded_at: Tue, 04 Nov 2014 21:02:42 GMT
+- request:
+    method: delete
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/wombat_to_be_integrated/_notification_orders_1415134955.csv
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby/1.57.0 ruby/2.0.0 x86_64-darwin14.0.0
+      Date:
+      - Tue, 04 Nov 2014 21:02:42 GMT
+      Authorization:
+      - AUTHORIZATION
+      Accept:
+      - '*/*'
+  response:
+    status:
+      code: 204
+      message: No Content
+    headers:
+      X-Amz-Id-2:
+      - sVz0zV3rYsfsu0nS6BQjtcVVkJtOcuJao5qVAGnaTEmCpA8UaZp69AlSuZ21hxNZ
+      X-Amz-Request-Id:
+      - 27FFFD74BE05A777
+      Date:
+      - Tue, 04 Nov 2014 21:02:44 GMT
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: ''
+    http_version: 
+  recorded_at: Tue, 04 Nov 2014 21:02:43 GMT
+recorded_with: VCR 2.9.3
