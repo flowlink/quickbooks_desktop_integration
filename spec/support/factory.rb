@@ -7,7 +7,7 @@ module Factory
 
       name = file_name.split('.', 2).first
 
-      method_name = "#{name}_qbxml".downcase
+      method_name = name.downcase
 
       define_method method_name do
         @@cache[method_name] ||= JSON.parse(IO.read("#{File.dirname(__FILE__)}/payloads/#{name}.json")).with_indifferent_access
