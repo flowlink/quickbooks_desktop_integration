@@ -20,9 +20,18 @@ module QuickbooksDesktopIntegration
       payload = { inventories: inventory.mapped_records }
       config = { origin: 'quickbooks', account_id: 'x123' }
 
-      VCR.use_cassette "base/423524535423" do
+      VCR.use_cassette "base/3455243523535" do
         subject = described_class.new config, payload
         subject.save_to_s3
+      end
+    end
+
+    it "reads all data in s3 from particular account" do
+      config = { origin: 'quickbooks', account_id: 'x123' }
+
+      VCR.use_cassette "base/2342343214124" do
+        subject = described_class.new config
+        records = subject.start_processing "integrated"
       end
     end
 
@@ -30,7 +39,7 @@ module QuickbooksDesktopIntegration
       payload = { inventories: {} }
       config = { origin: 'quickbooks', account_id: 'x123' }
 
-      VCR.use_cassette "base/452353452342" do
+      VCR.use_cassette "base/45344235454" do
         subject = described_class.new config, payload
         inventories = subject.start_processing "integrated"
       end

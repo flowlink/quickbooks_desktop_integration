@@ -10,6 +10,9 @@ module QuickbooksDesktopIntegration
     #
     #   e.g. { orders: {} }
     #
+    # or dont pass any payload if you want to get all data from a specific
+    # account.
+    #
     # +config+ should tell the :origin and the :account_id
     #
     #   e.g. { origin: 'quickbooks', account_id: 'x123' }
@@ -21,10 +24,12 @@ module QuickbooksDesktopIntegration
       @amazon_s3 = AmazonS3.new
     end
 
-    # It doesn't check whether the record (s) is already in s3
+    # Doesn't check whether the record (s) is already in s3. Only save it.
     #
     # AmazonS3 will append a number to the end of the file. e.g. orders_123123(1)
     # if it already exists.
+    #
+    # Files MUST be named like this folder/accountid_objecttype_timestamp.csv
     #
     #   e.g. wombat_to_be_integrated/x123_orders_1234567.csv
     #   e.g. quickbooks_to_be_integrated/x123_orders_1234567.csv
@@ -47,18 +52,24 @@ module QuickbooksDesktopIntegration
     #
     # NOTE Figure ordering, older files should come first
     #
-    # # NOTE Route folder strings through some kind of method to validate
-    # so only to_be_integrated / processing / integrated are allowed?
-    #
     # NOTE Rescue and move file back if an exception happens
     #
-    # Return a collection array of records
+    # Return a collection records. e.g.
+    #   
+    #   {
+    #      orders: [{ id: 1 }],
+    #      inventories: [{ id: 3 }, { id: 5 }],
+    #      orders: [{ id: 7 }, { id: 9 }],
+    #   }
+    #
     def start_processing(next_folder = "processing")
       prefix = "#{to_be_integrated}/#{base_name}"
       collection = amazon_s3.bucket.objects
 
       collection.with_prefix(prefix).enum(limit: 10).map do |s3_object|
         folder, filename = s3_object.key.split("/")
+        account_id, object_type = filename.split("_")
+
         new_filename = "#{config[:origin]}_#{next_folder}/#{filename}"
 
         contents = s3_object.read
@@ -70,12 +81,16 @@ module QuickbooksDesktopIntegration
         s3_object.delete
 
         # NOTE handles the data build xml and send to quickbooks
-        Converter.csv_to_hash(contents)
+        { object_type => Converter.csv_to_hash(contents) }
       end.flatten
     end
 
     def base_name
-      "#{config[:account_id]}_#{payload_key}"
+      if payload_key
+        "#{config[:account_id]}_#{payload_key}"
+      else
+        "#{config[:account_id]}_"
+      end
     end
 
     def to_be_integrated
