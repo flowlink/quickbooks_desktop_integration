@@ -52,6 +52,7 @@ describe QuickbooksDesktopEndpoint do
       post "/get_inventory", {}.to_json, auth
       expect(json_response[:summary]).to match "inventories from Quickbooks Desktop"
       expect(last_response.status).to eq 200
+      expect(json_response[:inventories].count).to be >= 1
     end
   end
 

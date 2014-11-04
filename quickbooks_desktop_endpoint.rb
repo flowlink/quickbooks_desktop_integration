@@ -62,6 +62,7 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
 
     if inventories.any?
       count = inventories.count
+      add_value 'inventories', inventories
       result 200, "Received #{count} #{"inventory".pluralize count} from Quickbooks Desktop"
     else
       result 200
