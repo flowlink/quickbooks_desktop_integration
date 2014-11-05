@@ -54,6 +54,8 @@ module QuickbooksDesktopIntegration
     #
     # NOTE Rescue and move file back if an exception happens
     #
+    # Pass `false` in case you dont want to move the files
+    #
     # Return a collection records. e.g.
     #   
     #   {
@@ -70,15 +72,16 @@ module QuickbooksDesktopIntegration
         folder, filename = s3_object.key.split("/")
         account_id, object_type = filename.split("_")
 
-        new_filename = "#{config[:origin]}_#{next_folder}/#{filename}"
-
         contents = s3_object.read
 
-        next_s3_object = amazon_s3.find_next_s3_object new_filename
-        next_s3_object.write contents
+        if next_folder
+          new_filename = "#{config[:origin]}_#{next_folder}/#{filename}"
+          next_s3_object = amazon_s3.find_next_s3_object new_filename
+          next_s3_object.write contents
 
-        # NOTE Consider deleting all objects at once, makes it faster
-        s3_object.delete
+          # NOTE Consider deleting all objects at once, makes it faster
+          s3_object.delete
+        end
 
         # NOTE handles the data build xml and send to quickbooks
         { object_type => Converter.csv_to_hash(contents) }

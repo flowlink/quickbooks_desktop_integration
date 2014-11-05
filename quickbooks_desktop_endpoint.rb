@@ -52,21 +52,50 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
     result 200
   end
 
-  post "/get_inventory" do
+  # Note that once data is returned by `start_processing` files will be moved
+  # to a 'integrated' folder so chances are it will be very hard to get those
+  # files back in case something explodes after this point.
+  #
+  # Possible issues include returning more objects than the Wombat account
+  # limit allows or any ruby exception either here or once it arrives in Wombat.
+  post "/get_data" do
     # TODO Drop the hardcoded account id ..
     config = { account_id: 'x123', origin: 'quickbooks' }
-    payload = { inventories: {} }
 
-    integration = QuickbooksDesktopIntegration::Base.new config, payload
-    inventories = integration.start_processing "integrated"
+    s3_integration = QuickbooksDesktopIntegration::Base.new config
+    # pass 'integrated' in case you want to move the files
+    records = s3_integration.start_processing false
 
-    if inventories.any?
-      count = inventories.count
-      add_value 'inventories', inventories
-      result 200, "Received #{count} #{"inventory".pluralize count} from Quickbooks Desktop"
+    if records.any?
+      names = records.inject([]) do |names, collection|
+        name = collection.keys.first
+        add_or_merge_value name, collection.values.first
+
+        names.push name
+      end
+
+      result 200, "Received #{names.uniq.join(', ')} records from Quickbooks"
     else
       result 200
     end
   end
 
+  private
+    # NOTE this lives in endpoint_base. Added here just so it's closer ..
+    # once we sure it's stable merge and push to endpoint_base/master
+    # and bump it here
+    def add_or_merge_value(name, value)
+      @attrs ||= {}
+
+      unless @attrs[name]
+        @attrs[name] = value
+      else
+        old_value = @attrs[name]
+
+        collection = (old_value + value).flatten
+        group = collection.group_by { |h| h[:id] || h['id'] }
+
+        @attrs[name] = group.map { |k, v| v.reduce(:merge) }
+      end
+    end
 end

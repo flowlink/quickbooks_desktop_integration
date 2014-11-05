@@ -47,12 +47,14 @@ describe QuickbooksDesktopEndpoint do
     end
   end
 
-  it "gets inventory" do
-    VCR.use_cassette "requests/438787962387562345" do
-      post "/get_inventory", {}.to_json, auth
-      expect(json_response[:summary]).to match "inventories from Quickbooks Desktop"
+  it "gets data from quickbooks" do
+    VCR.use_cassette "requests/21434524523534523" do
+      post "/get_data", {}.to_json, auth
+
+      expect(json_response[:summary]).to match "records from Quickbooks"
       expect(last_response.status).to eq 200
-      expect(json_response[:inventories].count).to be >= 1
+      expect(json_response[:inventories].count).to eq 3
+      expect(json_response[:products].count).to eq 4
     end
   end
 
