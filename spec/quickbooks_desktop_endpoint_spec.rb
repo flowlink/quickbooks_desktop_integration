@@ -4,7 +4,7 @@ describe QuickbooksDesktopEndpoint do
   it "send orders to s3" do
     request = Factory.orders
 
-    QuickbooksDesktopIntegration::Base.any_instance.stub current_time: '1415157575'
+    allow_any_instance_of(QuickbooksDesktopIntegration::Base).to receive(:current_time).and_return('1415157575')
 
     VCR.use_cassette "add_orders/1414614344" do
       post "add_orders", request.to_json, auth
