@@ -3,10 +3,9 @@ require 'spec_helper'
 describe QuickbooksDesktopEndpoint do
   it "send orders to s3" do
     request = Factory.orders
-    headers = auth.merge("HTTP_X_HUB_STORE" => "x123")
 
     VCR.use_cassette "add_orders/1414614344" do
-      post "add_orders", request.to_json, headers
+      post "add_orders", request.to_json, auth
       expect(json_response[:summary]).to match "waiting for"
       expect(last_response.status).to be 200
     end
@@ -58,9 +57,9 @@ describe QuickbooksDesktopEndpoint do
     end
   end
 
-  it "gets no inventory" do
-    VCR.use_cassette "requests/43535345325" do
-      post "/get_inventory", {}.to_json, auth
+  it "gets no data" do
+    VCR.use_cassette "requests/2352345235" do
+      post "/get_data", {}.to_json, auth
       expect(json_response[:summary]).to eq nil
       expect(last_response.status).to eq 200
     end

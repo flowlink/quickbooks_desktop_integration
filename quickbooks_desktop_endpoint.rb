@@ -7,7 +7,7 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
 
   ['products', 'orders', 'inventory', 'returns', 'customers'].each do |path|
     post "/add_#{path}" do
-      config = @config.merge connection_id: request.env["HTTP_X_HUB_STORE"]
+      config = { account_id: 'x123' }
       integration = QuickbooksDesktopIntegration::Base.new config, @payload
       integration.save_to_s3
 
