@@ -4,6 +4,8 @@ describe QuickbooksDesktopEndpoint do
   it "send orders to s3" do
     request = Factory.orders
 
+    QuickbooksDesktopIntegration::Base.any_instance.stub current_time: '1415157575'
+
     VCR.use_cassette "add_orders/1414614344" do
       post "add_orders", request.to_json, auth
       expect(json_response[:summary]).to match "waiting for"
@@ -11,24 +13,26 @@ describe QuickbooksDesktopEndpoint do
     end
   end
 
-  it "save callback response as notifications to s3" do
-    request = {
-      "connection_id" => "x123",
-      "response" => [
-        {
-          "result" => "fail",
-          "object_ref" => "1414728530",
-          "summary" => "1414728530 object notification yay message"
-        }
-      ]
-    }
+  # keeping this here just as a suggestion, this endpoint will live in qbwc_endoint
+  #
+  # it "save callback response as notifications to s3" do
+  #   request = {
+  #     "connection_id" => "x123",
+  #     "response" => [
+  #       {
+  #         "result" => "fail",
+  #         "object_ref" => "1414728530",
+  #         "summary" => "1414728530 object notification yay message"
+  #       }
+  #     ]
+  #   }
 
-    VCR.use_cassette "requests/1414728530" do
-      post "/qb_response_callback", request.to_json
-      expect(json_response[:summary]).to eq nil
-      expect(last_response.status).to eq 200
-    end
-  end
+  #   VCR.use_cassette "requests/1414728530" do
+  #     post "/qb_response_callback", request.to_json
+  #     expect(json_response[:summary]).to eq nil
+  #     expect(last_response.status).to eq 200
+  #   end
+  # end
 
   it "returns notifications in batch format" do
     headers = auth.merge("HTTP_X_HUB_STORE" => "x123")
@@ -47,7 +51,7 @@ describe QuickbooksDesktopEndpoint do
   end
 
   it "gets data from quickbooks" do
-    VCR.use_cassette "requests/21434524523534523" do
+    VCR.use_cassette "requests/438787962387562345" do
       post "/get_data", {}.to_json, auth
 
       expect(json_response[:summary]).to match "records from Quickbooks"
@@ -58,7 +62,7 @@ describe QuickbooksDesktopEndpoint do
   end
 
   it "gets no data" do
-    VCR.use_cassette "requests/2352345235" do
+    VCR.use_cassette "requests/43535345325" do
       post "/get_data", {}.to_json, auth
       expect(json_response[:summary]).to eq nil
       expect(last_response.status).to eq 200

@@ -20,8 +20,9 @@ module QuickbooksDesktopIntegration
       payload = { inventories: inventory.mapped_records }
       config = { origin: 'quickbooks', account_id: 'x123' }
 
-      VCR.use_cassette "base/3455243523535" do
+      VCR.use_cassette "base/423524535423" do
         subject = described_class.new config, payload
+        expect(subject).to receive(:current_time).and_return '1415134964'
         subject.save_to_s3
       end
     end
@@ -39,7 +40,7 @@ module QuickbooksDesktopIntegration
       payload = { inventories: {} }
       config = { origin: 'quickbooks', account_id: 'x123' }
 
-      VCR.use_cassette "base/45344235454" do
+      VCR.use_cassette "base/452353452342" do
         subject = described_class.new config, payload
         inventories = subject.start_processing "integrated"
       end

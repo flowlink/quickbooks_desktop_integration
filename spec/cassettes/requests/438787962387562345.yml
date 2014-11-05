@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/?max-keys=10&prefix=quickbooks_to_be_integrated/x123_inventories
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/?max-keys=10&prefix=quickbooks_to_be_integrated/x123_
     body:
       encoding: US-ASCII
       string: ''
@@ -12,24 +12,24 @@ http_interactions:
       Accept-Encoding:
       - ''
       User-Agent:
-      - aws-sdk-ruby/1.57.0 ruby/2.0.0 x86_64-darwin14.0.0
+      - aws-sdk-ruby/1.57.0 ruby/2.1.4 x86_64-darwin13.0
       Date:
-      - Tue, 04 Nov 2014 21:02:39 GMT
+      - Wed, 05 Nov 2014 02:21:57 GMT
       Authorization:
       - AUTHORIZATION
       Accept:
-      - '*/*'
+      - "*/*"
   response:
     status:
       code: 200
       message: OK
     headers:
       X-Amz-Id-2:
-      - i1/Ps1GEmDMSOFDq8fVsRusmZLXVgkvtO5XaVUUWu62k7kT9tUVkVL0aq3z1PgI/
+      - 6n1gdMaVxoxJjTFlgFWM2RBGfEs+538845By3Ry03xAdefdUcdFu2ulPYUEnG/wV
       X-Amz-Request-Id:
-      - 3FA6C9153BA94F3A
+      - 34F61758DE9A8C88
       Date:
-      - Tue, 04 Nov 2014 21:02:40 GMT
+      - Wed, 05 Nov 2014 02:21:59 GMT
       Content-Type:
       - application/xml
       Transfer-Encoding:
@@ -40,7 +40,309 @@ http_interactions:
       encoding: UTF-8
       string: |-
         <?xml version="1.0" encoding="UTF-8"?>
-        <ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>quickbooks-desktop-integration</Name><Prefix>quickbooks_to_be_integrated/x123_inventories</Prefix><Marker></Marker><MaxKeys>10</MaxKeys><IsTruncated>false</IsTruncated></ListBucketResult>
+        <ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>quickbooks-desktop-integration</Name><Prefix>quickbooks_to_be_integrated/x123_</Prefix><Marker></Marker><MaxKeys>10</MaxKeys><IsTruncated>false</IsTruncated><Contents><Key>quickbooks_to_be_integrated/x123_inventories_1415134964.csv</Key><LastModified>2014-11-04T21:02:47.000Z</LastModified><ETag>&quot;96d90053beee2fe4c5b14e9fc030b711&quot;</ETag><Size>1165</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>aws</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>quickbooks_to_be_integrated/x123_inventories_1415152042.csv</Key><LastModified>2014-11-05T01:47:26.000Z</LastModified><ETag>&quot;96d90053beee2fe4c5b14e9fc030b711&quot;</ETag><Size>1165</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>aws</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>quickbooks_to_be_integrated/x123_inventories_1415152126.csv</Key><LastModified>2014-11-05T01:48:50.000Z</LastModified><ETag>&quot;c08ab65255497955cfcd405cbca63fa2&quot;</ETag><Size>854</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>aws</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>quickbooks_to_be_integrated/x123_inventories_1415153924.csv</Key><LastModified>2014-11-05T02:18:47.000Z</LastModified><ETag>&quot;424ba05c757781d63a8518eb847218ff&quot;</ETag><Size>869</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>aws</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>quickbooks_to_be_integrated/x123_products_1415152285.csv</Key><LastModified>2014-11-05T01:51:29.000Z</LastModified><ETag>&quot;fe03f708902ed8056b1a1746846b4ae6&quot;</ETag><Size>369</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>aws</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>quickbooks_to_be_integrated/x123_products_1415154027.csv</Key><LastModified>2014-11-05T02:20:31.000Z</LastModified><ETag>&quot;0f95c5ab554d834b062edb81fa36f11c&quot;</ETag><Size>378</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>aws</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents></ListBucketResult>
     http_version: 
-  recorded_at: Tue, 04 Nov 2014 21:02:39 GMT
+  recorded_at: Wed, 05 Nov 2014 02:21:58 GMT
+- request:
+    method: get
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/quickbooks_to_be_integrated/x123_inventories_1415134964.csv
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby/1.57.0 ruby/2.1.4 x86_64-darwin13.0
+      Date:
+      - Wed, 05 Nov 2014 02:21:58 GMT
+      Authorization:
+      - AUTHORIZATION
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amz-Id-2:
+      - VZlbnLGr+rmKUJURgKofQNQ1w7PdMlGXXA7zssG8/XSlTfBK+xyzfAmK6UbUl/4c
+      X-Amz-Request-Id:
+      - A7CCF9336A5DE24D
+      Date:
+      - Wed, 05 Nov 2014 02:22:00 GMT
+      Last-Modified:
+      - Tue, 04 Nov 2014 21:02:47 GMT
+      Etag:
+      - '"96d90053beee2fe4c5b14e9fc030b711"'
+      Accept-Ranges:
+      - bytes
+      Content-Type:
+      - ''
+      Content-Length:
+      - '1165'
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: |-
+        id,sku,product_id,quantity,quickbooks.ListID,quickbooks.TimeCreated,quickbooks.TimeModified,quickbooks.EditSequence,quickbooks.Name,quickbooks.FullName,quickbooks.IsActive,quickbooks.Sublevel,quickbooks.SalesPrice,quickbooks.IncomeAccountRef.ListID,quickbooks.IncomeAccountRef.FullName,quickbooks.PurchaseCost,quickbooks.COGSAccountRef.ListID,quickbooks.COGSAccountRef.FullName,quickbooks.AssetAccountRef.ListID,quickbooks.AssetAccountRef.FullName,quickbooks.QuantityOnHand,quickbooks.AverageCost,quickbooks.QuantityOnOrder,quickbooks.QuantityOnSalesOrder
+        Ruby T-Shirt,Ruby T-Shirt,Ruby T-Shirt,200,80000002-1415025717,2014-11-03T12:41:57-02:00,2014-11-03T12:41:58-02:00,1415025717,Ruby T-Shirt,Ruby T-Shirt,true,0,11.00,8000001B-1415022649,Cost of Goods Sold,10.00,8000001B-1415022649,Cost of Goods Sold,8000001A-1415022649,Inventory Asset,200,10.00,0,0
+        Sinatra T-Shirt,Sinatra T-Shirt,Sinatra T-Shirt,100,80000003-1415028434,2014-11-03T13:27:14-02:00,2014-11-03T13:27:14-02:00,1415028434,Sinatra T-Shirt,Sinatra T-Shirt,true,0,5.00,8000001B-1415022649,Cost of Goods Sold,2.00,8000001B-1415022649,Cost of Goods Sold,8000001A-1415022649,Inventory Asset,100,2.00,0,0
+    http_version: 
+  recorded_at: Wed, 05 Nov 2014 02:21:59 GMT
+- request:
+    method: get
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/quickbooks_to_be_integrated/x123_inventories_1415152042.csv
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby/1.57.0 ruby/2.1.4 x86_64-darwin13.0
+      Date:
+      - Wed, 05 Nov 2014 02:21:59 GMT
+      Authorization:
+      - AUTHORIZATION
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amz-Id-2:
+      - I+bwDb2zSbP8/kgqclpf65xx54tmqE39XVZMfSxugwPnWphrxHGF400n7Q/4GVnp
+      X-Amz-Request-Id:
+      - 6BBD4C3AA36BA463
+      Date:
+      - Wed, 05 Nov 2014 02:22:01 GMT
+      Last-Modified:
+      - Wed, 05 Nov 2014 01:47:26 GMT
+      Etag:
+      - '"96d90053beee2fe4c5b14e9fc030b711"'
+      Accept-Ranges:
+      - bytes
+      Content-Type:
+      - ''
+      Content-Length:
+      - '1165'
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: |-
+        id,sku,product_id,quantity,quickbooks.ListID,quickbooks.TimeCreated,quickbooks.TimeModified,quickbooks.EditSequence,quickbooks.Name,quickbooks.FullName,quickbooks.IsActive,quickbooks.Sublevel,quickbooks.SalesPrice,quickbooks.IncomeAccountRef.ListID,quickbooks.IncomeAccountRef.FullName,quickbooks.PurchaseCost,quickbooks.COGSAccountRef.ListID,quickbooks.COGSAccountRef.FullName,quickbooks.AssetAccountRef.ListID,quickbooks.AssetAccountRef.FullName,quickbooks.QuantityOnHand,quickbooks.AverageCost,quickbooks.QuantityOnOrder,quickbooks.QuantityOnSalesOrder
+        Ruby T-Shirt,Ruby T-Shirt,Ruby T-Shirt,200,80000002-1415025717,2014-11-03T12:41:57-02:00,2014-11-03T12:41:58-02:00,1415025717,Ruby T-Shirt,Ruby T-Shirt,true,0,11.00,8000001B-1415022649,Cost of Goods Sold,10.00,8000001B-1415022649,Cost of Goods Sold,8000001A-1415022649,Inventory Asset,200,10.00,0,0
+        Sinatra T-Shirt,Sinatra T-Shirt,Sinatra T-Shirt,100,80000003-1415028434,2014-11-03T13:27:14-02:00,2014-11-03T13:27:14-02:00,1415028434,Sinatra T-Shirt,Sinatra T-Shirt,true,0,5.00,8000001B-1415022649,Cost of Goods Sold,2.00,8000001B-1415022649,Cost of Goods Sold,8000001A-1415022649,Inventory Asset,100,2.00,0,0
+    http_version: 
+  recorded_at: Wed, 05 Nov 2014 02:22:00 GMT
+- request:
+    method: get
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/quickbooks_to_be_integrated/x123_inventories_1415152126.csv
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby/1.57.0 ruby/2.1.4 x86_64-darwin13.0
+      Date:
+      - Wed, 05 Nov 2014 02:22:00 GMT
+      Authorization:
+      - AUTHORIZATION
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amz-Id-2:
+      - C8uXTymy1RjXmzstdxPXLWO2vaj8QWA270uzz6HSNYFeKInAlYovkz3I01xZm38d
+      X-Amz-Request-Id:
+      - AB84976364D5FC5F
+      Date:
+      - Wed, 05 Nov 2014 02:22:01 GMT
+      Last-Modified:
+      - Wed, 05 Nov 2014 01:48:50 GMT
+      Etag:
+      - '"c08ab65255497955cfcd405cbca63fa2"'
+      Accept-Ranges:
+      - bytes
+      Content-Type:
+      - ''
+      Content-Length:
+      - '854'
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: |-
+        id,sku,product_id,quantity,quickbooks.ListID,quickbooks.TimeCreated,quickbooks.TimeModified,quickbooks.EditSequence,quickbooks.Name,quickbooks.FullName,quickbooks.IsActive,quickbooks.Sublevel,quickbooks.SalesPrice,quickbooks.IncomeAccountRef.ListID,quickbooks.IncomeAccountRef.FullName,quickbooks.PurchaseCost,quickbooks.COGSAccountRef.ListID,quickbooks.COGSAccountRef.FullName,quickbooks.AssetAccountRef.ListID,quickbooks.AssetAccountRef.FullName,quickbooks.QuantityOnHand,quickbooks.AverageCost,quickbooks.QuantityOnOrder,quickbooks.QuantityOnSalesOrder
+        Ruby T-Shirt,Ruby T-Shirt,Ruby T-Shirt,200,80000002-1415025717,2014-11-03T12:41:57-02:00,2014-11-03T12:41:58-02:00,1415025717,Ruby T-Shirt,Ruby T-Shirt,true,0,11.00,8000001B-1415022649,Cost of Goods Sold,10.00,8000001B-1415022649,Cost of Goods Sold,8000001A-1415022649,Inventory Asset,200,10.00,0,0
+    http_version: 
+  recorded_at: Wed, 05 Nov 2014 02:22:01 GMT
+- request:
+    method: get
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/quickbooks_to_be_integrated/x123_inventories_1415153924.csv
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby/1.57.0 ruby/2.1.4 x86_64-darwin13.0
+      Date:
+      - Wed, 05 Nov 2014 02:22:01 GMT
+      Authorization:
+      - AUTHORIZATION
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amz-Id-2:
+      - Bqnfcn6R4zj4bANv2acoqCY3+P0VnQbWtHQQhoa5a/hkd1wNsMHP1zWeKgu08jEQ
+      X-Amz-Request-Id:
+      - 5FE619710FBC7FB3
+      Date:
+      - Wed, 05 Nov 2014 02:22:02 GMT
+      Last-Modified:
+      - Wed, 05 Nov 2014 02:18:47 GMT
+      Etag:
+      - '"424ba05c757781d63a8518eb847218ff"'
+      Accept-Ranges:
+      - bytes
+      Content-Type:
+      - ''
+      Content-Length:
+      - '869'
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: |-
+        id,sku,product_id,quantity,quickbooks.ListID,quickbooks.TimeCreated,quickbooks.TimeModified,quickbooks.EditSequence,quickbooks.Name,quickbooks.FullName,quickbooks.IsActive,quickbooks.Sublevel,quickbooks.SalesPrice,quickbooks.IncomeAccountRef.ListID,quickbooks.IncomeAccountRef.FullName,quickbooks.PurchaseCost,quickbooks.COGSAccountRef.ListID,quickbooks.COGSAccountRef.FullName,quickbooks.AssetAccountRef.ListID,quickbooks.AssetAccountRef.FullName,quickbooks.QuantityOnHand,quickbooks.AverageCost,quickbooks.QuantityOnOrder,quickbooks.QuantityOnSalesOrder
+        Haskell T-Shirt,Haskell T-Shirt,Haskell T-Shirt,200,80000002-1415025717,2014-11-03T12:41:57-02:00,2014-11-03T12:41:58-02:00,1415025717,Haskell T-Shirt,Haskell T-Shirt,true,0,11.00,8000001B-1415022649,Cost of Goods Sold,10.00,8000001B-1415022649,Cost of Goods Sold,8000001A-1415022649,Inventory Asset,200,10.00,0,0
+    http_version: 
+  recorded_at: Wed, 05 Nov 2014 02:22:01 GMT
+- request:
+    method: get
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/quickbooks_to_be_integrated/x123_products_1415152285.csv
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby/1.57.0 ruby/2.1.4 x86_64-darwin13.0
+      Date:
+      - Wed, 05 Nov 2014 02:22:01 GMT
+      Authorization:
+      - AUTHORIZATION
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amz-Id-2:
+      - xLfrb4nbis3E/tHMYd4w2kWKukfoP9LHDzSirDKmYF5/QYjw62f/tg+dVevjH0/n
+      X-Amz-Request-Id:
+      - 8CE1FF0E98469C8B
+      Date:
+      - Wed, 05 Nov 2014 02:22:03 GMT
+      Last-Modified:
+      - Wed, 05 Nov 2014 01:51:29 GMT
+      Etag:
+      - '"fe03f708902ed8056b1a1746846b4ae6"'
+      Accept-Ranges:
+      - bytes
+      Content-Type:
+      - ''
+      Content-Length:
+      - '369'
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: |-
+        id,name,description,sku,price,cost_price,quantity
+        80000004-1415047582,Haskell T-Shirt,Haskell T-Shirt,Haskell T-Shirt,55.00,4.00,300
+        80000002-1415025717,Ruby T-Shirt,Ruby T-Shirt,Ruby T-Shirt,11.00,10.00,200
+        80000003-1415028434,Sinatra T-Shirt,Sinatra T-Shirt,Sinatra T-Shirt,5.00,2.00,100
+        80000005-1415103643,SPREE-T-SHIRT-1,SPREE-T-SHIRT-1,SPREE-T-SHIRT-1,0.00,0.00,0
+    http_version: 
+  recorded_at: Wed, 05 Nov 2014 02:22:02 GMT
+- request:
+    method: get
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/quickbooks_to_be_integrated/x123_products_1415154027.csv
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby/1.57.0 ruby/2.1.4 x86_64-darwin13.0
+      Date:
+      - Wed, 05 Nov 2014 02:22:02 GMT
+      Authorization:
+      - AUTHORIZATION
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amz-Id-2:
+      - AVLxPAVsoKk3kMxcHe5UzoZpCoeMfWJR12S/AZRp6oT7Oq0BimEz+LhCc3Uomvrt
+      X-Amz-Request-Id:
+      - 056511C42A2A7AC9
+      Date:
+      - Wed, 05 Nov 2014 02:22:04 GMT
+      Last-Modified:
+      - Wed, 05 Nov 2014 02:20:31 GMT
+      Etag:
+      - '"0f95c5ab554d834b062edb81fa36f11c"'
+      Accept-Ranges:
+      - bytes
+      Content-Type:
+      - ''
+      Content-Length:
+      - '378'
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: |-
+        id,name,description,sku,price,cost_price,quantity
+        80000004-1415047582,Javascript T-Shirt,Javascript T-Shirt,Javascript T-Shirt,55.00,4.00,300
+        80000002-1415025717,Ruby T-Shirt,Ruby T-Shirt,Ruby T-Shirt,11.00,10.00,200
+        80000003-1415028434,Sinatra T-Shirt,Sinatra T-Shirt,Sinatra T-Shirt,5.00,2.00,100
+        80000005-1415103643,SPREE-T-SHIRT-1,SPREE-T-SHIRT-1,SPREE-T-SHIRT-1,0.00,0.00,0
+    http_version: 
+  recorded_at: Wed, 05 Nov 2014 02:22:03 GMT
 recorded_with: VCR 2.9.3
