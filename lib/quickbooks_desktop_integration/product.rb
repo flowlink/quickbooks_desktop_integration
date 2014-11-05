@@ -20,13 +20,11 @@ module QuickbooksDesktopIntegration
           id: record['Name'],
           sku: record['Name'],
           product_id: record['Name'],
-          description: record['FullName'],
+          description: record['SalesDesc'],
           price: record['SalesPrice'],
-          cost_price: record['AverageCost'],
+          cost_price: record['PurchaseCost'],
           available_on: record['TimeModified'],
-          income_account_id: record['IncomeAccountRef']['FullName'],
-          quickbooks_id: record['ListID'],
-          quickbooks_version: record['EditSequence']
+          income_account_id: record['IncomeAccountRef']['FullName']
         }
       end
     end
@@ -39,6 +37,23 @@ module QuickbooksDesktopIntegration
         'quickbooks_inventory_account' => 'Inventory Asset'
       }
     end
+    def self.search_xml(product_id)
+     <<-XML
+<?xml version="1.0" encoding="utf-8"?>
+<?qbxml version="13.0"?>
+<QBXML>
+  <QBXMLMsgsRq onError="continueOnError">
+    <ItemInventoryQueryRq>
+      <MaxReturned>50</MaxReturned>
+      <NameFilter>
+        <MatchCriterion >StartsWith</MatchCriterion>
+        <Name>#{product_id}</Name>
+      </NameFilter>
+    </ItemInventoryQueryRq>
+  </QBXMLMsgsRq>
+</QBXML>
+      XML
+    end
 
     def add_xml_to_send(product)
       <<-XML
@@ -49,18 +64,18 @@ module QuickbooksDesktopIntegration
       <ItemInventoryAddRq>
          <ItemInventoryAdd>
             <Name>#{product['id']}</Name>
-            <FullName>#{product['description']}</FullName>
+            <SalesDesc>#{product['description']}</SalesDesc>
+            <SalesPrice>#{product['price']}</SalesPrice>
             <IncomeAccountRef>
                <FullName>#{config['quickbooks_income_account']}</FullName>
             </IncomeAccountRef>
-            <PurchaseCost>#{product['price']}</PurchaseCost>
+            <PurchaseCost>#{product['cost_price']}</PurchaseCost>
             <COGSAccountRef>
               <FullName>#{config['quickbooks_cogs_account']}</FullName>
             </COGSAccountRef>
             <AssetAccountRef>
                <FullName>#{config['quickbooks_inventory_account']}</FullName>
             </AssetAccountRef>
-            <AverageCost>#{product['cost_price']}</AverageCost>
          </ItemInventoryAdd>
       </ItemInventoryAddRq>
    </QBXMLMsgsRq>
@@ -79,18 +94,18 @@ module QuickbooksDesktopIntegration
             <ListID>#{product['quickbooks_id']}</ListID>
             <EditSequence>#{product['quickbooks_version']}</EditSequence>
             <Name>#{product['id']}</Name>
-            <FullName>#{product['description']}</FullName>
+            <SalesDesc>#{product['description']}</SalesDesc>
+            <SalesPrice>#{product['price']}</SalesPrice>
             <IncomeAccountRef>
                <FullName>#{config['quickbooks_income_account']}</FullName>
             </IncomeAccountRef>
-            <PurchaseCost>#{product['price']}</PurchaseCost>
+            <PurchaseCost>#{product['cost_price']}</PurchaseCost>
             <COGSAccountRef>
               <FullName>#{config['quickbooks_cogs_account']}</FullName>
             </COGSAccountRef>
             <AssetAccountRef>
                <FullName>#{config['quickbooks_inventory_account']}</FullName>
             </AssetAccountRef>
-            <AverageCost>#{product['cost_price']}</AverageCost>
          </ItemInventoryMod>
       </ItemInventoryModRq>
    </QBXMLMsgsRq>
