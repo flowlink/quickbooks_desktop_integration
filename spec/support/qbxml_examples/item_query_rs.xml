@@ -1,120 +1,120 @@
 <?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><soap:Body><receiveResponseXML xmlns="http://developer.intuit.com/"><ticket>354f40b4-b661-4472-a13f-8abf13a743c3</ticket><response><?xml version="1.0" ?>
-<QBXML>
-<QBXMLMsgsRs>
-<ItemInventoryQueryRs requestID="1" statusCode="0" statusSeverity="Info" statusMessage="Status OK">
-<ItemInventoryRet>
-<ListID>80000004-1415047582</ListID>
-<TimeCreated>2014-11-03T18:46:22-02:00</TimeCreated>
-<TimeModified>2014-11-03T18:46:22-02:00</TimeModified>
-<EditSequence>1415047582</EditSequence>
-<Name>Haskell T-Shirt</Name>
-<FullName>Haskell T-Shirt</FullName>
-<IsActive>true</IsActive>
-<Sublevel>0</Sublevel>
-<SalesPrice>55.00</SalesPrice>
-<IncomeAccountRef>
-<ListID>8000001B-1415022649</ListID>
-<FullName>Cost of Goods Sold</FullName>
-</IncomeAccountRef>
-<PurchaseCost>4.00</PurchaseCost>
-<COGSAccountRef>
-<ListID>8000001B-1415022649</ListID>
-<FullName>Cost of Goods Sold</FullName>
-</COGSAccountRef>
-<AssetAccountRef>
-<ListID>8000001A-1415022649</ListID>
-<FullName>Inventory Asset</FullName>
-</AssetAccountRef>
-<QuantityOnHand>300</QuantityOnHand>
-<AverageCost>4.00</AverageCost>
-<QuantityOnOrder>0</QuantityOnOrder>
-<QuantityOnSalesOrder>0</QuantityOnSalesOrder>
-</ItemInventoryRet>
-<ItemInventoryRet>
-<ListID>80000002-1415025717</ListID>
-<TimeCreated>2014-11-03T12:41:57-02:00</TimeCreated>
-<TimeModified>2014-11-03T12:41:58-02:00</TimeModified>
-<EditSequence>1415025717</EditSequence>
-<Name>Ruby T-Shirt</Name>
-<FullName>Ruby T-Shirt</FullName>
-<IsActive>true</IsActive>
-<Sublevel>0</Sublevel>
-<SalesPrice>11.00</SalesPrice>
-<IncomeAccountRef>
-<ListID>8000001B-1415022649</ListID>
-<FullName>Cost of Goods Sold</FullName>
-</IncomeAccountRef>
-<PurchaseCost>10.00</PurchaseCost>
-<COGSAccountRef>
-<ListID>8000001B-1415022649</ListID>
-<FullName>Cost of Goods Sold</FullName>
-</COGSAccountRef>
-<AssetAccountRef>
-<ListID>8000001A-1415022649</ListID>
-<FullName>Inventory Asset</FullName>
-</AssetAccountRef>
-<QuantityOnHand>200</QuantityOnHand>
-<AverageCost>10.00</AverageCost>
-<QuantityOnOrder>0</QuantityOnOrder>
-<QuantityOnSalesOrder>0</QuantityOnSalesOrder>
-</ItemInventoryRet>
-<ItemInventoryRet>
-<ListID>80000003-1415028434</ListID>
-<TimeCreated>2014-11-03T13:27:14-02:00</TimeCreated>
-<TimeModified>2014-11-03T13:27:14-02:00</TimeModified>
-<EditSequence>1415028434</EditSequence>
-<Name>Sinatra T-Shirt</Name>
-<FullName>Sinatra T-Shirt</FullName>
-<IsActive>true</IsActive>
-<Sublevel>0</Sublevel>
-<SalesPrice>5.00</SalesPrice>
-<IncomeAccountRef>
-<ListID>8000001B-1415022649</ListID>
-<FullName>Cost of Goods Sold</FullName>
-</IncomeAccountRef>
-<PurchaseCost>2.00</PurchaseCost>
-<COGSAccountRef>
-<ListID>8000001B-1415022649</ListID>
-<FullName>Cost of Goods Sold</FullName>
-</COGSAccountRef>
-<AssetAccountRef>
-<ListID>8000001A-1415022649</ListID>
-<FullName>Inventory Asset</FullName>
-</AssetAccountRef>
-<QuantityOnHand>100</QuantityOnHand>
-<AverageCost>2.00</AverageCost>
-<QuantityOnOrder>0</QuantityOnOrder>
-<QuantityOnSalesOrder>0</QuantityOnSalesOrder>
-</ItemInventoryRet>
-<ItemInventoryRet>
-<ListID>80000005-1415103643</ListID>
-<TimeCreated>2014-11-04T10:20:43-02:00</TimeCreated>
-<TimeModified>2014-11-04T10:20:43-02:00</TimeModified>
-<EditSequence>1415103643</EditSequence>
-<Name>SPREE-T-SHIRT-1</Name>
-<FullName>SPREE-T-SHIRT-1</FullName>
-<IsActive>true</IsActive>
-<Sublevel>0</Sublevel>
-<SalesPrice>0.00</SalesPrice>
-<IncomeAccountRef>
-<ListID>8000001A-1415022649</ListID>
-<FullName>Inventory Asset</FullName>
-</IncomeAccountRef>
-<PurchaseCost>0.00</PurchaseCost>
-<COGSAccountRef>
-<ListID>8000001A-1415022649</ListID>
-<FullName>Inventory Asset</FullName>
-</COGSAccountRef>
-<AssetAccountRef>
-<ListID>8000001A-1415022649</ListID>
-<FullName>Inventory Asset</FullName>
-</AssetAccountRef>
-<QuantityOnHand>0</QuantityOnHand>
-<AverageCost>0.00</AverageCost>
-<QuantityOnOrder>0</QuantityOnOrder>
-<QuantityOnSalesOrder>0</QuantityOnSalesOrder>
-</ItemInventoryRet>
-</ItemInventoryQueryRs>
-</QBXMLMsgsRs>
-</QBXML>
+        <QBXML>
+          <QBXMLMsgsRs>
+            <ItemInventoryQueryRs requestID="1" statusCode="0" statusSeverity="Info" statusMessage="Status OK">
+              <ItemInventoryRet>
+                <ListID>80000004-1415047582</ListID>
+                <TimeCreated>2014-11-03T18:46:22-02:00</TimeCreated>
+                <TimeModified>2014-11-03T18:46:22-02:00</TimeModified>
+                <EditSequence>1415047582</EditSequence>
+                <Name>Haskell T-Shirt</Name>
+                <FullName>Haskell T-Shirt</FullName>
+                <IsActive>true</IsActive>
+                <Sublevel>0</Sublevel>
+                <SalesPrice>55.00</SalesPrice>
+                <IncomeAccountRef>
+                  <ListID>8000001B-1415022649</ListID>
+                  <FullName>Cost of Goods Sold</FullName>
+                </IncomeAccountRef>
+                <PurchaseCost>4.00</PurchaseCost>
+                <COGSAccountRef>
+                  <ListID>8000001B-1415022649</ListID>
+                  <FullName>Cost of Goods Sold</FullName>
+                </COGSAccountRef>
+                <AssetAccountRef>
+                  <ListID>8000001A-1415022649</ListID>
+                  <FullName>Inventory Asset</FullName>
+                </AssetAccountRef>
+                <QuantityOnHand>300</QuantityOnHand>
+                <AverageCost>4.00</AverageCost>
+                <QuantityOnOrder>0</QuantityOnOrder>
+                <QuantityOnSalesOrder>0</QuantityOnSalesOrder>
+              </ItemInventoryRet>
+              <ItemInventoryRet>
+                <ListID>80000002-1415025717</ListID>
+                <TimeCreated>2014-11-03T12:41:57-02:00</TimeCreated>
+                <TimeModified>2014-11-03T12:41:58-02:00</TimeModified>
+                <EditSequence>1415025717</EditSequence>
+                <Name>Ruby T-Shirt</Name>
+                <FullName>Ruby T-Shirt</FullName>
+                <IsActive>true</IsActive>
+                <Sublevel>0</Sublevel>
+                <SalesPrice>11.00</SalesPrice>
+                <IncomeAccountRef>
+                  <ListID>8000001B-1415022649</ListID>
+                  <FullName>Cost of Goods Sold</FullName>
+                </IncomeAccountRef>
+                <PurchaseCost>10.00</PurchaseCost>
+                <COGSAccountRef>
+                  <ListID>8000001B-1415022649</ListID>
+                  <FullName>Cost of Goods Sold</FullName>
+                </COGSAccountRef>
+                <AssetAccountRef>
+                  <ListID>8000001A-1415022649</ListID>
+                  <FullName>Inventory Asset</FullName>
+                </AssetAccountRef>
+                <QuantityOnHand>200</QuantityOnHand>
+                <AverageCost>10.00</AverageCost>
+                <QuantityOnOrder>0</QuantityOnOrder>
+                <QuantityOnSalesOrder>0</QuantityOnSalesOrder>
+              </ItemInventoryRet>
+              <ItemInventoryRet>
+                <ListID>80000003-1415028434</ListID>
+                <TimeCreated>2014-11-03T13:27:14-02:00</TimeCreated>
+                <TimeModified>2014-11-03T13:27:14-02:00</TimeModified>
+                <EditSequence>1415028434</EditSequence>
+                <Name>Sinatra T-Shirt</Name>
+                <FullName>Sinatra T-Shirt</FullName>
+                <IsActive>true</IsActive>
+                <Sublevel>0</Sublevel>
+                <SalesPrice>5.00</SalesPrice>
+                <IncomeAccountRef>
+                  <ListID>8000001B-1415022649</ListID>
+                  <FullName>Cost of Goods Sold</FullName>
+                </IncomeAccountRef>
+                <PurchaseCost>2.00</PurchaseCost>
+                <COGSAccountRef>
+                  <ListID>8000001B-1415022649</ListID>
+                  <FullName>Cost of Goods Sold</FullName>
+                </COGSAccountRef>
+                <AssetAccountRef>
+                  <ListID>8000001A-1415022649</ListID>
+                  <FullName>Inventory Asset</FullName>
+                </AssetAccountRef>
+                <QuantityOnHand>100</QuantityOnHand>
+                <AverageCost>2.00</AverageCost>
+                <QuantityOnOrder>0</QuantityOnOrder>
+                <QuantityOnSalesOrder>0</QuantityOnSalesOrder>
+              </ItemInventoryRet>
+              <ItemInventoryRet>
+                <ListID>80000005-1415103643</ListID>
+                <TimeCreated>2014-11-04T10:20:43-02:00</TimeCreated>
+                <TimeModified>2014-11-04T10:20:43-02:00</TimeModified>
+                <EditSequence>1415103643</EditSequence>
+                <Name>SPREE-T-SHIRT-1</Name>
+                <FullName>SPREE-T-SHIRT-1</FullName>
+                <IsActive>true</IsActive>
+                <Sublevel>0</Sublevel>
+                <SalesPrice>0.00</SalesPrice>
+                <IncomeAccountRef>
+                  <ListID>8000001A-1415022649</ListID>
+                  <FullName>Inventory Asset</FullName>
+                </IncomeAccountRef>
+                <PurchaseCost>0.00</PurchaseCost>
+                <COGSAccountRef>
+                  <ListID>8000001A-1415022649</ListID>
+                  <FullName>Inventory Asset</FullName>
+                </COGSAccountRef>
+                <AssetAccountRef>
+                  <ListID>8000001A-1415022649</ListID>
+                  <FullName>Inventory Asset</FullName>
+                </AssetAccountRef>
+                <QuantityOnHand>0</QuantityOnHand>
+                <AverageCost>0.00</AverageCost>
+                <QuantityOnOrder>0</QuantityOnOrder>
+                <QuantityOnSalesOrder>0</QuantityOnSalesOrder>
+              </ItemInventoryRet>
+            </ItemInventoryQueryRs>
+          </QBXMLMsgsRs>
+        </QBXML>
 </response><hresult /><message /></receiveResponseXML></soap:Body></soap:Envelope>
