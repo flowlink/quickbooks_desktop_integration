@@ -24,8 +24,7 @@ module QuickbooksDesktopIntegration
           description: record['FullName'],
           sku: record['Name'],
           price: record['SalesPrice'],
-          cost_price: record['PurchaseCost'],
-          quantity: record['QuantityOnHand']
+          cost_price: record['PurchaseCost']
           # variants
         }
       end

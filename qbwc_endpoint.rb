@@ -5,6 +5,17 @@ require 'fast_xs'
 
 require File.expand_path(File.dirname(__FILE__) + '/lib/quickbooks_desktop_integration')
 
+if File.exists? File.join(File.expand_path(File.dirname(__FILE__)), '.env')
+  # TODO check an ENV variable i.e. RACK_ENV
+  begin
+    require 'dotenv'
+    Dotenv.load
+  rescue => e
+    puts e.message
+    puts e.backtrace.join("\n")
+  end
+end
+
 class QBWCEndpoint < Sinatra::Base
   set :logging, true
 
@@ -62,6 +73,27 @@ class QBWCEndpoint < Sinatra::Base
   end
 
   def authenticate(body)
+    body = CGI.unescapeHTML(body)
+
+    body.slice! '<?xml version="1.0" ?>'
+    parser = Nori.new :strip_namespaces => true
+    envelope = parser.parse body
+
+    response = envelope['Envelope']['Body']['authenticate']
+
+    username = response['strUserName']
+    password = response['strPassword']
+
+    require 'digest/sha1'
+    expected_password = Digest::SHA1.hexdigest "#{username}#{ENV['QB_PASSWORD_KEY']}"
+
+    if password == expected_password
+      @result = '' # valid password - empty to use the current opened company file
+    else
+      @result = 'nvu' # invalid password - not valid user
+    end
+
+
     erb :'qbwc/authenticate'
   end
 

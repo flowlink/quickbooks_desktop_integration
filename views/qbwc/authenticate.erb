@@ -16,7 +16,7 @@
     <authenticateResponse xmlns="http://developer.intuit.com/">
     <authenticateResult>
     <string>354f40b4-b661-4472-a13f-8abf13a743c3</string> <% # token for the current session %>
-    <string></string> <% # nvu for not found, empty for the current opened company, or the company file name %>
+    <string><%= @result %></string> <% # nvu for not found, empty for the current opened company, or the company file name %>
     </authenticateResult>
     </authenticateResponse>
   </soap:Body>
