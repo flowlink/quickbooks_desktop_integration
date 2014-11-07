@@ -110,23 +110,10 @@ class QBWCEndpoint < Sinatra::Base
 <?qbxml version="13.0"?>
 <QBXML>
    <QBXMLMsgsRq onError="stopOnError">
-      <ItemInventoryAddRq>
-         <ItemInventoryAdd>
-            <Name>SPREE-T-SHIRT-9</Name>
-            <SalesDesc>Description SPREE T SHIRT 9</SalesDesc>
-            <SalesPrice>1.6</SalesPrice>
-            <IncomeAccountRef>
-               <FullName>Inventory Asset</FullName>
-            </IncomeAccountRef>
-            <PurchaseCost>0.5</PurchaseCost>
-            <COGSAccountRef>
-              <FullName>Inventory Asset</FullName>
-            </COGSAccountRef>
-            <AssetAccountRef>
-               <FullName>Inventory Asset</FullName>
-            </AssetAccountRef>
-         </ItemInventoryAdd>
-      </ItemInventoryAddRq>
+    <ItemQueryRq requestID="1">
+      <MaxReturned>50</MaxReturned>
+      <!-- <IncludeRetElement>Name</IncludeRetElement> -->
+    </ItemQueryRq>
    </QBXMLMsgsRq>
 </QBXML>
     XML

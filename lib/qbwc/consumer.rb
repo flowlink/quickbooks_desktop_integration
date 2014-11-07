@@ -3,12 +3,12 @@ module QBWC
     attr_reader :integration
 
     def initialize(config = {}, payload = {})
-      integration = Persistence::Object.new config, payload
+      @integration = Persistence::Object.new config, payload
     end
 
-    def digest_response_into_actions(response)
+    def digest_response_into_actions(response_xml)
       # Parse and break response to specific objects
-      objects = QBWC::Response::All.new(body).process
+      objects = QBWC::Response::All.new(response_xml).process
 
       # Get all objects parsed and transform to these operations:
       # objects_to_be_renamed = [ { :object_type => 'product'

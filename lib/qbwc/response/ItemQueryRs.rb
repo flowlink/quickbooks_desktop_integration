@@ -1,6 +1,6 @@
 module QBWC
   module Response
-    class ItemInventoryQueryRs
+    class ItemQueryRs
       attr_reader :records
 
       def initialize(records)
@@ -9,6 +9,8 @@ module QBWC
 
       def process
         return if records.empty?
+
+        # File.open('/Users/pablo/spree/quickbooks_desktop_integration/spec/support/qbxml_examples/item_query_rs.xml', 'w') { |file| file.write(xml) }
 
         puts records.inspect
         puts to_wombat
@@ -27,10 +29,10 @@ module QBWC
       def to_wombat
         records.map do |record|
           object = {
-            id: record['Name'],
-            sku: record['Name'],
-            product_id: record['Name'],
-            quantity: record['QuantityOnHand']
+            id: record['ListID'],
+            name: record['Name'],
+            description: record['FullName'],
+            sku: record['Name']
           }
 
           # The price can be in many places :/

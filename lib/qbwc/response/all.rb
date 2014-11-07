@@ -2,6 +2,7 @@ require 'nori'
 
 require 'qbwc/response/ItemInventoryAddRs'
 require 'qbwc/response/ItemInventoryQueryRs'
+require 'qbwc/response/ItemQueryRs'
 
 module QBWC
   module Response
