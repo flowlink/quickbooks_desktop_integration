@@ -9,5 +9,7 @@ require 'quickbooks_desktop_integration/inventory'
 require 'quickbooks_desktop_integration/product'
 
 require 'qbwc/response/all'
+require 'qbwc/request/customer'
+
 require 'qbwc/consumer'
 require 'qbwc/producer'
