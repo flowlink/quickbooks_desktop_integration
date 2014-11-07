@@ -7,9 +7,10 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
 
   ['products', 'orders', 'inventory', 'returns', 'customers'].each do |path|
     post "/add_#{path}" do
-      config = { account_id: 'x123', connection_id: '54372cb069702d1f59000000' }
-      integration = Service::Base.new config, @payload
-      integration.save_to_s3
+      config = { connection_id: '54372cb069702d1f59000000' }
+      integration = Persistence::Object.new config, @payload
+
+      integration.save
 
       object_type = integration.payload_key.capitalize
       result 200, "#{object_type} waiting for Quickbooks Desktop scheduler"
@@ -28,8 +29,8 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
     config = { connection_id: @payload[:connection_id] }
     payload = { notification_orders: @payload[:response] }
 
-    integration = Service::Base.new config, payload
-    integration.save_to_s3
+    integration = Persistence::Object.new config, payload
+    integration.save
     result 200
   end
 
@@ -38,7 +39,7 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
     config = @config.merge connection_id: request.env["HTTP_X_HUB_STORE"]
     payload = { "notification_#{config[:object_type]}" => {} }
 
-    integration = Service::Base.new config, payload
+    integration = Persistence::Object.new config, payload
     records = integration.start_processing "integrated"
 
     if success = QuickbooksDesktopHelper.format_batch_response(records)
@@ -62,7 +63,7 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
     # TODO Drop the hardcoded account id ..
     config = { account_id: 'x123', origin: 'quickbooks' }
 
-    s3_integration = Service::Base.new config
+    s3_integration = Persistence::Object.new config
     # pass 'integrated' in case you want to move the files
     records = s3_integration.start_processing false
 

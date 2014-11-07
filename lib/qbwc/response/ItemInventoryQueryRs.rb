@@ -16,7 +16,7 @@ module QBWC
         # config  = { origin: 'quickbooks', account_id: 'x123' }
         # payload = { products: to_wombat }
 
-        # integration = Service::Base.new config, payload
+        # integration = Persistence::Object.new config, payload
         # s3_object = integration.save_to_s3
 
         # logger.info "File #{s3_object.key} persisted on s3"

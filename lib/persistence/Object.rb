@@ -1,5 +1,5 @@
-module Service
-  class Base
+module Persistence
+  class Object
     attr_reader :config, :objects, :payload_key, :amazon_s3
 
     # +payload+ might have a collection of records when writing to s3
@@ -21,7 +21,7 @@ module Service
       @payload_key = payload.keys.first
       @objects = payload[payload_key]
       @config = { origin: 'wombat' }.merge config
-      @amazon_s3 = AmazonS3.new
+      @amazon_s3 = S3Util.new
     end
 
     def base_name
@@ -54,7 +54,7 @@ module Service
     #   e.g. 54372cb069702d1f59000000/wombat_pending/orders_T-SHIRT-SPREE1.csv
     #   e.g. 54372cb069702d1f59000000/quickbooks_pending/orders_T-SHIRT-SPREE1.csv
     #
-    def save_to_s3
+    def save
       objects.each do |object|
         file = "#{base_name}/#{pending}/#{payload_key}_#{object['id']}.csv"
         amazon_s3.export file_name: file, objects: [object]

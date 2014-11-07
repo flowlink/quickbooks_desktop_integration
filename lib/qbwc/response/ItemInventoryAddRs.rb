@@ -8,6 +8,7 @@ module QBWC
       end
 
       def process
+        #Move files and create  notifications
       end
     end
   end

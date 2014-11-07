@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-module Service
-  describe Base do
+module QBWC
+  describe Object do
     it "defaults to wombat on config origin" do
       subject = described_class.new
       expect(subject.config[:origin]).to eq 'wombat'

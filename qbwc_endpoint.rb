@@ -103,7 +103,7 @@ class QBWCEndpoint < Sinatra::Base
 
   def send_request_xml(body)
 
-    #    Service::RequestProcessor.build_available_actions_to_request
+    #    QBWC::Producer.new.build_available_actions_to_request
 
     @qbxml = <<-XML
 <?xml version="1.0" encoding="UTF-8"?>
@@ -135,7 +135,7 @@ class QBWCEndpoint < Sinatra::Base
   end
 
   def receive_response_xml(body)
-    Service::RequestProcessor.new.digest_response_into_actions(body)
+    QBWC::Consumer.new.digest_response_into_actions(body)
 
     erb :'qbwc/receive_response_xml'
   end

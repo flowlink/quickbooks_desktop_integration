@@ -1,12 +1,13 @@
 $:.unshift File.dirname(__FILE__)
 
-require 'amazon_s3'
 require 'quickbooks_desktop_helper'
 
-require 'service/base'
-require 'service/request_processor'
+require 'persistence/s3_util'
+require 'persistence/object'
 require 'quickbooks_desktop_integration/order'
 require 'quickbooks_desktop_integration/inventory'
 require 'quickbooks_desktop_integration/product'
 
 require 'qbwc/response/all'
+require 'qbwc/consumer'
+require 'qbwc/producer'
