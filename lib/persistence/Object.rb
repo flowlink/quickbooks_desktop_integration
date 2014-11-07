@@ -163,7 +163,6 @@ module Persistence
           end
         end
       end
-
     end
   end
 end
