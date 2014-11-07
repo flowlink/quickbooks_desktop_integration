@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-module QuickbooksDesktopIntegration
+module Service
   describe Base do
     it "defaults to wombat on config origin" do
       subject = described_class.new

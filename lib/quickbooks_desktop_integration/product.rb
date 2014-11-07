@@ -37,79 +37,80 @@ module QuickbooksDesktopIntegration
         'quickbooks_inventory_account' => 'Inventory Asset'
       }
     end
+
+    # Return the requests to insert/update for products
+    def self.generate_request_insert_update(objects)
+      objects.inject("") do |request, object|
+        if object[:list_id].present?
+          request << self.add_xml_to_send(object)
+        else
+          request << self.update_xml_to_send(object)
+        end
+      end
+    end
+
+    # Return the requests to query products
+    def self.generate_request_queries(objects)
+      objects.inject("") do |request, object|
+        request << self.search_xml(object['id'])
+      end
+    end
+
     def self.search_xml(product_id)
      <<-XML
-<?xml version="1.0" encoding="utf-8"?>
-<?qbxml version="13.0"?>
-<QBXML>
-  <QBXMLMsgsRq onError="continueOnError">
-    <ItemInventoryQueryRq>
-      <MaxReturned>50</MaxReturned>
-      <NameFilter>
-        <MatchCriterion >StartsWith</MatchCriterion>
-        <Name>#{product_id}</Name>
-      </NameFilter>
-    </ItemInventoryQueryRq>
-  </QBXMLMsgsRq>
-</QBXML>
+<ItemInventoryQueryRq>
+  <MaxReturned>50</MaxReturned>
+  <NameFilter>
+    <MatchCriterion >StartsWith</MatchCriterion>
+    <Name>#{product_id}</Name>
+  </NameFilter>
+</ItemInventoryQueryRq>
       XML
     end
 
-    def add_xml_to_send(product)
+    def self.add_xml_to_send(product)
       <<-XML
-<?xml version="1.0" encoding="UTF-8"?>
-<?qbxml version="13.0"?>
-<QBXML>
-   <QBXMLMsgsRq onError="stopOnError">
-      <ItemInventoryAddRq>
-         <ItemInventoryAdd>
-            <Name>#{product['id']}</Name>
-            <SalesDesc>#{product['description']}</SalesDesc>
-            <SalesPrice>#{product['price']}</SalesPrice>
-            <IncomeAccountRef>
-               <FullName>#{config['quickbooks_income_account']}</FullName>
-            </IncomeAccountRef>
-            <PurchaseCost>#{product['cost_price']}</PurchaseCost>
-            <COGSAccountRef>
-              <FullName>#{config['quickbooks_cogs_account']}</FullName>
-            </COGSAccountRef>
-            <AssetAccountRef>
-               <FullName>#{config['quickbooks_inventory_account']}</FullName>
-            </AssetAccountRef>
-         </ItemInventoryAdd>
-      </ItemInventoryAddRq>
-   </QBXMLMsgsRq>
-</QBXML>
+<ItemInventoryAddRq>
+   <ItemInventoryAdd>
+      <Name>#{product['id']}</Name>
+      <SalesDesc>#{product['description']}</SalesDesc>
+      <SalesPrice>#{product['price']}</SalesPrice>
+      <IncomeAccountRef>
+         <FullName>#{config['quickbooks_income_account']}</FullName>
+      </IncomeAccountRef>
+      <PurchaseCost>#{product['cost_price']}</PurchaseCost>
+      <COGSAccountRef>
+        <FullName>#{config['quickbooks_cogs_account']}</FullName>
+      </COGSAccountRef>
+      <AssetAccountRef>
+         <FullName>#{config['quickbooks_inventory_account']}</FullName>
+      </AssetAccountRef>
+   </ItemInventoryAdd>
+</ItemInventoryAddRq>
       XML
     end
 
-    def update_xml_to_send(product)
+    def self.update_xml_to_send(product)
       <<-XML
-<?xml version="1.0" encoding="UTF-8"?>
-<?qbxml version="13.0"?>
-<QBXML>
-   <QBXMLMsgsRq onError="stopOnError">
-      <ItemInventoryModRq>
-         <ItemInventoryMod>
-            <ListID>#{product['quickbooks_id']}</ListID>
-            <EditSequence>#{product['quickbooks_version']}</EditSequence>
-            <Name>#{product['id']}</Name>
-            <SalesDesc>#{product['description']}</SalesDesc>
-            <SalesPrice>#{product['price']}</SalesPrice>
-            <IncomeAccountRef>
-               <FullName>#{config['quickbooks_income_account']}</FullName>
-            </IncomeAccountRef>
-            <PurchaseCost>#{product['cost_price']}</PurchaseCost>
-            <COGSAccountRef>
-              <FullName>#{config['quickbooks_cogs_account']}</FullName>
-            </COGSAccountRef>
-            <AssetAccountRef>
-               <FullName>#{config['quickbooks_inventory_account']}</FullName>
-            </AssetAccountRef>
-         </ItemInventoryMod>
-      </ItemInventoryModRq>
-   </QBXMLMsgsRq>
-</QBXML>
+<ItemInventoryModRq>
+   <ItemInventoryMod>
+      <ListID>#{product['quickbooks_id']}</ListID>
+      <EditSequence>#{product['quickbooks_version']}</EditSequence>
+      <Name>#{product['id']}</Name>
+      <SalesDesc>#{product['description']}</SalesDesc>
+      <SalesPrice>#{product['price']}</SalesPrice>
+      <IncomeAccountRef>
+         <FullName>#{config['quickbooks_income_account']}</FullName>
+      </IncomeAccountRef>
+      <PurchaseCost>#{product['cost_price']}</PurchaseCost>
+      <COGSAccountRef>
+        <FullName>#{config['quickbooks_cogs_account']}</FullName>
+      </COGSAccountRef>
+      <AssetAccountRef>
+         <FullName>#{config['quickbooks_inventory_account']}</FullName>
+      </AssetAccountRef>
+   </ItemInventoryMod>
+</ItemInventoryModRq>
       XML
     end
 

@@ -1,4 +1,4 @@
 module QuickbooksDesktopIntegration
-  class Order < Base
+  class Order
   end
 end
