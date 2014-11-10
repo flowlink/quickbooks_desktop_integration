@@ -5,7 +5,6 @@ Dotenv.load
 
 Bundler.require(:default, :test)
 
-require File.join(File.dirname(__FILE__), '..', 'lib/quickbooks_desktop_integration')
 require File.join(File.dirname(__FILE__), '..', 'quickbooks_desktop_endpoint')
 
 Dir["./spec/support/**/*.rb"].each { |f| require f }
