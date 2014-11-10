@@ -59,6 +59,8 @@ module QBWC
           <<-XML
 <CustomerModRq>
    <CustomerMod>
+      <ListID>IDTYPE</ListID> <!-- required -->
+      <EditSequence>STRTYPE</EditSequence> <!-- required -->
       <Name>#{object['firstname']}</Name>
       <LastName>#{object['lastname']}</LastName>
       <Email>#{object['email']}</Email>

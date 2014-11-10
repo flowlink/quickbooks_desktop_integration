@@ -39,7 +39,7 @@ http_interactions:
       string: |-
         <?xml version="1.0" encoding="UTF-8"?>
         <VersioningConfiguration xmlns="http://s3.amazonaws.com/doc/2006-03-01/"/>
-    http_version: 
+    http_version:
   recorded_at: Mon, 10 Nov 2014 11:45:48 GMT
 - request:
     method: head
@@ -80,7 +80,7 @@ http_interactions:
     body:
       encoding: UTF-8
       string: ''
-    http_version: 
+    http_version:
   recorded_at: Mon, 10 Nov 2014 11:45:49 GMT
 - request:
     method: put
@@ -125,6 +125,6 @@ http_interactions:
     body:
       encoding: UTF-8
       string: ''
-    http_version: 
+    http_version:
   recorded_at: Mon, 10 Nov 2014 11:45:50 GMT
 recorded_with: VCR 2.9.3
