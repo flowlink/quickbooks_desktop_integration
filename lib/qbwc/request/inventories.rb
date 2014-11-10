@@ -5,7 +5,7 @@ module QBWC
       class << self
         def generate_request_insert_update(objects)
           objects.inject('') do |request, object|
-            request << object[:list_id].present?? add_xml_to_send(object) : update_xml_to_send(object)
+            request << (object[:list_id].present?? add_xml_to_send(object) : update_xml_to_send(object))
           end
         end
 

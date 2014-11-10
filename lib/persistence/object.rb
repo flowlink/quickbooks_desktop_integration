@@ -115,16 +115,15 @@ module Persistence
       collection = amazon_s3.bucket.objects
 
       collection.with_prefix(prefix).enum.map do |s3_object|
-        connection_id, folder, filename = s3_object.key.split("/")
-        object_type, object_ref, edit_sequence, list_id = filename.split("_")
+        connection_id, folder, filename = s3_object.key.split('/')
+        object_type, file_name, edit_sequence, list_id = filename.split('_')
+
 
         contents = s3_object.read
 
         { object_type.pluralize =>
-          { object_ref =>
-            { :list_id => list_id, :edit_sequence => edit_sequence }.
+            { list_id: list_id, edit_sequence: edit_sequence }.
                                            merge(Converter.csv_to_hash(contents).first)
-          }
         }
       end.flatten
     end
