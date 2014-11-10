@@ -2,7 +2,7 @@ require 'spec_helper'
 
 module QBWC
   module Request
-    describe Product do
+    describe Products do
       it "builds wombat products from xml response" do
         subject = Product.new Factory.item_inventory_add_rs_qbxml
         expect(subject.mapped_records.size).to eq(1)
