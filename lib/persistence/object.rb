@@ -149,17 +149,17 @@ module Persistence
       statuses_objects.keys.each do |status_key|
         statuses_objects[status_key].each do |types|
           types.keys.each do |object_type|
-            types[object_type].each do |object|
-              filename = "#{base_name}/#{ready}/#{object[:object_type]}_#{object[:object_ref]}"
-              filename << "_#{object[:edit_sequence]}_#{object[:list_id]}" if types[:object_type][:list_id].present?
+            object = types[object_type]
 
-              s3_object = amazon_s3.bucket.objects["#{filename}.csv"]
-              status_folder = send status_key
-              new_filename = "#{base_name}/#{status_folder}/#{object[:object_type]}_#{object[:object_ref]}"
-              new_filename << "_#{object[:edit_sequence]}_#{object[:list_id]}" if types[:object_type][:list_id].present?
+            filename = "#{base_name}/#{ready}/#{object_type}_#{object[:id]}"
+            filename << "_#{object[:edit_sequence]}_#{object[:list_id]}" if object[:list_id].present?
+            s3_object = amazon_s3.bucket.objects["#{filename}.csv"]
 
-              s3_object.move_to("#{new_filename}.csv")
-            end
+            status_folder = send status_key
+            new_filename = "#{base_name}/#{status_folder}/#{object_type}_#{object[:id]}"
+            new_filename << "_#{object[:edit_sequence]}_#{object[:list_id]}" if object[:list_id].present?
+
+            s3_object.move_to("#{new_filename}.csv")
           end
         end
       end

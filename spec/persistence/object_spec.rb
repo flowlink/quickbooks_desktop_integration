@@ -53,5 +53,16 @@ module Persistence
         subject.update_objects_with_query_results(objects_to_be_renamed)
       end
     end
+
+    it "#update_objects_files" do
+      payload = Factory.products
+      statuses_objects = Factory.objects_results_status
+      config = { origin: 'wombat', connection_id: '54372cb069702d1f59000000' }
+
+      VCR.use_cassette "persistence/update_objects_files" do
+        subject = described_class.new config, payload
+        subject.update_objects_files(statuses_objects)
+      end
+    end
   end
 end

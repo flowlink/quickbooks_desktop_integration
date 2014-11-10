@@ -1,0 +1,89 @@
+---
+http_interactions:
+- request:
+    method: put
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54372cb069702d1f59000000/wombat_processed/products_SPREE-T-SHIRT293178_12312312321_800000-88888.csv
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      X-Amz-Copy-Source:
+      - /quickbooks-desktop-integration/54372cb069702d1f59000000/wombat_ready/products_SPREE-T-SHIRT293178_12312312321_800000-88888.csv
+      X-Amz-Metadata-Directive:
+      - COPY
+      X-Amz-Storage-Class:
+      - STANDARD
+      User-Agent:
+      - aws-sdk-ruby/1.57.0 ruby/2.0.0 x86_64-darwin14.0.0
+      Date:
+      - Mon, 10 Nov 2014 13:48:47 GMT
+      Authorization:
+      - AUTHORIZATION
+      Accept:
+      - '*/*'
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amz-Id-2:
+      - KL7nxfH7jFDjSQRe/J3m91pUqXOE74Xgq4/b2SlA53eqM8dRiR5pYwUQFdS91Pbn
+      X-Amz-Request-Id:
+      - B8F5EE8C3F3DEBF6
+      Date:
+      - Mon, 10 Nov 2014 13:48:49 GMT
+      Content-Type:
+      - application/xml
+      Content-Length:
+      - '234'
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: |-
+        <?xml version="1.0" encoding="UTF-8"?>
+        <CopyObjectResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><LastModified>2014-11-10T13:48:49.000Z</LastModified><ETag>&quot;2b256dc335a778d105d189a67b17133b&quot;</ETag></CopyObjectResult>
+    http_version: 
+  recorded_at: Mon, 10 Nov 2014 13:48:48 GMT
+- request:
+    method: delete
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54372cb069702d1f59000000/wombat_ready/products_SPREE-T-SHIRT293178_12312312321_800000-88888.csv
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby/1.57.0 ruby/2.0.0 x86_64-darwin14.0.0
+      Date:
+      - Mon, 10 Nov 2014 13:48:48 GMT
+      Authorization:
+      - AUTHORIZATION
+      Accept:
+      - '*/*'
+  response:
+    status:
+      code: 204
+      message: No Content
+    headers:
+      X-Amz-Id-2:
+      - 649rfhrlEvJVlpF818xcoahuCaJXO1gQePn2pEp/AkA/4LsH0EUqVDJT0GkAL3Gm
+      X-Amz-Request-Id:
+      - 4357FD886BBCB2EA
+      Date:
+      - Mon, 10 Nov 2014 13:48:49 GMT
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: ''
+    http_version: 
+  recorded_at: Mon, 10 Nov 2014 13:48:49 GMT
+recorded_with: VCR 2.9.3
