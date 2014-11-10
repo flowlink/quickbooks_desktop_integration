@@ -19,7 +19,7 @@ module Persistence
     #
     def initialize(config = {}, payload = {})
       @payload_key = payload.keys.first
-      @objects = payload[payload_key]
+      @objects = payload[payload_key].is_a?(Hash) ? [payload[payload_key]] : Array(payload[payload_key])
       @config = { origin: 'wombat' }.merge config
       @amazon_s3 = S3Util.new
     end
