@@ -3,7 +3,7 @@ module QBWC
     attr_reader :integration
 
     def initialize(config = {}, payload = {})
-      integration = Persistence::Object.new config, payload
+      @integration = Persistence::Object.new config, payload
     end
 
     # Create a XML Requests that englobe all operations available on this time
@@ -24,18 +24,19 @@ module QBWC
     # TODO Create a way to do this for all objects
     # probably a way to use the keys (products, )
     def process_insert_update(objects_hash)
-      objects_hash.inject('') do |result, (object_type, objects)|
+      objects_hash.inject('') do |result, object_hash|
 
-        # TODO convert `products` into Product
+        object_type = object_hash.keys.first.capitalize
+
         class_name = "QBWC::Request::#{object_type}".constantize
 
-        result << class_name.generate_request_insert_update(objects)
+        result << class_name.generate_request_insert_update(object_hash.values.flatten)
       end
     end
 
     # TODO Create a way to do this for all objects
     def process_queries(pending_objects_hash)
-      objects_hash.inject('') do |result, (object_type, objects)|
+      pending_objects_hash.inject('') do |result, (object_type, objects)|
 
         # TODO convert `products` into Product
         class_name = "QBWC::Request::#{object_type}".constantize

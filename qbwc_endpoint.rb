@@ -31,12 +31,18 @@ class QBWCEndpoint < Sinatra::Base
     end
   end
 
-  get '/' do
+  get '/support' do
     'ok'
     # send_request_xml
+    #
+    redirect 'https://support.wombat.co'
   end
 
-  post '/' do
+  get '/:connection_id' do
+    'ok'
+  end
+
+  post '/:connection_id' do
     content_type 'text/xml'
 
     body = request.body.read
@@ -60,19 +66,20 @@ class QBWCEndpoint < Sinatra::Base
     puts operation
     # puts body
     puts '*' * 100
-    send operation, body
+
+    send operation, params[:connection_id], body
   end
 
-  def server_version(body)
+  def server_version(connection_id, body)
     erb :'qbwc/server_version'
   end
 
 
-  def client_version(body)
+  def client_version(connection_id, body)
     erb :'qbwc/client_version'
   end
 
-  def authenticate(body)
+  def authenticate(connection_id, body)
     body = CGI.unescapeHTML(body)
 
     body.slice! '<?xml version="1.0" ?>'
@@ -97,17 +104,17 @@ class QBWCEndpoint < Sinatra::Base
     erb :'qbwc/authenticate'
   end
 
-  def connection_error(body)
+  def connection_error(connection_id, body)
     erb :'qbwc/connection_error'
   end
 
-  def send_request_xml(body)
+  def send_request_xml(connection_id, body)
     @qbxml = <<-XML
 <?xml version="1.0" encoding="UTF-8"?>
 <?qbxml version="13.0"?>
 <QBXML>
    <QBXMLMsgsRq onError="stopOnError">
-    #{QBWC::Producer.new.build_available_actions_to_request}
+    #{QBWC::Producer.new(connection_id: connection_id).build_available_actions_to_request}
    </QBXMLMsgsRq>
 </QBXML>
     XML
@@ -115,17 +122,17 @@ class QBWCEndpoint < Sinatra::Base
     erb :'qbwc/send_request_xml'
   end
 
-  def receive_response_xml(body)
-    QBWC::Consumer.new.digest_response_into_actions(body)
+  def receive_response_xml(connection_id, body)
+    QBWC::Consumer.new(connection_id: connection_id).digest_response_into_actions(connection_id, body)
 
     erb :'qbwc/receive_response_xml'
   end
 
-  def get_last_error(body)
+  def get_last_error(connection_id, body)
     erb :'qbwc/get_last_error'
   end
 
-  def close_connection(body)
+  def close_connection(connection_id, body)
     erb :'qbwc/close_connection'
   end
 end

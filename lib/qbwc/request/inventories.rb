@@ -1,6 +1,6 @@
 module QBWC
   module Request
-    class Inventory
+    class Inventories
 
       class << self
         def generate_request_insert_update(objects)
