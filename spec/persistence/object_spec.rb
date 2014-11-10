@@ -23,23 +23,25 @@ module Persistence
       end
     end
 
-    # it "reads all data in s3 from particular account" do
-    #   config = { origin: 'quickbooks', account_id: 'x123' }
+    it "#process_pending_objects" do
+      payload = Factory.products
+      config = { origin: 'wombat', connection_id: '54372cb069702d1f59000000' }
 
-    #   VCR.use_cassette "base/2342343214124" do
-    #     subject = described_class.new config
-    #     records = subject.start_processing "integrated"
-    #   end
-    # end
+      VCR.use_cassette "persistence/process_pending_objects" do
+        subject = described_class.new config, payload
+        subject.process_pending_objects
+      end
+    end
 
-    # it "reads from s3 and returns records collection" do
-    #   payload = { inventories: {} }
-    #   config = { origin: 'quickbooks', account_id: 'x123' }
+    it "#get_ready_objects_to_send" do
+      payload = Factory.products
+      config = { origin: 'wombat', connection_id: '54372cb069702d1f59000000' }
 
-    #   VCR.use_cassette "base/452353452342" do
-    #     subject = described_class.new config, payload
-    #     inventories = subject.start_processing "integrated"
-    #   end
-    # end
+      VCR.use_cassette "persistence/get_ready_objects" do
+        subject = described_class.new config, payload
+        objects = subject.get_ready_objects_to_send
+        expect(objects.first).to have_key('products')
+      end
+    end
   end
 end

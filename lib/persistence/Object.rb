@@ -123,7 +123,7 @@ module Persistence
         { object_type.pluralize =>
           { object_ref =>
             { :list_id => list_id, :edit_sequence => edit_sequence }.
-                                           merge(Converter.csv_to_hash(contents))
+                                           merge(Converter.csv_to_hash(contents).first)
           }
         }
       end.flatten
