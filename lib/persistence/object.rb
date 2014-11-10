@@ -80,7 +80,7 @@ module Persistence
         s3_object.move_to("#{base_name}/#{ready}/#{filename}")
 
         # return the content of file to create the requests
-        { object_type => { object_ref => Converter.csv_to_hash(contents) } }
+        { object_type => Converter.csv_to_hash(contents) }
       end.flatten
     end
 

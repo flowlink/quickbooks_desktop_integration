@@ -36,9 +36,10 @@ module QBWC
 
     # TODO Create a way to do this for all objects
     def process_queries(pending_objects_hash)
+
+      puts "process_queries: #{pending_objects_hash}"
       pending_objects_hash.inject('') do |result, (object_type, objects)|
 
-        # TODO convert `products` into Product
         class_name = "QBWC::Request::#{object_type}".constantize
 
         result << class_name.generate_request_queries(objects)

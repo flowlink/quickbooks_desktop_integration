@@ -1,6 +1,6 @@
 module QBWC
   module Request
-    class Product
+    class Products
       attr_reader :result, :records
 
       def mapped_records
@@ -18,7 +18,7 @@ module QBWC
         end
       end
 
-      def config
+      def self.config
         #TODO changed to yml database
         {
           'quickbooks_income_account'    => 'Inventory Asset',
