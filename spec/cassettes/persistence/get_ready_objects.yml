@@ -1,0 +1,144 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/?max-keys=1000&prefix=54372cb069702d1f59000000/wombat_ready
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby/1.57.0 ruby/2.0.0 x86_64-darwin14.0.0
+      Date:
+      - Mon, 10 Nov 2014 12:00:58 GMT
+      Authorization:
+      - AUTHORIZATION
+      Accept:
+      - '*/*'
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amz-Id-2:
+      - eAeeCAp31Jvjs+lo2OSfOEvSJe4C+r+QmYmjB2Vibaza4zBLuN01zBP0SZskKD37ey5bvvthzng=
+      X-Amz-Request-Id:
+      - 5B8DF360AADA4E09
+      Date:
+      - Mon, 10 Nov 2014 12:01:00 GMT
+      Content-Type:
+      - application/xml
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: |-
+        <?xml version="1.0" encoding="UTF-8"?>
+        <ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>quickbooks-desktop-integration</Name><Prefix>54372cb069702d1f59000000/wombat_ready</Prefix><Marker></Marker><MaxKeys>1000</MaxKeys><IsTruncated>false</IsTruncated><Contents><Key>54372cb069702d1f59000000/wombat_ready/products_H28573688670.csv</Key><LastModified>2014-11-10T11:55:05.000Z</LastModified><ETag>&quot;b713d885ffaacdd8c189a48cf19f0ff6&quot;</ETag><Size>664</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>aws</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>54372cb069702d1f59000000/wombat_ready/products_SPREE-T-SHIRT293178.csv</Key><LastModified>2014-11-10T11:55:07.000Z</LastModified><ETag>&quot;2b256dc335a778d105d189a67b17133b&quot;</ETag><Size>1138</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>aws</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents></ListBucketResult>
+    http_version: 
+  recorded_at: Mon, 10 Nov 2014 12:00:59 GMT
+- request:
+    method: get
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54372cb069702d1f59000000/wombat_ready/products_H28573688670.csv
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby/1.57.0 ruby/2.0.0 x86_64-darwin14.0.0
+      Date:
+      - Mon, 10 Nov 2014 12:00:59 GMT
+      Authorization:
+      - AUTHORIZATION
+      Accept:
+      - '*/*'
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amz-Id-2:
+      - 0qzWGA8DOwYrnu59Uz+v4ytasvYXQx+IobngOPq/SOll/+2X1mie+s2kidVaSOQzAc/foU5GiNc=
+      X-Amz-Request-Id:
+      - A67072873B4E12A1
+      Date:
+      - Mon, 10 Nov 2014 12:01:01 GMT
+      Last-Modified:
+      - Mon, 10 Nov 2014 11:55:05 GMT
+      Etag:
+      - '"b713d885ffaacdd8c189a48cf19f0ff6"'
+      Accept-Ranges:
+      - bytes
+      Content-Type:
+      - ''
+      Content-Length:
+      - '664'
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: |-
+        id,order_id,email,cost,status,stock_location,shipping_method,tracking,updated_at,shipped_at,channel,shipping_address.firstname,shipping_address.lastname,shipping_address.address1,shipping_address.address2,shipping_address.zipcode,shipping_address.city,shipping_address.state,shipping_address.country,shipping_address.phone,items.0.product_id,items.0.name,items.0.quantity,items.0.price,items.1.product_id,items.1.name,items.1.quantity,items.1.price
+        H28573688670,R709781525,glossier@godynamo.com,9.95,pending,default,Slow (UPS Ground),,2014-09-11T15:34:15Z,,spree,alix,gt,123 street,,10007,city,AL,US,555-123-1223,balm,Balm Dotcom,1,49,phase1,Glossier Phase I,1,100
+    http_version: 
+  recorded_at: Mon, 10 Nov 2014 12:01:00 GMT
+- request:
+    method: get
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54372cb069702d1f59000000/wombat_ready/products_SPREE-T-SHIRT293178.csv
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby/1.57.0 ruby/2.0.0 x86_64-darwin14.0.0
+      Date:
+      - Mon, 10 Nov 2014 12:01:00 GMT
+      Authorization:
+      - AUTHORIZATION
+      Accept:
+      - '*/*'
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amz-Id-2:
+      - ntL7Yl/KJHx24d61BKsy90FZV6KRTtew0JF8HLgujlNKvlvczEhLFnac1/WIeFDzrJBO420PC8U=
+      X-Amz-Request-Id:
+      - 33C99110B7D915D7
+      Date:
+      - Mon, 10 Nov 2014 12:01:01 GMT
+      Last-Modified:
+      - Mon, 10 Nov 2014 11:55:07 GMT
+      Etag:
+      - '"2b256dc335a778d105d189a67b17133b"'
+      Accept-Ranges:
+      - bytes
+      Content-Type:
+      - ''
+      Content-Length:
+      - '1138'
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: |-
+        id,name,sku,description,price,cost_price,available_on,permalink,meta_description,meta_keywords,shipping_category,taxons.0.0,taxons.0.1,taxons.0.2,taxons.1.0,taxons.1.1,taxons.2.0,taxons.2.1,options.0,options.1,properties.material,properties.fit,images.0.url,images.0.position,images.0.title,images.0.type,images.0.dimensions.height,images.0.dimensions.width,variants.0.sku,variants.0.price,variants.0.cost_price,variants.0.quantity,variants.0.options.color,variants.0.options.size,variants.0.images.0.url,variants.0.images.0.position,variants.0.images.0.title,variants.0.images.0.type,variants.0.images.0.dimensions.height,variants.0.images.0.dimensions.width
+        SPREE-T-SHIRT293178,Spree T-Shirt,SPREE-T-SHIRT,Awesome Spree T-Shirt,35,22.33,2014-01-29T14:01:28.000Z,spree-tshirt,,,Default,Categories,Clothes,T-Shirts,Brands,Spree,Brands,Open Source,color,size,cotton,smart fit,http://dummyimage.com/600x400/000/fff.jpg&text=Spree T-Shirt,1,Spree T-Shirt - Grey Small,thumbnail,220,100,SPREE-T-SHIRT-S,39.99,22.33,1,GREY,S,http://dummyimage.com/600x400/000/fff.jpg&text=Spree T-Shirt Grey Small,1,Spree T-Shirt - Grey Small,thumbnail,220,100
+    http_version: 
+  recorded_at: Mon, 10 Nov 2014 12:01:00 GMT
+recorded_with: VCR 2.9.3
