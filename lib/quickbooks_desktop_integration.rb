@@ -4,6 +4,7 @@ require 'quickbooks_desktop_helper'
 
 require 'persistence/s3_util'
 require 'persistence/object'
+require 'persistence/settings'
 
 require 'qbwc/response/all'
 require 'qbwc/request/customer'

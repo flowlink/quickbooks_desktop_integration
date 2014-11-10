@@ -9,10 +9,15 @@ module Persistence
       @bucket_name = "quickbooks-desktop-integration"
     end
 
-    def export(file_name: nil, objects: nil)
+    def export(file_name: nil, objects: nil, override: false)
       verify_bucket!
 
-      s3_object = find_next_s3_object(file_name)
+      if override
+        s3_object = bucket.objects[file_name]
+      else
+        s3_object = find_next_s3_object(file_name)
+      end
+
       s3_object.write(convert_upload(extension(file_name), objects))
       s3_object
     end

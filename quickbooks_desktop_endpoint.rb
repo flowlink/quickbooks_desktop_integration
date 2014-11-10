@@ -54,18 +54,21 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
     result 200
   end
 
-  # Note that once data is returned by `start_processing` files will be moved
-  # to a 'integrated' folder so chances are it will be very hard to get those
+  # Note that once data is returned files will be moved
+  # to another folder so chances are it will be very hard to get those
   # files back in case something explodes after this point.
   #
   # Possible issues include returning more objects than the Wombat account
-  # limit allows or any ruby exception either here or once it arrives in Wombat.
+  # limit allows or any ruby exception either here or once it reaches Wombat.
   post "/get_data" do
-    # TODO Drop the hardcoded account id ..
-    config = { account_id: 'x123', origin: 'quickbooks' }
+    config = {
+      connection_id: request.env['HTTP_X_HUB_STORE'],
+      origin: 'quickbooks'
+    }.merge(@config).hash_with_indifferent_access
+
+    Persistence::Settings.new(config).setup
 
     s3_integration = Persistence::Object.new config
-    # pass 'integrated' in case you want to move the files
     records = s3_integration.start_processing false
 
     if records.any?
@@ -75,6 +78,8 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
 
         names.push name
       end
+
+      # TODO Return quickbooks_since here?
 
       result 200, "Received #{names.uniq.join(', ')} records from Quickbooks"
     else
