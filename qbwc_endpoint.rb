@@ -102,18 +102,12 @@ class QBWCEndpoint < Sinatra::Base
   end
 
   def send_request_xml(body)
-
-    #    QBWC::Producer.new.build_available_actions_to_request
-
     @qbxml = <<-XML
 <?xml version="1.0" encoding="UTF-8"?>
 <?qbxml version="13.0"?>
 <QBXML>
    <QBXMLMsgsRq onError="stopOnError">
-    <ItemQueryRq requestID="1">
-      <MaxReturned>50</MaxReturned>
-      <!-- <IncludeRetElement>Name</IncludeRetElement> -->
-    </ItemQueryRq>
+    #{QBWC::Producer.new.build_available_actions_to_request}
    </QBXMLMsgsRq>
 </QBXML>
     XML
