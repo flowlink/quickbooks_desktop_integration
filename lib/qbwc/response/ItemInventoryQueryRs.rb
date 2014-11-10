@@ -13,16 +13,23 @@ module QBWC
         puts records.inspect
         puts to_wombat
 
-        # config  = { origin: 'quickbooks', account_id: 'x123' }
-        # payload = { products: to_wombat }
+        config  = { origin: 'wombat', connection_id: '54372cb069702d1f59000000'  }
 
-        # integration = Persistence::Object.new config, payload
-        # s3_object = integration.save_to_s3
-
-        # logger.info "File #{s3_object.key} persisted on s3"
+        Persistence::Object.new(config, {}).update_objects_with_query_results(objects_to_update)
       end
 
       private
+
+      def objects_to_update
+        records.map do |record|
+          {
+            object_type: 'product',
+            object_ref: record['Name'],
+            list_id: record['ListID'],
+            edit_sequence: record['EditSequence']
+          }
+        end
+      end
 
       def to_wombat
         records.map do |record|
