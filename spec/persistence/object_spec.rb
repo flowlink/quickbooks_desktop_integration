@@ -43,5 +43,15 @@ module Persistence
         expect(objects.first).to have_key('products')
       end
     end
+
+    it "#update_objects_with_query_results" do
+      objects_to_be_renamed = [Factory.query_results_to_update_objects]
+      config = { origin: 'wombat', connection_id: '54372cb069702d1f59000000' }
+
+      VCR.use_cassette "persistence/update_objects_with_query_results" do
+        subject = described_class.new config, {}
+        subject.update_objects_with_query_results(objects_to_be_renamed)
+      end
+    end
   end
 end
