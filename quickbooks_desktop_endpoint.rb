@@ -7,7 +7,7 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
 
   ['products', 'orders', 'inventory', 'returns', 'customers'].each do |path|
     post "/add_#{path}" do
-      config = { connection_id: '54372cb069702d1f59000000' }
+      config = { connection_id: request.env['HTTP_X_HUB_STORE'] }
       integration = Persistence::Object.new config, @payload
 
       integration.save
@@ -36,7 +36,8 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
 
   post "/get_notifications" do
     # NOTE Confirm this would be the same sent in the Send webhooks
-    config = @config.merge connection_id: request.env["HTTP_X_HUB_STORE"]
+    config = @config.merge connection_id: request.env['HTTP_X_HUB_STORE']
+
     payload = { "notification_#{config[:object_type]}" => {} }
 
     integration = Persistence::Object.new config, payload
