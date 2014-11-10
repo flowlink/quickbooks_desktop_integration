@@ -35,10 +35,10 @@ module QBWC
     end
 
     # TODO Create a way to do this for all objects
-    def process_queries(pending_objects_hash)
+    def process_queries(objects_hash)
+      objects_hash.inject('') do |result, object_hash|
 
-      puts "process_queries: #{pending_objects_hash}"
-      pending_objects_hash.inject('') do |result, (object_type, objects)|
+        object_type = object_hash.keys.first.capitalize
 
         class_name = "QBWC::Request::#{object_type}".constantize
 

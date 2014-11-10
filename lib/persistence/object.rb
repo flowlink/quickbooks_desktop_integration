@@ -90,7 +90,7 @@ module Persistence
     #                             :list_id => '800000-88888',
     #                             :edit_sequence => '12312312321'} ]
     def update_objects_with_query_results(objects_to_be_renamed)
-      objects_to_be_renamed.each do |object|
+      objects_to_be_renamed.to_a.compact.each do |object|
         filename     = "#{base_name}/#{ready}/#{object[:object_type].pluralize}_#{object[:object_ref]}"
         s3_object    = amazon_s3.bucket.objects["#{filename}.csv"]
         s3_object.move_to("#{filename}_#{object[:edit_sequence]}_#{object[:list_id]}.csv")
@@ -145,6 +145,9 @@ module Persistence
     #   ],
     #   :failed => [] }
     def update_objects_files(statuses_objects)
+      # TODO not sure if the statuses_objects expected values is correct
+      return
+
       statuses_objects.keys.each do |status_key|
         statuses_objects[status_key].each do |types|
           types.keys.each do |object_type|

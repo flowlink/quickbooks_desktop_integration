@@ -110,8 +110,8 @@ class QBWCEndpoint < Sinatra::Base
 
   def send_request_xml(connection_id, body)
     @qbxml = <<-XML
-<?xml version="1.0" encoding="UTF-8"?>
-<?qbxml version="13.0"?>
+<?xml version="1.0" encoding="utf-8"?>
+<?qbxml version="7.0"?>
 <QBXML>
    <QBXMLMsgsRq onError="stopOnError">
     #{QBWC::Producer.new(connection_id: connection_id).build_available_actions_to_request}
@@ -119,10 +119,14 @@ class QBWCEndpoint < Sinatra::Base
 </QBXML>
     XML
 
+    #{CGI.escapeHTML(QBWC::Producer.new(connection_id: connection_id).build_available_actions_to_request)}
+
+    puts @qbxml
     erb :'qbwc/send_request_xml'
   end
 
   def receive_response_xml(connection_id, body)
+    puts body
     QBWC::Consumer.new(connection_id: connection_id).digest_response_into_actions(body)
 
     erb :'qbwc/receive_response_xml'
