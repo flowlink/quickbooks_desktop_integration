@@ -8,7 +8,7 @@ module QBWC
       end
 
       def process
-        return { :statuses_objects => nil } if records.empty?
+        return { 'statuses_objects' => nil } if records.empty?
 
 
         # TODO Error handling

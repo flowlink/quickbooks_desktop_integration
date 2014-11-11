@@ -156,6 +156,7 @@ module Persistence
     #   ],
     #   :failed => [] }
     def update_objects_files(statuses_objects)
+puts " \n **** update_objects_files: #{statuses_objects.inspect}"
       return if statuses_objects.nil?
 
       statuses_objects.keys.each do |status_key|
@@ -164,12 +165,12 @@ module Persistence
             object = types[object_type]
 
             filename = "#{base_name}/#{ready}/#{object_type}_#{object[:id]}"
-            filename << "_#{object[:edit_sequence]}_#{object[:list_id]}" if object[:list_id].present?
+            filename << "_#{object[:edit_sequence]}_#{object[:list_id]}" if object[:list_id].to_s.empty?
             s3_object = amazon_s3.bucket.objects["#{filename}.csv"]
 
             status_folder = send status_key
             new_filename = "#{base_name}/#{status_folder}/#{object_type}_#{object[:id]}"
-            new_filename << "_#{object[:edit_sequence]}_#{object[:list_id]}" if object[:list_id].present?
+            new_filename << "_#{object[:edit_sequence]}_#{object[:list_id]}" if object[:list_id].to_s.empty?
 
             s3_object.move_to("#{new_filename}.csv")
           end
