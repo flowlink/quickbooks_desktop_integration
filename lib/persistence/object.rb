@@ -156,8 +156,7 @@ module Persistence
     #   ],
     #   :failed => [] }
     def update_objects_files(statuses_objects)
-      # TODO not sure if the statuses_objects expected values is correct
-      return
+      return if statuses_objects.nil?
 
       statuses_objects.keys.each do |status_key|
         statuses_objects[status_key].each do |types|
