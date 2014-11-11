@@ -12,7 +12,7 @@ http_interactions:
       Accept-Encoding:
       - ''
       X-Amz-Copy-Source:
-      - /quickbooks-desktop-integration/54372cb069702d1f59000000/wombat_ready/products_SPREE-T-SHIRT293178.csv
+      - /quickbooks-desktop-integration/54372cb069702d1f59000000/wombat_ready/products_SPREE-T-SHIRT293178_.csv
       X-Amz-Metadata-Directive:
       - COPY
       X-Amz-Storage-Class:
@@ -20,7 +20,7 @@ http_interactions:
       User-Agent:
       - aws-sdk-ruby/1.57.0 ruby/2.0.0 x86_64-darwin14.0.0
       Date:
-      - Tue, 11 Nov 2014 18:25:44 GMT
+      - Tue, 11 Nov 2014 19:06:14 GMT
       Authorization:
       - AUTHORIZATION
       Accept:
@@ -31,20 +31,20 @@ http_interactions:
       message: Not Found
     headers:
       X-Amz-Request-Id:
-      - C27A0032AB0D4669
+      - 303481FFF73C715E
       X-Amz-Id-2:
-      - Dk+TGkvIwlAWRlMYGbmRTL39QC2W13uo7JdyR+uvx+PbGZ7m8c3wQvW4U8dEizIJ
+      - HJ3itDNQWocehzb6p+Byi6ZIwymFECvVA1LnDO3ftSXk8WNufD/DPf4YlKVHrtH5kOMUe5+NyNc=
       Content-Type:
       - application/xml
       Transfer-Encoding:
       - chunked
       Date:
-      - Tue, 11 Nov 2014 18:25:45 GMT
+      - Tue, 11 Nov 2014 19:06:14 GMT
       Server:
       - AmazonS3
     body:
       encoding: UTF-8
-      string: <Error><Code>NoSuchKey</Code><Message>The specified key does not exist.</Message><Key>54372cb069702d1f59000000/wombat_ready/products_SPREE-T-SHIRT293178.csv</Key><RequestId>C27A0032AB0D4669</RequestId><HostId>Dk+TGkvIwlAWRlMYGbmRTL39QC2W13uo7JdyR+uvx+PbGZ7m8c3wQvW4U8dEizIJ</HostId></Error>
+      string: <Error><Code>NoSuchKey</Code><Message>The specified key does not exist.</Message><Key>54372cb069702d1f59000000/wombat_ready/products_SPREE-T-SHIRT293178_.csv</Key><RequestId>303481FFF73C715E</RequestId><HostId>HJ3itDNQWocehzb6p+Byi6ZIwymFECvVA1LnDO3ftSXk8WNufD/DPf4YlKVHrtH5kOMUe5+NyNc=</HostId></Error>
     http_version: 
-  recorded_at: Tue, 11 Nov 2014 18:25:45 GMT
+  recorded_at: Tue, 11 Nov 2014 19:06:15 GMT
 recorded_with: VCR 2.9.3

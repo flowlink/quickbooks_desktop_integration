@@ -56,7 +56,7 @@ module Persistence
     #
     def save
       objects.each do |object|
-        file = "#{base_name}/#{pending}/#{payload_key.pluralize}_#{object['id']}.csv"
+        file = "#{base_name}/#{pending}/#{payload_key.pluralize}_#{object['id']}_.csv"
         amazon_s3.export file_name: file, objects: [object]
       end
     end
@@ -73,7 +73,7 @@ module Persistence
 
       collection.with_prefix(prefix).enum.map do |s3_object|
         connection_id, folder, filename = s3_object.key.split("/")
-        object_type, object_ref = filename.split("_")
+        object_type, object_ref, _ = filename.split("_")
 
         contents = s3_object.read
 
@@ -91,7 +91,7 @@ module Persistence
     #                             :edit_sequence => '12312312321'} ]
     def update_objects_with_query_results(objects_to_be_renamed)
       objects_to_be_renamed.to_a.compact.each do |object|
-        filename     = "#{base_name}/#{ready}/#{object[:object_type].pluralize}_#{object[:object_ref]}"
+        filename     = "#{base_name}/#{ready}/#{object[:object_type].pluralize}_#{object[:object_ref]}_"
 
         # TODO what if the file is not there? we should probably at least
         # rescue / log the exception properly and move on with the others?
@@ -101,7 +101,7 @@ module Persistence
         #
         begin
           s3_object    = amazon_s3.bucket.objects["#{filename}.csv"]
-          s3_object.move_to("#{filename}_#{object[:list_id]}_#{object[:edit_sequence]}.csv")
+          s3_object.move_to("#{filename}#{object[:list_id]}_#{object[:edit_sequence]}.csv")
         rescue AWS::S3::Errors::NoSuchKey => e
           # oooops
         end
@@ -165,14 +165,14 @@ puts " \n **** update_objects_files: #{statuses_objects.inspect}"
           types.keys.each do |object_type|
             object = types[object_type]
 
-            filename = "#{base_name}/#{ready}/#{object_type}_#{object[:id]}"
-            filename << "_#{object[:list_id]}_" if object[:list_id].to_s.empty?
+            filename = "#{base_name}/#{ready}/#{object_type}_#{object[:id]}_"
+            filename << "#{object[:list_id]}_" if object[:list_id].to_s.empty?
 
             collection = amazon_s3.bucket.objects
             collection.with_prefix(filename).enum.each do |s3_object|
               status_folder = send status_key
-              new_filename = "#{base_name}/#{status_folder}/#{object_type}_#{object[:id]}"
-              new_filename << "_#{object[:list_id]}_#{object[:edit_sequence]}" if object[:list_id].to_s.empty?
+              new_filename = "#{base_name}/#{status_folder}/#{object_type}_#{object[:id]}_"
+              new_filename << "#{object[:list_id]}_#{object[:edit_sequence]}" if object[:list_id].to_s.empty?
 
               s3_object.move_to("#{new_filename}.csv")
             end
