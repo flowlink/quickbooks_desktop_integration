@@ -23,9 +23,10 @@ module QBWC
         puts records.inspect
         puts to_wombat
 
-        config  = { origin: 'wombat', connection_id: '54372cb069702d1f59000000'  }
+        config  = { origin: 'wombat', connection_id: '53ab0943436f6e9a6f080000'  }
 
         Persistence::Object.new(config, {}).update_objects_with_query_results(objects_to_update)
+        nil
       end
 
       private
