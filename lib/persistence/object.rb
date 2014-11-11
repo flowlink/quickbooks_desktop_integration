@@ -128,7 +128,8 @@ module Persistence
       collection.with_prefix(prefix).enum.map do |s3_object|
         connection_id, folder, filename = s3_object.key.split('/')
         object_type, file_name, edit_sequence, list_id = filename.split('_')
-        # list_id.gsub!('.csv','')
+
+        list_id.gsub!('.csv','') unless list_id.nil?
 
         contents = s3_object.read
 
