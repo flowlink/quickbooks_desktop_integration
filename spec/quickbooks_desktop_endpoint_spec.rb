@@ -54,14 +54,13 @@ describe QuickbooksDesktopEndpoint do
     headers = auth.merge("HTTP_X_HUB_STORE" => "54591b3a5869632afc090000")
     request = {
       parameters: {
-        quickbooks_object_type: "inventory",
         quickbooks_since: '2014-11-10T09:10:55Z',
         quickbooks_force_config: 0
       }
     }
     
     VCR.use_cassette "requests/425435435234532" do
-      post "/get_data", request.to_json, headers
+      post "/get_inventory", request.to_json, headers
 
       expect(json_response[:summary]).to eq nil
       expect(last_response.status).to eq 200

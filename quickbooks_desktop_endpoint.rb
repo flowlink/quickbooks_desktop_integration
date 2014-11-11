@@ -54,6 +54,20 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
     result 200
   end
 
+  post "/get_inventory" do
+    config = {
+      connection_id: request.env['HTTP_X_HUB_STORE'],
+      flow: "receive_inventory",
+      origin: "quickbooks"
+    }.merge(@config).with_indifferent_access
+
+    Persistence::Settings.new(config).setup
+
+    result 200
+  end
+
+  # post "/get_product"
+
   # Note that once data is returned files will be moved
   # to another folder so chances are it will be very hard to get those
   # files back in case something explodes after this point.

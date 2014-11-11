@@ -27,24 +27,28 @@ module QBWC
 
     def build_polling_request
       string = ''
-      settings.each do |record|
+      settings('receive').each do |record|
         object_type = record.keys.first
         config = record.values.first
 
-        if config['polling'] || true
-          klass = "QBWC::Request::#{object_type.pluralize.capitalize}".constantize
-          string << klass.polling_xml(config['quickbooks_since'])
-        end
+        klass = "QBWC::Request::#{object_type.pluralize.capitalize}".constantize
+        string << klass.polling_xml(config['quickbooks_since'])
       end
 
       string
     end
 
-    private
-    def settings
-      @settings ||= s3_settings.fetch
+    def settings(prefix = nil)
+      @settings ||= {}
+
+      if prefix
+        @settings[prefix] ||= s3_settings.fetch prefix
+      else
+        @settings['send'] ||= s3_settings.fetch
+      end
     end
 
+    private
     # TODO Create a way to do this for all objects
     # probably a way to use the keys (products, )
     def process_insert_update(objects_hash)
