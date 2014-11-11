@@ -60,13 +60,12 @@ module QBWC
 
     # TODO Create a way to do this for all objects
     def process_queries(objects_hash)
-      objects_hash.inject('') do |result, object_hash|
+      objects_hash.inject('') do |result, objects|
+        object_type = objects.keys.first
 
-        object_type = object_hash.keys.first.capitalize
+        class_name = "QBWC::Request::#{object_type.capitalize}".constantize
 
-        class_name = "QBWC::Request::#{object_type}".constantize
-
-        result << class_name.generate_request_queries(objects)
+        result << class_name.generate_request_queries(objects[object_type])
       end
     end
   end

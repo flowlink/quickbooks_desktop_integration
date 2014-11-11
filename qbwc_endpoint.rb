@@ -78,6 +78,7 @@ class QBWCEndpoint < Sinatra::Base
   end
 
 
+
   def client_version(connection_id, body)
     erb :'qbwc/client_version'
   end
