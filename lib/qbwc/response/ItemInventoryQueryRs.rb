@@ -26,6 +26,8 @@ module QBWC
         config  = { origin: 'wombat', connection_id: config[:connection_id]  }
 
         Persistence::Object.new(config, {}).update_objects_with_query_results(objects_to_update)
+
+        Persistence::Object.new(config, {}).save_for_polling(objects_to_update) if settings_for_polling
         nil
       end
 

@@ -3,6 +3,8 @@ require 'nori'
 require 'qbwc/response/ItemInventoryAddRs'
 require 'qbwc/response/ItemInventoryModRs'
 require 'qbwc/response/ItemInventoryQueryRs'
+require 'qbwc/response/CustomerQueryRs'
+require 'qbwc/response/CustomerAddRs'
 
 module QBWC
   module Response

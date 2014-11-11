@@ -7,7 +7,7 @@ require 'persistence/object'
 require 'persistence/settings'
 
 require 'qbwc/response/all'
-require 'qbwc/request/customer'
+require 'qbwc/request/customers'
 require 'qbwc/request/products'
 require 'qbwc/request/inventories'
 
