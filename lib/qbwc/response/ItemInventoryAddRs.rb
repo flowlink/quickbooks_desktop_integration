@@ -1,44 +1,40 @@
 module QBWC
   module Response
     class ItemInventoryAddRs
-      attr_reader :result
+      attr_reader :records
 
-      def initialize(result)
-        @result = result
+      def initialize(records)
+        @records = records
       end
 
       def process
-        # result['ItemInventoryAddRs'].values.each do |object|
-          # object['ItemInventoryRet']['Name']
-        # end
+        return { :statuses_objects => nil } if records.empty?
 
-        nil
+
+        # TODO Error handling
+
+        # &lt;QBXML&gt;
+        # &lt;QBXMLMsgsRs&gt;
+        # &lt;ItemInventoryAddRs statusCode="3100" statusSeverity="Error" statusMessage="The name &amp;quot;SPREE-T-SHIRT697877&amp;quot; of the list element is already in use." /&gt;
+        # &lt;/QBXMLMsgsRs&gt;
+        # &lt;/QBXML&gt;
+        # </response><hresult /><message /></receiveResponseXML></soap:Body></soap:Envelope>
+
+puts " \n\n\n **** Records: #{records.inspect} \n\n"
+
+        products = []
+        records.each do |object|
+          products << { :products => {
+                                       :id            => object['Name'],
+                                       :list_id       => object['ListID'],
+                                       :edit_sequence => object['EditSequence']
+                                      }
+                      }
+        end
+
+        { :statuses_objects => { :processed => products, :failed => [] } }.with_indifferent_access
+
         #Move files and create  notifications
-        # result['ItemInventoryAddRs'].values.each do ||
-        # end
-        # => {"ItemInventoryAddRs"=>
-  # {"ItemInventoryRet"=>
-    # {"ListID"=>"80000011-1415662181",
-     #"TimeCreated"=>#<DateTime: 2014-11-10T21:29:41-02:00 ((2456972j,84581s,0n),-7200s,2299161j)>,
-     #"TimeModified"=>#<DateTime: 2014-11-10T21:29:41-02:00 ((2456972j,84581s,0n),-7200s,2299161j)>,
-     # "EditSequence"=>"1415662181",
-     # "Name"=>"12154",
-     # "FullName"=>"12154",
-     # "IsActive"=>true,
-     # "Sublevel"=>"0",
-     # "SalesPrice"=>"0.00",
-     # "IncomeAccountRef"=>{"ListID"=>"8000001A-1415022649", "FullName"=>"Inventory Asset"},
-     # "PurchaseCost"=>"0.00",
-     # "COGSAccountRef"=>{"ListID"=>"8000001A-1415022649", "FullName"=>"Inventory Asset"},
-     # "AssetAccountRef"=>{"ListID"=>"8000001A-1415022649", "FullName"=>"Inventory Asset"},
-     # "QuantityOnHand"=>"0",
-     # "AverageCost"=>"0.00",
-     # "QuantityOnOrder"=>"0",
-     # "QuantityOnSalesOrder"=>"0"},
-   # "@requestID"=>"SXRlbUludmVudG9yeUFkZHwxNTA=",
-   # "@statusCode"=>"0",
-   # "@statusSeverity"=>"Info",
-   # "@statusMessage"=>"Status OK"}}
       end
     end
   end
