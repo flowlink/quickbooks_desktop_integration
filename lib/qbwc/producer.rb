@@ -17,6 +17,9 @@ module QBWC
       request_xml << process_queries(integration.process_pending_objects)
 
       # Get another pending operations...
+
+      # Polling operations (receive products and inventories)
+      request_xml << QBWC::Request::Inventories.polling_xml
     end
 
     private
