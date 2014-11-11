@@ -166,14 +166,16 @@ puts " \n **** update_objects_files: #{statuses_objects.inspect}"
             object = types[object_type]
 
             filename = "#{base_name}/#{ready}/#{object_type}_#{object[:id]}"
-            filename << "_#{object[:list_id]}_#{object[:edit_sequence]}" if object[:list_id].to_s.empty?
-            s3_object = amazon_s3.bucket.objects["#{filename}.csv"]
+            filename << "_#{object[:list_id]}_" if object[:list_id].to_s.empty?
 
-            status_folder = send status_key
-            new_filename = "#{base_name}/#{status_folder}/#{object_type}_#{object[:id]}"
-            new_filename << "_#{object[:list_id]}_#{object[:edit_sequence]}" if object[:list_id].to_s.empty?
+            collection = amazon_s3.bucket.objects
+            collection.with_prefix(filename).enum.each do |s3_object|
+              status_folder = send status_key
+              new_filename = "#{base_name}/#{status_folder}/#{object_type}_#{object[:id]}"
+              new_filename << "_#{object[:list_id]}_#{object[:edit_sequence]}" if object[:list_id].to_s.empty?
 
-            s3_object.move_to("#{new_filename}.csv")
+              s3_object.move_to("#{new_filename}.csv")
+            end
           end
         end
       end
