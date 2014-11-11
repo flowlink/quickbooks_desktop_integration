@@ -128,13 +128,13 @@ module Persistence
       collection.with_prefix(prefix).enum.map do |s3_object|
         connection_id, folder, filename = s3_object.key.split('/')
         object_type, file_name, edit_sequence, list_id = filename.split('_')
-
+        list_id.gsub!('.csv','')
 
         contents = s3_object.read
 
         { object_type.pluralize =>
             { list_id: list_id, edit_sequence: edit_sequence }.
-                                           merge(Converter.csv_to_hash(contents).first)
+                                           merge(Converter.csv_to_hash(contents).first).with_indifferent_access
         }
       end.flatten
     end
