@@ -10,32 +10,13 @@ module QBWC
       # Parse and break response to specific objects
       objects = QBWC::Response::All.new(response_xml).process
 
-      # Get all objects parsed and transform to these operations:
-      # objects_to_be_renamed = [ { :object_type => 'product'
-      #                             :object_ref => 'T-SHIRT-SPREE-1',
-      #                             :list_id => '800000-88888',
-      #                             :edit_sequence => '12312312321'} ]
+      # TODO Think another way to find the right objects to the right methods
+      objects.each do |request|
+        next if request.nil?
+        integration.update_objects_files(request[:statuses_objects]) if request.keys.first == :statuses_objects
+      end
 
-
-      # NOTE Isn't this already called by the Response objects?
-      # integration.update_objects_with_query_results(objects)
-
-      # { :processed => [
-      #     { 'products' =>  {
-      #         :list_id => '111',
-      #         :edit_sequence => '22222',
-      #         ....
-      #        },
-      #       'orders' => {
-      #         :list_id => '111',
-      #         :edit_sequence => '22222',
-      #         ....
-      #       }
-      #     }
-      #   ],
-      #   :failed => [] }
-      integration.update_objects_files(objects)
-
+      # We need to create a service to create notifications, here
       #Notifications.create
     end
   end
