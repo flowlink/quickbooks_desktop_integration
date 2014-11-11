@@ -1,57 +1,8 @@
 ---
 http_interactions:
 - request:
-    method: put
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54372cb069702d1f59000000/wombat_processed/products_SPREE-T-SHIRT293178.csv
-    body:
-      encoding: UTF-8
-      string: ''
-    headers:
-      Content-Type:
-      - ''
-      Accept-Encoding:
-      - ''
-      X-Amz-Copy-Source:
-      - /quickbooks-desktop-integration/54372cb069702d1f59000000/wombat_ready/products_SPREE-T-SHIRT293178.csv
-      X-Amz-Metadata-Directive:
-      - COPY
-      X-Amz-Storage-Class:
-      - STANDARD
-      User-Agent:
-      - aws-sdk-ruby/1.57.0 ruby/2.0.0 x86_64-darwin14.0.0
-      Date:
-      - Tue, 11 Nov 2014 17:41:20 GMT
-      Authorization:
-      - AUTHORIZATION
-      Accept:
-      - '*/*'
-  response:
-    status:
-      code: 200
-      message: OK
-    headers:
-      X-Amz-Id-2:
-      - TkW/1mq8Yf+jkLHzyu2hwg5Y051cz59u+ebwFCHJ0BxQr+k7FAhFyminevRXuCfr
-      X-Amz-Request-Id:
-      - C81C8FDA22FAD150
-      Date:
-      - Tue, 11 Nov 2014 17:41:22 GMT
-      Content-Type:
-      - application/xml
-      Content-Length:
-      - '234'
-      Server:
-      - AmazonS3
-    body:
-      encoding: UTF-8
-      string: |-
-        <?xml version="1.0" encoding="UTF-8"?>
-        <CopyObjectResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><LastModified>2014-11-11T17:41:22.000Z</LastModified><ETag>&quot;2b256dc335a778d105d189a67b17133b&quot;</ETag></CopyObjectResult>
-    http_version: 
-  recorded_at: Tue, 11 Nov 2014 17:41:21 GMT
-- request:
-    method: delete
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54372cb069702d1f59000000/wombat_ready/products_SPREE-T-SHIRT293178.csv
+    method: get
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/?max-keys=1000&prefix=54372cb069702d1f59000000/wombat_ready/products_SPREE-T-SHIRT293178
     body:
       encoding: US-ASCII
       string: ''
@@ -63,7 +14,99 @@ http_interactions:
       User-Agent:
       - aws-sdk-ruby/1.57.0 ruby/2.0.0 x86_64-darwin14.0.0
       Date:
-      - Tue, 11 Nov 2014 17:41:21 GMT
+      - Tue, 11 Nov 2014 18:25:40 GMT
+      Authorization:
+      - AUTHORIZATION
+      Accept:
+      - '*/*'
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amz-Id-2:
+      - 7369tUauUrHc2zubUra1/10u8rWyyW0HagBraQbWQQiIlS3CvzyL0s/S0oad9S4i
+      X-Amz-Request-Id:
+      - DC4CE66C2D193C96
+      Date:
+      - Tue, 11 Nov 2014 18:25:41 GMT
+      Content-Type:
+      - application/xml
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: |-
+        <?xml version="1.0" encoding="UTF-8"?>
+        <ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>quickbooks-desktop-integration</Name><Prefix>54372cb069702d1f59000000/wombat_ready/products_SPREE-T-SHIRT293178</Prefix><Marker></Marker><MaxKeys>1000</MaxKeys><IsTruncated>false</IsTruncated><Contents><Key>54372cb069702d1f59000000/wombat_ready/products_SPREE-T-SHIRT293178(1).csv</Key><LastModified>2014-11-11T17:41:18.000Z</LastModified><ETag>&quot;2b256dc335a778d105d189a67b17133b&quot;</ETag><Size>1138</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>aws</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents></ListBucketResult>
+    http_version: 
+  recorded_at: Tue, 11 Nov 2014 18:25:40 GMT
+- request:
+    method: put
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54372cb069702d1f59000000/wombat_processed/products_SPREE-T-SHIRT293178.csv
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      X-Amz-Copy-Source:
+      - /quickbooks-desktop-integration/54372cb069702d1f59000000/wombat_ready/products_SPREE-T-SHIRT293178%281%29.csv
+      X-Amz-Metadata-Directive:
+      - COPY
+      X-Amz-Storage-Class:
+      - STANDARD
+      User-Agent:
+      - aws-sdk-ruby/1.57.0 ruby/2.0.0 x86_64-darwin14.0.0
+      Date:
+      - Tue, 11 Nov 2014 18:25:40 GMT
+      Authorization:
+      - AUTHORIZATION
+      Accept:
+      - '*/*'
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amz-Id-2:
+      - 4YgASRpOuUIMhVV3imDuy1XMcF5KVfSIrnLIYDGlY5UP2TD2t8gduEf7jK3u6CPr
+      X-Amz-Request-Id:
+      - 64A02C7083570E2C
+      Date:
+      - Tue, 11 Nov 2014 18:25:42 GMT
+      Content-Type:
+      - application/xml
+      Content-Length:
+      - '234'
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: |-
+        <?xml version="1.0" encoding="UTF-8"?>
+        <CopyObjectResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><LastModified>2014-11-11T18:25:42.000Z</LastModified><ETag>&quot;2b256dc335a778d105d189a67b17133b&quot;</ETag></CopyObjectResult>
+    http_version: 
+  recorded_at: Tue, 11 Nov 2014 18:25:41 GMT
+- request:
+    method: delete
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54372cb069702d1f59000000/wombat_ready/products_SPREE-T-SHIRT293178(1).csv
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby/1.57.0 ruby/2.0.0 x86_64-darwin14.0.0
+      Date:
+      - Tue, 11 Nov 2014 18:25:41 GMT
       Authorization:
       - AUTHORIZATION
       Accept:
@@ -74,16 +117,16 @@ http_interactions:
       message: No Content
     headers:
       X-Amz-Id-2:
-      - cLn9v1G3lKBGDvdgj+FTtpQjxsYD8yLIWKQa3tKlq8o7niUoM257ogBComRiah0U
+      - D+gHpKW2mtUV6JMv8XCRFKxyuSfl21nDArTry4G7E5hwH59UiLiMfOVfltauzc8V
       X-Amz-Request-Id:
-      - F8418FEB298B038C
+      - E344F13B5E9E56FE
       Date:
-      - Tue, 11 Nov 2014 17:41:23 GMT
+      - Tue, 11 Nov 2014 18:25:43 GMT
       Server:
       - AmazonS3
     body:
       encoding: UTF-8
       string: ''
     http_version: 
-  recorded_at: Tue, 11 Nov 2014 17:41:22 GMT
+  recorded_at: Tue, 11 Nov 2014 18:25:42 GMT
 recorded_with: VCR 2.9.3

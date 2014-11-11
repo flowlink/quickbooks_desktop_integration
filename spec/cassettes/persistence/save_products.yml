@@ -14,7 +14,7 @@ http_interactions:
       User-Agent:
       - aws-sdk-ruby/1.57.0 ruby/2.0.0 x86_64-darwin14.0.0
       Date:
-      - Tue, 11 Nov 2014 17:41:00 GMT
+      - Tue, 11 Nov 2014 18:25:42 GMT
       Authorization:
       - AUTHORIZATION
       Accept:
@@ -25,11 +25,11 @@ http_interactions:
       message: OK
     headers:
       X-Amz-Id-2:
-      - p4XEcpk8zvwSSbyJlz5C7UIAEeSbMVxm4LvVYScYT2e0No3jvzZ/h/s+HGa6HSrN
+      - t6N8q6VAvL7au764VmVAWsfcxBiwA8miBSo5RHuAirOslgWytyLvCRc0GljK01cn
       X-Amz-Request-Id:
-      - 8C4196B1D4A426A5
+      - 5430CBD68A976E13
       Date:
-      - Tue, 11 Nov 2014 17:41:01 GMT
+      - Tue, 11 Nov 2014 18:25:43 GMT
       Transfer-Encoding:
       - chunked
       Server:
@@ -40,7 +40,7 @@ http_interactions:
         <?xml version="1.0" encoding="UTF-8"?>
         <VersioningConfiguration xmlns="http://s3.amazonaws.com/doc/2006-03-01/"/>
     http_version: 
-  recorded_at: Tue, 11 Nov 2014 17:41:00 GMT
+  recorded_at: Tue, 11 Nov 2014 18:25:42 GMT
 - request:
     method: head
     uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54372cb069702d1f59000000/wombat_pending/products_SPREE-T-SHIRT293178.csv
@@ -55,85 +55,36 @@ http_interactions:
       User-Agent:
       - aws-sdk-ruby/1.57.0 ruby/2.0.0 x86_64-darwin14.0.0
       Date:
-      - Tue, 11 Nov 2014 17:41:00 GMT
+      - Tue, 11 Nov 2014 18:25:42 GMT
       Authorization:
       - AUTHORIZATION
       Accept:
       - '*/*'
   response:
     status:
-      code: 200
-      message: OK
+      code: 404
+      message: Not Found
     headers:
-      X-Amz-Id-2:
-      - u8R/SEjleYf5u78VeYMqk2BhYctCdIQPwKmxFZJ2HHUkvHGRgmWT+laAT8L5hRkd
       X-Amz-Request-Id:
-      - E8F790A65E80AA7E
-      Date:
-      - Tue, 11 Nov 2014 17:41:02 GMT
-      Last-Modified:
-      - Mon, 10 Nov 2014 13:10:08 GMT
-      Etag:
-      - '"2b256dc335a778d105d189a67b17133b"'
-      Accept-Ranges:
-      - bytes
-      Content-Type:
-      - ''
-      Content-Length:
-      - '1138'
-      Server:
-      - AmazonS3
-    body:
-      encoding: UTF-8
-      string: ''
-    http_version: 
-  recorded_at: Tue, 11 Nov 2014 17:41:01 GMT
-- request:
-    method: get
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/?max-keys=1000&prefix=54372cb069702d1f59000000/wombat_pending/products_SPREE-T-SHIRT293178(
-    body:
-      encoding: US-ASCII
-      string: ''
-    headers:
-      Content-Type:
-      - ''
-      Accept-Encoding:
-      - ''
-      User-Agent:
-      - aws-sdk-ruby/1.57.0 ruby/2.0.0 x86_64-darwin14.0.0
-      Date:
-      - Tue, 11 Nov 2014 17:41:01 GMT
-      Authorization:
-      - AUTHORIZATION
-      Accept:
-      - '*/*'
-  response:
-    status:
-      code: 200
-      message: OK
-    headers:
+      - 66917E9AD049AEB6
       X-Amz-Id-2:
-      - or8mXo1PKSKJjttWn7jVPyzYx3/mG0ZENX3Ea3fjZKw+smDBXovsWdxPkEt72JL1
-      X-Amz-Request-Id:
-      - 7548F2B31DAAE78E
-      Date:
-      - Tue, 11 Nov 2014 17:41:03 GMT
+      - Rugv8xUFbVwyfQGZskjJ5oMrT1VVE3Ewsq3X6R/QDbS6H1FDPbRbm/0aEBRj2F4Q
       Content-Type:
       - application/xml
       Transfer-Encoding:
       - chunked
+      Date:
+      - Tue, 11 Nov 2014 18:25:42 GMT
       Server:
       - AmazonS3
     body:
       encoding: UTF-8
-      string: |-
-        <?xml version="1.0" encoding="UTF-8"?>
-        <ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>quickbooks-desktop-integration</Name><Prefix>54372cb069702d1f59000000/wombat_pending/products_SPREE-T-SHIRT293178(</Prefix><Marker></Marker><MaxKeys>1000</MaxKeys><IsTruncated>false</IsTruncated></ListBucketResult>
+      string: ''
     http_version: 
-  recorded_at: Tue, 11 Nov 2014 17:41:02 GMT
+  recorded_at: Tue, 11 Nov 2014 18:25:43 GMT
 - request:
     method: put
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54372cb069702d1f59000000/wombat_pending/products_SPREE-T-SHIRT293178(1).csv
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54372cb069702d1f59000000/wombat_pending/products_SPREE-T-SHIRT293178.csv
     body:
       encoding: ASCII-8BIT
       string: |-
@@ -149,7 +100,7 @@ http_interactions:
       User-Agent:
       - aws-sdk-ruby/1.57.0 ruby/2.0.0 x86_64-darwin14.0.0
       Date:
-      - Tue, 11 Nov 2014 17:41:02 GMT
+      - Tue, 11 Nov 2014 18:25:43 GMT
       Authorization:
       - AUTHORIZATION
       Accept:
@@ -160,11 +111,11 @@ http_interactions:
       message: OK
     headers:
       X-Amz-Id-2:
-      - K4g6YvIcOQOhXy5n8MsQY2Vcth2u6tbVHpo3ysMnp41hkv/DloGp5e50p+ib0knr
+      - rWLv31/AIZ0biINx/h7vN1XfOl13E1n+we8vR3qtxh0qkTlyIaLXbbfyE9SFQ8NW
       X-Amz-Request-Id:
-      - 5F8CB49CED8BAF13
+      - D87DC41773027895
       Date:
-      - Tue, 11 Nov 2014 17:41:04 GMT
+      - Tue, 11 Nov 2014 18:25:45 GMT
       Etag:
       - '"2b256dc335a778d105d189a67b17133b"'
       Content-Length:
@@ -175,5 +126,5 @@ http_interactions:
       encoding: UTF-8
       string: ''
     http_version: 
-  recorded_at: Tue, 11 Nov 2014 17:41:03 GMT
+  recorded_at: Tue, 11 Nov 2014 18:25:44 GMT
 recorded_with: VCR 2.9.3

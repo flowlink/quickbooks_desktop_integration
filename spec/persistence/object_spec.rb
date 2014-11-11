@@ -40,7 +40,8 @@ module Persistence
       VCR.use_cassette "persistence/get_ready_objects" do
         subject = described_class.new config, payload
         objects = subject.get_ready_objects_to_send
-        expect(objects.first).to have_key('products')
+        puts "**** #{objects.inspect}"
+        expect(objects.first).to have_key('inventories')
       end
     end
 
