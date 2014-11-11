@@ -18,7 +18,7 @@ module QBWC
 
       # Get another pending operations...
 
-      # Polling operations (receive products and inventories)
+      # Polling operations (receive products and inventories) WIP
       request_xml << QBWC::Request::Inventories.polling_xml
     end
 

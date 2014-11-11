@@ -15,7 +15,10 @@ module QBWC
       #                             :object_ref => 'T-SHIRT-SPREE-1',
       #                             :list_id => '800000-88888',
       #                             :edit_sequence => '12312312321'} ]
-      integration.update_objects_with_query_results(objects)
+
+
+      # NOTE Isn't this already called by the Response objects?
+      # integration.update_objects_with_query_results(objects)
 
       # { :processed => [
       #     { 'products' =>  {

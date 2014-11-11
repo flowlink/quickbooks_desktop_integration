@@ -92,8 +92,19 @@ module Persistence
     def update_objects_with_query_results(objects_to_be_renamed)
       objects_to_be_renamed.to_a.compact.each do |object|
         filename     = "#{base_name}/#{ready}/#{object[:object_type].pluralize}_#{object[:object_ref]}"
-        s3_object    = amazon_s3.bucket.objects["#{filename}.csv"]
-        s3_object.move_to("#{filename}_#{object[:edit_sequence]}_#{object[:list_id]}.csv")
+
+        # TODO what if the file is not there? we should probably at least
+        # rescue / log the exception properly and move on with the others?
+        # raises when file is not found:
+        #
+        #   AWS::S3::Errors::NoSuchKey - No Such Key:
+        #
+        begin
+          s3_object    = amazon_s3.bucket.objects["#{filename}.csv"]
+          s3_object.move_to("#{filename}_#{object[:edit_sequence]}_#{object[:list_id]}.csv")
+        rescue AWS::S3::Errors::NoSuchKey => e
+          # oooops
+        end
       end
     end
 

@@ -3,6 +3,9 @@ require 'nori'
 require 'nokogiri'
 require 'fast_xs'
 
+require 'active_support/core_ext/date/calculations'
+require 'active_support/core_ext/numeric/time'
+
 require File.expand_path(File.dirname(__FILE__) + '/lib/quickbooks_desktop_integration')
 
 if File.exists? File.join(File.expand_path(File.dirname(__FILE__)), '.env')

@@ -24,6 +24,16 @@ module QBWC
           XML
         end
 
+        def polling_xml
+          <<-XML
+<ItemInventoryQueryRq>
+  <MaxReturned>100</MaxReturned>
+  <FromModifiedDate>#{10.hours.ago.utc.xmlschema.split('Z').first}</FromModifiedDate>
+  <!-- <IncludeRetElement>Name</IncludeRetElement> -->
+</ItemInventoryQueryRq>
+          XML
+        end
+
         private
 
         def config
@@ -73,22 +83,6 @@ module QBWC
       </AssetAccountRef>
    </ItemInventoryMod>
 </ItemInventoryModRq>
-          XML
-        end
-
-        def polling_xml
-          <<-XML
-<?xml version="1.0" ?>
-<?qbxml version="5.0" ?>
-<QBXML>
-  <QBXMLMsgsRq onError="continueOnError">
-    <ItemInventoryQueryRq requestID="1">
-      <MaxReturned>100</MaxReturned>
-      <FromModifiedDate>#{10.minutes.ago.utc.xmlschema.split('Z').first}</FromModifiedDate>
-      <!-- <IncludeRetElement>Name</IncludeRetElement> -->
-    </ItemInventoryQueryRq>
-  </QBXMLMsgsRq>
-</QBXML>
           XML
         end
       end

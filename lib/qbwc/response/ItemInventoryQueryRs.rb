@@ -7,6 +7,8 @@ module QBWC
         @records = records
       end
 
+      # NOTE How do we know when it's a response from a single object check
+      # or when it's a response from a polling query request?
       def process
         return if records.empty?
 
