@@ -24,11 +24,13 @@ module QBWC
           XML
         end
 
-        def polling_xml
+        def polling_xml(timestamp)
+          time = Time.parse timestamp
+
           <<-XML
 <ItemInventoryQueryRq>
   <MaxReturned>100</MaxReturned>
-  <FromModifiedDate>#{10.hours.ago.utc.xmlschema.split('Z').first}</FromModifiedDate>
+  <FromModifiedDate>#{time.utc.xmlschema.split('Z').first}</FromModifiedDate>
   <!-- <IncludeRetElement>Name</IncludeRetElement> -->
 </ItemInventoryQueryRq>
           XML

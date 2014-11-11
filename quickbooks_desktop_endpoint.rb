@@ -64,27 +64,29 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
     config = {
       connection_id: request.env['HTTP_X_HUB_STORE'],
       origin: 'quickbooks'
-    }.merge(@config).hash_with_indifferent_access
+    }.merge(@config).with_indifferent_access
 
     Persistence::Settings.new(config).setup
 
-    s3_integration = Persistence::Object.new config
-    records = s3_integration.start_processing false
+    result 200
 
-    if records.any?
-      names = records.inject([]) do |names, collection|
-        name = collection.keys.first
-        add_or_merge_value name, collection.values.first
+    # s3_integration = Persistence::Object.new config
+    # records = s3_integration.start_processing false
 
-        names.push name
-      end
+    # if records.any?
+    #   names = records.inject([]) do |names, collection|
+    #     name = collection.keys.first
+    #     add_or_merge_value name, collection.values.first
 
-      # TODO Return quickbooks_since here?
+    #     names.push name
+    #   end
 
-      result 200, "Received #{names.uniq.join(', ')} records from Quickbooks"
-    else
-      result 200
-    end
+    #   # TODO Return quickbooks_since here?
+
+    #   result 200, "Received #{names.uniq.join(', ')} records from Quickbooks"
+    # else
+    #   result 200
+    # end
   end
 
   private
