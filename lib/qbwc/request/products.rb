@@ -30,11 +30,7 @@ module QBWC
       # Return the requests to insert/update for products
       def self.generate_request_insert_update(objects)
         objects.inject("") do |request, object|
-          if object[:list_id].present?
-            request << self.add_xml_to_send(object)
-          else
-            request << self.update_xml_to_send(object)
-          end
+          request << (object[:list_id].to_s.empty?? add_xml_to_send(object) : update_xml_to_send(object))
         end
       end
 
