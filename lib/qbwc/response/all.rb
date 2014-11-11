@@ -22,7 +22,8 @@ module QBWC
           class_name = "QBWC::Response::#{key}".constantize
           value = value.is_a?(Hash)? [value] : Array(value)
 
-          class_name.new(value.map(&:values).flatten.select { |value| value.is_a?(Hash) }).process(config)
+          records = value.map(&:values).flatten.select { |value| value.is_a?(Hash) }
+          class_name.new(records).process(config)
         end
       end
 
@@ -33,6 +34,8 @@ module QBWC
                              response_xml = CGI.unescapeHTML(self.response_xml)
 
                              response_xml.slice! '<?xml version="1.0" ?>'
+
+                             puts response_xml
 
                              nori = Nori.new strip_namespaces: true
 

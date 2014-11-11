@@ -7,8 +7,6 @@ module QBWC
         @records = records
       end
 
-      # NOTE How do we know when it's a response from a single object check
-      # or when it's a response from a polling query request?
       def process(config = {})
         return if records.empty?
 
@@ -21,11 +19,31 @@ module QBWC
         # &lt;/QBXML&gt;
 
         puts records.inspect
-        puts to_wombat
 
-        config  = { origin: 'wombat', connection_id: config[:connection_id]  }
+        # NOTE How do we know when it's a response from a single object check
+        # or when it's a response from a polling query request?
+        #
+        # The records receive could be either from a poll flow or from a
+        # add product / inventory flow.
+        # 
+        # Here it assumes that if one configured a /get_inventory flow it
+        # won't configure a add / update inventory flow. Another approach could
+        # be checking the TimeModified value and add it in case it was bigger
+        # than the config[:quickbooks_since] timestamp (way too hacky not reliable)
+        receive_configs = config[:receive] || []
+        receive_keys = receive_configs.map { |r| r.keys }.flatten
 
-        Persistence::Object.new(config, {}).update_objects_with_query_results(objects_to_update)
+        if receive_keys.include?('inventory')
+          payload = { inventories: to_wombat }
+
+          config = { origin: 'quickbooks' }.merge config
+          poll_persistence = Persistence::Object.new(config, payload)
+          poll_persistence.save_for_polling
+        else
+          config = { origin: 'wombat' }.merge config
+          object_persistence = Persistence::Object.new config
+          object_persistence.update_objects_with_query_results(objects_to_update)
+        end
 
         nil
       end

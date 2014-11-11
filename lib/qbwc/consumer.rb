@@ -1,16 +1,20 @@
 module QBWC
   class Consumer
-    attr_reader :integration, :config, :payload
+    attr_reader :integration, :config, :payload, :s3_settings
 
     def initialize(config = {}, payload = {})
       @config      = config
       @payload     = payload
       @integration = Persistence::Object.new config, payload
+      @s3_settings = Persistence::Settings.new config
     end
 
     def digest_response_into_actions(response_xml)
       # Parse and break response to specific objects
-      objects = QBWC::Response::All.new(response_xml).process(config)
+      receive_settings = s3_settings.settings 'receive'
+      config = config.merge receive: receive_settings
+
+      objects = Response::All.new(response_xml).process(config)
 
       puts "\n\n *** digest_response_into_actions: #{objects.inspect}"
 

@@ -1,8 +1,9 @@
 module QBWC
   class Producer
-    attr_reader :integration, :s3_settings
+    attr_reader :integration, :config, :s3_settings
 
     def initialize(config = {}, payload = {})
+      @config = config
       @integration = Persistence::Object.new config, payload
       @s3_settings = Persistence::Settings.new config
     end
@@ -27,25 +28,15 @@ module QBWC
 
     def build_polling_request
       string = ''
-      settings('receive').each do |record|
+      s3_settings.settings('receive').each do |record|
         object_type = record.keys.first
-        config = record.values.first
+        params = record.values.first
 
         klass = "QBWC::Request::#{object_type.pluralize.capitalize}".constantize
-        string << klass.polling_xml(config['quickbooks_since'])
+        string << klass.polling_xml(params['quickbooks_since'])
       end
 
       string
-    end
-
-    def settings(prefix = nil)
-      @settings ||= {}
-
-      if prefix
-        @settings[prefix] ||= s3_settings.fetch prefix
-      else
-        @settings['send'] ||= s3_settings.fetch
-      end
     end
 
     private

@@ -44,6 +44,10 @@ module Persistence
       "#{config[:origin]}_failed"
     end
 
+    def current_time
+      Time.now.to_i
+    end
+
     # Doesn't check whether the record (s) is already in s3. Only save it.
     #
     # AmazonS3 will append a number to the end of the file. e.g. orders_123123(1)
@@ -59,6 +63,11 @@ module Persistence
         file = "#{base_name}/#{pending}/#{payload_key.pluralize}_#{object['id']}_.csv"
         amazon_s3.export file_name: file, objects: [object]
       end
+    end
+
+    def save_for_polling
+      file = "#{base_name}/quickbooks_polling/waiting/#{payload_key}_#{current_time}.csv"
+      amazon_s3.export file_name: file, objects: objects
     end
 
     # Get object files to query and get ListID and EditSequence
@@ -103,8 +112,7 @@ module Persistence
           s3_object    = amazon_s3.bucket.objects["#{filename}.csv"]
           s3_object.move_to("#{filename}#{object[:list_id]}_#{object[:edit_sequence]}.csv")
         rescue AWS::S3::Errors::NoSuchKey => e
-          puts e
-          puts e.backtrace.join("\n")
+          puts " File not found: #{filename}.csv"
         end
       end
     end

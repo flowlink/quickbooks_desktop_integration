@@ -55,5 +55,15 @@ module Persistence
     def base_name
       "#{connection_id}/settings"
     end
+
+    def settings(prefix = nil)
+      @settings ||= {}
+
+      if prefix
+        @settings[prefix] ||= fetch prefix
+      else
+        @settings['send'] ||= fetch
+      end
+    end
   end
 end
