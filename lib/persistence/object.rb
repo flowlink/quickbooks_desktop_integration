@@ -56,7 +56,7 @@ module Persistence
     #
     def save
       objects.each do |object|
-        file = "#{base_name}/#{pending}/#{payload_key}_#{object['id']}.csv"
+        file = "#{base_name}/#{pending}/#{payload_key.pluralize}_#{object['id']}.csv"
         amazon_s3.export file_name: file, objects: [object]
       end
     end
@@ -101,7 +101,7 @@ module Persistence
         #
         begin
           s3_object    = amazon_s3.bucket.objects["#{filename}.csv"]
-          s3_object.move_to("#{filename}_#{object[:edit_sequence]}_#{object[:list_id]}.csv")
+          s3_object.move_to("#{filename}_#{object[:list_id]}_#{object[:edit_sequence]}.csv")
         rescue AWS::S3::Errors::NoSuchKey => e
           # oooops
         end
@@ -127,9 +127,9 @@ module Persistence
 
       collection.with_prefix(prefix).enum.map do |s3_object|
         connection_id, folder, filename = s3_object.key.split('/')
-        object_type, file_name, edit_sequence, list_id = filename.split('_')
+        object_type, file_name, list_id, edit_sequence = filename.split('_')
 
-        list_id.gsub!('.csv','') unless list_id.nil?
+        edit_sequence.gsub!('.csv','') unless edit_sequence.nil?
 
         contents = s3_object.read
 
@@ -166,12 +166,12 @@ puts " \n **** update_objects_files: #{statuses_objects.inspect}"
             object = types[object_type]
 
             filename = "#{base_name}/#{ready}/#{object_type}_#{object[:id]}"
-            filename << "_#{object[:edit_sequence]}_#{object[:list_id]}" if object[:list_id].to_s.empty?
+            filename << "_#{object[:list_id]}_#{object[:edit_sequence]}" if object[:list_id].to_s.empty?
             s3_object = amazon_s3.bucket.objects["#{filename}.csv"]
 
             status_folder = send status_key
             new_filename = "#{base_name}/#{status_folder}/#{object_type}_#{object[:id]}"
-            new_filename << "_#{object[:edit_sequence]}_#{object[:list_id]}" if object[:list_id].to_s.empty?
+            new_filename << "_#{object[:list_id]}_#{object[:edit_sequence]}" if object[:list_id].to_s.empty?
 
             s3_object.move_to("#{new_filename}.csv")
           end
