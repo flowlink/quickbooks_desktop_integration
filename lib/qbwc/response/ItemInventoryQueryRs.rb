@@ -9,7 +9,7 @@ module QBWC
 
       # NOTE How do we know when it's a response from a single object check
       # or when it's a response from a polling query request?
-      def process
+      def process(config = {})
         return if records.empty?
 
         # TODO Error handling
@@ -23,7 +23,7 @@ module QBWC
         puts records.inspect
         puts to_wombat
 
-        config  = { origin: 'wombat', connection_id: '53ab0943436f6e9a6f080000'  }
+        config  = { origin: 'wombat', connection_id: config[:connection_id]  }
 
         Persistence::Object.new(config, {}).update_objects_with_query_results(objects_to_update)
         nil

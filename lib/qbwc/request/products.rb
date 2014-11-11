@@ -29,7 +29,6 @@ module QBWC
 
       # Return the requests to insert/update for products
       def self.generate_request_insert_update(objects)
-puts "\n\n *** generate_request_insert_update: #{objects.inspect}"
         objects.inject("") do |request, object|
           request << (object[:list_id].to_s.empty?? add_xml_to_send(object) : update_xml_to_send(object))
         end

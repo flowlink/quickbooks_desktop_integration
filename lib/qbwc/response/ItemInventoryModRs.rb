@@ -7,7 +7,7 @@ module QBWC
         @records = records
       end
 
-      def process
+      def process(config = {})
         return { 'statuses_objects' => nil } if records.empty?
 
 

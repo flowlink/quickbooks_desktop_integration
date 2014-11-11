@@ -3,7 +3,6 @@ require 'nori'
 require 'qbwc/response/ItemInventoryAddRs'
 require 'qbwc/response/ItemInventoryModRs'
 require 'qbwc/response/ItemInventoryQueryRs'
-require 'qbwc/response/ItemQueryRs'
 
 module QBWC
   module Response
@@ -14,13 +13,13 @@ module QBWC
         @response_xml = response_xml
       end
 
-      def process
+      def process(config = {})
         response_hash.map do |key, value|
 
           class_name = "QBWC::Response::#{key}".constantize
           value = value.is_a?(Hash)? [value] : Array(value)
 
-          class_name.new(value.map(&:values).flatten.select { |value| value.is_a?(Hash) }).process
+          class_name.new(value.map(&:values).flatten.select { |value| value.is_a?(Hash) }).process(config)
         end
       end
 
