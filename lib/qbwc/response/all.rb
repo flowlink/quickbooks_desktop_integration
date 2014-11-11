@@ -5,6 +5,7 @@ require 'qbwc/response/ItemInventoryModRs'
 require 'qbwc/response/ItemInventoryQueryRs'
 require 'qbwc/response/CustomerQueryRs'
 require 'qbwc/response/CustomerAddRs'
+require 'qbwc/response/CustomerModRs'
 
 module QBWC
   module Response

@@ -103,7 +103,8 @@ module Persistence
           s3_object    = amazon_s3.bucket.objects["#{filename}.csv"]
           s3_object.move_to("#{filename}#{object[:list_id]}_#{object[:edit_sequence]}.csv")
         rescue AWS::S3::Errors::NoSuchKey => e
-          # oooops
+          puts e
+          puts e.backtrace.join("\n")
         end
       end
     end
@@ -129,7 +130,8 @@ module Persistence
         connection_id, folder, filename = s3_object.key.split('/')
         object_type, file_name, list_id, edit_sequence = filename.split('_')
 
-        edit_sequence.gsub!('.csv','') unless edit_sequence.nil?
+        list_id.gsub!('.csv', '') unless list_id.nil?
+        edit_sequence.gsub!('.csv', '') unless edit_sequence.nil?
 
         contents = s3_object.read
 

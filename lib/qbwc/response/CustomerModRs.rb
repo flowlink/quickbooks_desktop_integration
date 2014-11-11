@@ -1,6 +1,6 @@
 module QBWC
   module Response
-    class CustomerAddRs
+    class CustomerModRs
       attr_reader :records
 
       def initialize(records)

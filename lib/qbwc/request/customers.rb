@@ -32,20 +32,7 @@ module QBWC
       <FirstName>#{object['firstname']}</FirstName>
       <LastName>#{object['lastname']}</LastName>
       <Email>#{object['email']}</Email>
-   </CustomerAdd>
-</CustomerAddRq>
-          XML
-        end
-
-        def update_xml_to_send(object)
-          <<-XML
-<CustomerModRq>
-   <CustomerMod>
-      <ListID>#{object['list_id']}</ListID>
-      <EditSequence>#{object['edit_sequence']}</EditSequence>
-      <Name>#{object['firstname']}</Name>
-      <LastName>#{object['lastname']}</LastName>
-      <Email>#{object['email']}</Email>
+      <!--
       <ShipModress>
         <Modr1>#{object['shipping_address']['address1']}</Modr1>
         <Modr2>#{object['shipping_address']['address2']}</Modr2>
@@ -63,7 +50,42 @@ module QBWC
         <Country>#{object['billing_address']['country']}</Country>
       </BillModress>
       <Phone>#{object['billing_address']['phone']}</Phone>
-      <AltPhone>#{object['shipping_address_address']['phone']}</AltPhone>
+      <AltPhone>#{object['shipping_address']['phone']}</AltPhone>
+      -->
+   </CustomerAdd>
+</CustomerAddRq>
+          XML
+        end
+
+        def update_xml_to_send(object)
+          <<-XML
+<CustomerModRq>
+   <CustomerMod>
+      <ListID>#{object['list_id']}</ListID>
+      <EditSequence>#{object['edit_sequence']}</EditSequence>
+      <Name>#{object['id']}</Name>
+      <LastName>#{object['lastname']}</LastName>
+      <Email>#{object['email']}</Email>
+      <!--
+      <ShipModress>
+        <Modr1>#{object['shipping_address']['address1']}</Modr1>
+        <Modr2>#{object['shipping_address']['address2']}</Modr2>
+        <City>#{object['shipping_address']['city']}</City>
+        <State>#{object['shipping_address']['state']}</State>
+        <PostalCode>#{object['shipping_address']['zipcode']}</PostalCode>
+        <Country>#{object['shipping_address']['country']}</Country>
+      </ShipModress>
+      <BillModress>
+        <Modr1>#{object['billing_address']['address1']}</Modr1>
+        <Modr2>#{object['billing_address']['address2']}</Modr2>
+        <City>#{object['billing_address']['city']}</City>
+        <State>#{object['billing_address']['state']}</State>
+        <PostalCode>#{object['billing_address']['zipcode']}</PostalCode>
+        <Country>#{object['billing_address']['country']}</Country>
+      </BillModress>
+      <Phone>#{object['billing_address']['phone']}</Phone>
+      <AltPhone>#{object['shipping_address']['phone']}</AltPhone>
+      -->
    </CustomerMod>
 </CustomerModRq>
           XML

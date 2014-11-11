@@ -7,24 +7,39 @@ module QBWC
         @records = records
       end
 
-      def process
+      def process(config)
         return if records.empty?
 
-        # File.open('/Users/pablo/spree/quickbooks_desktop_integration/spec/support/qbxml_examples/item_query_rs.xml', 'w') { |file| file.write(xml) }
+        # TODO Error handling
+
+        # &lt;QBXML&gt;
+        # &lt;QBXMLMsgsRs&gt;
+        # &lt;ItemInventoryQueryRs statusCode="1" statusSeverity="Info" statusMessage="A query request did not find a matching object in QuickBooks" /&gt;
+        # &lt;/QBXMLMsgsRs&gt;
+        # &lt;/QBXML&gt;
 
         puts records.inspect
         puts to_wombat
 
-        # config  = { origin: 'quickbooks', account_id: 'x123' }
-        # payload = { products: to_wombat }
+        config  = { origin: 'wombat', connection_id: config[:connection_id]  }
 
-        # integration = Persistence::Object.new config, payload
-        # s3_object = integration.save_to_s3
+        Persistence::Object.new(config, {}).update_objects_with_query_results(objects_to_update)
 
-        # logger.info "File #{s3_object.key} persisted on s3"
+        nil
       end
 
       private
+
+      def objects_to_update
+        records.map do |record|
+          {
+            object_type: 'customer',
+            object_ref: record['Name'],
+            list_id: record['ListID'],
+            edit_sequence: record['EditSequence']
+          }
+        end
+      end
 
       def to_wombat
         records.map do |record|
