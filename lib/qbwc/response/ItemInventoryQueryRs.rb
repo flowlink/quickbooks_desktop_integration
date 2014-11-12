@@ -22,6 +22,7 @@ module QBWC
 
         receive_configs = config[:receive] || []
         inventory_params = receive_configs.find { |c| c['inventories'] }
+        product_params = receive_configs.find { |c| c['products'] }
 
         if inventory_params
           payload = { inventories: inventories_to_wombat }
@@ -36,6 +37,22 @@ module QBWC
           # Override configs to update timestamp so it doesn't keep geting the
           # same inventories
           params = inventory_params['inventories']
+          Persistence::Settings.new(params.with_indifferent_access).setup
+        end
+
+        if product_params
+          payload = { products: products_to_wombat }
+          config = { origin: 'quickbooks' }.merge config
+
+          poll_persistence = Persistence::Object.new(config, payload)
+          poll_persistence.save_for_polling
+
+          product_params['products']['quickbooks_since'] = last_time_modified
+          product_params['products']['quickbooks_force_config'] = true
+
+          # Override configs to update timestamp so it doesn't keep geting the
+          # same inventories
+          params = product_params['products']
           Persistence::Settings.new(params.with_indifferent_access).setup
         end
 
@@ -74,7 +91,7 @@ module QBWC
         end
       end
 
-      def to_wombat
+      def products_to_wombat
         records.map do |record|
           object = {
             id: record['Name'],

@@ -65,7 +65,10 @@ describe QuickbooksDesktopEndpoint do
       expect(json_response[:summary]).to match "records from quickbooks"
       expect(last_response.status).to eq 200
       expect(json_response[:inventories].count).to be >= 1
-      expect(json_response[:parameters]).to have_key 'quickbooks_since'
+
+      params = json_response[:parameters]
+      expect(params).to have_key 'quickbooks_since'
+      expect(params['quickbooks_force_config']).to eq false
     end
   end
 
@@ -76,6 +79,31 @@ describe QuickbooksDesktopEndpoint do
       post "/get_inventories", {}.to_json, headers
       expect(json_response[:summary]).to eq nil
       expect(last_response.status).to eq 200
+
+      params = json_response[:parameters]
+      expect(params['quickbooks_force_config']).to eq false
+    end
+  end
+
+  it "gets products from quickbooks" do
+    headers = auth.merge("HTTP_X_HUB_STORE" => "54591b3a5869632afc090000")
+    request = {
+      parameters: {
+        quickbooks_since: '2014-11-01T09:10:55Z',
+        quickbooks_force_config: 0
+      }
+    }
+
+    VCR.use_cassette "requests/4253442355352" do
+      post "/get_products", request.to_json, headers
+
+      expect(json_response[:summary]).to match "records from quickbooks"
+      expect(last_response.status).to eq 200
+      expect(json_response[:products].count).to be >= 1
+
+      params = json_response[:parameters]
+      expect(params).to have_key 'quickbooks_since'
+      expect(params['quickbooks_force_config']).to eq false
     end
   end
 end
