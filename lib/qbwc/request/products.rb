@@ -1,25 +1,7 @@
 module QBWC
   module Request
     class Products
-      attr_reader :result, :records
-
-      def mapped_records
-        records.map do |record|
-          {
-            id: record['Name'],
-            sku: record['Name'],
-            product_id: record['Name'],
-            description: record['SalesDesc'],
-            price: record['SalesPrice'],
-            cost_price: record['PurchaseCost'],
-            available_on: record['TimeModified'],
-            income_account_id: record['IncomeAccountRef']['FullName']
-          }
-        end
-      end
-
       def self.config
-        #TODO changed to yml database
         {
           'quickbooks_income_account'    => 'Inventory Asset',
           'quickbooks_cogs_account'      => 'Inventory Asset',
@@ -28,9 +10,13 @@ module QBWC
       end
 
       # Return the requests to insert/update for products
-      def self.generate_request_insert_update(objects)
+      def self.generate_request_insert_update(objects, params = {})
         objects.inject("") do |request, object|
-          request << (object[:list_id].to_s.empty?? add_xml_to_send(object) : update_xml_to_send(object))
+          request << if object[:list_id].to_s.empty?
+                       add_xml_to_send(object, config.merge(params))
+                     else
+                       update_xml_to_send(object, config.merge(params))
+                     end
         end
       end
 
@@ -53,7 +39,7 @@ module QBWC
         XML
       end
 
-      def self.add_xml_to_send(product)
+      def self.add_xml_to_send(product, params)
         <<-XML
           <ItemInventoryAddRq>
              <ItemInventoryAdd>
@@ -61,21 +47,21 @@ module QBWC
                 <SalesDesc>#{product['description']}</SalesDesc>
                 <SalesPrice>#{product['price']}</SalesPrice>
                 <IncomeAccountRef>
-                   <FullName>#{config['quickbooks_income_account']}</FullName>
+                   <FullName>#{params['quickbooks_income_account']}</FullName>
                 </IncomeAccountRef>
-                <PurchaseCost>#{product['cost_price']}</PurchaseCost>
+                <PurchaseCost>#{params['cost_price']}</PurchaseCost>
                 <COGSAccountRef>
-                  <FullName>#{config['quickbooks_cogs_account']}</FullName>
+                  <FullName>#{params['quickbooks_cogs_account']}</FullName>
                 </COGSAccountRef>
                 <AssetAccountRef>
-                   <FullName>#{config['quickbooks_inventory_account']}</FullName>
+                   <FullName>#{params['quickbooks_inventory_account']}</FullName>
                 </AssetAccountRef>
              </ItemInventoryAdd>
           </ItemInventoryAddRq>
         XML
       end
 
-      def self.update_xml_to_send(product)
+      def self.update_xml_to_send(product, params)
         <<-XML
           <ItemInventoryModRq>
              <ItemInventoryMod>
@@ -85,14 +71,14 @@ module QBWC
                 <SalesDesc>#{product['description']}</SalesDesc>
                 <SalesPrice>#{product['price']}</SalesPrice>
                 <IncomeAccountRef>
-                   <FullName>#{config['quickbooks_income_account']}</FullName>
+                   <FullName>#{params['quickbooks_income_account']}</FullName>
                 </IncomeAccountRef>
                 <PurchaseCost>#{product['cost_price']}</PurchaseCost>
                 <COGSAccountRef>
-                  <FullName>#{config['quickbooks_cogs_account']}</FullName>
+                  <FullName>#{params['quickbooks_cogs_account']}</FullName>
                 </COGSAccountRef>
                 <AssetAccountRef>
-                   <FullName>#{config['quickbooks_inventory_account']}</FullName>
+                   <FullName>#{params['quickbooks_inventory_account']}</FullName>
                 </AssetAccountRef>
              </ItemInventoryMod>
           </ItemInventoryModRq>

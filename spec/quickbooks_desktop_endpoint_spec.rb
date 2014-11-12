@@ -1,13 +1,19 @@
 require 'spec_helper'
 
 describe QuickbooksDesktopEndpoint do
-  it "send orders to s3" do
-    request = Factory.orders
+  it "sends product to be persisted in s3" do
+    headers = auth.merge("HTTP_X_HUB_STORE" => "54591b3a5869632afc090000")
+    request = {
+      product: Factory.product_single,
+      parameters: {
+        'quickbooks_income_account'    => 'Inventory Asset',
+        'quickbooks_cogs_account'      => 'Inventory Asset',
+        'quickbooks_inventory_account' => 'Inventory Asset'
+      }
+    }
 
-    allow_any_instance_of(Service::Object).to receive(:current_time).and_return('1415157575')
-
-    VCR.use_cassette "add_orders/1414614344" do
-      post "add_orders", request.to_json, auth
+    VCR.use_cassette "products/32425454354353" do
+      post "/add_products", request.to_json, headers
       expect(json_response[:summary]).to match "waiting for"
       expect(last_response.status).to be 200
     end

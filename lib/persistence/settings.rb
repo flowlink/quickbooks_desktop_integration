@@ -56,14 +56,9 @@ module Persistence
       "#{connection_id}/settings"
     end
 
-    def settings(prefix = nil)
+    def settings(prefix)
       @settings ||= {}
-
-      if prefix
-        @settings[prefix] ||= fetch prefix
-      else
-        @settings['send'] ||= fetch
-      end
+      @settings[prefix] ||= fetch prefix
     end
   end
 end

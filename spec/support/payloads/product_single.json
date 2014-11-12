@@ -1,0 +1,13 @@
+{
+  "id": "the internets",
+  "name": "the internets",
+  "sku": "the internets",
+  "description": "the internets",
+  "price": 35,
+  "cost_price": 22.33,
+  "available_on": "2014-01-29T14:01:28.000Z",
+  "permalink": "spree-tshirt",
+  "meta_description": null,
+  "meta_keywords": null,
+  "shipping_category": "Default"
+}

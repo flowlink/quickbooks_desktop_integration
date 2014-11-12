@@ -2,6 +2,14 @@ require 'spec_helper'
 
 module QBWC
   describe Producer do
+    it "build all request xml available per account" do
+      subject = described_class.new connection_id: '54591b3a5869632afc090000'
+
+      VCR.use_cassette "producer/454325352345" do
+        xml = subject.build_available_actions_to_request
+      end
+    end
+
     it "builds request xml for polling flows" do
       subject = described_class.new connection_id: '54591b3a5869632afc090000'
 

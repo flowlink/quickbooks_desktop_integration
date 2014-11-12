@@ -2,7 +2,7 @@ module QBWC
   module Request
     class Customers
       class << self
-        def generate_request_insert_update(objects)
+        def generate_request_insert_update(objects, params = {})
           objects.inject('') do |request, object|
             request << (object[:list_id].to_s.empty?? add_xml_to_send(object) : update_xml_to_send(object))
           end

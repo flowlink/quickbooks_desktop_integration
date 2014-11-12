@@ -195,7 +195,6 @@ module Persistence
       end
     end
 
-
     def get_notifications
       prefix = "#{base_name}/#{ready}/notification_"
       collection = amazon_s3.bucket.objects
@@ -262,6 +261,5 @@ module Persistence
       return 'products' if payload_key.pluralize == 'inventories'
       payload_key.pluralize
     end
-
   end
 end

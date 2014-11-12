@@ -5,11 +5,19 @@ require File.expand_path(File.dirname(__FILE__) + '/lib/quickbooks_desktop_integ
 class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
   set :logging, true
 
-  ['products', 'orders', 'inventory', 'returns', 'customers'].each do |path|
-    post "/add_#{path}" do
-      config = { connection_id: request.env['HTTP_X_HUB_STORE'] }
-      integration = Persistence::Object.new config, @payload
+  # Changing the endpoint paths might break internal logic as they're expected
+  # to be always in plural. e.g. products not product
 
+  ['products', 'orders', 'inventories', 'returns', 'customers'].each do |path|
+    post "/add_#{path}" do
+      config = {
+        connection_id: request.env['HTTP_X_HUB_STORE'],
+        flow: "add_#{path}"
+      }.merge(@config).with_indifferent_access
+
+      Persistence::Settings.new(config).setup
+
+      integration = Persistence::Object.new config, @payload
       integration.save
 
       object_type = integration.payload_key.capitalize

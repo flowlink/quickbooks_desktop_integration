@@ -18,7 +18,8 @@ module QBWC
       # waiting to be integrated? Verify if we should limit the s3 queries
 
       # Get Objets are ready
-      request_xml << process_insert_update(integration.get_ready_objects_to_send)
+      ready_objects = integration.get_ready_objects_to_send
+      request_xml << process_insert_update(ready_objects)
 
       # Get Objects to query
       request_xml << process_queries(integration.process_pending_objects)
@@ -27,8 +28,7 @@ module QBWC
     end
 
     def build_polling_request
-      string = ''
-      s3_settings.settings('get_').each do |record|
+      s3_settings.settings('get_').inject('') do |string, record|
         object_type = record.keys.first
         params = record.values.first
 
@@ -37,21 +37,22 @@ module QBWC
         klass = QBWC::Request::Inventories
         string << klass.polling_xml(params['quickbooks_since'])
       end
-
-      string
     end
 
     private
     # TODO Create a way to do this for all objects
     # probably a way to use the keys (products, )
     def process_insert_update(objects_hash)
+      send_settings = s3_settings.settings('add_') if objects_hash.any?
+
       objects_hash.inject('') do |result, object_hash|
+        object_type = object_hash.keys.first
 
-        object_type = object_hash.keys.first.capitalize
+        klass = "QBWC::Request::#{object_type.capitalize}".constantize
+        records = object_hash.values.flatten
 
-        class_name = "QBWC::Request::#{object_type}".constantize
-
-        result << class_name.generate_request_insert_update(object_hash.values.flatten)
+        params = send_settings.find { |s| s[object_type] } || {}
+        result << klass.generate_request_insert_update(records, params[object_type])
       end
     end
 
