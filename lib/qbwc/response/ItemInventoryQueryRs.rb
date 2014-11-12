@@ -34,7 +34,7 @@ module QBWC
         receive_keys = receive_configs.map { |r| r.keys }.flatten
 
         if receive_keys.include?('inventory')
-          payload = { inventories: to_wombat }
+          payload = { inventories: inventories_to_wombat }
 
           config = { origin: 'quickbooks' }.merge config
           poll_persistence = Persistence::Object.new(config, payload)
@@ -57,6 +57,17 @@ module QBWC
             object_ref: record['Name'],
             list_id: record['ListID'],
             edit_sequence: record['EditSequence']
+          }
+        end
+      end
+
+      def inventories_to_wombat
+        records.map do |record|
+          object = {
+            id: record['Name'],
+            sku: record['Name'],
+            product_id: record['Name'],
+            quantity: record['QuantityOnHand']
           }
         end
       end
