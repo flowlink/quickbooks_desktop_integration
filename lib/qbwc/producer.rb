@@ -52,7 +52,7 @@ module QBWC
         records = object_hash.values.flatten
 
         params = send_settings.find { |s| s[object_type] } || {}
-        result << klass.generate_request_insert_update(records, params[object_type])
+        result << klass.generate_request_insert_update(records, params[object_type] || {})
       end
     end
 
