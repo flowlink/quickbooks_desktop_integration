@@ -127,7 +127,7 @@ module Persistence
       prefix = "#{base_name}/#{ready}"
       collection = amazon_s3.bucket.objects
 
-      collection.with_prefix(prefix).enum.map do |s3_object|
+      collection.with_prefix(prefix).enum.select{ |s3| !s3.key.match(/notification/) }.map do |s3_object|
         connection_id, folder, filename = s3_object.key.split('/')
         object_type, file_name, list_id, edit_sequence = filename.split('_')
 
@@ -160,7 +160,6 @@ module Persistence
     #   ],
     #   :failed => [] }
     def update_objects_files(statuses_objects)
-puts " \n **** update_objects_files: #{statuses_objects.inspect}"
       return if statuses_objects.nil?
 
       statuses_objects.keys.each do |status_key|
@@ -181,13 +180,44 @@ puts " \n **** update_objects_files: #{statuses_objects.inspect}"
 
               # TODO Need a better name
               copy_files("#{new_filename}.csv")
+
+              create_notifications("#{new_filename}.csv", status_key)
             end
           end
         end
       end
     end
 
+
+    def get_notifications
+      prefix = "#{base_name}/#{ready}/notification_"
+      collection = amazon_s3.bucket.objects
+
+      # TODO Removes while into functional approach (I'll do Pablo, I swear!! :P)
+      notifications = {'processed' => [], 'failed' => []}
+      collection.with_prefix(prefix).enum.select{ |s3| s3.key.match(payload_key.pluralize) }.each do |s3_object|
+        connection_id, folder, filename = s3_object.key.split("/")
+        _, status, object_type, object_ref, _ = filename.split("_")
+
+        s3_object.move_to("#{base_name}/#{processed}/#{filename}")
+
+        notifications[status] << object_ref
+      end
+      notifications
+    end
+
     private
+
+    def create_notifications(objects_filename, status)
+      connection_id, folder, filename = objects_filename.split('/')
+      s3_object = amazon_s3.bucket.objects[objects_filename]
+
+      new_filename = "#{base_name}/#{ready}/notification_#{status}_#{filename}"
+      s3_object.copy_to(new_filename)
+
+      # TODO Need a better name
+      copy_files(new_filename)
+    end
 
     def copy_files(filename)
       return unless filename.match(/products/)

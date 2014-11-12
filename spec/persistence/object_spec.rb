@@ -65,5 +65,17 @@ module Persistence
         subject.update_objects_files(statuses_objects)
       end
     end
+
+    it "#get_notifications" do
+      payload = Factory.products
+      config = { origin: 'wombat', connection_id: '53ab0943436f6e9a6f080000' }
+
+      VCR.use_cassette "persistence/get_notifications" do
+        subject = described_class.new config, payload
+        notifications = subject.get_notifications
+        expect(notifications).to have_key('processed')
+        expect(notifications['processed'].size).to eq(2)
+      end
+    end
   end
 end
