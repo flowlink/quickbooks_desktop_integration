@@ -31,14 +31,22 @@ module QBWC
         # be checking the TimeModified value and add it in case it was bigger
         # than the config[:quickbooks_since] timestamp (way too hacky not reliable)
         receive_configs = config[:receive] || []
-        receive_keys = receive_configs.map { |r| r.keys }.flatten
+        inventory_params = receive_configs.find { |c| c['inventory'] }
 
-        if receive_keys.include?('inventory')
+        if inventory_params
           payload = { inventories: inventories_to_wombat }
-
           config = { origin: 'quickbooks' }.merge config
+
           poll_persistence = Persistence::Object.new(config, payload)
           poll_persistence.save_for_polling
+
+          inventory_params['inventory']['quickbooks_since'] = last_time_modified
+          inventory_params['inventory']['quickbooks_force_config'] = true
+
+          # Override configs to update timestamp so it doesn't keep geting the
+          # same inventories
+          params = inventory_params['inventory']
+          Persistence::Settings.new(params.with_indifferent_access).setup
         else
           config = { origin: 'wombat' }.merge config
           object_persistence = Persistence::Object.new config
@@ -46,6 +54,10 @@ module QBWC
         end
 
         nil
+      end
+
+      def last_time_modified
+        records.sort_by { |r| r['TimeModified'] }.last['TimeModified'].utc.iso8601
       end
 
       private
