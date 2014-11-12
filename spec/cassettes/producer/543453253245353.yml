@@ -1,0 +1,95 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/?max-keys=1000&prefix=54591b3a5869632afc090000/settings/get_
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby/1.57.0 ruby/2.1.4 x86_64-darwin13.0
+      Date:
+      - Wed, 12 Nov 2014 18:54:30 GMT
+      Authorization:
+      - AUTHORIZATION
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amz-Id-2:
+      - gFP3JjSUNt55hZFmR5D2gRAnVAffgtSnr4uUuZe1by9elXV/RUo95KZmPu69cKFv
+      X-Amz-Request-Id:
+      - 106C2732A8856276
+      Date:
+      - Wed, 12 Nov 2014 18:54:31 GMT
+      Content-Type:
+      - application/xml
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: |-
+        <?xml version="1.0" encoding="UTF-8"?>
+        <ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>quickbooks-desktop-integration</Name><Prefix>54591b3a5869632afc090000/settings/get_</Prefix><Marker></Marker><MaxKeys>1000</MaxKeys><IsTruncated>false</IsTruncated><Contents><Key>54591b3a5869632afc090000/settings/get_inventories.csv</Key><LastModified>2014-11-12T18:53:20.000Z</LastModified><ETag>&quot;b8ab12576e4cae9c1d5ffbb637cd54b1&quot;</ETag><Size>141</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>aws</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents></ListBucketResult>
+    http_version: 
+  recorded_at: Wed, 12 Nov 2014 18:54:31 GMT
+- request:
+    method: get
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/settings/get_inventories.csv
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby/1.57.0 ruby/2.1.4 x86_64-darwin13.0
+      Date:
+      - Wed, 12 Nov 2014 18:54:31 GMT
+      Authorization:
+      - AUTHORIZATION
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amz-Id-2:
+      - 1dZGys872pPSMAG6uf5CdwEgehJWQpTU+ufQ0RiBlxQE95DuvIOLGAs+vDsrJps7
+      X-Amz-Request-Id:
+      - 85844CAE9B5EAB3A
+      Date:
+      - Wed, 12 Nov 2014 18:54:32 GMT
+      Last-Modified:
+      - Wed, 12 Nov 2014 18:53:20 GMT
+      Etag:
+      - '"b8ab12576e4cae9c1d5ffbb637cd54b1"'
+      Accept-Ranges:
+      - bytes
+      Content-Type:
+      - ''
+      Content-Length:
+      - '141'
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: |-
+        connection_id,flow,origin,quickbooks_since,quickbooks_force_config
+        54591b3a5869632afc090000,get_inventories,quickbooks,2014-11-10T09:10:55Z,0
+    http_version: 
+  recorded_at: Wed, 12 Nov 2014 18:54:32 GMT
+recorded_with: VCR 2.9.3

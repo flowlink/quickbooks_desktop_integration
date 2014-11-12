@@ -1,0 +1,812 @@
+---
+http_interactions:
+- request:
+    method: head
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/settings/get_products.csv
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby/1.57.0 ruby/2.1.4 x86_64-darwin13.0
+      Date:
+      - Wed, 12 Nov 2014 19:55:22 GMT
+      Authorization:
+      - AUTHORIZATION
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amz-Id-2:
+      - gcNxSdVZQMKIDCNnOtvWXUL1t0ltBXZhnTDY+C3SVeZoMSTePEh73pSJPgLgu+xL
+      X-Amz-Request-Id:
+      - 28984DC9D98D2A06
+      Date:
+      - Wed, 12 Nov 2014 19:55:23 GMT
+      Last-Modified:
+      - Wed, 12 Nov 2014 19:48:01 GMT
+      Etag:
+      - '"3c4e31997794a34651b01c239bbd010a"'
+      Accept-Ranges:
+      - bytes
+      Content-Type:
+      - ''
+      Content-Length:
+      - '146'
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: ''
+    http_version: 
+  recorded_at: Wed, 12 Nov 2014 19:55:23 GMT
+- request:
+    method: get
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/?max-keys=1000&prefix=54591b3a5869632afc090000/quickbooks_pending/products_
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby/1.57.0 ruby/2.1.4 x86_64-darwin13.0
+      Date:
+      - Wed, 12 Nov 2014 19:55:23 GMT
+      Authorization:
+      - AUTHORIZATION
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amz-Id-2:
+      - XWpf64MerLngs8ETduDtfJiC1fzMdyCUs7ueJlK+a9CaB3iCezGPhy87QP9UQbb0
+      X-Amz-Request-Id:
+      - 24EEB9B5AF0725B5
+      Date:
+      - Wed, 12 Nov 2014 19:55:23 GMT
+      Content-Type:
+      - application/xml
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: |-
+        <?xml version="1.0" encoding="UTF-8"?>
+        <ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>quickbooks-desktop-integration</Name><Prefix>54591b3a5869632afc090000/quickbooks_pending/products_</Prefix><Marker></Marker><MaxKeys>1000</MaxKeys><IsTruncated>false</IsTruncated><Contents><Key>54591b3a5869632afc090000/quickbooks_pending/products_1415815266.csv</Key><LastModified>2014-11-12T19:52:33.000Z</LastModified><ETag>&quot;de11bc52fc7754a381df96fcaabbe98a&quot;</ETag><Size>98</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>aws</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>54591b3a5869632afc090000/quickbooks_pending/products_1415821482.csv</Key><LastModified>2014-11-12T19:44:43.000Z</LastModified><ETag>&quot;6750ef79edf9cc4cb211c3976a8f3e20&quot;</ETag><Size>2090</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>aws</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>54591b3a5869632afc090000/quickbooks_pending/products_1415821593.csv</Key><LastModified>2014-11-12T19:46:33.000Z</LastModified><ETag>&quot;6750ef79edf9cc4cb211c3976a8f3e20&quot;</ETag><Size>2090</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>aws</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>54591b3a5869632afc090000/quickbooks_pending/products_1415821680.csv</Key><LastModified>2014-11-12T19:48:01.000Z</LastModified><ETag>&quot;6750ef79edf9cc4cb211c3976a8f3e20&quot;</ETag><Size>2090</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>aws</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents></ListBucketResult>
+    http_version: 
+  recorded_at: Wed, 12 Nov 2014 19:55:24 GMT
+- request:
+    method: get
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/quickbooks_pending/products_1415815266.csv
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby/1.57.0 ruby/2.1.4 x86_64-darwin13.0
+      Date:
+      - Wed, 12 Nov 2014 19:55:24 GMT
+      Authorization:
+      - AUTHORIZATION
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amz-Id-2:
+      - zLvfeKNCR/rNqjD24STBkWyuf7MsfdiortxiEYXF8Nl+qfuPP3MdP9vCDd2IzUA1
+      X-Amz-Request-Id:
+      - E69739D2A0659D13
+      Date:
+      - Wed, 12 Nov 2014 19:55:24 GMT
+      Last-Modified:
+      - Wed, 12 Nov 2014 19:52:33 GMT
+      Etag:
+      - '"de11bc52fc7754a381df96fcaabbe98a"'
+      Accept-Ranges:
+      - bytes
+      Content-Type:
+      - ''
+      Content-Length:
+      - '98'
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: |-
+        id,sku,product_id,quantity,price,cost_price
+        Ruby T-Shirt,Ruby T-Shirt,Ruby T-Shirt,200,11.00,10.00
+    http_version: 
+  recorded_at: Wed, 12 Nov 2014 19:55:24 GMT
+- request:
+    method: put
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/quickbooks_processed/products_1415815266.csv
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      X-Amz-Copy-Source:
+      - "/quickbooks-desktop-integration/54591b3a5869632afc090000/quickbooks_pending/products_1415815266.csv"
+      X-Amz-Metadata-Directive:
+      - COPY
+      X-Amz-Storage-Class:
+      - STANDARD
+      User-Agent:
+      - aws-sdk-ruby/1.57.0 ruby/2.1.4 x86_64-darwin13.0
+      Date:
+      - Wed, 12 Nov 2014 19:55:24 GMT
+      Authorization:
+      - AUTHORIZATION
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amz-Id-2:
+      - X1iliYp4jLa6Ehhigv7Sr2dLo7Lzrbs4fmcHYT7bNQr5IFVgv7Gi5yAadN2zgP/3
+      X-Amz-Request-Id:
+      - 2B2451E221C0B8B9
+      Date:
+      - Wed, 12 Nov 2014 19:55:25 GMT
+      Content-Type:
+      - application/xml
+      Content-Length:
+      - '234'
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: |-
+        <?xml version="1.0" encoding="UTF-8"?>
+        <CopyObjectResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><LastModified>2014-11-12T19:55:25.000Z</LastModified><ETag>&quot;de11bc52fc7754a381df96fcaabbe98a&quot;</ETag></CopyObjectResult>
+    http_version: 
+  recorded_at: Wed, 12 Nov 2014 19:55:25 GMT
+- request:
+    method: delete
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/quickbooks_pending/products_1415815266.csv
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby/1.57.0 ruby/2.1.4 x86_64-darwin13.0
+      Date:
+      - Wed, 12 Nov 2014 19:55:25 GMT
+      Authorization:
+      - AUTHORIZATION
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 204
+      message: No Content
+    headers:
+      X-Amz-Id-2:
+      - u5crIBFxZ0GYpn2oiaWipsGiwXZirkCgTegACiAutRFNvRIqdjIYkLAqTFWtPA7y
+      X-Amz-Request-Id:
+      - C6112190E50782A0
+      Date:
+      - Wed, 12 Nov 2014 19:55:26 GMT
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: ''
+    http_version: 
+  recorded_at: Wed, 12 Nov 2014 19:55:26 GMT
+- request:
+    method: get
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/quickbooks_pending/products_1415821482.csv
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby/1.57.0 ruby/2.1.4 x86_64-darwin13.0
+      Date:
+      - Wed, 12 Nov 2014 19:55:26 GMT
+      Authorization:
+      - AUTHORIZATION
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amz-Id-2:
+      - Pra3S66j5sbcKtjQ/Z4TLJzlbivCOvS/9O4dB3Dh4KMTExrPCE7yg9PscRB0kUzH
+      X-Amz-Request-Id:
+      - 822C913EA95C910B
+      Date:
+      - Wed, 12 Nov 2014 19:55:26 GMT
+      Last-Modified:
+      - Wed, 12 Nov 2014 19:44:43 GMT
+      Etag:
+      - '"6750ef79edf9cc4cb211c3976a8f3e20"'
+      Accept-Ranges:
+      - bytes
+      Content-Type:
+      - ''
+      Content-Length:
+      - '2090'
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: |-
+        id,sku,product_id,quantity,price,cost_price
+        12797,12797,12797,0,0.00,0.00
+        Haskell T-Shirt,Haskell T-Shirt,Haskell T-Shirt,300,55.00,4.00
+        Ruby T-Shirt,Ruby T-Shirt,Ruby T-Shirt,200,11.00,10.00
+        Sinatra T-Shirt,Sinatra T-Shirt,Sinatra T-Shirt,100,5.00,2.00
+        SPREE-T-SHIRT-1,SPREE-T-SHIRT-1,SPREE-T-SHIRT-1,0,0.00,0.00
+        SPREE-T-SHIRT-2,SPREE-T-SHIRT-2,SPREE-T-SHIRT-2,0,0.00,0.00
+        SPREE-T-SHIRT-3,SPREE-T-SHIRT-3,SPREE-T-SHIRT-3,0,0.00,0.00
+        SPREE-T-SHIRT-4,SPREE-T-SHIRT-4,SPREE-T-SHIRT-4,0,0.00,0.00
+        SPREE-T-SHIRT-5,SPREE-T-SHIRT-5,SPREE-T-SHIRT-5,0,0.00,0.00
+        SPREE-T-SHIRT-6,SPREE-T-SHIRT-6,SPREE-T-SHIRT-6,0,0.00,0.00
+        SPREE-T-SHIRT-7,SPREE-T-SHIRT-7,SPREE-T-SHIRT-7,0,1.00,0.00
+        SPREE-T-SHIRT-8,SPREE-T-SHIRT-8,SPREE-T-SHIRT-8,0,1.60,0.50
+        SPREE-T-SHIRT-9,SPREE-T-SHIRT-9,SPREE-T-SHIRT-9,0,1.60,0.50
+        SPREE-T-SHIRT6978710,SPREE-T-SHIRT6978710,SPREE-T-SHIRT6978710,0,35.00,22.33
+        SPREE-T-SHIRT6978711,SPREE-T-SHIRT6978711,SPREE-T-SHIRT6978711,0,35.00,22.33
+        SPREE-T-SHIRT6978712,SPREE-T-SHIRT6978712,SPREE-T-SHIRT6978712,0,35.00,22.33
+        SPREE-T-SHIRT6978713,SPREE-T-SHIRT6978713,SPREE-T-SHIRT6978713,0,35.00,22.33
+        SPREE-T-SHIRT6978714,SPREE-T-SHIRT6978714,SPREE-T-SHIRT6978714,0,35.00,22.33
+        SPREE-T-SHIRT6978715,SPREE-T-SHIRT6978715,SPREE-T-SHIRT6978715,0,35.00,22.33
+        SPREE-T-SHIRT6978716,SPREE-T-SHIRT6978716,SPREE-T-SHIRT6978716,0,35.00,22.33
+        SPREE-T-SHIRT6978717,SPREE-T-SHIRT6978717,SPREE-T-SHIRT6978717,0,35.00,22.33
+        SPREE-T-SHIRT6978718,SPREE-T-SHIRT6978718,SPREE-T-SHIRT6978718,0,35.00,22.33
+        SPREE-T-SHIRT6978719,SPREE-T-SHIRT6978719,SPREE-T-SHIRT6978719,0,35.00,22.33
+        SPREE-T-SHIRT6978720,SPREE-T-SHIRT6978720,SPREE-T-SHIRT6978720,0,35.00,22.33
+        SPREE-T-SHIRT6978721,SPREE-T-SHIRT6978721,SPREE-T-SHIRT6978721,0,35.00,22.33
+        SPREE-T-SHIRT6978722,SPREE-T-SHIRT6978722,SPREE-T-SHIRT6978722,0,35.00,22.33
+        SPREE-T-SHIRT697875,SPREE-T-SHIRT697875,SPREE-T-SHIRT697875,0,35.00,22.33
+        SPREE-T-SHIRT697877,SPREE-T-SHIRT697877,SPREE-T-SHIRT697877,0,35.00,22.33
+        SPREE-T-SHIRT697878,SPREE-T-SHIRT697878,SPREE-T-SHIRT697878,0,35.00,22.33
+        SPREE-T-SHIRT697879,SPREE-T-SHIRT697879,SPREE-T-SHIRT697879,0,35.00,22.33
+    http_version: 
+  recorded_at: Wed, 12 Nov 2014 19:55:27 GMT
+- request:
+    method: put
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/quickbooks_processed/products_1415821482.csv
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      X-Amz-Copy-Source:
+      - "/quickbooks-desktop-integration/54591b3a5869632afc090000/quickbooks_pending/products_1415821482.csv"
+      X-Amz-Metadata-Directive:
+      - COPY
+      X-Amz-Storage-Class:
+      - STANDARD
+      User-Agent:
+      - aws-sdk-ruby/1.57.0 ruby/2.1.4 x86_64-darwin13.0
+      Date:
+      - Wed, 12 Nov 2014 19:55:27 GMT
+      Authorization:
+      - AUTHORIZATION
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amz-Id-2:
+      - 3Idm2OMSFfPWSy1o8ovPM2p8HCqnpL7pRqrPNkjdQ3h0OIzGfPuRzBNYXRPMC2FJ
+      X-Amz-Request-Id:
+      - 03267D1D54E4FBC5
+      Date:
+      - Wed, 12 Nov 2014 19:55:27 GMT
+      Content-Type:
+      - application/xml
+      Content-Length:
+      - '234'
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: |-
+        <?xml version="1.0" encoding="UTF-8"?>
+        <CopyObjectResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><LastModified>2014-11-12T19:55:27.000Z</LastModified><ETag>&quot;6750ef79edf9cc4cb211c3976a8f3e20&quot;</ETag></CopyObjectResult>
+    http_version: 
+  recorded_at: Wed, 12 Nov 2014 19:55:27 GMT
+- request:
+    method: delete
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/quickbooks_pending/products_1415821482.csv
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby/1.57.0 ruby/2.1.4 x86_64-darwin13.0
+      Date:
+      - Wed, 12 Nov 2014 19:55:27 GMT
+      Authorization:
+      - AUTHORIZATION
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 204
+      message: No Content
+    headers:
+      X-Amz-Id-2:
+      - N/U67iZwP0GQxET3U4i1EmIdWM9QT0Q9EB61GEy7k03KyY4d/pfJ6vsEPqNVEXOT
+      X-Amz-Request-Id:
+      - 8204B24046FDD445
+      Date:
+      - Wed, 12 Nov 2014 19:55:28 GMT
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: ''
+    http_version: 
+  recorded_at: Wed, 12 Nov 2014 19:55:28 GMT
+- request:
+    method: get
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/quickbooks_pending/products_1415821593.csv
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby/1.57.0 ruby/2.1.4 x86_64-darwin13.0
+      Date:
+      - Wed, 12 Nov 2014 19:55:28 GMT
+      Authorization:
+      - AUTHORIZATION
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amz-Id-2:
+      - 8XHYRAdBKzXd/LYVw7TRIaBQEJVgFOOB0Wmr/mxF/xV3rKv8tohNf+pHEjM25qIz
+      X-Amz-Request-Id:
+      - A6FA13246B2D4009
+      Date:
+      - Wed, 12 Nov 2014 19:55:29 GMT
+      Last-Modified:
+      - Wed, 12 Nov 2014 19:46:33 GMT
+      Etag:
+      - '"6750ef79edf9cc4cb211c3976a8f3e20"'
+      Accept-Ranges:
+      - bytes
+      Content-Type:
+      - ''
+      Content-Length:
+      - '2090'
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: |-
+        id,sku,product_id,quantity,price,cost_price
+        12797,12797,12797,0,0.00,0.00
+        Haskell T-Shirt,Haskell T-Shirt,Haskell T-Shirt,300,55.00,4.00
+        Ruby T-Shirt,Ruby T-Shirt,Ruby T-Shirt,200,11.00,10.00
+        Sinatra T-Shirt,Sinatra T-Shirt,Sinatra T-Shirt,100,5.00,2.00
+        SPREE-T-SHIRT-1,SPREE-T-SHIRT-1,SPREE-T-SHIRT-1,0,0.00,0.00
+        SPREE-T-SHIRT-2,SPREE-T-SHIRT-2,SPREE-T-SHIRT-2,0,0.00,0.00
+        SPREE-T-SHIRT-3,SPREE-T-SHIRT-3,SPREE-T-SHIRT-3,0,0.00,0.00
+        SPREE-T-SHIRT-4,SPREE-T-SHIRT-4,SPREE-T-SHIRT-4,0,0.00,0.00
+        SPREE-T-SHIRT-5,SPREE-T-SHIRT-5,SPREE-T-SHIRT-5,0,0.00,0.00
+        SPREE-T-SHIRT-6,SPREE-T-SHIRT-6,SPREE-T-SHIRT-6,0,0.00,0.00
+        SPREE-T-SHIRT-7,SPREE-T-SHIRT-7,SPREE-T-SHIRT-7,0,1.00,0.00
+        SPREE-T-SHIRT-8,SPREE-T-SHIRT-8,SPREE-T-SHIRT-8,0,1.60,0.50
+        SPREE-T-SHIRT-9,SPREE-T-SHIRT-9,SPREE-T-SHIRT-9,0,1.60,0.50
+        SPREE-T-SHIRT6978710,SPREE-T-SHIRT6978710,SPREE-T-SHIRT6978710,0,35.00,22.33
+        SPREE-T-SHIRT6978711,SPREE-T-SHIRT6978711,SPREE-T-SHIRT6978711,0,35.00,22.33
+        SPREE-T-SHIRT6978712,SPREE-T-SHIRT6978712,SPREE-T-SHIRT6978712,0,35.00,22.33
+        SPREE-T-SHIRT6978713,SPREE-T-SHIRT6978713,SPREE-T-SHIRT6978713,0,35.00,22.33
+        SPREE-T-SHIRT6978714,SPREE-T-SHIRT6978714,SPREE-T-SHIRT6978714,0,35.00,22.33
+        SPREE-T-SHIRT6978715,SPREE-T-SHIRT6978715,SPREE-T-SHIRT6978715,0,35.00,22.33
+        SPREE-T-SHIRT6978716,SPREE-T-SHIRT6978716,SPREE-T-SHIRT6978716,0,35.00,22.33
+        SPREE-T-SHIRT6978717,SPREE-T-SHIRT6978717,SPREE-T-SHIRT6978717,0,35.00,22.33
+        SPREE-T-SHIRT6978718,SPREE-T-SHIRT6978718,SPREE-T-SHIRT6978718,0,35.00,22.33
+        SPREE-T-SHIRT6978719,SPREE-T-SHIRT6978719,SPREE-T-SHIRT6978719,0,35.00,22.33
+        SPREE-T-SHIRT6978720,SPREE-T-SHIRT6978720,SPREE-T-SHIRT6978720,0,35.00,22.33
+        SPREE-T-SHIRT6978721,SPREE-T-SHIRT6978721,SPREE-T-SHIRT6978721,0,35.00,22.33
+        SPREE-T-SHIRT6978722,SPREE-T-SHIRT6978722,SPREE-T-SHIRT6978722,0,35.00,22.33
+        SPREE-T-SHIRT697875,SPREE-T-SHIRT697875,SPREE-T-SHIRT697875,0,35.00,22.33
+        SPREE-T-SHIRT697877,SPREE-T-SHIRT697877,SPREE-T-SHIRT697877,0,35.00,22.33
+        SPREE-T-SHIRT697878,SPREE-T-SHIRT697878,SPREE-T-SHIRT697878,0,35.00,22.33
+        SPREE-T-SHIRT697879,SPREE-T-SHIRT697879,SPREE-T-SHIRT697879,0,35.00,22.33
+    http_version: 
+  recorded_at: Wed, 12 Nov 2014 19:55:29 GMT
+- request:
+    method: put
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/quickbooks_processed/products_1415821593.csv
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      X-Amz-Copy-Source:
+      - "/quickbooks-desktop-integration/54591b3a5869632afc090000/quickbooks_pending/products_1415821593.csv"
+      X-Amz-Metadata-Directive:
+      - COPY
+      X-Amz-Storage-Class:
+      - STANDARD
+      User-Agent:
+      - aws-sdk-ruby/1.57.0 ruby/2.1.4 x86_64-darwin13.0
+      Date:
+      - Wed, 12 Nov 2014 19:55:29 GMT
+      Authorization:
+      - AUTHORIZATION
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amz-Id-2:
+      - oUXfNX2o+FsAx55PsytB8PjgQ2d+tx2guNgUKxiPYSk5CT8ZngmNZHfB57ljBXEx
+      X-Amz-Request-Id:
+      - 3AB3792F6FC736E6
+      Date:
+      - Wed, 12 Nov 2014 19:55:29 GMT
+      Content-Type:
+      - application/xml
+      Content-Length:
+      - '234'
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: |-
+        <?xml version="1.0" encoding="UTF-8"?>
+        <CopyObjectResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><LastModified>2014-11-12T19:55:29.000Z</LastModified><ETag>&quot;6750ef79edf9cc4cb211c3976a8f3e20&quot;</ETag></CopyObjectResult>
+    http_version: 
+  recorded_at: Wed, 12 Nov 2014 19:55:30 GMT
+- request:
+    method: delete
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/quickbooks_pending/products_1415821593.csv
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby/1.57.0 ruby/2.1.4 x86_64-darwin13.0
+      Date:
+      - Wed, 12 Nov 2014 19:55:30 GMT
+      Authorization:
+      - AUTHORIZATION
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 204
+      message: No Content
+    headers:
+      X-Amz-Id-2:
+      - fYqG0Y7It7IRatpTaiHsyQUqL8zeIhpxuIwwF8qCujBiWs1h2iMtgAnRGOpmrQ6Z
+      X-Amz-Request-Id:
+      - 4D99E68A314BFF8F
+      Date:
+      - Wed, 12 Nov 2014 19:55:30 GMT
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: ''
+    http_version: 
+  recorded_at: Wed, 12 Nov 2014 19:55:30 GMT
+- request:
+    method: get
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/quickbooks_pending/products_1415821680.csv
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby/1.57.0 ruby/2.1.4 x86_64-darwin13.0
+      Date:
+      - Wed, 12 Nov 2014 19:55:30 GMT
+      Authorization:
+      - AUTHORIZATION
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amz-Id-2:
+      - HNoZ2rNH1tg+//UWoUg8511Q2e2fz+p4xImlgEp4F3o/Zunuf3rrO5xOkcGm/HQ+
+      X-Amz-Request-Id:
+      - E845AE8D85DB7A32
+      Date:
+      - Wed, 12 Nov 2014 19:55:31 GMT
+      Last-Modified:
+      - Wed, 12 Nov 2014 19:48:01 GMT
+      Etag:
+      - '"6750ef79edf9cc4cb211c3976a8f3e20"'
+      Accept-Ranges:
+      - bytes
+      Content-Type:
+      - ''
+      Content-Length:
+      - '2090'
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: |-
+        id,sku,product_id,quantity,price,cost_price
+        12797,12797,12797,0,0.00,0.00
+        Haskell T-Shirt,Haskell T-Shirt,Haskell T-Shirt,300,55.00,4.00
+        Ruby T-Shirt,Ruby T-Shirt,Ruby T-Shirt,200,11.00,10.00
+        Sinatra T-Shirt,Sinatra T-Shirt,Sinatra T-Shirt,100,5.00,2.00
+        SPREE-T-SHIRT-1,SPREE-T-SHIRT-1,SPREE-T-SHIRT-1,0,0.00,0.00
+        SPREE-T-SHIRT-2,SPREE-T-SHIRT-2,SPREE-T-SHIRT-2,0,0.00,0.00
+        SPREE-T-SHIRT-3,SPREE-T-SHIRT-3,SPREE-T-SHIRT-3,0,0.00,0.00
+        SPREE-T-SHIRT-4,SPREE-T-SHIRT-4,SPREE-T-SHIRT-4,0,0.00,0.00
+        SPREE-T-SHIRT-5,SPREE-T-SHIRT-5,SPREE-T-SHIRT-5,0,0.00,0.00
+        SPREE-T-SHIRT-6,SPREE-T-SHIRT-6,SPREE-T-SHIRT-6,0,0.00,0.00
+        SPREE-T-SHIRT-7,SPREE-T-SHIRT-7,SPREE-T-SHIRT-7,0,1.00,0.00
+        SPREE-T-SHIRT-8,SPREE-T-SHIRT-8,SPREE-T-SHIRT-8,0,1.60,0.50
+        SPREE-T-SHIRT-9,SPREE-T-SHIRT-9,SPREE-T-SHIRT-9,0,1.60,0.50
+        SPREE-T-SHIRT6978710,SPREE-T-SHIRT6978710,SPREE-T-SHIRT6978710,0,35.00,22.33
+        SPREE-T-SHIRT6978711,SPREE-T-SHIRT6978711,SPREE-T-SHIRT6978711,0,35.00,22.33
+        SPREE-T-SHIRT6978712,SPREE-T-SHIRT6978712,SPREE-T-SHIRT6978712,0,35.00,22.33
+        SPREE-T-SHIRT6978713,SPREE-T-SHIRT6978713,SPREE-T-SHIRT6978713,0,35.00,22.33
+        SPREE-T-SHIRT6978714,SPREE-T-SHIRT6978714,SPREE-T-SHIRT6978714,0,35.00,22.33
+        SPREE-T-SHIRT6978715,SPREE-T-SHIRT6978715,SPREE-T-SHIRT6978715,0,35.00,22.33
+        SPREE-T-SHIRT6978716,SPREE-T-SHIRT6978716,SPREE-T-SHIRT6978716,0,35.00,22.33
+        SPREE-T-SHIRT6978717,SPREE-T-SHIRT6978717,SPREE-T-SHIRT6978717,0,35.00,22.33
+        SPREE-T-SHIRT6978718,SPREE-T-SHIRT6978718,SPREE-T-SHIRT6978718,0,35.00,22.33
+        SPREE-T-SHIRT6978719,SPREE-T-SHIRT6978719,SPREE-T-SHIRT6978719,0,35.00,22.33
+        SPREE-T-SHIRT6978720,SPREE-T-SHIRT6978720,SPREE-T-SHIRT6978720,0,35.00,22.33
+        SPREE-T-SHIRT6978721,SPREE-T-SHIRT6978721,SPREE-T-SHIRT6978721,0,35.00,22.33
+        SPREE-T-SHIRT6978722,SPREE-T-SHIRT6978722,SPREE-T-SHIRT6978722,0,35.00,22.33
+        SPREE-T-SHIRT697875,SPREE-T-SHIRT697875,SPREE-T-SHIRT697875,0,35.00,22.33
+        SPREE-T-SHIRT697877,SPREE-T-SHIRT697877,SPREE-T-SHIRT697877,0,35.00,22.33
+        SPREE-T-SHIRT697878,SPREE-T-SHIRT697878,SPREE-T-SHIRT697878,0,35.00,22.33
+        SPREE-T-SHIRT697879,SPREE-T-SHIRT697879,SPREE-T-SHIRT697879,0,35.00,22.33
+    http_version: 
+  recorded_at: Wed, 12 Nov 2014 19:55:31 GMT
+- request:
+    method: put
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/quickbooks_processed/products_1415821680.csv
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      X-Amz-Copy-Source:
+      - "/quickbooks-desktop-integration/54591b3a5869632afc090000/quickbooks_pending/products_1415821680.csv"
+      X-Amz-Metadata-Directive:
+      - COPY
+      X-Amz-Storage-Class:
+      - STANDARD
+      User-Agent:
+      - aws-sdk-ruby/1.57.0 ruby/2.1.4 x86_64-darwin13.0
+      Date:
+      - Wed, 12 Nov 2014 19:55:31 GMT
+      Authorization:
+      - AUTHORIZATION
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amz-Id-2:
+      - p0EVEVLvbyjteIO9uKiE6m2/uwV+soV+GZYR9hzXQih0O+Ny8Z8J5fg32/qz1Gmd
+      X-Amz-Request-Id:
+      - F26185299C82C771
+      Date:
+      - Wed, 12 Nov 2014 19:55:32 GMT
+      Content-Type:
+      - application/xml
+      Content-Length:
+      - '234'
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: |-
+        <?xml version="1.0" encoding="UTF-8"?>
+        <CopyObjectResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><LastModified>2014-11-12T19:55:32.000Z</LastModified><ETag>&quot;6750ef79edf9cc4cb211c3976a8f3e20&quot;</ETag></CopyObjectResult>
+    http_version: 
+  recorded_at: Wed, 12 Nov 2014 19:55:32 GMT
+- request:
+    method: delete
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/quickbooks_pending/products_1415821680.csv
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby/1.57.0 ruby/2.1.4 x86_64-darwin13.0
+      Date:
+      - Wed, 12 Nov 2014 19:55:32 GMT
+      Authorization:
+      - AUTHORIZATION
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 204
+      message: No Content
+    headers:
+      X-Amz-Id-2:
+      - d5kGcLkzcEi5DcloBDuT6CfqH6IN/ARI75v8hcIGN5IpYYQOpOCSHsOnyaOBr9Bl
+      X-Amz-Request-Id:
+      - 86C9FA922548C984
+      Date:
+      - Wed, 12 Nov 2014 19:55:33 GMT
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: ''
+    http_version: 
+  recorded_at: Wed, 12 Nov 2014 19:55:33 GMT
+- request:
+    method: get
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/?max-keys=1000&prefix=54591b3a5869632afc090000/settings/get_products
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby/1.57.0 ruby/2.1.4 x86_64-darwin13.0
+      Date:
+      - Wed, 12 Nov 2014 19:55:33 GMT
+      Authorization:
+      - AUTHORIZATION
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amz-Id-2:
+      - tnlZqHczb7tq6fk2uvepDP67wWIGk3xN1vthenYvAUkE9fbvaRHCLXoFhbx16jFh
+      X-Amz-Request-Id:
+      - C7CEEE5AB1CCB012
+      Date:
+      - Wed, 12 Nov 2014 19:55:33 GMT
+      Content-Type:
+      - application/xml
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: |-
+        <?xml version="1.0" encoding="UTF-8"?>
+        <ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>quickbooks-desktop-integration</Name><Prefix>54591b3a5869632afc090000/settings/get_products</Prefix><Marker></Marker><MaxKeys>1000</MaxKeys><IsTruncated>false</IsTruncated><Contents><Key>54591b3a5869632afc090000/settings/get_products.csv</Key><LastModified>2014-11-12T19:48:01.000Z</LastModified><ETag>&quot;3c4e31997794a34651b01c239bbd010a&quot;</ETag><Size>146</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>aws</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents></ListBucketResult>
+    http_version: 
+  recorded_at: Wed, 12 Nov 2014 19:55:34 GMT
+- request:
+    method: get
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/settings/get_products.csv
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby/1.57.0 ruby/2.1.4 x86_64-darwin13.0
+      Date:
+      - Wed, 12 Nov 2014 19:55:34 GMT
+      Authorization:
+      - AUTHORIZATION
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amz-Id-2:
+      - "/PH89cSly8o00JniB6c8eRYBd33m7bqhMooGAvd8Q/Z3vmWL+LY4zSIWnSdta2Dm"
+      X-Amz-Request-Id:
+      - 7725AB414AF581BA
+      Date:
+      - Wed, 12 Nov 2014 19:55:34 GMT
+      Last-Modified:
+      - Wed, 12 Nov 2014 19:48:01 GMT
+      Etag:
+      - '"3c4e31997794a34651b01c239bbd010a"'
+      Accept-Ranges:
+      - bytes
+      Content-Type:
+      - ''
+      Content-Length:
+      - '146'
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: |-
+        connection_id,flow,origin,quickbooks_since,quickbooks_force_config
+        54591b3a5869632afc090000,get_products,quickbooks,2014-11-12T18:56:23+00:00,true
+    http_version: 
+  recorded_at: Wed, 12 Nov 2014 19:55:34 GMT
+recorded_with: VCR 2.9.3
