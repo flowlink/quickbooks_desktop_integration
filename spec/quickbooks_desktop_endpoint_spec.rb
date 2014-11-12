@@ -62,10 +62,9 @@ describe QuickbooksDesktopEndpoint do
     VCR.use_cassette "requests/425435435234532" do
       post "/get_inventory", request.to_json, headers
 
-      expect(json_response[:summary]).to eq nil
+      expect(json_response[:summary]).to match "records from quickbooks"
       expect(last_response.status).to eq 200
-      # expect(json_response[:inventories].count).to eq 3
-      # expect(json_response[:products].count).to eq 4
+      expect(json_response[:inventories].count).to be >= 1
     end
   end
 

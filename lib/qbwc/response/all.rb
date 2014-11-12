@@ -32,10 +32,7 @@ module QBWC
       def response_hash
         @response_hash ||= begin
                              response_xml = CGI.unescapeHTML(self.response_xml)
-
                              response_xml.slice! '<?xml version="1.0" ?>'
-
-                             puts response_xml
 
                              nori = Nori.new strip_namespaces: true
 

@@ -59,48 +59,29 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
       connection_id: request.env['HTTP_X_HUB_STORE'],
       flow: "receive_inventory",
       origin: "quickbooks"
-    }.merge(@config).with_indifferent_access
+    }.merge(@config)
 
     Persistence::Settings.new(config).setup
 
+    persistence = Persistence::Object.new config, { inventories: {} }
+    records = persistence.process_waiting_records
+
+    if records.any?
+      names = records.inject([]) do |names, collection|
+        name = collection.keys.first
+        add_or_merge_value name, collection.values.first
+
+        names.push name
+      end
+
+      # TODO return quickbooks_since here?
+
+      result 200, "Received #{names.uniq.join(', ')} records from quickbooks"
+    else
+      result 200
+    end
+
     result 200
-  end
-
-  # post "/get_product"
-
-  # Note that once data is returned files will be moved
-  # to another folder so chances are it will be very hard to get those
-  # files back in case something explodes after this point.
-  #
-  # Possible issues include returning more objects than the Wombat account
-  # limit allows or any ruby exception either here or once it reaches Wombat.
-  post "/get_data" do
-    config = {
-      connection_id: request.env['HTTP_X_HUB_STORE'],
-      origin: 'quickbooks'
-    }.merge(@config).with_indifferent_access
-
-    Persistence::Settings.new(config).setup
-
-    result 200
-
-    # s3_integration = Persistence::Object.new config
-    # records = s3_integration.start_processing false
-
-    # if records.any?
-    #   names = records.inject([]) do |names, collection|
-    #     name = collection.keys.first
-    #     add_or_merge_value name, collection.values.first
-
-    #     names.push name
-    #   end
-
-    #   # TODO Return quickbooks_since here?
-
-    #   result 200, "Received #{names.uniq.join(', ')} records from Quickbooks"
-    # else
-    #   result 200
-    # end
   end
 
   private

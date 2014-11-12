@@ -10,11 +10,11 @@ module QBWC
     end
 
     def digest_response_into_actions(response_xml)
-      # Parse and break response to specific objects
       receive_settings = s3_settings.settings 'receive'
-      config = config.merge receive: receive_settings
+      params = config.merge receive: receive_settings
 
-      objects = Response::All.new(response_xml).process(config)
+      # Parse and break response to specific objects
+      objects = Response::All.new(response_xml).process(params)
 
       puts "\n\n *** digest_response_into_actions: #{objects.inspect}"
 
