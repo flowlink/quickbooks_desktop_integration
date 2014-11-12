@@ -24,30 +24,6 @@ module Persistence
       @amazon_s3 = S3Util.new
     end
 
-    def base_name
-      "#{config[:connection_id]}"
-    end
-
-    def pending
-      "#{config[:origin]}_pending"
-    end
-
-    def ready
-      "#{config[:origin]}_ready"
-    end
-
-    def processed
-      "#{config[:origin]}_processed"
-    end
-
-    def failed
-      "#{config[:origin]}_failed"
-    end
-
-    def current_time
-      Time.now.to_i
-    end
-
     # Doesn't check whether the record (s) is already in s3. Only save it.
     #
     # AmazonS3 will append a number to the end of the file. e.g. orders_123123(1)
@@ -60,7 +36,7 @@ module Persistence
     #
     def save
       objects.each do |object|
-        file = "#{base_name}/#{pending}/#{payload_key.pluralize}_#{object['id']}_.csv"
+        file = "#{base_name}/#{pending}/#{object_file_name}_#{object['id']}_.csv"
         amazon_s3.export file_name: file, objects: [object]
       end
     end
@@ -202,10 +178,53 @@ puts " \n **** update_objects_files: #{statuses_objects.inspect}"
               new_filename << "#{object[:list_id]}_#{object[:edit_sequence]}" if object[:list_id].to_s.empty?
 
               s3_object.move_to("#{new_filename}.csv")
+
+              # TODO Need a better name
+              copy_files("#{new_filename}.csv")
             end
           end
         end
       end
     end
+
+    private
+
+    def copy_files(filename)
+      return unless filename.match(/products/)
+
+      s3_object = amazon_s3.bucket.objects[filename]
+      new_filename = filename.gsub('products','inventories')
+      s3_object.copy_to(new_filename)
+    end
+
+    def base_name
+      "#{config[:connection_id]}"
+    end
+
+    def pending
+      "#{config[:origin]}_pending"
+    end
+
+    def ready
+      "#{config[:origin]}_ready"
+    end
+
+    def processed
+      "#{config[:origin]}_processed"
+    end
+
+    def failed
+      "#{config[:origin]}_failed"
+    end
+
+    def current_time
+      Time.now.to_i
+    end
+
+    def object_file_name
+      return 'products' if payload_key.pluralize == 'inventories'
+      payload_key.pluralize
+    end
+
   end
 end
