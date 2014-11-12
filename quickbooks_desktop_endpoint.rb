@@ -12,7 +12,11 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
     post "/add_#{path}" do
       config = {
         connection_id: request.env['HTTP_X_HUB_STORE'],
-        flow: "add_#{path}"
+        flow: "add_#{path}",
+        # NOTE could save us some time and http calls by not persisting configs
+        # on every call. Use same approach on polling instead by always setting
+        # this flag back to false on return?
+        quickbooks_force_config: true
       }.merge(@config).with_indifferent_access
 
       Persistence::Settings.new(config).setup
@@ -23,23 +27,6 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
       object_type = integration.payload_key.capitalize
       result 200, "#{object_type} waiting for Quickbooks Desktop scheduler"
     end
-  end
-
-  # Quickbooks will hit this endpoint to tell us about the last object batch
-  #
-  # POST or GET?
-  #
-  # NOTE Need to figure how exactly this request will look like.
-  # Assume we get a message with some kind of reference to the last
-  # file (object or batch of objects) sent a status and or a successful or
-  # error message
-  post "/qb_response_callback" do
-    config = { connection_id: @payload[:connection_id] }
-    payload = { notification_orders: @payload[:response] }
-
-    integration = Persistence::Object.new config, payload
-    integration.save
-    result 200
   end
 
   post "/get_notifications" do
