@@ -3,10 +3,18 @@ require 'spec_helper'
 module QBWC
   module Request
     describe Products do
-      it "builds wombat products from xml response" do
-        subject = Product.new Factory.item_inventory_add_rs_qbxml
-        expect(subject.mapped_records.size).to eq(1)
-        expect(subject.mapped_records[0][:id]).to eq('SPREE-T-SHIRT-1')
+      subject { described_class }
+      let(:product_insert) { [Factory.products[:products].first] }
+      let(:product_update) { [product_insert.first.merge({:list_id=>'1234567'})] }
+
+      it "builds insert requests" do
+        request = subject.generate_request_insert_update(product_insert)
+        expect(request).to match(/ItemInventoryAddRq/)
+      end
+
+      it "builds insert requests" do
+        request = subject.generate_request_insert_update(product_update)
+        expect(request).to match(/ItemInventoryModRq/)
       end
     end
   end
