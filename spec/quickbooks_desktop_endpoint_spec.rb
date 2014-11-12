@@ -50,7 +50,7 @@ describe QuickbooksDesktopEndpoint do
     end
   end
 
-  it "gets data from quickbooks" do
+  it "gets inventories from quickbooks" do
     headers = auth.merge("HTTP_X_HUB_STORE" => "54591b3a5869632afc090000")
     request = {
       parameters: {
@@ -60,7 +60,7 @@ describe QuickbooksDesktopEndpoint do
     }
     
     VCR.use_cassette "requests/425435435234532" do
-      post "/get_inventory", request.to_json, headers
+      post "/get_inventories", request.to_json, headers
 
       expect(json_response[:summary]).to match "records from quickbooks"
       expect(last_response.status).to eq 200
@@ -69,9 +69,11 @@ describe QuickbooksDesktopEndpoint do
     end
   end
 
-  it "gets no data" do
+  it "gets no inventories" do
+    headers = auth.merge("HTTP_X_HUB_STORE" => "54591b3a5869632afc090000")
+
     VCR.use_cassette "requests/43535345325" do
-      post "/get_data", {}.to_json, auth
+      post "/get_inventories", {}.to_json, headers
       expect(json_response[:summary]).to eq nil
       expect(last_response.status).to eq 200
     end

@@ -28,11 +28,11 @@ module QBWC
 
     def build_polling_request
       string = ''
-      s3_settings.settings('receive').each do |record|
+      s3_settings.settings('get_').each do |record|
         object_type = record.keys.first
         params = record.values.first
 
-        klass = "QBWC::Request::#{object_type.pluralize.capitalize}".constantize
+        klass = "QBWC::Request::#{object_type.capitalize}".constantize
         string << klass.polling_xml(params['quickbooks_since'])
       end
 

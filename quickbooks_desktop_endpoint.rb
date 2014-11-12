@@ -48,36 +48,40 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
     result 200
   end
 
-  post "/get_inventory" do
-    config = {
-      connection_id: request.env['HTTP_X_HUB_STORE'],
-      flow: "receive_inventory",
-      origin: "quickbooks"
-    }.merge(@config).with_indifferent_access
+  ["get_inventories", "get_products"].each do |path|
+    post "/#{path}" do
+      object_type = path.split("_").last
 
-    s3_settings = Persistence::Settings.new(config)
-    s3_settings.setup
+      config = {
+        connection_id: request.env['HTTP_X_HUB_STORE'],
+        flow: path,
+        origin: "quickbooks"
+      }.merge(@config).with_indifferent_access
 
-    persistence = Persistence::Object.new config, { inventories: {} }
-    records = persistence.process_waiting_records
+      s3_settings = Persistence::Settings.new(config)
+      s3_settings.setup
 
-    if records.any?
-      names = records.inject([]) do |names, collection|
-        name = collection.keys.first
-        add_or_merge_value name, collection.values.first
+      add_parameter "quickbooks_force_config", false
 
-        names.push name
+      persistence = Persistence::Object.new config, object_type => {}
+      records = persistence.process_waiting_records
+
+      if records.any?
+        names = records.inject([]) do |names, collection|
+          name = collection.keys.first
+          add_or_merge_value name, collection.values.first
+
+          names.push name
+        end
+
+        params = s3_settings.fetch(path).first[object_type]
+        add_parameter "quickbooks_since", params['quickbooks_since']
+
+        result 200, "Received #{names.uniq.join(', ')} records from quickbooks"
+      else
+        result 200
       end
-
-      params = s3_settings.fetch("receive_inventory").first['inventory']
-      add_parameter "quickbooks_since", params['quickbooks_since']
-
-      result 200, "Received #{names.uniq.join(', ')} records from quickbooks"
-    else
-      result 200
     end
-
-    result 200
   end
 
   private

@@ -10,7 +10,7 @@ module QBWC
     end
 
     def digest_response_into_actions(response_xml)
-      receive_settings = s3_settings.settings 'receive'
+      receive_settings = s3_settings.settings 'get_'
       params = config.merge receive: receive_settings
 
       # Parse and break response to specific objects
