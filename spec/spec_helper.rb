@@ -1,7 +1,13 @@
+require 'simplecov'
 require 'rubygems'
 require 'bundler'
 require 'dotenv'
+
 Dotenv.load
+
+SimpleCov.start do
+  add_filter 'spec'
+end
 
 Bundler.require(:default, :test)
 
