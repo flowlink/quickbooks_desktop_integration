@@ -65,6 +65,7 @@ describe QuickbooksDesktopEndpoint do
       expect(json_response[:summary]).to match "records from quickbooks"
       expect(last_response.status).to eq 200
       expect(json_response[:inventories].count).to be >= 1
+      expect(json_response[:parameters]).to have_key 'quickbooks_since'
     end
   end
 

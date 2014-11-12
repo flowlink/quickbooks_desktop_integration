@@ -61,7 +61,8 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
       origin: "quickbooks"
     }.merge(@config)
 
-    Persistence::Settings.new(config).setup
+    s3_settings = Persistence::Settings.new(config)
+    s3_settings.setup
 
     persistence = Persistence::Object.new config, { inventories: {} }
     records = persistence.process_waiting_records
@@ -74,7 +75,8 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
         names.push name
       end
 
-      # TODO return quickbooks_since here?
+      params = s3_settings.fetch("receive_inventory").first['inventory']
+      add_parameter "quickbooks_since", params['quickbooks_since']
 
       result 200, "Received #{names.uniq.join(', ')} records from quickbooks"
     else
