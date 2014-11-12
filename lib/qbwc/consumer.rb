@@ -16,8 +16,6 @@ module QBWC
       # Parse and break response to specific objects
       objects = Response::All.new(response_xml).process(params)
 
-      puts "\n\n *** digest_response_into_actions: #{objects.inspect}"
-
       # TODO Think another way to find the right objects to the right methods
       objects.to_a.compact.each do |request|
         integration.update_objects_files(request[:statuses_objects]) if request['statuses_objects']

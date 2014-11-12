@@ -33,8 +33,6 @@ puts " \n\n\n **** Records: #{records.inspect} \n\n"
         end
 
         { :statuses_objects => { :processed => products, :failed => [] } }.with_indifferent_access
-
-        #Move files and create  notifications
       end
     end
   end
