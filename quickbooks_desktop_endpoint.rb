@@ -59,7 +59,7 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
       connection_id: request.env['HTTP_X_HUB_STORE'],
       flow: "receive_inventory",
       origin: "quickbooks"
-    }.merge(@config)
+    }.merge(@config).with_indifferent_access
 
     s3_settings = Persistence::Settings.new(config)
     s3_settings.setup
