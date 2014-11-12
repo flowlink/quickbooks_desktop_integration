@@ -14,7 +14,7 @@ http_interactions:
       User-Agent:
       - aws-sdk-ruby/1.57.0 ruby/2.0.0 x86_64-darwin14.0.0
       Date:
-      - Tue, 11 Nov 2014 19:06:08 GMT
+      - Wed, 12 Nov 2014 12:24:55 GMT
       Authorization:
       - AUTHORIZATION
       Accept:
@@ -25,11 +25,11 @@ http_interactions:
       message: OK
     headers:
       X-Amz-Id-2:
-      - nxS6HojoCEo+f8brNcI3JW9HC4RQlmkB4v8hNBFZsf4D9zaXM9stNV/ibmRQMhmTFsLvI1zsztU=
+      - zKH6TJo3ORoAuP4SCtTWuNDxmEMDgfbERVyUT9goFZYM7bMDckAMqLbs5AiSDOVj82j3SoPzpQA=
       X-Amz-Request-Id:
-      - 520EB8BC59402757
+      - 5DF30FFF53D42361
       Date:
-      - Tue, 11 Nov 2014 19:06:10 GMT
+      - Wed, 12 Nov 2014 12:24:57 GMT
       Content-Type:
       - application/xml
       Transfer-Encoding:
@@ -42,5 +42,5 @@ http_interactions:
         <?xml version="1.0" encoding="UTF-8"?>
         <ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>quickbooks-desktop-integration</Name><Prefix>54372cb069702d1f59000000/wombat_ready/products_SPREE-T-SHIRT293178_</Prefix><Marker></Marker><MaxKeys>1000</MaxKeys><IsTruncated>false</IsTruncated></ListBucketResult>
     http_version: 
-  recorded_at: Tue, 11 Nov 2014 19:06:09 GMT
+  recorded_at: Wed, 12 Nov 2014 12:24:56 GMT
 recorded_with: VCR 2.9.3
