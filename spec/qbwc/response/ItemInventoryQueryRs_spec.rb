@@ -28,8 +28,15 @@ describe QBWC::Response::ItemInventoryQueryRs do
   it "persists objects in s3" do
     config = {
       connection_id: "54591b3a5869632afc090000",
-      receive: [{'inventory' => [] }]
+      receive: [{
+        'inventory' => {
+          connection_id: "54591b3a5869632afc090000",
+          quickbooks_since: '2014-11-10T09:10:55Z'
+        }
+      }]
     }
+
+    Persistence::Object.any_instance.stub current_time: "1415815242"
 
     VCR.use_cassette "response/543543254325342" do
       subject.process config

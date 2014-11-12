@@ -47,11 +47,11 @@ module QBWC
           # same inventories
           params = inventory_params['inventory']
           Persistence::Settings.new(params.with_indifferent_access).setup
-        else
-          config = { origin: 'wombat' }.merge config
-          object_persistence = Persistence::Object.new config
-          object_persistence.update_objects_with_query_results(objects_to_update)
         end
+
+        config = { origin: 'wombat' }.merge config
+        object_persistence = Persistence::Object.new config
+        object_persistence.update_objects_with_query_results(objects_to_update)
 
         nil
       end

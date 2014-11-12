@@ -92,8 +92,15 @@ module Persistence
     #                             :list_id => '800000-88888',
     #                             :edit_sequence => '12312312321'} ]
     def update_objects_with_query_results(objects_to_be_renamed)
+      prefix = "#{base_name}/#{ready}"
+
+      unless amazon_s3.bucket.objects.with_prefix(prefix).first
+        puts " No Files to be updated at #{prefix}"
+        return
+      end
+
       objects_to_be_renamed.to_a.compact.each do |object|
-        filename     = "#{base_name}/#{ready}/#{object[:object_type].pluralize}_#{object[:object_ref]}_"
+        filename     = "#{prefix}/#{object[:object_type].pluralize}_#{object[:object_ref]}_"
 
         # TODO what if the file is not there? we should probably at least
         # rescue / log the exception properly and move on with the others?
