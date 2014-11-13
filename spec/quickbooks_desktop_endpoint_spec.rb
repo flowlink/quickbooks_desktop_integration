@@ -49,7 +49,7 @@ describe QuickbooksDesktopEndpoint do
       }
     }
 
-    VCR.use_cassette "requests/334534253425" do
+    VCR.use_cassette "requests/get_notifications" do
       post "/get_notifications", request.to_json, headers
       expect(json_response[:summary]).to eq nil
       expect(last_response.status).to eq 200
@@ -64,7 +64,7 @@ describe QuickbooksDesktopEndpoint do
         quickbooks_force_config: 0
       }
     }
-    
+
     VCR.use_cassette "requests/425435435234532" do
       post "/get_inventories", request.to_json, headers
 
