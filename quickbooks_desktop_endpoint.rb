@@ -33,7 +33,9 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
     # NOTE Confirm this would be the same sent in the Send webhooks
     config = @config.merge connection_id: request.env['HTTP_X_HUB_STORE']
 
-    payload       = { config['object_type'].pluralize => nil }
+    object_type = @payload.keys.first
+
+    payload       = { object_type.pluralize => nil }
     integration   = Persistence::Object.new config, payload
     notifications = integration.get_notifications
 
