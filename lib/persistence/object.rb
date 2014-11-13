@@ -36,7 +36,7 @@ module Persistence
     #
     def save
       objects.each do |object|
-        file = "#{base_name}/#{pending}/#{object_file_name}_#{object['id']}_.csv"
+        file = "#{base_name}/#{pending}/#{object_file_name}_#{id_of_object(object)}_.csv"
         amazon_s3.export file_name: file, objects: [object]
       end
     end
@@ -260,6 +260,11 @@ module Persistence
     def object_file_name
       return 'products' if payload_key.pluralize == 'inventories'
       payload_key.pluralize
+    end
+
+    def id_of_object(object)
+      return object['id'] unless payload_key.pluralize == 'inventories'
+      object['product_id']
     end
   end
 end

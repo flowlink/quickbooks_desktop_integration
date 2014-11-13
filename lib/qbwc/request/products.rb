@@ -23,14 +23,14 @@ module QBWC
       # Return the requests to query products
       def self.generate_request_queries(objects)
         objects.inject("") do |request, object|
-          request << self.search_xml(object['id'])
+          request << self.search_xml(object.has_key?('product_id') ? object['product_id'] : object['id'])
         end
       end
 
       def self.search_xml(product_id)
        <<-XML
           <ItemInventoryQueryRq>
-            <MaxReturned>50</MaxReturned>
+            <MaxReturned>100</MaxReturned>
             <NameFilter>
               <MatchCriterion >StartsWith</MatchCriterion>
               <Name>#{product_id}</Name>
@@ -40,6 +40,8 @@ module QBWC
       end
 
       def self.add_xml_to_send(product, params)
+
+        product = complement_inventory(product)
         <<-XML
           <ItemInventoryAddRq>
              <ItemInventoryAdd>
@@ -56,12 +58,15 @@ module QBWC
                 <AssetAccountRef>
                    <FullName>#{params['quickbooks_inventory_account']}</FullName>
                 </AssetAccountRef>
+                <QuantityOnHand>#{product['quantity']}</QuantityOnHand>
              </ItemInventoryAdd>
           </ItemInventoryAddRq>
         XML
       end
 
       def self.update_xml_to_send(product, params)
+        product = complement_inventory(product)
+
         <<-XML
           <ItemInventoryModRq>
              <ItemInventoryMod>
@@ -80,9 +85,23 @@ module QBWC
                 <AssetAccountRef>
                    <FullName>#{params['quickbooks_inventory_account']}</FullName>
                 </AssetAccountRef>
+                <QuantityOnHand>#{product['quantity']}</QuantityOnHand>
              </ItemInventoryMod>
           </ItemInventoryModRq>
         XML
+      end
+
+      def self.complement_inventory(product)
+        if product.has_key?('product_id')
+          product['id']          = product['product_id']
+          product['description'] = product['product_id']
+          product['price']       = 0
+          product['cost_price']  = 0
+        else
+          product['quantity'] = 0
+        end
+
+        product
       end
     end
   end
