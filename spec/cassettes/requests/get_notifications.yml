@@ -14,7 +14,7 @@ http_interactions:
       User-Agent:
       - aws-sdk-ruby/1.57.0 ruby/2.0.0 x86_64-darwin14.0.0
       Date:
-      - Thu, 13 Nov 2014 12:06:46 GMT
+      - Thu, 13 Nov 2014 12:46:46 GMT
       Authorization:
       - AUTHORIZATION
       Accept:
@@ -25,11 +25,11 @@ http_interactions:
       message: OK
     headers:
       X-Amz-Id-2:
-      - cBtz3Ilq/KXYQeTe/cAN03OuAWJj2Vrp/A+z/7Sxk9tKOX7kuMM89AepbUxyi3/kaUaLsStyKN8=
+      - sX3cZpWZzxd+PZ+55rVeL9MSYBVLadZk28V2eBXNeoN+7mtmAjrs7X6IncsANYU4
       X-Amz-Request-Id:
-      - 202EC098F7AB3FB5
+      - 31BFCBF308F5C628
       Date:
-      - Thu, 13 Nov 2014 12:06:48 GMT
+      - Thu, 13 Nov 2014 12:46:47 GMT
       Content-Type:
       - application/xml
       Transfer-Encoding:
@@ -42,5 +42,5 @@ http_interactions:
         <?xml version="1.0" encoding="UTF-8"?>
         <ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>quickbooks-desktop-integration</Name><Prefix>x123/wombat_ready/notification_</Prefix><Marker></Marker><MaxKeys>1000</MaxKeys><IsTruncated>false</IsTruncated></ListBucketResult>
     http_version: 
-  recorded_at: Thu, 13 Nov 2014 12:06:47 GMT
+  recorded_at: Thu, 13 Nov 2014 12:46:47 GMT
 recorded_with: VCR 2.9.3

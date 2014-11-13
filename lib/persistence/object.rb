@@ -19,9 +19,9 @@ module Persistence
     #
     def initialize(config = {}, payload = {})
       @payload_key = payload.keys.first
-      @objects = payload[payload_key].is_a?(Hash) ? [payload[payload_key]] : Array(payload[payload_key])
-      @config = { origin: 'wombat' }.merge(config).with_indifferent_access
-      @amazon_s3 = S3Util.new
+      @objects     = payload[payload_key].is_a?(Hash) ? [payload[payload_key]] : Array(payload[payload_key])
+      @config      = { origin: 'wombat' }.merge(config).with_indifferent_access
+      @amazon_s3   = S3Util.new
     end
 
     # Doesn't check whether the record (s) is already in s3. Only save it.
@@ -51,8 +51,8 @@ module Persistence
       collection = amazon_s3.bucket.objects
 
       collection.with_prefix(prefix).enum.map do |s3_object|
-        connection_id, folder, filename = s3_object.key.split("/")
-        object_type = filename.split("_").first
+        _, _, filename = s3_object.key.split("/")
+        object_type    = filename.split("_").first
 
         contents = s3_object.read
 
@@ -74,8 +74,8 @@ module Persistence
       collection = amazon_s3.bucket.objects
 
       collection.with_prefix(prefix).enum.map do |s3_object|
-        connection_id, folder, filename = s3_object.key.split("/")
-        object_type, object_ref, _ = filename.split("_")
+        _, _, filename    = s3_object.key.split("/")
+        object_type, _, _ = filename.split("_")
 
         contents = s3_object.read
 
@@ -135,8 +135,8 @@ module Persistence
       collection = amazon_s3.bucket.objects
 
       collection.with_prefix(prefix).enum.select{ |s3| !s3.key.match(/notification/) }.map do |s3_object|
-        connection_id, folder, filename = s3_object.key.split('/')
-        object_type, file_name, list_id, edit_sequence = filename.split('_')
+        _, _, filename                         = s3_object.key.split('/')
+        object_type, _, list_id, edit_sequence = filename.split('_')
 
         list_id.gsub!('.csv', '') unless list_id.nil?
         edit_sequence.gsub!('.csv', '') unless edit_sequence.nil?

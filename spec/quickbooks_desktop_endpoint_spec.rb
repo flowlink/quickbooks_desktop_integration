@@ -45,7 +45,7 @@ describe QuickbooksDesktopEndpoint do
 
     request = {
       parameters: {
-        object_type: "orders"
+        object_type: "products"
       }
     }
 
@@ -53,6 +53,7 @@ describe QuickbooksDesktopEndpoint do
       post "/get_notifications", request.to_json, headers
       expect(json_response[:summary]).to eq nil
       expect(last_response.status).to eq 200
+      puts last_response.inspect
     end
   end
 

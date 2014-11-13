@@ -33,12 +33,12 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
     # NOTE Confirm this would be the same sent in the Send webhooks
     config = @config.merge connection_id: request.env['HTTP_X_HUB_STORE']
 
-    payload = { @payload[:response] => nil }
-    integration = Persistence::Object.new config, payload
+    payload       = { config['object_type'].pluralize => nil }
+    integration   = Persistence::Object.new config, payload
     notifications = integration.get_notifications
 
-    add_value "success", notifications['processed']
-    add_value "fail", notifications['failed']
+    add_value "success", { "Object successfully received in batch" => notifications['processed'] }
+    add_value "fail", { "Error to process objects in quickbooks" => notifications['failed'] }
 
     result 200
   end
