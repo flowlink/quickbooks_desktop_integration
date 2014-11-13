@@ -10,6 +10,7 @@ require 'qbwc/response/all'
 require 'qbwc/request/customers'
 require 'qbwc/request/products'
 require 'qbwc/request/inventories'
+require 'qbwc/request/orders'
 
 require 'qbwc/consumer'
 require 'qbwc/producer'
