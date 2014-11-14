@@ -24,6 +24,11 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
       integration = Persistence::Object.new config, @payload
       integration.save
 
+      notifications = integration.get_notifications
+
+      add_value "success", { "Object successfully received in batch" => notifications['processed'] } unless notifications['processed'].empty?
+      add_value "fail", { "Error to process objects in quickbooks" => notifications['failed'] } unless notifications['failed'].empty?
+
       object_type = integration.payload_key.capitalize
       result 200, "#{object_type} waiting for Quickbooks Desktop scheduler"
     end
