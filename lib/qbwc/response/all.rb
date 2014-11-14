@@ -1,11 +1,14 @@
 require 'nori'
 
+# NOTE rename all these to regular named ruby files?
 require 'qbwc/response/ItemInventoryAddRs'
 require 'qbwc/response/ItemInventoryModRs'
 require 'qbwc/response/ItemInventoryQueryRs'
 require 'qbwc/response/CustomerQueryRs'
 require 'qbwc/response/CustomerAddRs'
 require 'qbwc/response/CustomerModRs'
+
+require 'qbwc/response/sales_order_query_rs'
 
 module QBWC
   module Response
@@ -33,6 +36,10 @@ module QBWC
         @response_hash ||= begin
                              response_xml = CGI.unescapeHTML(self.response_xml)
                              response_xml.slice! '<?xml version="1.0" ?>'
+
+                             puts "***** XML response"
+                             puts response_xml
+                             puts "***** XML response"
 
                              nori = Nori.new strip_namespaces: true
 
