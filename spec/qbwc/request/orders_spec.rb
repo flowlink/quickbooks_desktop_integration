@@ -10,6 +10,7 @@ module QBWC
         xml = subject.generate_request_insert_update orders
         expect(xml).to match /SalesOrderAdd/
         expect(xml).to match /SalesOrderLineAdd/
+        expect(xml).to match /100.00/
       end
     end
   end

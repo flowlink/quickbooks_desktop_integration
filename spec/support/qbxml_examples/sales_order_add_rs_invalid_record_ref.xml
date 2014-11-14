@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <soap:Body>
+    <receiveResponseXML xmlns="http://developer.intuit.com/">
+      <ticket>354f40b4-b661-4472-a13f-8abf13a743c3</ticket>
+      <response>
+        <QBXML>
+          <QBXMLMsgsRs>
+            <SalesOrderAddRs statusCode="3140" statusSeverity="Error" statusMessage="There is an invalid reference to QuickBooks Customer &quot;Joe Smith&quot; in the SalesOrder.  QuickBooks error message: Invalid argument.  The specified record does not exist in the list." />
+            <!--
+            A example for invalid Item reference is pretty much the same except
+            for the status message attribute:
+
+                There is an invalid reference to QuickBooks Item &quot;sooo wrong&quot; in the SalesOrder line.  QuickBooks error message: Invalid argument.  The specified record does not exist in the list.
+
+            -->
+          </QBXMLMsgsRs>
+        </QBXML>
+      </response>
+      <hresult />
+      <message />
+    </receiveResponseXML>
+  </soap:Body>
+</soap:Envelope>
