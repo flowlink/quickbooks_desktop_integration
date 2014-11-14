@@ -41,7 +41,7 @@ module QBWC
           instance.process(config)
 
           # NOTE suggested api for handling errors on a per class basis ..
-          instance.handle_errors errors if instance.respond_to? :handle_errors
+          #instance.handle_errors errors if instance.respond_to? :handle_errors
         end
       end
 
