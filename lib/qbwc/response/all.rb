@@ -27,7 +27,21 @@ module QBWC
           value = value.is_a?(Hash)? [value] : Array(value)
 
           records = value.map(&:values).flatten.select { |value| value.is_a?(Hash) }
-          class_name.new(records).process(config)
+
+          errors = value.map do |response|
+            if response['@statusSeverity'] == 'Error'
+              {
+                code: response['@statusCode'],
+                message: response['@statusMessage']
+              }
+            end
+          end.compact
+
+          instance = class_name.new(records)
+          instance.process(config)
+
+          # NOTE suggested api for handling errors on a per class basis ..
+          instance.handle_errors errors if instance.respond_to? :handle_errors
         end
       end
 
@@ -37,10 +51,6 @@ module QBWC
         @response_hash ||= begin
                              response_xml = CGI.unescapeHTML(self.response_xml)
                              response_xml.slice! '<?xml version="1.0" ?>'
-
-                             puts "***** XML response"
-                             puts response_xml
-                             puts "***** XML response"
 
                              nori = Nori.new strip_namespaces: true
 

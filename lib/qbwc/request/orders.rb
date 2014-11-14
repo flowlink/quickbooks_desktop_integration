@@ -20,6 +20,11 @@ module QBWC
           end
         end
 
+        # We could assume all references presented in the order exists
+        # in quickbooks if any of them dont, grab the error on the response
+        # and persist the missing reference. QBWC scheduler should keep
+        # running until all references are there and the sales order can
+        # finally be persisted.
         def generate_request_insert_update(objects, params = {})
           objects.inject("") do |request, object|
             request << if object[:list_id].to_s.empty?
@@ -47,6 +52,21 @@ module QBWC
 <SalesOrderAddRq>
   <SalesOrderAdd>
     #{sales_order record, params}
+  </SalesOrderAdd>
+</SalesOrderAddRq>
+<SalesOrderAddRq>
+  <SalesOrderAdd>
+    <!-- test multiple order one valid one invalid -->
+    <CustomerRef>
+      <FullName>nononononoImNotThereAlrightDylan</FullName>
+    </CustomerRef>
+    <SalesOrderLineAdd>
+      <ItemRef>
+        <FullName>totally wrong product id</FullName>
+      </ItemRef>
+      <Quantity>1</Quantity>
+      <Rate>10</Rate>
+    </SalesOrderLineAdd>
   </SalesOrderAdd>
 </SalesOrderAddRq>
             XML

@@ -28,13 +28,15 @@ module QBWC
       end
     end
 
-    it "builds request xml for sales order query" do
-      subject = described_class.new connection_id: '54591b3a5869632afc090000'
+    # how about not support update orders instead?!!
+    #
+    # it "builds request xml for sales order query" do
+    #   subject = described_class.new connection_id: '54591b3a5869632afc090000'
 
-      VCR.use_cassette "producer/452435543524532" do
-        xml = subject.build_available_actions_to_request
-        expect(xml).to match /SalesOrderQueryRq/
-      end
-    end
+    #   VCR.use_cassette "producer/452435543524532" do
+    #     xml = subject.build_available_actions_to_request
+    #     expect(xml).to match /SalesOrderQueryRq/
+    #   end
+    # end
   end
 end

@@ -19,6 +19,12 @@ module Factory
 
       name = file_name.split('.', 2).first
 
+      method_name = "#{name}_qbxml_raw".downcase
+
+      define_method method_name do
+        @@cache[method_name] ||= IO.read("#{File.dirname(__FILE__)}/qbxml_examples/#{name}.xml")
+      end
+
       method_name = "#{name}_qbxml".downcase
 
       define_method method_name do
