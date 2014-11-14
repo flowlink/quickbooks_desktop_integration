@@ -199,7 +199,7 @@ module Persistence
       prefix = "#{base_name}/#{ready}/notification_"
       collection = amazon_s3.bucket.objects
 
-      collection.with_prefix(prefix).enum.inject({}) do |notifications, s3_object|
+      collection.with_prefix(prefix).enum.inject({ 'processed' => [], 'failed' => [] }) do |notifications, s3_object|
         _, _, filename              = s3_object.key.split("/")
         _, status, _, object_ref, _ = filename.split("_")
 
