@@ -26,8 +26,8 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
 
       notifications = integration.get_notifications
 
-      add_value "success", { "Object successfully received in batch" => notifications['processed'] } unless notifications['processed'].empty?
-      add_value "fail", { "Error to process objects in quickbooks" => notifications['failed'] } unless notifications['failed'].empty?
+      add_value "success", { "Object successfully received in batch" => notifications['processed'] } if notifications['processed'].to_a.any?
+      add_value "fail", { "Error to process objects in quickbooks" => notifications['failed'] } if notifications['failed'].to_a.any?
 
       object_type = integration.payload_key.capitalize
       result 200, "#{object_type} waiting for Quickbooks Desktop scheduler"
