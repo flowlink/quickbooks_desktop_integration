@@ -11,10 +11,13 @@ module QBWC
         end
 
         def generate_request_queries(objects)
-          # objects.inject("") do |request, object|
-          #   request << search_xml(object['id'])
-          # end
-          ''
+          objects.inject("") do |request, object|
+            if txn_id = object['quickbooks_txn_id']
+              request << search_xml(txn_id)
+            else
+              request
+            end
+          end
         end
 
         def generate_request_insert_update(objects, params = {})
@@ -28,10 +31,10 @@ module QBWC
         end
 
         private
-          def search_xml(record_id)
+          def search_xml(txn_id)
            <<-XML
             <SalesOrderQueryRq>
-              <RefNumber>#{record_id}</RefNumber>
+              <TxnID>#{txn_id}</TxnID>
               <!-- <RefNumberCaseSensitive>STRTYPE</RefNumberCaseSensitive> -->
               <!-- <MaxReturned>INTTYPE</MaxReturned> -->
               <!-- <OwnerID>GUIDTYPE</OwnerID> -->
