@@ -85,7 +85,6 @@ module QBWC
                 <AssetAccountRef>
                    <FullName>#{params['quickbooks_inventory_account']}</FullName>
                 </AssetAccountRef>
-                <QuantityOnHand>#{product['quantity']}</QuantityOnHand>
              </ItemInventoryMod>
           </ItemInventoryModRq>
         XML
