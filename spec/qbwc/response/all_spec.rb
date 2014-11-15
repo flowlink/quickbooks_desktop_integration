@@ -9,7 +9,7 @@ describe QBWC::Response::All do
       subject.process
     end
 
-    pending "not sure what goes here yet" do
+    it "process sales order add rq fine" do
       subject = described_class.new Factory.sales_order_add_rs_raw_qbxml_raw
       subject.process
     end

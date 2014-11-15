@@ -28,6 +28,7 @@ module QBWC
 
           records = value.map(&:values).flatten.select { |value| value.is_a?(Hash) }
 
+          # NOTE delete in case it's useless
           errors = value.map do |response|
             if response['@statusSeverity'] == 'Error'
               {
@@ -37,11 +38,7 @@ module QBWC
             end
           end.compact
 
-          instance = class_name.new(records)
-
-          # NOTE suggested api for handling errors on a per class basis ..
-          instance.handle_errors errors if instance.respond_to? :handle_errors
-          instance.process(config)
+          class_name.new(records).process(config)
         end
       end
 
