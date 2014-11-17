@@ -33,12 +33,15 @@ module QBWC
             if response['@statusSeverity'] == 'Error'
               {
                 code: response['@statusCode'],
-                message: response['@statusMessage']
+                message: response['@statusMessage'],
+                request_id: response['@requestID']
               }
             end
           end.compact
+          response_processor = class_name.new(records)
 
-          class_name.new(records).process(config)
+          response_processor.handle_error(errors, config) unless errors.empty?
+          response_processor.process(config)
         end
       end
 
