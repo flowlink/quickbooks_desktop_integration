@@ -211,6 +211,18 @@ module Persistence
       end
     end
 
+    def save_session(object)
+      session_id = SecureRandom.uuid
+      file = "#{base_name}/#{sessions}/#{session_id}.csv"
+      amazon_s3.export file_name: file, objects: [object]
+      session_id
+    end
+
+    def load_session(session_id)
+      file = "#{base_name}/#{sessions}/#{session_id}.csv"
+      contents = amazon_s3.bucket.objects[file].read
+    end
+
     private
 
     def create_notifications(objects_filename, status)
@@ -230,6 +242,10 @@ module Persistence
       s3_object = amazon_s3.bucket.objects[filename]
       new_filename = filename.gsub('products','inventories')
       s3_object.copy_to(new_filename)
+    end
+
+    def sessions
+      "#{config[:origin]}_sessions"
     end
 
     def base_name
