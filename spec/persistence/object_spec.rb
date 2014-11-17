@@ -74,7 +74,7 @@ module Persistence
         subject = described_class.new config, payload
         notifications = subject.get_notifications
         expect(notifications).to have_key('processed')
-        expect(notifications['processed'].size).to eq(2)
+        expect(notifications['processed'].size).to eq(7)
       end
     end
   end
