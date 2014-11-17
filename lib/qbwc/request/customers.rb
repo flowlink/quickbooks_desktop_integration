@@ -8,7 +8,7 @@ module QBWC
           end
         end
 
-        def generate_request_queries(objects)
+        def generate_request_queries(objects, params)
           objects.inject('') { |request, object| request << search_xml(object['id']) }
         end
 

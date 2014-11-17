@@ -8,6 +8,10 @@ module QBWC
         @records = records
       end
 
+      def handle_error(errors, config)
+
+      end
+
       def process(config = {})
         orders = records.inject([]) do |orders, record|
           orders << {

@@ -7,6 +7,10 @@ module QBWC
         @records = records
       end
 
+      def handle_error(errors, config)
+
+      end
+
       def process(config = {})
         return { statuses_objects: nil }.with_indifferent_access if records.empty?
 

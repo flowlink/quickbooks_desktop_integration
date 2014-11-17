@@ -7,6 +7,14 @@ module QBWC
         @records = records
       end
 
+      def handle_error(errors, config)
+        config = { origin: 'wombat' }.merge config
+        object_persistence = Persistence::Object.new config
+        session = object_persistence.load_session(errors['request_id'])
+
+        puts "handle_error(errors, config): session.inspect"
+      end
+
       def process(config = {})
         return if records.empty?
 

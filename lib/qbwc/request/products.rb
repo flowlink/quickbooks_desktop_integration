@@ -12,24 +12,27 @@ module QBWC
       # Return the requests to insert/update for products
       def self.generate_request_insert_update(objects, params = {})
         objects.inject("") do |request, object|
+          puts "generate_request_insert_update(objects, params = {}): #{object.inspect}"
+          session_id = Persistence::Object.new({connection_id: params['connection_id']},{}).save_session(object)
           request << if object[:list_id].to_s.empty?
-                       add_xml_to_send(object, config.merge(params))
+                       add_xml_to_send(object, config.merge(params), session_id)
                      else
-                       update_xml_to_send(object, config.merge(params))
+                       update_xml_to_send(object, config.merge(params), session_id)
                      end
         end
       end
 
       # Return the requests to query products
-      def self.generate_request_queries(objects)
+      def self.generate_request_queries(objects, params)
         objects.inject("") do |request, object|
-          request << self.search_xml(object.has_key?('product_id') ? object['product_id'] : object['id'])
+          session_id = Persistence::Object.new({connection_id: params['connection_id']},{}).save_session(object)
+          request << self.search_xml(object.has_key?('product_id') ? object['product_id'] : object['id'], session_id)
         end
       end
 
-      def self.search_xml(product_id)
+      def self.search_xml(product_id, session_id)
        <<-XML
-          <ItemInventoryQueryRq>
+          <ItemInventoryQueryRq requestID="#{session_id}">
             <MaxReturned>100</MaxReturned>
             <NameFilter>
               <MatchCriterion >StartsWith</MatchCriterion>
@@ -39,11 +42,11 @@ module QBWC
         XML
       end
 
-      def self.add_xml_to_send(product, params)
+      def self.add_xml_to_send(product, params, session_id)
 
         product = complement_inventory(product)
         <<-XML
-          <ItemInventoryAddRq>
+          <ItemInventoryAddRq requestID="#{session_id}">
              <ItemInventoryAdd>
                 <Name>#{product['id']}</Name>
                 <SalesDesc>#{product['description']}</SalesDesc>
@@ -64,11 +67,11 @@ module QBWC
         XML
       end
 
-      def self.update_xml_to_send(product, params)
+      def self.update_xml_to_send(product, params, session_id)
         product = complement_inventory(product)
 
         <<-XML
-          <ItemInventoryModRq>
+          <ItemInventoryModRq requestID="#{session_id}">
              <ItemInventoryMod>
                 <ListID>#{product['list_id']}</ListID>
                 <EditSequence>#{product['edit_sequence']}</EditSequence>

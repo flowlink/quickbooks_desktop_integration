@@ -11,7 +11,7 @@ module QBWC
         end
 
         # We can only query by txn_id or ref_number, check sales_order_query_rq.xml
-        def generate_request_queries(objects)
+        def generate_request_queries(objects, params)
           objects.inject("") do |request, object|
             if txn_id = object['quickbooks_txn_id']
               request << search_xml(txn_id)
@@ -100,19 +100,19 @@ module QBWC
 
         # The order of tags here matter. e.g. PONumber MUST be after
         # ship address or you end up getting:
-        #   
+        #
         #   QuickBooks found an error when parsing the provided XML text stream.
-        # 
+        #
         # View sales_order_add_rq.xml in case you need to look into add more
         # tags to this request
         #
         # View sales_order_add_rs_invalid_record_ref.xml to see what'd you
         # get by sending a invalid Customer Ref you'd get as a response.
-        #   
+        #
         # R154085346875 is a too long value for RefNumber so lets use
         # PONumber to map Wombat orders id instead. Quickbooks
         # will increment RefNumber each time a sales order is created
-        #  
+        #
         # 'placed_on' needs to be a valid date string otherwise an exception
         # will be raised
         #

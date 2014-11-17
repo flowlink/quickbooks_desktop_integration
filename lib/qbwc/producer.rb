@@ -63,7 +63,7 @@ module QBWC
 
         class_name = "QBWC::Request::#{object_type.capitalize}".constantize
 
-        result << class_name.generate_request_queries(objects[object_type])
+        result << class_name.generate_request_queries(objects[object_type], config)
       end
     end
   end

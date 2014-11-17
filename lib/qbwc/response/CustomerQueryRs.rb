@@ -7,6 +7,10 @@ module QBWC
         @records = records
       end
 
+      def handle_error(errors, config)
+
+      end
+
       def process(config)
         return if records.empty?
 
