@@ -65,6 +65,8 @@ module QBWC
         end
 
         def build_items_refs_xml(record)
+          # TODO fix this when implement save/load session to orders
+          session_id = "123"
           record['line_items'].inject('') do |xml, item|
             object = {
               'id' => item['product_id'],
@@ -72,7 +74,7 @@ module QBWC
               'price' => item['price']
             }
 
-            xml << Products.add_xml_to_send(record, config)
+            xml << Products.add_xml_to_send(record, config, session_id)
           end
         end
 

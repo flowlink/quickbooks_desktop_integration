@@ -12,7 +12,7 @@ module QBWC
       # Return the requests to insert/update for products
       def self.generate_request_insert_update(objects, params = {})
         objects.inject("") do |request, object|
-          puts "generate_request_insert_update(objects, params = {}): #{object.inspect}"
+
           session_id = Persistence::Object.new({connection_id: params['connection_id']},{}).save_session(object)
           request << if object[:list_id].to_s.empty?
                        add_xml_to_send(object, config.merge(params), session_id)
