@@ -12,24 +12,24 @@ http_interactions:
       Accept-Encoding:
       - ''
       User-Agent:
-      - aws-sdk-ruby/1.57.0 ruby/2.0.0 x86_64-darwin14.0.0
+      - aws-sdk-ruby/1.57.0 ruby/2.1.5 x86_64-darwin14.0
       Date:
-      - Thu, 13 Nov 2014 12:46:46 GMT
+      - Tue, 18 Nov 2014 17:28:05 GMT
       Authorization:
       - AUTHORIZATION
       Accept:
-      - '*/*'
+      - "*/*"
   response:
     status:
       code: 200
       message: OK
     headers:
       X-Amz-Id-2:
-      - sX3cZpWZzxd+PZ+55rVeL9MSYBVLadZk28V2eBXNeoN+7mtmAjrs7X6IncsANYU4
+      - tRT3JG/8snkWhnscA5o3OGUKm2UlQNKuGJ6TjPGF3xc7d7aCx19XKjcxn7FVrGIz
       X-Amz-Request-Id:
-      - 31BFCBF308F5C628
+      - 18BCE9CC718DCE00
       Date:
-      - Thu, 13 Nov 2014 12:46:47 GMT
+      - Tue, 18 Nov 2014 17:28:07 GMT
       Content-Type:
       - application/xml
       Transfer-Encoding:
@@ -42,5 +42,5 @@ http_interactions:
         <?xml version="1.0" encoding="UTF-8"?>
         <ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>quickbooks-desktop-integration</Name><Prefix>x123/wombat_ready/notification_</Prefix><Marker></Marker><MaxKeys>1000</MaxKeys><IsTruncated>false</IsTruncated></ListBucketResult>
     http_version: 
-  recorded_at: Thu, 13 Nov 2014 12:46:47 GMT
+  recorded_at: Tue, 18 Nov 2014 17:28:06 GMT
 recorded_with: VCR 2.9.3
