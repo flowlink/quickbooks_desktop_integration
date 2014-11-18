@@ -2,6 +2,14 @@ require 'spec_helper'
 
 module Persistence
   describe Object do
+    let(:error) {
+                 {
+                  code: '3200',
+                  message: 'The provided edit sequence "1416315972" is out-of-date. ',
+                  request_id: 'f9a42f99-03fc-4847-b71e-0091baa4e3ef'
+                  }
+                }
+
     it "defaults to wombat on config origin" do
       subject = described_class.new
       expect(subject.config[:origin]).to eq 'wombat'
@@ -75,6 +83,18 @@ module Persistence
         notifications = subject.get_notifications
         expect(notifications).to have_key('processed')
         expect(notifications['processed'].size).to eq(7)
+      end
+    end
+
+    it "#create_error_notifications" do
+      payload = Factory.products
+      config = { origin: 'wombat', connection_id: '53ab0943436f6e9a6f080000' }
+
+      VCR.use_cassette "persistence/create_error_notifications" do
+        subject = described_class.new config, payload
+        subject.create_error_notifications( error.merge({context: 'Modifying products'}),
+                                            "products",
+                                            error[:request_id])
       end
     end
   end
