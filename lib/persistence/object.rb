@@ -1,5 +1,7 @@
 module Persistence
   class Object
+    SUCCESS_NOTIFICATION_MESSAGE="Object successfully received in batch"
+
     attr_reader :config, :objects, :payload_key, :amazon_s3
 
     # +payload+ might have a collection of records when writing to s3
@@ -199,13 +201,20 @@ module Persistence
       prefix = "#{base_name}/#{ready}/notification_"
       collection = amazon_s3.bucket.objects
 
-      collection.with_prefix(prefix).enum.inject({ 'processed' => [], 'failed' => [] }) do |notifications, s3_object|
+      collection.with_prefix(prefix).enum.inject({ 'processed' => {}, 'failed' => {} }) do |notifications, s3_object|
         _, _, filename              = s3_object.key.split("/")
         _, status, _, object_ref, _ = filename.split("_")
+        content = amazon_s3.convert_download('csv',s3_object.read).first
+
+        if content.has_key?('message')
+          notifications[status][content['message']] ||= []
+          notifications[status][content['message']] << object_ref
+        else
+          notifications[status][SUCCESS_NOTIFICATION_MESSAGE] ||= []
+          notifications[status][SUCCESS_NOTIFICATION_MESSAGE] << object_ref
+        end
 
         s3_object.move_to("#{base_name}/#{processed}/#{filename}")
-
-        notifications[status] << object_ref
 
         notifications
       end
