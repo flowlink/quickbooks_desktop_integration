@@ -8,11 +8,10 @@ module QBWC
       end
 
       def handle_error(errors, config)
-        config = { origin: 'wombat' }.merge config
-        object_persistence = Persistence::Object.new config
-        session = object_persistence.load_session(errors['request_id'])
-
-        puts "handle_error(errors, config): session.inspect"
+        error = errors.first
+        Persistence::Object.new(config).create_error_notifications( error.merge({context: 'Query products'}),
+                                                                    "products",
+                                                                    error[:request_id])
       end
 
       def process(config = {})

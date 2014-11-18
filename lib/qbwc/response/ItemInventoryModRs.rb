@@ -8,7 +8,10 @@ module QBWC
       end
 
       def handle_error(errors, config)
-
+        error = errors.first
+        Persistence::Object.new(config).create_error_notifications( error.merge({context: 'Modifying products'}),
+                                                                    "products",
+                                                                    error[:request_id])
       end
 
       def process(config = {})
