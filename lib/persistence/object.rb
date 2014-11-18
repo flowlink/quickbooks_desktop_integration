@@ -220,7 +220,15 @@ module Persistence
 
     def load_session(session_id)
       file = "#{base_name}/#{sessions}/#{session_id}.csv"
-      contents = amazon_s3.bucket.objects[file].read
+      contents = amazon_s3.convert_download('csv',amazon_s3.bucket.objects[file].read)
+
+      contents.first unless contents.empty?
+    end
+
+    def create_error_notifications(error_context, object_type, request_id)
+      session      = load_session(request_id)
+      new_filename = "#{base_name}/#{ready}/notification_failed_#{object_type}_#{session['id']}_.csv"
+      amazon_s3.export(file_name: new_filename, objects: [error_context.merge({ object: session })])
     end
 
     private
