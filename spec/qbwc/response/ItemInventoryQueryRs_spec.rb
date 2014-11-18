@@ -36,7 +36,7 @@ describe QBWC::Response::ItemInventoryQueryRs do
       }]
     }
 
-    Persistence::Object.any_instance.stub current_time: "1415815242"
+    allow_any_instance_of(Persistence::Object).to receive(:current_time).and_return("1415815242")
 
     VCR.use_cassette "response/543543254325342" do
       subject.process config
@@ -54,7 +54,7 @@ describe QBWC::Response::ItemInventoryQueryRs do
       }]
     }
 
-    Persistence::Object.any_instance.stub current_time: "1415815266"
+    allow_any_instance_of(Persistence::Object).to receive(:current_time).and_return("1415815266")
 
     VCR.use_cassette "response/45423525325443253" do
       subject.process config

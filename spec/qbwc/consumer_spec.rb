@@ -5,7 +5,7 @@ module QBWC
     it "process item inventory query poll request" do
       xml = Factory.item_inventory_query_rs_raw_qbxml
       subject = described_class.new connection_id: "54591b3a5869632afc090000"
-      Persistence::Object.any_instance.stub current_time: "1415755144"
+      allow_any_instance_of(Persistence::Object).to receive(:current_time).and_return("1415755144")
 
       VCR.use_cassette "consumer/324543543525" do
         subject.digest_response_into_actions xml
