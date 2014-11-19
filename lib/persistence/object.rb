@@ -238,8 +238,18 @@ module Persistence
       session      = load_session(request_id)
       new_filename = "#{base_name}/#{ready}/notification_failed_#{object_type}_#{session['id']}_.csv"
       amazon_s3.export(file_name: new_filename, objects: [error_context.merge({ object: session })])
+
+      update_objects_files({ processed: [], failed: [{ object_type => session }] }.with_indifferent_access)
     end
 
+    class << self
+      def handle_error(config, error_context, object_type, request_id)
+        Persistence::Object.new(config, {}).create_error_notifications(error_context, object_type, request_id)
+      end
+      def update_statuses(config = {}, processed = [], failed = [])
+        Persistence::Object.new(config, {}).update_objects_files({ processed: processed, failed: failed }.with_indifferent_access)
+      end
+    end
     private
 
     def create_notifications(objects_filename, status)
