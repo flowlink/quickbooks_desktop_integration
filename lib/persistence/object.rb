@@ -1,6 +1,6 @@
 module Persistence
   class Object
-    SUCCESS_NOTIFICATION_MESSAGE="Object successfully received in batch"
+    SUCCESS_NOTIFICATION_MESSAGE="Object successfully sent to Quickbooks Desktop"
 
     attr_reader :config, :objects, :payload_key, :amazon_s3
 
