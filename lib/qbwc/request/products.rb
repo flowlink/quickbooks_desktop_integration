@@ -1,13 +1,6 @@
 module QBWC
   module Request
     class Products
-      def self.config
-        {
-          'quickbooks_income_account'    => 'Inventory Asset',
-          'quickbooks_cogs_account'      => 'Inventory Asset',
-          'quickbooks_inventory_account' => 'Inventory Asset'
-        }
-      end
 
       # Return the requests to insert/update for products
       def self.generate_request_insert_update(objects, params = {})
@@ -15,9 +8,9 @@ module QBWC
 
           session_id = Persistence::Object.new({connection_id: params['connection_id']},{}).save_session(object)
           request << if object[:list_id].to_s.empty?
-                       add_xml_to_send(object, config.merge(params), session_id)
+                       add_xml_to_send(object, params, session_id)
                      else
-                       update_xml_to_send(object, config.merge(params), session_id)
+                       update_xml_to_send(object, params, session_id)
                      end
         end
       end
