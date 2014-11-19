@@ -13,16 +13,7 @@ module QBWC
       receive_settings = s3_settings.settings 'get_'
       params = config.merge receive: receive_settings
 
-      # Parse and break response to specific objects
-      objects = Response::All.new(response_xml).process(params)
-
-      # TODO Think another way to find the right objects to the right methods
-      objects.to_a.compact.each do |request|
-        integration.update_objects_files(request[:statuses_objects]) if request['statuses_objects']
-      end
-
-      # We need to create a service to create notifications, here
-      #Notifications.create
+      Response::All.new(response_xml).process(params)
     end
   end
 end
