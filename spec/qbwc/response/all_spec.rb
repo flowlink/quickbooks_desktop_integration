@@ -9,9 +9,11 @@ describe QBWC::Response::All do
       subject.process
     end
 
-    it "process sales order add rq fine" do
-      subject = described_class.new Factory.sales_order_add_rs_raw_qbxml_raw
-      subject.process
+    xit "process sales order add rq fine" do
+      VCR.use_cassette "response/process_sales" do
+        subject = described_class.new Factory.sales_order_add_rs_raw_qbxml_raw
+        subject.process
+      end
     end
   end
 end
