@@ -39,8 +39,12 @@ module QBWC
             end
           end.compact
           response_processor = class_name.new(records)
-          response_processor.handle_error(errors, config) unless errors.empty?
-          response_processor.process(config)
+
+          if errors.empty?
+            response_processor.process(config)
+          else
+            response_processor.handle_error(errors, config)
+          end
         end
       end
 

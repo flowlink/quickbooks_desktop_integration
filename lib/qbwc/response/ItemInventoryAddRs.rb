@@ -40,7 +40,8 @@ puts " \n\n\n **** Records: #{records.inspect} \n\n"
                       }
         end
 
-        { :statuses_objects => { :processed => products, :failed => [] } }.with_indifferent_access
+        config  = { origin: 'wombat', connection_id: config[:connection_id]  }
+        Persistence::Object.new(config, {}).update_objects_files({ processed: products, failed: [] }.with_indifferent_access)
       end
     end
   end

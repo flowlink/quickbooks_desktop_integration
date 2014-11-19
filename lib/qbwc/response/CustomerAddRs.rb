@@ -33,9 +33,8 @@ module QBWC
             edit_sequence: object['EditSequence'] } }
         end
 
-        { statuses_objects: { processed: objects, failed: [] } }.with_indifferent_access
-
-        # Move files and create  notifications
+        config  = { origin: 'wombat', connection_id: config[:connection_id]  }
+        Persistence::Object.new(config, {}).update_objects_files({ processed: objects, failed: [] }.with_indifferent_access)
       end
     end
   end

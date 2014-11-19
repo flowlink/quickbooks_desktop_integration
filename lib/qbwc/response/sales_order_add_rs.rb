@@ -25,13 +25,8 @@ module QBWC
           }
         end
 
-        {
-          # TODO dont think we need this statuses_object key?
-          :statuses_objects => {
-            :processed => orders,
-            :failed => []
-          }
-        }.with_indifferent_access
+        config  = { origin: 'wombat', connection_id: config[:connection_id]  }
+        Persistence::Object.new(config, {}).update_objects_files({ processed: orders, failed: [] }.with_indifferent_access)
       end
     end
   end
