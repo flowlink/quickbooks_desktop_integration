@@ -9,9 +9,10 @@ module QBWC
 
       def handle_error(errors, config)
         errors.each do |error|
-          Persistence::Object.new(config).create_error_notifications( error.merge({context: 'Adding products'}),
-                                                                      "products",
-                                                                      error[:request_id])
+          Persistence::Object.handle_error(config,
+                                           error.merge({context: 'Updating products'}),
+                                           "products",
+                                           error[:request_id])
         end
       end
 
@@ -40,8 +41,7 @@ puts " \n\n\n **** Records: #{records.inspect} \n\n"
                       }
         end
 
-        config  = { origin: 'wombat', connection_id: config[:connection_id]  }
-        Persistence::Object.new(config, {}).update_objects_files({ processed: products, failed: [] }.with_indifferent_access)
+        Persistence::Object.update_statuses(config, products)
       end
     end
   end

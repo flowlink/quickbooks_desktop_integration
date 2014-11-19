@@ -9,7 +9,12 @@ module QBWC
       end
 
       def handle_error(errors, config)
-
+        errors.each do |error|
+          Persistence::Object.handle_error(config,
+                                           error.merge({context: 'Adding orders'}),
+                                           "orders",
+                                           error[:request_id])
+        end
       end
 
       def process(config = {})
@@ -25,8 +30,7 @@ module QBWC
           }
         end
 
-        config  = { origin: 'wombat', connection_id: config[:connection_id]  }
-        Persistence::Object.new(config, {}).update_objects_files({ processed: orders, failed: [] }.with_indifferent_access)
+        Persistence::Object.update_statuses(config, orders)
       end
     end
   end

@@ -9,9 +9,10 @@ module QBWC
 
       def handle_error(errors, config)
         errors.each do |error|
-          Persistence::Object.new(config).create_error_notifications( error.merge({context: 'Adding products'}),
-                                                                      "products",
-                                                                      error[:request_id])
+          Persistence::Object.handle_error(config,
+                                           error.merge({context: 'Querying products'}),
+                                           "products",
+                                           error[:request_id])
         end
       end
 

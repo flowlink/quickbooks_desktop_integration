@@ -8,7 +8,12 @@ module QBWC
       end
 
       def handle_error(errors, config)
-
+        errors.each do |error|
+          Persistence::Object.handle_error(config,
+                                           error.merge({context: 'Adding Customers'}),
+                                           "customers",
+                                           error[:request_id])
+        end
       end
 
       def process(config = {})
@@ -33,8 +38,7 @@ module QBWC
             edit_sequence: object['EditSequence'] } }
         end
 
-        config  = { origin: 'wombat', connection_id: config[:connection_id]  }
-        Persistence::Object.new(config, {}).update_objects_files({ processed: objects, failed: [] }.with_indifferent_access)
+        Persistence::Object.update_statuses(config, objects)
       end
     end
   end
