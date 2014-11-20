@@ -4,17 +4,21 @@ module QBWC
       class << self
         def generate_request_insert_update(objects, params = {})
           objects.inject('') do |request, object|
-            request << (object[:list_id].to_s.empty?? add_xml_to_send(object) : update_xml_to_send(object))
+            session_id = Persistence::Object.new({connection_id: params['connection_id']},{}).save_session(object)
+            request << (object[:list_id].to_s.empty?? add_xml_to_send(object, session_id) : update_xml_to_send(object, session_id))
           end
         end
 
         def generate_request_queries(objects, params)
-          objects.inject('') { |request, object| request << search_xml(object['id']) }
+          objects.inject('') do |request, object|
+            session_id = Persistence::Object.new({connection_id: params['connection_id']},{}).save_session(object)
+            request << search_xml(object['id'], session_id)
+          end
         end
 
-        def search_xml(object_id)
+        def search_xml(object_id, session_id)
           <<-XML
-<CustomerQueryRq>
+<CustomerQueryRq requestID="#{session_id}">
   <MaxReturned>50</MaxReturned>
   <NameFilter>
     <MatchCriterion>StartsWith</MatchCriterion>
@@ -24,9 +28,9 @@ module QBWC
           XML
         end
 
-        def add_xml_to_send(object)
+        def add_xml_to_send(object, session_id)
           <<-XML
-<CustomerAddRq>
+<CustomerAddRq requestID="#{session_id}">
    <CustomerAdd>
     <Name>#{object['id']}</Name>
     <FirstName>#{object['firstname']}</FirstName>
@@ -55,9 +59,9 @@ module QBWC
           XML
         end
 
-        def update_xml_to_send(object)
+        def update_xml_to_send(object, session_id)
           <<-XML
-<CustomerModRq>
+<CustomerModRq requestID="#{session_id}">
    <CustomerMod>
       <ListID>#{object['list_id']}</ListID>
       <EditSequence>#{object['edit_sequence']}</EditSequence>
