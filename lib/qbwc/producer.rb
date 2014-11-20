@@ -18,13 +18,13 @@ module QBWC
       # waiting to be integrated? Verify if we should limit the s3 queries
 
       # Get Objets are ready
-      ready_objects = integration.get_ready_objects_to_send
-      request_xml << process_insert_update(ready_objects)
+      request_xml << process_insert_update(integration.get_ready_objects_to_send)
 
       # Get Objects to query
       request_xml << process_queries(integration.process_pending_objects)
 
-      # Get another pending operations...
+      integration.process_two_phase_pending_objects
+      request_xml
     end
 
     def build_polling_request
@@ -40,8 +40,7 @@ module QBWC
     end
 
     private
-    # TODO Create a way to do this for all objects
-    # probably a way to use the keys (products, )
+
     def process_insert_update(objects_hash)
       send_settings = s3_settings.settings('add_') if objects_hash.any?
 
@@ -56,7 +55,6 @@ module QBWC
       end
     end
 
-    # TODO Create a way to do this for all objects
     def process_queries(objects_hash)
       objects_hash.inject('') do |result, objects|
         object_type = objects.keys.first

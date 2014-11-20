@@ -38,8 +38,16 @@ module Persistence
     #
     def save
       objects.each do |object|
-        file = "#{base_name}/#{pending}/#{object_file_name}_#{id_of_object(object)}_.csv"
-        amazon_s3.export file_name: file, objects: [object]
+        if two_phase?
+          file = "#{base_name}/#{two_phase_pending}/#{payload_key.pluralize}_#{id_of_object(object)}_.csv"
+          puts "\n\n * Save two phase: #{file}"
+          amazon_s3.export file_name: file, objects: [object]
+          generate_inserts_for_two_phase(object)
+        else
+          file = "#{base_name}/#{pending}/#{payload_key.pluralize}_#{id_of_object(object)}_.csv"
+          puts "\n\n * Save normal: #{file}"
+          amazon_s3.export file_name: file, objects: [object]
+        end
       end
     end
 
@@ -86,6 +94,22 @@ module Persistence
         # return the content of file to create the requests
         { object_type => Converter.csv_to_hash(contents) }
       end.flatten
+    end
+
+    # Moves from two_phase_pending to pending, than will be executed the next time
+    def process_two_phase_pending_objects
+      prefix = "#{base_name}/#{two_phase_pending}"
+      collection = amazon_s3.bucket.objects
+
+      collection.with_prefix(prefix).enum.each do |s3_object|
+        _, _, filename    = s3_object.key.split("/")
+        object_type, _, _ = filename.split("_")
+
+        contents = s3_object.read
+
+        s3_object.move_to("#{base_name}/#{pending}/#{filename}")
+
+      end
     end
 
     # Rename files with ListID and EditSequence in ready folder
@@ -247,7 +271,29 @@ module Persistence
         Persistence::Object.new(config, {}).update_objects_files({ processed: processed, failed: failed }.with_indifferent_access)
       end
     end
+
+
     private
+
+    def generate_inserts_for_two_phase(object)
+      # TODO Create a better way to choose between types, for now only orders
+      if payload_key.pluralize == 'orders'
+        customer = QBWC::Request::Orders.build_customer(object)
+        products = QBWC::Request::Orders.build_products(objects)
+        amazon_s3.export file_name: "#{base_name}/#{pending}/customers_#{customer['id']}_.csv", objects: [customer]
+        products.each do |product|
+          amazon_s3.export file_name: "#{base_name}/#{pending}/products_#{product['id']}_.csv", objects: [product]
+        end
+      end
+    end
+
+    def two_phase?
+      ['orders'].include?(payload_key.pluralize)
+    end
+
+    def two_phase_pending
+      "#{config[:origin]}_two_phase_pending"
+    end
 
     def create_notifications(objects_filename, status)
       _, _, filename = objects_filename.split('/')
@@ -283,11 +329,6 @@ module Persistence
 
     def current_time
       Time.now.to_i
-    end
-
-    def object_file_name
-      return 'products' if payload_key.pluralize == 'inventories'
-      payload_key.pluralize
     end
 
     def id_of_object(object)
