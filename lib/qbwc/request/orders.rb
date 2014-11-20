@@ -2,13 +2,6 @@ module QBWC
   module Request
     class Orders
       class << self
-        def config
-          {
-            'quickbooks_income_account'    => 'Inventory Asset',
-            'quickbooks_cogs_account'      => 'Inventory Asset',
-            'quickbooks_inventory_account' => 'Inventory Asset'
-          }
-        end
 
         # We can only query by txn_id or ref_number, check sales_order_query_rq.xml
         def generate_request_queries(objects, params)
@@ -26,8 +19,8 @@ module QBWC
             if object['quickbooks_txn_id'].to_s.empty?
               # TODO Test me. Didnt have a chance yet =/ working offline (airport wifi)
               request << Customers.add_xml_to_send(build_customer(object)) +
-                build_items_refs_xml(object) +
-                sales_order_add_rq(object, config.merge(params))
+                build_items_refs_xml(object, params) +
+                sales_order_add_rq(object, params)
             else
               # work on update xml request
               request << ''
@@ -64,7 +57,7 @@ module QBWC
           XML
         end
 
-        def build_items_refs_xml(record)
+        def build_items_refs_xml(record, params)
           # TODO fix this when implement save/load session to orders
           session_id = "123"
           record['line_items'].inject('') do |xml, item|
@@ -74,7 +67,7 @@ module QBWC
               'price' => item['price']
             }
 
-            xml << Products.add_xml_to_send(record, config, session_id)
+            xml << Products.add_xml_to_send(record, params, session_id)
           end
         end
 
