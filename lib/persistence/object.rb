@@ -187,9 +187,6 @@ module Persistence
 
               s3_object.move_to("#{new_filename}.csv")
 
-              # TODO Need a better name
-              copy_files("#{new_filename}.csv")
-
               create_notifications("#{new_filename}.csv", status_key)
             end
           end
@@ -257,17 +254,6 @@ module Persistence
       s3_object = amazon_s3.bucket.objects[objects_filename]
 
       new_filename = "#{base_name}/#{ready}/notification_#{status}_#{filename}"
-      s3_object.copy_to(new_filename)
-
-      # TODO Need a better name
-      copy_files(new_filename)
-    end
-
-    def copy_files(filename)
-      return unless filename.match(/products/)
-
-      s3_object = amazon_s3.bucket.objects[filename]
-      new_filename = filename.gsub('products','inventories')
       s3_object.copy_to(new_filename)
     end
 

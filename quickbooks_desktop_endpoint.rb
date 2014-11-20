@@ -8,7 +8,7 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
   # Changing the endpoint paths might break internal logic as they're expected
   # to be always in plural. e.g. products not product
 
-  ['products', 'orders', 'inventories', 'returns', 'customers'].each do |path|
+  ['products', 'orders', 'returns', 'customers'].each do |path|
     post "/add_#{path}" do
       config = {
         connection_id: request.env['HTTP_X_HUB_STORE'],
@@ -32,6 +32,27 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
       object_type = integration.payload_key.capitalize
       result 200, "#{object_type} waiting for Quickbooks Desktop scheduler"
     end
+  end
+
+  post "/set_inventory" do
+    config = {
+      connection_id: request.env['HTTP_X_HUB_STORE'],
+      flow: "set_inventory",
+      quickbooks_force_config: true
+    }.merge(@config).with_indifferent_access
+
+    Persistence::Settings.new(config).setup
+
+    integration = Persistence::Object.new config, @payload
+    integration.save
+
+    notifications = integration.get_notifications
+
+    add_value "success", notifications['processed'] if notifications['processed'].keys.any?
+    add_value "fail", notifications['failed'] if notifications['failed'].keys.any?
+
+    object_type = integration.payload_key.capitalize
+    result 200, "#{object_type} waiting for Quickbooks Desktop scheduler"
   end
 
   post "/get_notifications" do
