@@ -19,11 +19,9 @@ module QBWC
           objects.inject("") do |request, object|
             session_id = Persistence::Object.new({connection_id: params['connection_id']},{}).save_session(object)
             if object['quickbooks_txn_id'].to_s.empty?
-              # TODO Test me. Didnt have a chance yet =/ working offline (airport wifi)
-              request << sales_order_add_rq(object, params, session_id)
+              request << add_xml_to_send(object, params, session_id)
             else
-              # work on update xml request
-              request << ''
+              request << update_xml_to_send(object, params, session_id)
             end
           end
         end
@@ -78,7 +76,7 @@ module QBWC
           XML
         end
 
-        def sales_order_add_rq(record, params= {}, session_id)
+        def add_xml_to_send(record, params= {}, session_id)
           <<-XML
             <SalesOrderAddRq requestID="#{session_id}">
               <SalesOrderAdd>
@@ -86,6 +84,10 @@ module QBWC
               </SalesOrderAdd>
             </SalesOrderAddRq>
           XML
+        end
+
+        def update_xml_to_send(record, params= {}, session_id)
+          # TODO fill
         end
 
         # NOTE Brave soul needed to find a lib or build one from scratch to
