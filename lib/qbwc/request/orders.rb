@@ -6,8 +6,9 @@ module QBWC
         # We can only query by txn_id or ref_number, check sales_order_query_rq.xml
         def generate_request_queries(objects, params)
           objects.inject("") do |request, object|
+            session_id = Persistence::Object.new({connection_id: params['connection_id']},{}).save_session(object)
             if txn_id = object['quickbooks_txn_id']
-              request << search_xml(txn_id)
+              request << search_xml(txn_id, session_id)
             else
               request
             end
@@ -16,11 +17,10 @@ module QBWC
 
         def generate_request_insert_update(objects, params = {})
           objects.inject("") do |request, object|
+            session_id = Persistence::Object.new({connection_id: params['connection_id']},{}).save_session(object)
             if object['quickbooks_txn_id'].to_s.empty?
               # TODO Test me. Didnt have a chance yet =/ working offline (airport wifi)
-              request << Customers.add_xml_to_send(build_customer(object)) +
-                build_items_refs_xml(object, params) +
-                sales_order_add_rq(object, params)
+              request << sales_order_add_rq(object, params, session_id)
             else
               # work on update xml request
               request << ''
@@ -49,6 +49,18 @@ module QBWC
           }
         end
 
+        def build_products(object)
+          object.first['line_items'].map do |item|
+            {
+              'id'          => item['product_id'],
+              'description' => item['description'],
+              'price'       => item['price'],
+              'cost_price'  => item['price']
+            }
+          end
+        end
+
+
         def customer_ref_query(record)
           <<-XML
             <CustomerQueryRq>
@@ -57,32 +69,18 @@ module QBWC
           XML
         end
 
-        def build_items_refs_xml(record, params)
-          # TODO fix this when implement save/load session to orders
-          session_id = "123"
-          record['line_items'].inject('') do |xml, item|
-            object = {
-              'id' => item['product_id'],
-              'description' => item['description'],
-              'price' => item['price']
-            }
-
-            xml << Products.add_xml_to_send(record, params, session_id)
-          end
-        end
-
-        def search_xml(txn_id)
+        def search_xml(txn_id, session_id)
          <<-XML
-          <SalesOrderQueryRq>
+          <SalesOrderQueryRq requestID="#{session_id}">
             <TxnID>#{txn_id}</TxnID>
             <!-- <RefNumberCaseSensitive>STRTYPE</RefNumberCaseSensitive> -->
           </SalesOrderQueryRq>
           XML
         end
 
-        def sales_order_add_rq(record, params= {})
+        def sales_order_add_rq(record, params= {}, session_id)
           <<-XML
-            <SalesOrderAddRq>
+            <SalesOrderAddRq requestID="#{session_id}">
               <SalesOrderAdd>
                 #{sales_order record, params}
               </SalesOrderAdd>
