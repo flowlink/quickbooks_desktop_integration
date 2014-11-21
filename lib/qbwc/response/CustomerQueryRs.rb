@@ -50,19 +50,6 @@ module QBWC
             description: record['FullName'],
             sku: record['Name']
           }
-
-          # The price can be in many places :/
-          if sales = record['SalesAndPurchase']
-            object[:price]      = sales['SalesPrice']
-            object[:cost_price] = sales['PurchaseCost']
-          elsif sales = record['SalesOrPurchase']
-            object[:price]      = sales['Price']
-            object[:cost_price] = sales['Cost']
-          else
-            object[:price]      = record['SalesPrice']
-            object[:cost_price] = record['PurchaseCost']
-          end
-
           object
         end
       end
