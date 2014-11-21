@@ -12,7 +12,7 @@ module QBWC
         def generate_request_queries(objects, params)
           objects.inject('') do |request, object|
             session_id = Persistence::Object.new({connection_id: params['connection_id']},{}).save_session(object)
-            request << search_xml(object['id'], session_id)
+            request << search_xml(object['email'], session_id)
           end
         end
 
@@ -32,7 +32,7 @@ module QBWC
           <<-XML
 <CustomerAddRq requestID="#{session_id}">
    <CustomerAdd>
-    <Name>#{object['id']}</Name>
+    <Name>#{object['email']}</Name>
     <FirstName>#{object['firstname']}</FirstName>
     <LastName>#{object['lastname']}</LastName>
     <BillAddress>
@@ -65,7 +65,7 @@ module QBWC
    <CustomerMod>
       <ListID>#{object['list_id']}</ListID>
       <EditSequence>#{object['edit_sequence']}</EditSequence>
-      <Name>#{object['id']}</Name>
+      <Name>#{object['email']}</Name>
       <FirstName>#{object['firstname']}</FirstName>
       <LastName>#{object['lastname']}</LastName>
       <BillAddress>

@@ -278,8 +278,8 @@ module Persistence
     def generate_inserts_for_two_phase(object)
       # TODO Create a better way to choose between types, for now only orders
       if payload_key.pluralize == 'orders'
-        customer = QBWC::Request::Orders.build_customer(object)
-        products = QBWC::Request::Orders.build_products(objects)
+        customer = QBWC::Request::Orders.build_customer_from_order(object)
+        products = QBWC::Request::Orders.build_products_from_order(objects)
         amazon_s3.export file_name: "#{base_name}/#{pending}/customers_#{customer['id']}_.csv", objects: [customer]
         products.each do |product|
           amazon_s3.export file_name: "#{base_name}/#{pending}/products_#{product['id']}_.csv", objects: [product]

@@ -30,24 +30,23 @@ module QBWC
         # depending on firstname / lastname? going with default wombat
         # format for now ..
         def customer_ref(record)
-          billing = record['billing_address']
-          "#{billing['firstname']} #{billing['lastname']}"
+          record['email']
         end
 
-        def build_customer(object)
+        def build_customer_from_order(object)
           billing_address = object['billing_address']
 
           {
-            'id' => "#{billing_address['firstname']} #{billing_address['lastname']}",
-            'firstname' => billing_address['firstname'],
-            'lastname' => billing_address['lastname'],
-            'email' => object['email'],
-            'billing_address' => billing_address,
+            'id'               => object['email'],
+            'firstname'        => billing_address['firstname'],
+            'lastname'         => billing_address['lastname'],
+            'email'            => object['email'],
+            'billing_address'  => billing_address,
             'shipping_address' => object['shipping_address']
           }
         end
 
-        def build_products(object)
+        def build_products_from_order(object)
           object.first['line_items'].map do |item|
             {
               'id'          => item['product_id'],
