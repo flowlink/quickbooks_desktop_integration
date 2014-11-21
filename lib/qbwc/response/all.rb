@@ -10,6 +10,7 @@ require 'qbwc/response/CustomerModRs'
 
 require 'qbwc/response/sales_order_query_rs'
 require 'qbwc/response/sales_order_add_rs'
+require 'qbwc/response/sales_order_mod_rs'
 
 module QBWC
   module Response

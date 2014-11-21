@@ -26,46 +26,6 @@ module QBWC
           end
         end
 
-        # TODO Should probably stick with customer_id key instead of
-        # depending on firstname / lastname? going with default wombat
-        # format for now ..
-        def customer_ref(record)
-          record['email']
-        end
-
-        def build_customer_from_order(object)
-          billing_address = object['billing_address']
-
-          {
-            'id'               => object['email'],
-            'firstname'        => billing_address['firstname'],
-            'lastname'         => billing_address['lastname'],
-            'email'            => object['email'],
-            'billing_address'  => billing_address,
-            'shipping_address' => object['shipping_address']
-          }
-        end
-
-        def build_products_from_order(object)
-          object.first['line_items'].map do |item|
-            {
-              'id'          => item['product_id'],
-              'description' => item['description'],
-              'price'       => item['price'],
-              'cost_price'  => item['price']
-            }
-          end
-        end
-
-
-        def customer_ref_query(record)
-          <<-XML
-            <CustomerQueryRq>
-              <FullName>#{customer_ref record}</FullName>
-            </CustomerQueryRq>
-          XML
-        end
-
         def search_xml(txn_id, session_id)
          <<-XML
           <SalesOrderQueryRq requestID="#{session_id}">
@@ -80,13 +40,24 @@ module QBWC
             <SalesOrderAddRq requestID="#{session_id}">
               <SalesOrderAdd>
                 #{sales_order record, params}
+                #{record['line_items'].map { |l| sales_order_line_add l }.join("")}
               </SalesOrderAdd>
             </SalesOrderAddRq>
           XML
         end
 
         def update_xml_to_send(record, params= {}, session_id)
-          # TODO fill
+          #{record['line_items'].map { |l| sales_order_line_mod l }.join("")}
+
+          <<-XML
+            <SalesOrderModRq requestID="#{session_id}">
+              <SalesOrderMod>
+                <TxnID>#{record['list_id']}</TxnID>
+                <EditSequence>#{record['edit_sequence']}</EditSequence>
+                #{sales_order record, params}
+              </SalesOrderMod>
+            </SalesOrderModRq>
+          XML
         end
 
         # NOTE Brave soul needed to find a lib or build one from scratch to
@@ -113,7 +84,7 @@ module QBWC
         def sales_order(record, params)
           <<-XML
             <CustomerRef>
-              <FullName>#{customer_ref record}</FullName>
+              <FullName>#{record['email']}</FullName>
             </CustomerRef>
             <TxnDate>#{Time.parse(record['placed_on']).to_date}</TxnDate>
             <BillAddress>
@@ -133,13 +104,27 @@ module QBWC
               <Country>#{record['shipping_address']['country']}</Country>
             </ShipAddress>
             <PONumber>#{record['id']}</PONumber>
-            #{record['line_items'].map { |l| sales_order_line l }.join("")}
+          XML
+        end
+
+        def sales_order_line_add(line)
+          <<-XML
+            <SalesOrderLineAdd>
+              #{sales_order_line(line)}
+            </SalesOrderLineAdd>
+          XML
+        end
+
+        def sales_order_line_mod(line)
+          <<-XML
+            <SalesOrderLineMod>
+              #{sales_order_line(line)}
+            </SalesOrderLineMod>
           XML
         end
 
         def sales_order_line(line)
           <<-XML
-            <SalesOrderLineAdd>
               <ItemRef>
                 <FullName>#{line['product_id']}</FullName>
               </ItemRef>
@@ -151,8 +136,31 @@ module QBWC
               <!--   <ListID>IDTYPE</ListID> -->
               <!--   <FullName>STRTYPE</FullName> -->
               <!-- </SalesTaxCodeRef> -->
-            </SalesOrderLineAdd>
           XML
+        end
+
+        def build_customer_from_order(object)
+          billing_address = object['billing_address']
+
+          {
+            'id'               => object['email'],
+            'firstname'        => billing_address['firstname'],
+            'lastname'         => billing_address['lastname'],
+            'email'            => object['email'],
+            'billing_address'  => billing_address,
+            'shipping_address' => object['shipping_address']
+          }
+        end
+
+        def build_products_from_order(object)
+          object.first['line_items'].map do |item|
+            {
+              'id'          => item['product_id'],
+              'description' => item['description'],
+              'price'       => item['price'],
+              'cost_price'  => item['price']
+            }
+          end
         end
       end
     end
