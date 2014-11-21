@@ -40,12 +40,10 @@ module Persistence
       objects.each do |object|
         if two_phase?
           file = "#{base_name}/#{two_phase_pending}/#{payload_key.pluralize}_#{id_of_object(object)}_.csv"
-          puts "\n\n * Save two phase: #{file}"
           amazon_s3.export file_name: file, objects: [object]
           generate_inserts_for_two_phase(object)
         else
           file = "#{base_name}/#{pending}/#{payload_key.pluralize}_#{id_of_object(object)}_.csv"
-          puts "\n\n * Save normal: #{file}"
           amazon_s3.export file_name: file, objects: [object]
         end
       end
@@ -207,7 +205,7 @@ module Persistence
             collection.with_prefix(filename).enum.each do |s3_object|
               status_folder = send status_key
               new_filename = "#{base_name}/#{status_folder}/#{object_type}_#{object[:id]}_"
-              new_filename << "#{object[:list_id]}_#{object[:edit_sequence]}" if object[:list_id].to_s.empty?
+              new_filename << "#{object[:list_id]}_#{object[:edit_sequence]}" unless object[:list_id].to_s.empty?
 
               s3_object.move_to("#{new_filename}.csv")
 

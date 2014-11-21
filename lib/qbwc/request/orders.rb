@@ -3,34 +3,28 @@ module QBWC
     class Orders
       class << self
 
-        # We can only query by txn_id or ref_number, check sales_order_query_rq.xml
         def generate_request_queries(objects, params)
           objects.inject("") do |request, object|
             session_id = Persistence::Object.new({connection_id: params['connection_id']},{}).save_session(object)
-            if txn_id = object['quickbooks_txn_id']
-              request << search_xml(txn_id, session_id)
-            else
-              request
-            end
+            request << search_xml(object['id'], session_id)
           end
         end
 
         def generate_request_insert_update(objects, params = {})
           objects.inject("") do |request, object|
             session_id = Persistence::Object.new({connection_id: params['connection_id']},{}).save_session(object)
-            if object['quickbooks_txn_id'].to_s.empty?
-              request << add_xml_to_send(object, params, session_id)
-            else
-              request << update_xml_to_send(object, params, session_id)
-            end
+            request << if object[:list_id].to_s.empty?
+                         add_xml_to_send(object, params, session_id)
+                      else
+                        update_xml_to_send(object, params, session_id)
+                      end
           end
         end
 
-        def search_xml(txn_id, session_id)
+        def search_xml(order_id, session_id)
          <<-XML
           <SalesOrderQueryRq requestID="#{session_id}">
-            <TxnID>#{txn_id}</TxnID>
-            <!-- <RefNumberCaseSensitive>STRTYPE</RefNumberCaseSensitive> -->
+            <RefNumberCaseSensitive>#{order_id}</RefNumberCaseSensitive>
           </SalesOrderQueryRq>
           XML
         end
@@ -74,10 +68,6 @@ module QBWC
         # View sales_order_add_rs_invalid_record_ref.xml to see what'd you
         # get by sending a invalid Customer Ref you'd get as a response.
         #
-        # R154085346875 is a too long value for RefNumber so lets use
-        # PONumber to map Wombat orders id instead. Quickbooks
-        # will increment RefNumber each time a sales order is created
-        #
         # 'placed_on' needs to be a valid date string otherwise an exception
         # will be raised
         #
@@ -87,6 +77,7 @@ module QBWC
               <FullName>#{record['email']}</FullName>
             </CustomerRef>
             <TxnDate>#{Time.parse(record['placed_on']).to_date}</TxnDate>
+            <RefNumber>#{record['id']}</RefNumber>
             <BillAddress>
               <Addr1>#{record['billing_address']['address1']}</Addr1>
               <Addr2>#{record['billing_address']['address2']}</Addr2>
@@ -103,7 +94,6 @@ module QBWC
               <PostalCode>#{record['shipping_address']['zipcode']}</PostalCode>
               <Country>#{record['shipping_address']['country']}</Country>
             </ShipAddress>
-            <PONumber>#{record['id']}</PONumber>
           XML
         end
 

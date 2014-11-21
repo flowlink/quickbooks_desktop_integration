@@ -3,7 +3,6 @@ module QBWC
     class SalesOrderModRs
       attr_reader :records
 
-      # Successfull persisted sales orders are given here
       def initialize(records)
         @records = records
       end
@@ -21,9 +20,7 @@ module QBWC
         orders = records.inject([]) do |orders, record|
           orders << {
             :orders => {
-              :id => record['PONumber'],
-              # We will need to figure out a way to persist the qb transaction
-              # id back to Wombat if we want to update this record later
+              :id => record['RefNumber'],
               :list_id => record['TxnID'],
               :edit_sequence => record['EditSequence']
             }

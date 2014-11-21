@@ -33,7 +33,7 @@ module QBWC
         records.map do |record|
           {
             object_type: 'order',
-            object_ref: record['PONumber'],
+            object_ref: record['RefNumber'],
             list_id: record['TxnID'],
             edit_sequence: record['EditSequence']
           }
@@ -44,8 +44,7 @@ module QBWC
         # TODO finish the map
         records.map do |record|
           object = {
-            id: record['PONumber'],
-            quickbooks_txn_id: record['TxnID'],
+            id: record['RefNumber'],
           }
 
           object

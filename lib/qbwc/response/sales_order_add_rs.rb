@@ -21,11 +21,9 @@ module QBWC
         orders = records.inject([]) do |orders, record|
           orders << {
             :orders => {
-              :id => record['PONumber'],
-              # We will need to figure out a way to persist the qb transaction
-              # id back to Wombat if we want to update this record later
-              :list_id => record['TxnID'],
-              :edit_sequence => record['EditSequence']
+              :id                => record['RefNumber'],
+              :list_id           => record['TxnID'],
+              :edit_sequence     => record['EditSequence']
             }
           }
         end
