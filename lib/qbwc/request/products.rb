@@ -27,10 +27,10 @@ module QBWC
        <<-XML
           <ItemInventoryQueryRq requestID="#{session_id}">
             <MaxReturned>100</MaxReturned>
-            <NameFilter>
-              <MatchCriterion >StartsWith</MatchCriterion>
-              <Name>#{product_id}</Name>
-            </NameFilter>
+            <NameRangeFilter>
+              <FromName>#{product_id}</FromName>
+              <ToName>#{product_id}</ToName>
+            </NameRangeFilter>
           </ItemInventoryQueryRq>
         XML
       end

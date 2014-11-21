@@ -20,10 +20,10 @@ module QBWC
           <<-XML
 <CustomerQueryRq requestID="#{session_id}">
   <MaxReturned>50</MaxReturned>
-  <NameFilter>
-    <MatchCriterion>StartsWith</MatchCriterion>
-    <Name>#{object_id}</Name>
-  </NameFilter>
+  <NameRangeFilter>
+    <FromName>#{object_id}</FromName>
+    <ToName>#{object_id}</ToName>
+  </NameRangeFilter>
 </CustomerQueryRq>
           XML
         end
