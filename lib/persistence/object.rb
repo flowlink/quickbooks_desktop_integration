@@ -348,8 +348,15 @@ module Persistence
     end
 
     def id_of_object(object)
-      return object['id'] unless payload_key.pluralize == 'inventories'
-      object['product_id']
+      key = payload_key.pluralize
+
+      if key == 'inventories'
+        object['product_id']
+      elsif key == 'customers'
+        object['email']
+      else
+        object['id']
+      end
     end
   end
 end
