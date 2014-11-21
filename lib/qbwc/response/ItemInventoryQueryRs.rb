@@ -19,14 +19,6 @@ module QBWC
       def process(config = {})
         return if records.empty?
 
-        # TODO Error handling
-
-        # &lt;QBXML&gt;
-        # &lt;QBXMLMsgsRs&gt;
-        # &lt;ItemInventoryQueryRs statusCode="1" statusSeverity="Info" statusMessage="A query request did not find a matching object in QuickBooks" /&gt;
-        # &lt;/QBXMLMsgsRs&gt;
-        # &lt;/QBXML&gt;
-
         puts records.inspect
 
         receive_configs = config[:receive] || []
