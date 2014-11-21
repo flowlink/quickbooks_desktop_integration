@@ -38,6 +38,8 @@ module Persistence
     #
     def save
       objects.each do |object|
+        next unless valid_object?(object)
+
         if two_phase?
           file = "#{base_name}/#{two_phase_pending}/#{payload_key.pluralize}_#{id_of_object(object)}_.csv"
           amazon_s3.export file_name: file, objects: [object]
@@ -255,9 +257,7 @@ module Persistence
 
     def create_error_notifications(error_context, object_type, request_id)
       session      = load_session(request_id)
-      new_filename = "#{base_name}/#{ready}/notification_failed_#{object_type}_#{session['id']}_.csv"
-      amazon_s3.export(file_name: new_filename, objects: [error_context.merge({ object: session })])
-
+      generate_error_notification(error_context.merge({ object: session }), object_type)
       update_objects_files({ processed: [], failed: [{ object_type => session }] }.with_indifferent_access)
     end
 
@@ -272,6 +272,24 @@ module Persistence
 
 
     private
+
+    def generate_error_notification(content, object_type)
+      new_filename = "#{base_name}/#{ready}/notification_failed_#{object_type}_#{content[:object]['id']}_.csv"
+      amazon_s3.export(file_name: new_filename, objects: [content])
+    end
+
+    def valid_object?(object)
+      if payload_key.pluralize == 'orders'
+        if object['id'].size > 11
+          generate_error_notification({ context: 'Saving orders',
+                                        code: '',
+                                        message: 'Could not import to qb the Order ID exceeded the limit of 11',
+                                        object: object }, payload_key.pluralize)
+          return false
+        end
+      end
+      true
+    end
 
     def generate_inserts_for_two_phase(object)
       # TODO Create a better way to choose between types, for now only orders
