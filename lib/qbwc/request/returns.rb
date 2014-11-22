@@ -34,7 +34,7 @@ module QBWC
             <SalesReceiptAddRq requestID="#{session_id}">
               <SalesReceiptAdd>
                 #{sales_receipt record, params}
-                #{record['line_items'].map { |l| sales_receipt_line_add l }.join("")}
+                #{record['items'].map { |l| sales_receipt_line_add l }.join("")}
               </SalesReceiptAdd>
             </SalesReceiptAddRq>
           XML
@@ -110,7 +110,7 @@ module QBWC
               <ItemRef>
                 <FullName>#{line['product_id']}</FullName>
               </ItemRef>
-              <Quantity>#{line['quantity']}</Quantity>
+              <Quantity>#{line['return_authorized']}</Quantity>
 
               <!-- <Amount>#{'%.2f' % line['price'].to_f}</Amount> -->
               <Rate>#{line['price']}</Rate>
@@ -140,7 +140,7 @@ module QBWC
           object.first['items'].map do |item|
             {
               'id'          => item['product_id'],
-              'description' => item['description'],
+              'description' => item['name'],
               'price'       => item['price'],
               'cost_price'  => item['price']
             }
