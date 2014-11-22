@@ -41,7 +41,7 @@ module QBWC
         end
 
         def update_xml_to_send(record, params= {}, session_id)
-          #{record['line_items'].map { |l| sales_receipt_line_mod l }.join("")}
+          #{record['items'].map { |l| sales_receipt_line_mod l }.join("")}
 
           <<-XML
             <SalesReceiptModRq requestID="#{session_id}">
@@ -78,8 +78,10 @@ module QBWC
               <Country>#{record['shipping_address']['country']}</Country>
             </ShipAddress>
             #{payment_ref(record, params)}
+            #{deposit_account(params)}
           XML
         end
+
         def payment_ref(record, params)
           # TODO test
           return ''
@@ -89,6 +91,18 @@ module QBWC
             </PaymentMethodRef>
           XML
         end
+
+        def deposit_account(params)
+          return '' unless params.has_key?('quickbooks_deposit_account') &&
+                           !params['quickbooks_deposit_account'].to_s.empty?
+
+          <<-XML
+            <DepositToAccountRef>
+              <FullName>#{params['quickbooks_deposit_account']}</FullName>
+            </DepositToAccountRef>
+          XML
+        end
+
         def sales_receipt_line_add(line)
           <<-XML
             <SalesReceiptLineAdd>
