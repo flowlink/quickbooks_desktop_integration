@@ -1,12 +1,11 @@
 require 'nori'
 
-# NOTE rename all these to regular named ruby files?
-require 'qbwc/response/ItemInventoryAddRs'
-require 'qbwc/response/ItemInventoryModRs'
-require 'qbwc/response/ItemInventoryQueryRs'
-require 'qbwc/response/CustomerQueryRs'
-require 'qbwc/response/CustomerAddRs'
-require 'qbwc/response/CustomerModRs'
+require 'qbwc/response/item_inventory_add_rs'
+require 'qbwc/response/item_inventory_mod_rs'
+require 'qbwc/response/item_inventory_query_rs'
+require 'qbwc/response/customer_query_rs'
+require 'qbwc/response/customer_add_rs'
+require 'qbwc/response/customer_mod_rs'
 
 require 'qbwc/response/sales_order_query_rs'
 require 'qbwc/response/sales_order_add_rs'
