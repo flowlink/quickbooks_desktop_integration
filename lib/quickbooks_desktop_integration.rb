@@ -11,6 +11,7 @@ require 'qbwc/request/customers'
 require 'qbwc/request/inventories'
 require 'qbwc/request/products'
 require 'qbwc/request/orders'
+require 'qbwc/request/returns'
 
 require 'qbwc/consumer'
 require 'qbwc/producer'

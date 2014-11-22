@@ -287,24 +287,43 @@ module Persistence
                                         object: object }, payload_key.pluralize)
           return false
         end
+      elsif payload_key.pluralize == 'returns'
+        if object['id'].size > 11
+          generate_error_notification({ context: 'Saving returns',
+                                        code: '',
+                                        message: 'Could not import to qb the RMA ID exceeded the limit of 11',
+                                        object: object }, payload_key.pluralize)
+          return false
+        end
       end
       true
     end
 
     def generate_inserts_for_two_phase(object)
-      # TODO Create a better way to choose between types, for now only orders
+      # TODO Create a better way to choose between types
       if payload_key.pluralize == 'orders'
         customer = QBWC::Request::Orders.build_customer_from_order(object)
         products = QBWC::Request::Orders.build_products_from_order(objects)
-        amazon_s3.export file_name: "#{base_name}/#{pending}/customers_#{customer['id']}_.csv", objects: [customer]
+        save_pending_file(customer['id'], 'customers', customer)
         products.each do |product|
-          amazon_s3.export file_name: "#{base_name}/#{pending}/products_#{product['id']}_.csv", objects: [product]
+          save_pending_file(product['id'], 'products', product)
+        end
+      elsif payload_key.pluralize == 'returns'
+        customer = QBWC::Request::Returns.build_customer_from_return(object)
+        products = QBWC::Request::Returns.build_products_from_return(objects)
+        save_pending_file(customer['id'], 'customers', customer)
+        products.each do |product|
+          save_pending_file(product['id'], 'products', product)
         end
       end
     end
 
+    def save_pending_file(object_ref, object_type, object)
+      amazon_s3.export file_name: "#{base_name}/#{pending}/#{object_type}_#{object_ref}_.csv", objects: [object]
+    end
+
     def two_phase?
-      ['orders'].include?(payload_key.pluralize)
+      ['orders', 'returns'].include?(payload_key.pluralize)
     end
 
     def two_phase_pending
