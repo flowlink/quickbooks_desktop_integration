@@ -20,7 +20,6 @@ module QBWC
         return if records.empty?
 
         puts records.inspect
-        puts to_wombat
 
         config  = { origin: 'wombat', connection_id: config[:connection_id]  }
 

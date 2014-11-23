@@ -19,8 +19,6 @@ module QBWC
       def process(config = {})
         return { 'statuses_objects' => nil } if records.empty?
 
-puts " \n\n\n **** Records: #{records.inspect} \n\n"
-
         products = []
         records.each do |object|
           products << { :products => {

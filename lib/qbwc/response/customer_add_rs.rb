@@ -19,8 +19,6 @@ module QBWC
       def process(config = {})
         return { statuses_objects: nil }.with_indifferent_access if records.empty?
 
-        puts " \n\n\n **** Records: #{records.inspect} \n\n"
-
         objects = records.map do |object|
           { customers: {
             id: object['Name'],
