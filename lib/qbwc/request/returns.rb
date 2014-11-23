@@ -128,12 +128,17 @@ module QBWC
 
               <!-- <Amount>#{'%.2f' % line['price'].to_f}</Amount> -->
               <Rate>#{line['price']}</Rate>
+              #{tax_code_line(line)}
+          XML
+        end
 
-              <!-- might be needed same as tax_code_id in qb online -->
-              <!-- <SalesTaxCodeRef> -->
-              <!--   <ListID>IDTYPE</ListID> -->
-              <!--   <FullName>STRTYPE</FullName> -->
-              <!-- </SalesTaxCodeRef> -->
+        def tax_code_line(line)
+          return '' if line['tax_code_id'].to_s.empty?
+
+          <<-XML
+            <SalesTaxCodeRef>
+              <FullName>#{line['tax_code_id']}</FullName>
+            </SalesTaxCodeRef>
           XML
         end
 

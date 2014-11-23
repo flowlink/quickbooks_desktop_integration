@@ -201,7 +201,6 @@ module Persistence
             object = types[object_type]
 
             filename = "#{base_name}/#{ready}/#{object_type}_#{object[:id]}_"
-            filename << "#{object[:list_id]}_" if object[:list_id].to_s.empty?
 
             collection = amazon_s3.bucket.objects
             collection.with_prefix(filename).enum.each do |s3_object|
