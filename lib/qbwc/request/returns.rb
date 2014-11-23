@@ -83,11 +83,11 @@ module QBWC
         end
 
         def payment_ref(record, params)
-          # TODO test
-          return ''
+          return '' if record['refunds'].to_a.empty?
+
           <<-XML
             <PaymentMethodRef>
-              <FullName></FullName>
+              <FullName>#{record['refunds'].to_a.first['payment_method']}</FullName>
             </PaymentMethodRef>
           XML
         end
