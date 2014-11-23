@@ -30,7 +30,11 @@ module QBWC
           class_name = "QBWC::Response::#{key}".constantize
           value = value.is_a?(Hash)? [value] : Array(value)
 
-          records = value.map(&:values).flatten.select { |value| value.is_a?(Hash) }
+          # records = value.map(&:values).flatten.select { |value| value.is_a?(Hash) }
+          records = value.map{ |item| item.values.select { |value| value.is_a?(Hash) }.
+                        map{ |sub| sub.merge({ 'request_id' => item['@requestID'] })
+                           }
+               }.flatten
 
           # NOTE delete in case it's useless
           errors = value.map do |response|
