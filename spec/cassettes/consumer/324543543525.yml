@@ -12,9 +12,9 @@ http_interactions:
       Accept-Encoding:
       - ''
       User-Agent:
-      - aws-sdk-ruby/1.57.0 ruby/2.1.4 x86_64-darwin13.0
+      - aws-sdk-ruby/1.57.0 ruby/2.1.5 x86_64-darwin14.0
       Date:
-      - Wed, 12 Nov 2014 18:56:25 GMT
+      - Mon, 24 Nov 2014 12:21:54 GMT
       Authorization:
       - AUTHORIZATION
       Accept:
@@ -25,11 +25,11 @@ http_interactions:
       message: OK
     headers:
       X-Amz-Id-2:
-      - FVcGZV9Lxi5xECr4YSWADH7o74ZbERWblCNe/3fdWINSDJKCJ4WSc06cjKRA+5jY
+      - Hth3CZIPZfRk6fbb1CJEQQxBtwrLjDEV9Eq0lKYhxSMoC7HyyEXZXnaoe38rqxd1uoagTGgnA3Q=
       X-Amz-Request-Id:
-      - A38736573E7C3D0B
+      - 39BBC7A1145788F6
       Date:
-      - Wed, 12 Nov 2014 18:56:26 GMT
+      - Mon, 24 Nov 2014 12:21:55 GMT
       Content-Type:
       - application/xml
       Transfer-Encoding:
@@ -40,9 +40,9 @@ http_interactions:
       encoding: UTF-8
       string: |-
         <?xml version="1.0" encoding="UTF-8"?>
-        <ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>quickbooks-desktop-integration</Name><Prefix>54591b3a5869632afc090000/settings/get_</Prefix><Marker></Marker><MaxKeys>1000</MaxKeys><IsTruncated>false</IsTruncated><Contents><Key>54591b3a5869632afc090000/settings/get_inventories.csv</Key><LastModified>2014-11-12T18:53:20.000Z</LastModified><ETag>&quot;b8ab12576e4cae9c1d5ffbb637cd54b1&quot;</ETag><Size>141</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>aws</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents></ListBucketResult>
+        <ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>quickbooks-desktop-integration</Name><Prefix>54591b3a5869632afc090000/settings/get_</Prefix><Marker></Marker><MaxKeys>1000</MaxKeys><IsTruncated>false</IsTruncated><Contents><Key>54591b3a5869632afc090000/settings/get_inventories.csv</Key><LastModified>2014-11-14T19:18:27.000Z</LastModified><ETag>&quot;8bebd93dfcecfedee563456ea4047ab6&quot;</ETag><Size>149</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>aws</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>54591b3a5869632afc090000/settings/get_products.csv</Key><LastModified>2014-11-14T19:18:30.000Z</LastModified><ETag>&quot;ad8c8619a09043c7f9b3ca2a802896f6&quot;</ETag><Size>146</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>aws</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents></ListBucketResult>
     http_version: 
-  recorded_at: Wed, 12 Nov 2014 18:56:27 GMT
+  recorded_at: Mon, 24 Nov 2014 12:21:55 GMT
 - request:
     method: get
     uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/settings/get_inventories.csv
@@ -55,9 +55,9 @@ http_interactions:
       Accept-Encoding:
       - ''
       User-Agent:
-      - aws-sdk-ruby/1.57.0 ruby/2.1.4 x86_64-darwin13.0
+      - aws-sdk-ruby/1.57.0 ruby/2.1.5 x86_64-darwin14.0
       Date:
-      - Wed, 12 Nov 2014 18:56:27 GMT
+      - Mon, 24 Nov 2014 12:21:55 GMT
       Authorization:
       - AUTHORIZATION
       Accept:
@@ -68,30 +68,79 @@ http_interactions:
       message: OK
     headers:
       X-Amz-Id-2:
-      - 5t3A5kV25Ss3OFtpUaOolABoILWdi7Q/A8E11KPp6ukK4CXKR3JO5y3+PA5uRmph
+      - sgBplG2wygNUr6W6hWzG/Gi6qHmWRK0i/Xy6uLYliM6vJ6EDHvf15NkpgfTt3OPm5Fs7MU2wlbk=
       X-Amz-Request-Id:
-      - 1FD42808BB15E12B
+      - C8416FA6C2A8B5B0
       Date:
-      - Wed, 12 Nov 2014 18:56:27 GMT
+      - Mon, 24 Nov 2014 12:21:56 GMT
       Last-Modified:
-      - Wed, 12 Nov 2014 18:53:20 GMT
+      - Fri, 14 Nov 2014 19:18:27 GMT
       Etag:
-      - '"b8ab12576e4cae9c1d5ffbb637cd54b1"'
+      - '"8bebd93dfcecfedee563456ea4047ab6"'
       Accept-Ranges:
       - bytes
       Content-Type:
       - ''
       Content-Length:
-      - '141'
+      - '149'
       Server:
       - AmazonS3
     body:
       encoding: UTF-8
       string: |-
-        connection_id,flow,origin,quickbooks_since,quickbooks_force_config
-        54591b3a5869632afc090000,get_inventories,quickbooks,2014-11-10T09:10:55Z,0
+        connection_id,flow,origin,quickbooks_force_config,quickbooks_since
+        54591b3a5869632afc090000,get_inventories,quickbooks,true,2014-11-14T16:25:10+00:00
     http_version: 
-  recorded_at: Wed, 12 Nov 2014 18:56:27 GMT
+  recorded_at: Mon, 24 Nov 2014 12:21:55 GMT
+- request:
+    method: get
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/settings/get_products.csv
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby/1.57.0 ruby/2.1.5 x86_64-darwin14.0
+      Date:
+      - Mon, 24 Nov 2014 12:21:55 GMT
+      Authorization:
+      - AUTHORIZATION
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amz-Id-2:
+      - Wpmdo4A0X4Q9aRgkH+IlBUIUsmaydL1H6r8O1Q0B28TB/70RJQev7gYBrti6qyq5t3plzRk8Ztg=
+      X-Amz-Request-Id:
+      - 734BF1E99B1FE740
+      Date:
+      - Mon, 24 Nov 2014 12:21:57 GMT
+      Last-Modified:
+      - Fri, 14 Nov 2014 19:18:30 GMT
+      Etag:
+      - '"ad8c8619a09043c7f9b3ca2a802896f6"'
+      Accept-Ranges:
+      - bytes
+      Content-Type:
+      - ''
+      Content-Length:
+      - '146'
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: |-
+        connection_id,flow,origin,quickbooks_force_config,quickbooks_since
+        54591b3a5869632afc090000,get_products,quickbooks,true,2014-11-14T16:25:10+00:00
+    http_version: 
+  recorded_at: Mon, 24 Nov 2014 12:21:56 GMT
 - request:
     method: get
     uri: https://quickbooks-desktop-integration.s3.amazonaws.com/?versioning=
@@ -104,9 +153,9 @@ http_interactions:
       Accept-Encoding:
       - ''
       User-Agent:
-      - aws-sdk-ruby/1.57.0 ruby/2.1.4 x86_64-darwin13.0
+      - aws-sdk-ruby/1.57.0 ruby/2.1.5 x86_64-darwin14.0
       Date:
-      - Wed, 12 Nov 2014 18:56:27 GMT
+      - Mon, 24 Nov 2014 12:21:56 GMT
       Authorization:
       - AUTHORIZATION
       Accept:
@@ -117,11 +166,11 @@ http_interactions:
       message: OK
     headers:
       X-Amz-Id-2:
-      - 6kPwTQaDxcCINpKxqOgAUMVVfGEpADhZHYD+tm/4nlBI7BFiVlmJ6eNergf0MzzE
+      - TkpvAsHl8Izk67i6xT1GskNiyKmdEkJU14s2av8/FhNF5iIwtyDgOr7oKgSL7GPCcqvreyTNJaA=
       X-Amz-Request-Id:
-      - 6FA3814780FF174A
+      - 6128E4A55939D7D0
       Date:
-      - Wed, 12 Nov 2014 18:56:28 GMT
+      - Mon, 24 Nov 2014 12:21:58 GMT
       Transfer-Encoding:
       - chunked
       Server:
@@ -132,7 +181,7 @@ http_interactions:
         <?xml version="1.0" encoding="UTF-8"?>
         <VersioningConfiguration xmlns="http://s3.amazonaws.com/doc/2006-03-01/"/>
     http_version: 
-  recorded_at: Wed, 12 Nov 2014 18:56:28 GMT
+  recorded_at: Mon, 24 Nov 2014 12:21:57 GMT
 - request:
     method: head
     uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/quickbooks_pending/inventories_1415755144.csv
@@ -145,9 +194,9 @@ http_interactions:
       Accept-Encoding:
       - ''
       User-Agent:
-      - aws-sdk-ruby/1.57.0 ruby/2.1.4 x86_64-darwin13.0
+      - aws-sdk-ruby/1.57.0 ruby/2.1.5 x86_64-darwin14.0
       Date:
-      - Wed, 12 Nov 2014 18:56:28 GMT
+      - Mon, 24 Nov 2014 12:21:57 GMT
       Authorization:
       - AUTHORIZATION
       Accept:
@@ -158,22 +207,22 @@ http_interactions:
       message: Not Found
     headers:
       X-Amz-Request-Id:
-      - 00291577C036A173
+      - B0B44653077F6358
       X-Amz-Id-2:
-      - Nh8rUcMy3mlvpPse9jgfahHjtbOw7/vkZnLu+n6xc/Zgn1H76VKnNfDfhhEvSK0s
+      - eDFZb51iLB8go0kNWG7aPb9Pr/Z6yqukB4uTu+HE482s05KYJH7byv81qFCfV/WmolFz2wfe2M0=
       Content-Type:
       - application/xml
       Transfer-Encoding:
       - chunked
       Date:
-      - Wed, 12 Nov 2014 18:56:28 GMT
+      - Mon, 24 Nov 2014 12:21:57 GMT
       Server:
       - AmazonS3
     body:
       encoding: UTF-8
       string: ''
     http_version: 
-  recorded_at: Wed, 12 Nov 2014 18:56:29 GMT
+  recorded_at: Mon, 24 Nov 2014 12:21:57 GMT
 - request:
     method: put
     uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/quickbooks_pending/inventories_1415755144.csv
@@ -205,9 +254,9 @@ http_interactions:
       Content-Length:
       - '996'
       User-Agent:
-      - aws-sdk-ruby/1.57.0 ruby/2.1.4 x86_64-darwin13.0
+      - aws-sdk-ruby/1.57.0 ruby/2.1.5 x86_64-darwin14.0
       Date:
-      - Wed, 12 Nov 2014 18:56:29 GMT
+      - Mon, 24 Nov 2014 12:21:57 GMT
       Authorization:
       - AUTHORIZATION
       Accept:
@@ -218,11 +267,11 @@ http_interactions:
       message: OK
     headers:
       X-Amz-Id-2:
-      - 3cOHq3iMKsGv4vhEMMy5wJ1zutyIizrEufsFW5UVFpj06a+7XKkOKoE2WHKmP2jc
+      - M4ZU99NlMffRvPAgO7lojJ/vULzNaNS6Yw7lOEbmZhqJFmR3d3tx7H/6cPMEnG8kHgvTgPOqUMA=
       X-Amz-Request-Id:
-      - 7068C1AB5BBC79C0
+      - A19C74F3671179DC
       Date:
-      - Wed, 12 Nov 2014 18:56:30 GMT
+      - Mon, 24 Nov 2014 12:21:59 GMT
       Etag:
       - '"56ee11e295642773b531bf9ba9c6aa32"'
       Content-Length:
@@ -233,7 +282,7 @@ http_interactions:
       encoding: UTF-8
       string: ''
     http_version: 
-  recorded_at: Wed, 12 Nov 2014 18:56:30 GMT
+  recorded_at: Mon, 24 Nov 2014 12:21:58 GMT
 - request:
     method: head
     uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/settings/get_inventories.csv
@@ -246,9 +295,9 @@ http_interactions:
       Accept-Encoding:
       - ''
       User-Agent:
-      - aws-sdk-ruby/1.57.0 ruby/2.1.4 x86_64-darwin13.0
+      - aws-sdk-ruby/1.57.0 ruby/2.1.5 x86_64-darwin14.0
       Date:
-      - Wed, 12 Nov 2014 18:56:30 GMT
+      - Mon, 24 Nov 2014 12:21:58 GMT
       Authorization:
       - AUTHORIZATION
       Accept:
@@ -259,28 +308,28 @@ http_interactions:
       message: OK
     headers:
       X-Amz-Id-2:
-      - YJu2pslqT0FS3OuDt1/kcMBrjt6yoDNLQElMtvRAaEAQVa91mSQr8j2biJUiH/0j
+      - nnlMbj/IAzo+anpwXGRinY1m40VC4hhj4PbOmlm5N7YlubNkAmHH+E0MU5zldA0YmANc6luxjA0=
       X-Amz-Request-Id:
-      - D16B32F7C1CF5725
+      - 6A4E46A165A84EB3
       Date:
-      - Wed, 12 Nov 2014 18:56:30 GMT
+      - Mon, 24 Nov 2014 12:21:59 GMT
       Last-Modified:
-      - Wed, 12 Nov 2014 18:53:20 GMT
+      - Fri, 14 Nov 2014 19:18:27 GMT
       Etag:
-      - '"b8ab12576e4cae9c1d5ffbb637cd54b1"'
+      - '"8bebd93dfcecfedee563456ea4047ab6"'
       Accept-Ranges:
       - bytes
       Content-Type:
       - ''
       Content-Length:
-      - '141'
+      - '149'
       Server:
       - AmazonS3
     body:
       encoding: UTF-8
       string: ''
     http_version: 
-  recorded_at: Wed, 12 Nov 2014 18:56:30 GMT
+  recorded_at: Mon, 24 Nov 2014 12:21:58 GMT
 - request:
     method: get
     uri: https://quickbooks-desktop-integration.s3.amazonaws.com/?versioning=
@@ -293,9 +342,9 @@ http_interactions:
       Accept-Encoding:
       - ''
       User-Agent:
-      - aws-sdk-ruby/1.57.0 ruby/2.1.4 x86_64-darwin13.0
+      - aws-sdk-ruby/1.57.0 ruby/2.1.5 x86_64-darwin14.0
       Date:
-      - Wed, 12 Nov 2014 18:56:30 GMT
+      - Mon, 24 Nov 2014 12:21:58 GMT
       Authorization:
       - AUTHORIZATION
       Accept:
@@ -306,11 +355,11 @@ http_interactions:
       message: OK
     headers:
       X-Amz-Id-2:
-      - yojPG043Drq0hqhq2B6Xp5JMH7YFhQr4f00AFb6XpZvUjWF4CbA0XaJNaDi3kgZ4
+      - 0sC5XhXK/+igNPmLJXhKBJimJFYQVprTtolCsopSHFtXqCGm7uAylVquBDpRm1R1ywjODceIsp4=
       X-Amz-Request-Id:
-      - 00FB7AE99E66A98F
+      - EDFCAD7B3A698529
       Date:
-      - Wed, 12 Nov 2014 18:56:31 GMT
+      - Mon, 24 Nov 2014 12:22:00 GMT
       Transfer-Encoding:
       - chunked
       Server:
@@ -321,15 +370,15 @@ http_interactions:
         <?xml version="1.0" encoding="UTF-8"?>
         <VersioningConfiguration xmlns="http://s3.amazonaws.com/doc/2006-03-01/"/>
     http_version: 
-  recorded_at: Wed, 12 Nov 2014 18:56:31 GMT
+  recorded_at: Mon, 24 Nov 2014 12:21:59 GMT
 - request:
     method: put
     uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/settings/get_inventories.csv
     body:
       encoding: ASCII-8BIT
       string: |-
-        connection_id,flow,origin,quickbooks_since,quickbooks_force_config
-        54591b3a5869632afc090000,get_inventories,quickbooks,2014-11-11T23:21:43+00:00,true
+        connection_id,flow,origin,quickbooks_force_config,quickbooks_since
+        54591b3a5869632afc090000,get_inventories,quickbooks,true,2014-11-11T23:21:43+00:00
     headers:
       Content-Type:
       - ''
@@ -338,9 +387,9 @@ http_interactions:
       Content-Length:
       - '149'
       User-Agent:
-      - aws-sdk-ruby/1.57.0 ruby/2.1.4 x86_64-darwin13.0
+      - aws-sdk-ruby/1.57.0 ruby/2.1.5 x86_64-darwin14.0
       Date:
-      - Wed, 12 Nov 2014 18:56:31 GMT
+      - Mon, 24 Nov 2014 12:21:59 GMT
       Authorization:
       - AUTHORIZATION
       Accept:
@@ -351,13 +400,13 @@ http_interactions:
       message: OK
     headers:
       X-Amz-Id-2:
-      - "+m+ggZ5tzWKqDLDgteFDtJBWw67A317AIYLZrdCL4kcRupTOBOFixKBWcnGDpBQ0"
+      - kDgIh6V4ARCAhaH2NYdYoPLhZGSXO057WsNYblYCtOBE+nBbnqAZzh82QPJ1yX2+xFzgrQZrUVA=
       X-Amz-Request-Id:
-      - FFAF0B1A65BDCB76
+      - 8A08FFEA4955B8C3
       Date:
-      - Wed, 12 Nov 2014 18:56:32 GMT
+      - Mon, 24 Nov 2014 12:22:01 GMT
       Etag:
-      - '"ab3611f42bb11c93f2c675e46ea24dce"'
+      - '"953300fa2036a078badc1e0c349d8707"'
       Content-Length:
       - '0'
       Server:
@@ -366,10 +415,10 @@ http_interactions:
       encoding: UTF-8
       string: ''
     http_version: 
-  recorded_at: Wed, 12 Nov 2014 18:56:32 GMT
+  recorded_at: Mon, 24 Nov 2014 12:22:00 GMT
 - request:
     method: get
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/?max-keys=1&prefix=54591b3a5869632afc090000/quickbooks_ready
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/?versioning=
     body:
       encoding: US-ASCII
       string: ''
@@ -379,9 +428,9 @@ http_interactions:
       Accept-Encoding:
       - ''
       User-Agent:
-      - aws-sdk-ruby/1.57.0 ruby/2.1.4 x86_64-darwin13.0
+      - aws-sdk-ruby/1.57.0 ruby/2.1.5 x86_64-darwin14.0
       Date:
-      - Wed, 12 Nov 2014 18:56:32 GMT
+      - Mon, 24 Nov 2014 12:22:00 GMT
       Authorization:
       - AUTHORIZATION
       Accept:
@@ -392,11 +441,286 @@ http_interactions:
       message: OK
     headers:
       X-Amz-Id-2:
-      - payQrv6gd/mZRe8jRsqJiFocyolp+TgfmEzhN9ee+fAw5aBFG7LvPzHeXjNGlEg0
+      - PWGUFGhjpodJ92TtMw9wIPkT6XY5NNZdTeL+u7/klKLidJAFS/cnOvL6DadD19zJx55D1Z8uPtc=
       X-Amz-Request-Id:
-      - D9513A11523CF6A1
+      - 6FA5B366E3169F52
       Date:
-      - Wed, 12 Nov 2014 18:56:33 GMT
+      - Mon, 24 Nov 2014 12:22:01 GMT
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: |-
+        <?xml version="1.0" encoding="UTF-8"?>
+        <VersioningConfiguration xmlns="http://s3.amazonaws.com/doc/2006-03-01/"/>
+    http_version: 
+  recorded_at: Mon, 24 Nov 2014 12:22:00 GMT
+- request:
+    method: head
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/quickbooks_pending/products_1415755144.csv
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby/1.57.0 ruby/2.1.5 x86_64-darwin14.0
+      Date:
+      - Mon, 24 Nov 2014 12:22:00 GMT
+      Authorization:
+      - AUTHORIZATION
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 404
+      message: Not Found
+    headers:
+      X-Amz-Request-Id:
+      - AE91F074D273E34A
+      X-Amz-Id-2:
+      - 68FtAR0COlCM2loMY77Km0ROwW/OQ+cjyIvYtmc0ydleUcsbBrwGZPE6xIJHFgokBdAP50dSz7w=
+      Content-Type:
+      - application/xml
+      Transfer-Encoding:
+      - chunked
+      Date:
+      - Mon, 24 Nov 2014 12:22:01 GMT
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: ''
+    http_version: 
+  recorded_at: Mon, 24 Nov 2014 12:22:01 GMT
+- request:
+    method: put
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/quickbooks_pending/products_1415755144.csv
+    body:
+      encoding: ASCII-8BIT
+      string: |-
+        id,sku,product_id,quantity,price,cost_price
+        12797,12797,12797,0,0.00,0.00
+        Haskell T-Shirt,Haskell T-Shirt,Haskell T-Shirt,300,55.00,4.00
+        SPREE-T-SHIRT6978710,SPREE-T-SHIRT6978710,SPREE-T-SHIRT6978710,0,35.00,22.33
+        SPREE-T-SHIRT6978711,SPREE-T-SHIRT6978711,SPREE-T-SHIRT6978711,0,35.00,22.33
+        SPREE-T-SHIRT6978712,SPREE-T-SHIRT6978712,SPREE-T-SHIRT6978712,0,35.00,22.33
+        SPREE-T-SHIRT6978713,SPREE-T-SHIRT6978713,SPREE-T-SHIRT6978713,0,35.00,22.33
+        SPREE-T-SHIRT6978714,SPREE-T-SHIRT6978714,SPREE-T-SHIRT6978714,0,35.00,22.33
+        SPREE-T-SHIRT6978715,SPREE-T-SHIRT6978715,SPREE-T-SHIRT6978715,0,35.00,22.33
+        SPREE-T-SHIRT6978716,SPREE-T-SHIRT6978716,SPREE-T-SHIRT6978716,0,35.00,22.33
+        SPREE-T-SHIRT6978717,SPREE-T-SHIRT6978717,SPREE-T-SHIRT6978717,0,35.00,22.33
+        SPREE-T-SHIRT6978718,SPREE-T-SHIRT6978718,SPREE-T-SHIRT6978718,0,35.00,22.33
+        SPREE-T-SHIRT6978719,SPREE-T-SHIRT6978719,SPREE-T-SHIRT6978719,0,35.00,22.33
+        SPREE-T-SHIRT697875,SPREE-T-SHIRT697875,SPREE-T-SHIRT697875,0,35.00,22.33
+        SPREE-T-SHIRT697877,SPREE-T-SHIRT697877,SPREE-T-SHIRT697877,0,35.00,22.33
+        SPREE-T-SHIRT697878,SPREE-T-SHIRT697878,SPREE-T-SHIRT697878,0,35.00,22.33
+        SPREE-T-SHIRT697879,SPREE-T-SHIRT697879,SPREE-T-SHIRT697879,0,35.00,22.33
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      Content-Length:
+      - '1202'
+      User-Agent:
+      - aws-sdk-ruby/1.57.0 ruby/2.1.5 x86_64-darwin14.0
+      Date:
+      - Mon, 24 Nov 2014 12:22:01 GMT
+      Authorization:
+      - AUTHORIZATION
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amz-Id-2:
+      - NFXUDtm/9sKPHHPGAJ/wVkPsliLWZzeiWyhpCy4y88N3VYnAAF1zB9WCofPx/fN14ikepldQL9k=
+      X-Amz-Request-Id:
+      - F796CD7A58723981
+      Date:
+      - Mon, 24 Nov 2014 12:22:03 GMT
+      Etag:
+      - '"d59a59a5f918cbe03f762d86dfa45b11"'
+      Content-Length:
+      - '0'
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: ''
+    http_version: 
+  recorded_at: Mon, 24 Nov 2014 12:22:02 GMT
+- request:
+    method: head
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/settings/get_products.csv
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby/1.57.0 ruby/2.1.5 x86_64-darwin14.0
+      Date:
+      - Mon, 24 Nov 2014 12:22:02 GMT
+      Authorization:
+      - AUTHORIZATION
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amz-Id-2:
+      - TmZOu91B177TmLur3FK0k7wQK4xuL5snv3aICBbbVtiFnb4iQYIWipvuetHBzV90EOw9dQ4t6Fc=
+      X-Amz-Request-Id:
+      - 5096352855975CDA
+      Date:
+      - Mon, 24 Nov 2014 12:22:03 GMT
+      Last-Modified:
+      - Fri, 14 Nov 2014 19:18:30 GMT
+      Etag:
+      - '"ad8c8619a09043c7f9b3ca2a802896f6"'
+      Accept-Ranges:
+      - bytes
+      Content-Type:
+      - ''
+      Content-Length:
+      - '146'
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: ''
+    http_version: 
+  recorded_at: Mon, 24 Nov 2014 12:22:02 GMT
+- request:
+    method: get
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/?versioning=
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby/1.57.0 ruby/2.1.5 x86_64-darwin14.0
+      Date:
+      - Mon, 24 Nov 2014 12:22:02 GMT
+      Authorization:
+      - AUTHORIZATION
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amz-Id-2:
+      - l5gKjdmxR348EIb2v1+vXg+dSUQFOjGo65vXyb8VT/zxqldUzINKVArC+fUclx/moIfq+CnsmP8=
+      X-Amz-Request-Id:
+      - 004F7346F0711D8E
+      Date:
+      - Mon, 24 Nov 2014 12:22:04 GMT
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: |-
+        <?xml version="1.0" encoding="UTF-8"?>
+        <VersioningConfiguration xmlns="http://s3.amazonaws.com/doc/2006-03-01/"/>
+    http_version: 
+  recorded_at: Mon, 24 Nov 2014 12:22:03 GMT
+- request:
+    method: put
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/settings/get_products.csv
+    body:
+      encoding: ASCII-8BIT
+      string: |-
+        connection_id,flow,origin,quickbooks_force_config,quickbooks_since
+        54591b3a5869632afc090000,get_products,quickbooks,true,2014-11-11T23:21:43+00:00
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      Content-Length:
+      - '146'
+      User-Agent:
+      - aws-sdk-ruby/1.57.0 ruby/2.1.5 x86_64-darwin14.0
+      Date:
+      - Mon, 24 Nov 2014 12:22:03 GMT
+      Authorization:
+      - AUTHORIZATION
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amz-Id-2:
+      - oBAiA46J89yTAOhtYS6FSzafOkFOYQRDfswUwl7lMyUe3KB7mFPMPLKqrIK8UCFqsl2nvfYoRE4=
+      X-Amz-Request-Id:
+      - 7E9E2A3A5E2EC879
+      Date:
+      - Mon, 24 Nov 2014 12:22:04 GMT
+      Etag:
+      - '"3bf42f3721cc97874e18f3ecf1934924"'
+      Content-Length:
+      - '0'
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: ''
+    http_version: 
+  recorded_at: Mon, 24 Nov 2014 12:22:04 GMT
+- request:
+    method: get
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/?max-keys=1&prefix=54591b3a5869632afc090000/wombat_ready
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby/1.57.0 ruby/2.1.5 x86_64-darwin14.0
+      Date:
+      - Mon, 24 Nov 2014 12:22:04 GMT
+      Authorization:
+      - AUTHORIZATION
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amz-Id-2:
+      - d6GW1RuHz63cOlzO6FrixB0ZJdqfHlNspszbxYzDpwm7ZK5ifyoJX5mqO4HwnQUTa+vJijyBIHQ=
+      X-Amz-Request-Id:
+      - 7B3ACBE9B7DF4AC2
+      Date:
+      - Mon, 24 Nov 2014 12:22:05 GMT
       Content-Type:
       - application/xml
       Transfer-Encoding:
@@ -407,7 +731,760 @@ http_interactions:
       encoding: UTF-8
       string: |-
         <?xml version="1.0" encoding="UTF-8"?>
-        <ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>quickbooks-desktop-integration</Name><Prefix>54591b3a5869632afc090000/quickbooks_ready</Prefix><Marker></Marker><MaxKeys>1</MaxKeys><IsTruncated>false</IsTruncated></ListBucketResult>
+        <ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>quickbooks-desktop-integration</Name><Prefix>54591b3a5869632afc090000/wombat_ready</Prefix><Marker></Marker><MaxKeys>1</MaxKeys><IsTruncated>true</IsTruncated><Contents><Key>54591b3a5869632afc090000/wombat_ready/orders_R15408534641_.csv</Key><LastModified>2014-11-14T04:19:52.000Z</LastModified><ETag>&quot;9c5e48e7a012d55e96a739616655f9b5&quot;</ETag><Size>1093</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>aws</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents></ListBucketResult>
     http_version: 
-  recorded_at: Wed, 12 Nov 2014 18:56:33 GMT
+  recorded_at: Mon, 24 Nov 2014 12:22:04 GMT
+- request:
+    method: put
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/wombat_ready/products_12797_80000027-1415713663_1415713663.csv
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      X-Amz-Copy-Source:
+      - "/quickbooks-desktop-integration/54591b3a5869632afc090000/wombat_ready/products_12797_.csv"
+      X-Amz-Metadata-Directive:
+      - COPY
+      X-Amz-Storage-Class:
+      - STANDARD
+      User-Agent:
+      - aws-sdk-ruby/1.57.0 ruby/2.1.5 x86_64-darwin14.0
+      Date:
+      - Mon, 24 Nov 2014 12:22:04 GMT
+      Authorization:
+      - AUTHORIZATION
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 404
+      message: Not Found
+    headers:
+      X-Amz-Request-Id:
+      - 181C6482DEA2DACD
+      X-Amz-Id-2:
+      - McNe/S5moo3Q4VjK08o5vjd2oHk+ZXk8PqLxnxg87hMg9m4gSylJ/PBtrXl4iblthNdAxYjnkd8=
+      Content-Type:
+      - application/xml
+      Transfer-Encoding:
+      - chunked
+      Date:
+      - Mon, 24 Nov 2014 12:22:04 GMT
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: "<Error><Code>NoSuchKey</Code><Message>The specified key does not exist.</Message><Key>54591b3a5869632afc090000/wombat_ready/products_12797_.csv</Key><RequestId>181C6482DEA2DACD</RequestId><HostId>McNe/S5moo3Q4VjK08o5vjd2oHk+ZXk8PqLxnxg87hMg9m4gSylJ/PBtrXl4iblthNdAxYjnkd8=</HostId></Error>"
+    http_version: 
+  recorded_at: Mon, 24 Nov 2014 12:22:05 GMT
+- request:
+    method: put
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/wombat_ready/products_Haskell%20T-Shirt_80000004-1415047582_1415668976.csv
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      X-Amz-Copy-Source:
+      - "/quickbooks-desktop-integration/54591b3a5869632afc090000/wombat_ready/products_Haskell%20T-Shirt_.csv"
+      X-Amz-Metadata-Directive:
+      - COPY
+      X-Amz-Storage-Class:
+      - STANDARD
+      User-Agent:
+      - aws-sdk-ruby/1.57.0 ruby/2.1.5 x86_64-darwin14.0
+      Date:
+      - Mon, 24 Nov 2014 12:22:05 GMT
+      Authorization:
+      - AUTHORIZATION
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 404
+      message: Not Found
+    headers:
+      X-Amz-Request-Id:
+      - E9BBC91CB68E9A99
+      X-Amz-Id-2:
+      - WMXP1dRmzuChCpfzcR2836eqlBZmwLQYQRWi+/cDgo/wMlmXjrP2DZpf01P0OvZrji3twLAYbCs=
+      Content-Type:
+      - application/xml
+      Transfer-Encoding:
+      - chunked
+      Date:
+      - Mon, 24 Nov 2014 12:22:05 GMT
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: "<Error><Code>NoSuchKey</Code><Message>The specified key does not exist.</Message><Key>54591b3a5869632afc090000/wombat_ready/products_Haskell
+        T-Shirt_.csv</Key><RequestId>E9BBC91CB68E9A99</RequestId><HostId>WMXP1dRmzuChCpfzcR2836eqlBZmwLQYQRWi+/cDgo/wMlmXjrP2DZpf01P0OvZrji3twLAYbCs=</HostId></Error>"
+    http_version: 
+  recorded_at: Mon, 24 Nov 2014 12:22:06 GMT
+- request:
+    method: put
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/wombat_ready/products_SPREE-T-SHIRT6978710_8000001E-1415703523_1415703523.csv
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      X-Amz-Copy-Source:
+      - "/quickbooks-desktop-integration/54591b3a5869632afc090000/wombat_ready/products_SPREE-T-SHIRT6978710_.csv"
+      X-Amz-Metadata-Directive:
+      - COPY
+      X-Amz-Storage-Class:
+      - STANDARD
+      User-Agent:
+      - aws-sdk-ruby/1.57.0 ruby/2.1.5 x86_64-darwin14.0
+      Date:
+      - Mon, 24 Nov 2014 12:22:06 GMT
+      Authorization:
+      - AUTHORIZATION
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 404
+      message: Not Found
+    headers:
+      X-Amz-Request-Id:
+      - 1AA8229C1199A9F8
+      X-Amz-Id-2:
+      - g4OeGAK5CBFTgAAUQvDgVqiGO+SSZaT3qtKfNgup6YHOMm/0RBmDuNwmtk5gdv8ZfHkYDs06cAM=
+      Content-Type:
+      - application/xml
+      Transfer-Encoding:
+      - chunked
+      Date:
+      - Mon, 24 Nov 2014 12:22:05 GMT
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: "<Error><Code>NoSuchKey</Code><Message>The specified key does not exist.</Message><Key>54591b3a5869632afc090000/wombat_ready/products_SPREE-T-SHIRT6978710_.csv</Key><RequestId>1AA8229C1199A9F8</RequestId><HostId>g4OeGAK5CBFTgAAUQvDgVqiGO+SSZaT3qtKfNgup6YHOMm/0RBmDuNwmtk5gdv8ZfHkYDs06cAM=</HostId></Error>"
+    http_version: 
+  recorded_at: Mon, 24 Nov 2014 12:22:06 GMT
+- request:
+    method: put
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/wombat_ready/products_SPREE-T-SHIRT6978711_8000001F-1415703643_1415703643.csv
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      X-Amz-Copy-Source:
+      - "/quickbooks-desktop-integration/54591b3a5869632afc090000/wombat_ready/products_SPREE-T-SHIRT6978711_.csv"
+      X-Amz-Metadata-Directive:
+      - COPY
+      X-Amz-Storage-Class:
+      - STANDARD
+      User-Agent:
+      - aws-sdk-ruby/1.57.0 ruby/2.1.5 x86_64-darwin14.0
+      Date:
+      - Mon, 24 Nov 2014 12:22:06 GMT
+      Authorization:
+      - AUTHORIZATION
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 404
+      message: Not Found
+    headers:
+      X-Amz-Request-Id:
+      - C8EF2B4F6D5BE11E
+      X-Amz-Id-2:
+      - f7HUmMsFe5I+uNY+UdFQvlo+ZsuE/zO8PL/AHWyf1kZbRI/cNL2yC3zfjT9LwmIoDPr+55JLkQs=
+      Content-Type:
+      - application/xml
+      Transfer-Encoding:
+      - chunked
+      Date:
+      - Mon, 24 Nov 2014 12:22:06 GMT
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: "<Error><Code>NoSuchKey</Code><Message>The specified key does not exist.</Message><Key>54591b3a5869632afc090000/wombat_ready/products_SPREE-T-SHIRT6978711_.csv</Key><RequestId>C8EF2B4F6D5BE11E</RequestId><HostId>f7HUmMsFe5I+uNY+UdFQvlo+ZsuE/zO8PL/AHWyf1kZbRI/cNL2yC3zfjT9LwmIoDPr+55JLkQs=</HostId></Error>"
+    http_version: 
+  recorded_at: Mon, 24 Nov 2014 12:22:07 GMT
+- request:
+    method: put
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/wombat_ready/products_SPREE-T-SHIRT6978712_80000020-1415704064_1415704064.csv
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      X-Amz-Copy-Source:
+      - "/quickbooks-desktop-integration/54591b3a5869632afc090000/wombat_ready/products_SPREE-T-SHIRT6978712_.csv"
+      X-Amz-Metadata-Directive:
+      - COPY
+      X-Amz-Storage-Class:
+      - STANDARD
+      User-Agent:
+      - aws-sdk-ruby/1.57.0 ruby/2.1.5 x86_64-darwin14.0
+      Date:
+      - Mon, 24 Nov 2014 12:22:07 GMT
+      Authorization:
+      - AUTHORIZATION
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 404
+      message: Not Found
+    headers:
+      X-Amz-Request-Id:
+      - C9077A545FC5F49F
+      X-Amz-Id-2:
+      - vAi2tCD/53Hl9vJlVOKxiNSXn8Ml0D1XS7LNROg9vmzK/CeHfQC5DhfNbCsrmEF+6umf439v2gc=
+      Content-Type:
+      - application/xml
+      Transfer-Encoding:
+      - chunked
+      Date:
+      - Mon, 24 Nov 2014 12:22:07 GMT
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: "<Error><Code>NoSuchKey</Code><Message>The specified key does not exist.</Message><Key>54591b3a5869632afc090000/wombat_ready/products_SPREE-T-SHIRT6978712_.csv</Key><RequestId>C9077A545FC5F49F</RequestId><HostId>vAi2tCD/53Hl9vJlVOKxiNSXn8Ml0D1XS7LNROg9vmzK/CeHfQC5DhfNbCsrmEF+6umf439v2gc=</HostId></Error>"
+    http_version: 
+  recorded_at: Mon, 24 Nov 2014 12:22:08 GMT
+- request:
+    method: put
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/wombat_ready/products_SPREE-T-SHIRT6978713_80000021-1415704512_1415704512.csv
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      X-Amz-Copy-Source:
+      - "/quickbooks-desktop-integration/54591b3a5869632afc090000/wombat_ready/products_SPREE-T-SHIRT6978713_.csv"
+      X-Amz-Metadata-Directive:
+      - COPY
+      X-Amz-Storage-Class:
+      - STANDARD
+      User-Agent:
+      - aws-sdk-ruby/1.57.0 ruby/2.1.5 x86_64-darwin14.0
+      Date:
+      - Mon, 24 Nov 2014 12:22:08 GMT
+      Authorization:
+      - AUTHORIZATION
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 404
+      message: Not Found
+    headers:
+      X-Amz-Request-Id:
+      - 13E72737D1C1DA00
+      X-Amz-Id-2:
+      - xpp4lMindgqKlmt4SwxyVa6F7msz+8+BFAPBTNM+iUJSu1EBBpdnth3lmPQkJf+zz7UB3Gnk5i4=
+      Content-Type:
+      - application/xml
+      Transfer-Encoding:
+      - chunked
+      Date:
+      - Mon, 24 Nov 2014 12:22:08 GMT
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: "<Error><Code>NoSuchKey</Code><Message>The specified key does not exist.</Message><Key>54591b3a5869632afc090000/wombat_ready/products_SPREE-T-SHIRT6978713_.csv</Key><RequestId>13E72737D1C1DA00</RequestId><HostId>xpp4lMindgqKlmt4SwxyVa6F7msz+8+BFAPBTNM+iUJSu1EBBpdnth3lmPQkJf+zz7UB3Gnk5i4=</HostId></Error>"
+    http_version: 
+  recorded_at: Mon, 24 Nov 2014 12:22:08 GMT
+- request:
+    method: put
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/wombat_ready/products_SPREE-T-SHIRT6978714_80000022-1415704783_1415705903.csv
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      X-Amz-Copy-Source:
+      - "/quickbooks-desktop-integration/54591b3a5869632afc090000/wombat_ready/products_SPREE-T-SHIRT6978714_.csv"
+      X-Amz-Metadata-Directive:
+      - COPY
+      X-Amz-Storage-Class:
+      - STANDARD
+      User-Agent:
+      - aws-sdk-ruby/1.57.0 ruby/2.1.5 x86_64-darwin14.0
+      Date:
+      - Mon, 24 Nov 2014 12:22:08 GMT
+      Authorization:
+      - AUTHORIZATION
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 404
+      message: Not Found
+    headers:
+      X-Amz-Request-Id:
+      - CF41FED1F8C1B18B
+      X-Amz-Id-2:
+      - 2OQBvMDBQlCosziWesCf+FjimcfmyvkFJN2vHr6pZ50FsyZribThQdiJwHdmCvPGKAR/zLaOcnw=
+      Content-Type:
+      - application/xml
+      Transfer-Encoding:
+      - chunked
+      Date:
+      - Mon, 24 Nov 2014 12:22:09 GMT
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: "<Error><Code>NoSuchKey</Code><Message>The specified key does not exist.</Message><Key>54591b3a5869632afc090000/wombat_ready/products_SPREE-T-SHIRT6978714_.csv</Key><RequestId>CF41FED1F8C1B18B</RequestId><HostId>2OQBvMDBQlCosziWesCf+FjimcfmyvkFJN2vHr6pZ50FsyZribThQdiJwHdmCvPGKAR/zLaOcnw=</HostId></Error>"
+    http_version: 
+  recorded_at: Mon, 24 Nov 2014 12:22:09 GMT
+- request:
+    method: put
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/wombat_ready/products_SPREE-T-SHIRT6978715_80000028-1415717150_1415717221.csv
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      X-Amz-Copy-Source:
+      - "/quickbooks-desktop-integration/54591b3a5869632afc090000/wombat_ready/products_SPREE-T-SHIRT6978715_.csv"
+      X-Amz-Metadata-Directive:
+      - COPY
+      X-Amz-Storage-Class:
+      - STANDARD
+      User-Agent:
+      - aws-sdk-ruby/1.57.0 ruby/2.1.5 x86_64-darwin14.0
+      Date:
+      - Mon, 24 Nov 2014 12:22:09 GMT
+      Authorization:
+      - AUTHORIZATION
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 404
+      message: Not Found
+    headers:
+      X-Amz-Request-Id:
+      - 4EF6739D366F123F
+      X-Amz-Id-2:
+      - kokzjEmpYwyhixP9i45IU/Un9b9wxcV1ATfrFzY5Aai/fNjx4NJBajSq0OLJXfRQuRDO+Dx+7uk=
+      Content-Type:
+      - application/xml
+      Transfer-Encoding:
+      - chunked
+      Date:
+      - Mon, 24 Nov 2014 12:22:09 GMT
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: "<Error><Code>NoSuchKey</Code><Message>The specified key does not exist.</Message><Key>54591b3a5869632afc090000/wombat_ready/products_SPREE-T-SHIRT6978715_.csv</Key><RequestId>4EF6739D366F123F</RequestId><HostId>kokzjEmpYwyhixP9i45IU/Un9b9wxcV1ATfrFzY5Aai/fNjx4NJBajSq0OLJXfRQuRDO+Dx+7uk=</HostId></Error>"
+    http_version: 
+  recorded_at: Mon, 24 Nov 2014 12:22:10 GMT
+- request:
+    method: put
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/wombat_ready/products_SPREE-T-SHIRT6978716_80000029-1415718733_1415718883.csv
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      X-Amz-Copy-Source:
+      - "/quickbooks-desktop-integration/54591b3a5869632afc090000/wombat_ready/products_SPREE-T-SHIRT6978716_.csv"
+      X-Amz-Metadata-Directive:
+      - COPY
+      X-Amz-Storage-Class:
+      - STANDARD
+      User-Agent:
+      - aws-sdk-ruby/1.57.0 ruby/2.1.5 x86_64-darwin14.0
+      Date:
+      - Mon, 24 Nov 2014 12:22:10 GMT
+      Authorization:
+      - AUTHORIZATION
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 404
+      message: Not Found
+    headers:
+      X-Amz-Request-Id:
+      - 328C3646C7A10EC4
+      X-Amz-Id-2:
+      - oiBCO321q9yh8Ik8tQh1JGAa15fdvntTUr+dTPo+mN6a3rLQriaQn9GDhXiAzESiaXO1LVNG5LA=
+      Content-Type:
+      - application/xml
+      Transfer-Encoding:
+      - chunked
+      Date:
+      - Mon, 24 Nov 2014 12:22:10 GMT
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: "<Error><Code>NoSuchKey</Code><Message>The specified key does not exist.</Message><Key>54591b3a5869632afc090000/wombat_ready/products_SPREE-T-SHIRT6978716_.csv</Key><RequestId>328C3646C7A10EC4</RequestId><HostId>oiBCO321q9yh8Ik8tQh1JGAa15fdvntTUr+dTPo+mN6a3rLQriaQn9GDhXiAzESiaXO1LVNG5LA=</HostId></Error>"
+    http_version: 
+  recorded_at: Mon, 24 Nov 2014 12:22:10 GMT
+- request:
+    method: put
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/wombat_ready/products_SPREE-T-SHIRT6978717_8000002A-1415728172_1415728237.csv
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      X-Amz-Copy-Source:
+      - "/quickbooks-desktop-integration/54591b3a5869632afc090000/wombat_ready/products_SPREE-T-SHIRT6978717_.csv"
+      X-Amz-Metadata-Directive:
+      - COPY
+      X-Amz-Storage-Class:
+      - STANDARD
+      User-Agent:
+      - aws-sdk-ruby/1.57.0 ruby/2.1.5 x86_64-darwin14.0
+      Date:
+      - Mon, 24 Nov 2014 12:22:10 GMT
+      Authorization:
+      - AUTHORIZATION
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 404
+      message: Not Found
+    headers:
+      X-Amz-Request-Id:
+      - 8A322731EA84507F
+      X-Amz-Id-2:
+      - ObXb3a41End2FBZrtYWg8pG9lVc0E5AvaWSMNx7ayMeveVGHQqeftmhDkmpxD0ATjbgUyIKw+2A=
+      Content-Type:
+      - application/xml
+      Transfer-Encoding:
+      - chunked
+      Date:
+      - Mon, 24 Nov 2014 12:22:10 GMT
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: "<Error><Code>NoSuchKey</Code><Message>The specified key does not exist.</Message><Key>54591b3a5869632afc090000/wombat_ready/products_SPREE-T-SHIRT6978717_.csv</Key><RequestId>8A322731EA84507F</RequestId><HostId>ObXb3a41End2FBZrtYWg8pG9lVc0E5AvaWSMNx7ayMeveVGHQqeftmhDkmpxD0ATjbgUyIKw+2A=</HostId></Error>"
+    http_version: 
+  recorded_at: Mon, 24 Nov 2014 12:22:11 GMT
+- request:
+    method: put
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/wombat_ready/products_SPREE-T-SHIRT6978718_8000002B-1415730125_1415730191.csv
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      X-Amz-Copy-Source:
+      - "/quickbooks-desktop-integration/54591b3a5869632afc090000/wombat_ready/products_SPREE-T-SHIRT6978718_.csv"
+      X-Amz-Metadata-Directive:
+      - COPY
+      X-Amz-Storage-Class:
+      - STANDARD
+      User-Agent:
+      - aws-sdk-ruby/1.57.0 ruby/2.1.5 x86_64-darwin14.0
+      Date:
+      - Mon, 24 Nov 2014 12:22:11 GMT
+      Authorization:
+      - AUTHORIZATION
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 404
+      message: Not Found
+    headers:
+      X-Amz-Request-Id:
+      - 62E2C7AEE825350C
+      X-Amz-Id-2:
+      - qvpqgZNybZXoJzET64ClyUghYv19K7OK8Xa2LjczbnfxHiMjtqxdb5O+RHFGub7OjBL8kPPwl2M=
+      Content-Type:
+      - application/xml
+      Transfer-Encoding:
+      - chunked
+      Date:
+      - Mon, 24 Nov 2014 12:22:12 GMT
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: "<Error><Code>NoSuchKey</Code><Message>The specified key does not exist.</Message><Key>54591b3a5869632afc090000/wombat_ready/products_SPREE-T-SHIRT6978718_.csv</Key><RequestId>62E2C7AEE825350C</RequestId><HostId>qvpqgZNybZXoJzET64ClyUghYv19K7OK8Xa2LjczbnfxHiMjtqxdb5O+RHFGub7OjBL8kPPwl2M=</HostId></Error>"
+    http_version: 
+  recorded_at: Mon, 24 Nov 2014 12:22:12 GMT
+- request:
+    method: put
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/wombat_ready/products_SPREE-T-SHIRT6978719_8000002C-1415747990_1415748103.csv
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      X-Amz-Copy-Source:
+      - "/quickbooks-desktop-integration/54591b3a5869632afc090000/wombat_ready/products_SPREE-T-SHIRT6978719_.csv"
+      X-Amz-Metadata-Directive:
+      - COPY
+      X-Amz-Storage-Class:
+      - STANDARD
+      User-Agent:
+      - aws-sdk-ruby/1.57.0 ruby/2.1.5 x86_64-darwin14.0
+      Date:
+      - Mon, 24 Nov 2014 12:22:12 GMT
+      Authorization:
+      - AUTHORIZATION
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 404
+      message: Not Found
+    headers:
+      X-Amz-Request-Id:
+      - EBC2AE67923D8422
+      X-Amz-Id-2:
+      - uXxfnQ6rjFiQN3taA86739NWWtmrdWm3H8Jt3VxFSLymozgCmo8zTtfh71k7l+rIuxDi9M0rR0E=
+      Content-Type:
+      - application/xml
+      Transfer-Encoding:
+      - chunked
+      Date:
+      - Mon, 24 Nov 2014 12:22:12 GMT
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: "<Error><Code>NoSuchKey</Code><Message>The specified key does not exist.</Message><Key>54591b3a5869632afc090000/wombat_ready/products_SPREE-T-SHIRT6978719_.csv</Key><RequestId>EBC2AE67923D8422</RequestId><HostId>uXxfnQ6rjFiQN3taA86739NWWtmrdWm3H8Jt3VxFSLymozgCmo8zTtfh71k7l+rIuxDi9M0rR0E=</HostId></Error>"
+    http_version: 
+  recorded_at: Mon, 24 Nov 2014 12:22:13 GMT
+- request:
+    method: put
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/wombat_ready/products_SPREE-T-SHIRT697875_8000001A-1415700800_1415700800.csv
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      X-Amz-Copy-Source:
+      - "/quickbooks-desktop-integration/54591b3a5869632afc090000/wombat_ready/products_SPREE-T-SHIRT697875_.csv"
+      X-Amz-Metadata-Directive:
+      - COPY
+      X-Amz-Storage-Class:
+      - STANDARD
+      User-Agent:
+      - aws-sdk-ruby/1.57.0 ruby/2.1.5 x86_64-darwin14.0
+      Date:
+      - Mon, 24 Nov 2014 12:22:13 GMT
+      Authorization:
+      - AUTHORIZATION
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 404
+      message: Not Found
+    headers:
+      X-Amz-Request-Id:
+      - E8741C5C80D446DB
+      X-Amz-Id-2:
+      - H30WbE3cGrLb9ii3U46ETYXk6/sK7XyGcTFj37FeKqIx36U5EXhdm9rZy9dHYotevWoSxnUqkEg=
+      Content-Type:
+      - application/xml
+      Transfer-Encoding:
+      - chunked
+      Date:
+      - Mon, 24 Nov 2014 12:22:13 GMT
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: "<Error><Code>NoSuchKey</Code><Message>The specified key does not exist.</Message><Key>54591b3a5869632afc090000/wombat_ready/products_SPREE-T-SHIRT697875_.csv</Key><RequestId>E8741C5C80D446DB</RequestId><HostId>H30WbE3cGrLb9ii3U46ETYXk6/sK7XyGcTFj37FeKqIx36U5EXhdm9rZy9dHYotevWoSxnUqkEg=</HostId></Error>"
+    http_version: 
+  recorded_at: Mon, 24 Nov 2014 12:22:13 GMT
+- request:
+    method: put
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/wombat_ready/products_SPREE-T-SHIRT697877_8000001B-1415702139_1415702139.csv
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      X-Amz-Copy-Source:
+      - "/quickbooks-desktop-integration/54591b3a5869632afc090000/wombat_ready/products_SPREE-T-SHIRT697877_.csv"
+      X-Amz-Metadata-Directive:
+      - COPY
+      X-Amz-Storage-Class:
+      - STANDARD
+      User-Agent:
+      - aws-sdk-ruby/1.57.0 ruby/2.1.5 x86_64-darwin14.0
+      Date:
+      - Mon, 24 Nov 2014 12:22:13 GMT
+      Authorization:
+      - AUTHORIZATION
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 404
+      message: Not Found
+    headers:
+      X-Amz-Request-Id:
+      - BE04AB3BA2B1E715
+      X-Amz-Id-2:
+      - zk2HwGkJH4ZWNlUH2BdcZBJFAdBpEP7nrbFLz+lU52Xd8KQdPaQPFbwvTXv7ZCbGpe8r9sNdfTM=
+      Content-Type:
+      - application/xml
+      Transfer-Encoding:
+      - chunked
+      Date:
+      - Mon, 24 Nov 2014 12:22:13 GMT
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: "<Error><Code>NoSuchKey</Code><Message>The specified key does not exist.</Message><Key>54591b3a5869632afc090000/wombat_ready/products_SPREE-T-SHIRT697877_.csv</Key><RequestId>BE04AB3BA2B1E715</RequestId><HostId>zk2HwGkJH4ZWNlUH2BdcZBJFAdBpEP7nrbFLz+lU52Xd8KQdPaQPFbwvTXv7ZCbGpe8r9sNdfTM=</HostId></Error>"
+    http_version: 
+  recorded_at: Mon, 24 Nov 2014 12:22:14 GMT
+- request:
+    method: put
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/wombat_ready/products_SPREE-T-SHIRT697878_8000001C-1415703162_1415703162.csv
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      X-Amz-Copy-Source:
+      - "/quickbooks-desktop-integration/54591b3a5869632afc090000/wombat_ready/products_SPREE-T-SHIRT697878_.csv"
+      X-Amz-Metadata-Directive:
+      - COPY
+      X-Amz-Storage-Class:
+      - STANDARD
+      User-Agent:
+      - aws-sdk-ruby/1.57.0 ruby/2.1.5 x86_64-darwin14.0
+      Date:
+      - Mon, 24 Nov 2014 12:22:14 GMT
+      Authorization:
+      - AUTHORIZATION
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 404
+      message: Not Found
+    headers:
+      X-Amz-Request-Id:
+      - 7E035FBD38FC369B
+      X-Amz-Id-2:
+      - tU8bwhKPPDGQFR5nqcUpo2nJLQwxer3LDbAvxJmrFvO89LsbIpXafYRuH2KcMGHAVMZBtBzR8WI=
+      Content-Type:
+      - application/xml
+      Transfer-Encoding:
+      - chunked
+      Date:
+      - Mon, 24 Nov 2014 12:22:14 GMT
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: "<Error><Code>NoSuchKey</Code><Message>The specified key does not exist.</Message><Key>54591b3a5869632afc090000/wombat_ready/products_SPREE-T-SHIRT697878_.csv</Key><RequestId>7E035FBD38FC369B</RequestId><HostId>tU8bwhKPPDGQFR5nqcUpo2nJLQwxer3LDbAvxJmrFvO89LsbIpXafYRuH2KcMGHAVMZBtBzR8WI=</HostId></Error>"
+    http_version: 
+  recorded_at: Mon, 24 Nov 2014 12:22:14 GMT
+- request:
+    method: put
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/wombat_ready/products_SPREE-T-SHIRT697879_8000001D-1415703342_1415703342.csv
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      X-Amz-Copy-Source:
+      - "/quickbooks-desktop-integration/54591b3a5869632afc090000/wombat_ready/products_SPREE-T-SHIRT697879_.csv"
+      X-Amz-Metadata-Directive:
+      - COPY
+      X-Amz-Storage-Class:
+      - STANDARD
+      User-Agent:
+      - aws-sdk-ruby/1.57.0 ruby/2.1.5 x86_64-darwin14.0
+      Date:
+      - Mon, 24 Nov 2014 12:22:14 GMT
+      Authorization:
+      - AUTHORIZATION
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 404
+      message: Not Found
+    headers:
+      X-Amz-Request-Id:
+      - FA6A43D87D13B07E
+      X-Amz-Id-2:
+      - Rs20ILsgq4OCvMDsNjoV3F/97nacSlVPzMGc8gKSwDeObMISwt4G5u0Sw4oFZHGvrCCWsRwDGiA=
+      Content-Type:
+      - application/xml
+      Transfer-Encoding:
+      - chunked
+      Date:
+      - Mon, 24 Nov 2014 12:22:15 GMT
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: "<Error><Code>NoSuchKey</Code><Message>The specified key does not exist.</Message><Key>54591b3a5869632afc090000/wombat_ready/products_SPREE-T-SHIRT697879_.csv</Key><RequestId>FA6A43D87D13B07E</RequestId><HostId>Rs20ILsgq4OCvMDsNjoV3F/97nacSlVPzMGc8gKSwDeObMISwt4G5u0Sw4oFZHGvrCCWsRwDGiA=</HostId></Error>"
+    http_version: 
+  recorded_at: Mon, 24 Nov 2014 12:22:15 GMT
 recorded_with: VCR 2.9.3
