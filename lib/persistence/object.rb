@@ -128,7 +128,7 @@ module Persistence
 
       objects_to_be_renamed.to_a.compact.each do |object|
         filename     = "#{prefix}/#{object[:object_type].pluralize}_#{object[:object_ref]}_"
-puts "\n\n * update_objects_with_query_results: #{filename} :: #{object.inspect}"
+
         # TODO what if the file is not there? we should probably at least
         # rescue / log the exception properly and move on with the others?
         # raises when file is not found:
@@ -220,7 +220,7 @@ puts "\n\n * update_objects_with_query_results: #{filename} :: #{object.inspect}
 
               s3_object.move_to("#{new_filename}.csv")
 
-              create_notifications("#{new_filename}.csv", status_key)
+              create_notifications("#{new_filename}.csv", status_key) if status_key == 'processed'
             end
           end
         end
