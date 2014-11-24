@@ -57,7 +57,7 @@ module QBWC
           Persistence::Settings.new(params.with_indifferent_access).setup
         end
 
-        config = { origin: 'wombat' }.merge config
+        config = config.merge({ origin: 'wombat' })
         object_persistence = Persistence::Object.new config
         object_persistence.update_objects_with_query_results(objects_to_update)
 

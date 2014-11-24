@@ -128,7 +128,7 @@ module Persistence
 
       objects_to_be_renamed.to_a.compact.each do |object|
         filename     = "#{prefix}/#{object[:object_type].pluralize}_#{object[:object_ref]}_"
-
+puts "\n\n * update_objects_with_query_results: #{filename} :: #{object.inspect}"
         # TODO what if the file is not there? we should probably at least
         # rescue / log the exception properly and move on with the others?
         # raises when file is not found:

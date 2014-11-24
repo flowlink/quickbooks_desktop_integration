@@ -24,11 +24,13 @@ module QBWC
           XML
         end
 
-        def polling_xml(timestamp)
+        def polling_xml(timestamp, config)
+          session_id = Persistence::Object.new(config,{}).save_session({"polling" => timestamp})
+
           time = Time.parse timestamp
 
           <<-XML
-<ItemInventoryQueryRq>
+<ItemInventoryQueryRq requestID="#{session_id}">
   <MaxReturned>100</MaxReturned>
   <FromModifiedDate>#{time.utc.xmlschema.split('Z').first}</FromModifiedDate>
   <!-- <IncludeRetElement>Name</IncludeRetElement> -->

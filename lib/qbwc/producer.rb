@@ -35,7 +35,7 @@ module QBWC
         # We support get_products and get_inventories but both match
         # ItemInventoryQuery in quickbooks desktop
         klass = QBWC::Request::Inventories
-        string << klass.polling_xml(params['quickbooks_since'])
+        string << klass.polling_xml(params['quickbooks_since'], config)
       end
     end
 
