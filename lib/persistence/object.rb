@@ -116,9 +116,11 @@ module Persistence
     # objects_to_be_renamed = [ { :object_type => 'product'
     #                             :object_ref => 'T-SHIRT-SPREE-1',
     #                             :list_id => '800000-88888',
-    #                             :edit_sequence => '12312312321'} ]
+    #                             :edit_sequence => '12312312321'}
+    #                             :extra_data => { ... }, ]
     def update_objects_with_query_results(objects_to_be_renamed)
       prefix = "#{base_name}/#{ready}"
+puts "\n\n\n\n\n\n * update_objects_with_query_results: #{objects_to_be_renamed}"
 
       unless amazon_s3.bucket.objects.with_prefix(prefix).first
         puts " No Files to be updated at #{prefix}"
@@ -249,7 +251,12 @@ module Persistence
 
     def load_session(session_id)
       file = "#{base_name}/#{sessions}/#{session_id}.csv"
-      contents = amazon_s3.convert_download('csv',amazon_s3.bucket.objects[file].read)
+      contents = ''
+      begin
+        contents = amazon_s3.convert_download('csv',amazon_s3.bucket.objects[file].read)
+      rescue AWS::S3::Errors::NoSuchKey => e
+        puts "File not found: #{file}"
+      end
 
       contents.first unless contents.empty?
     end

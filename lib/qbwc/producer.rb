@@ -3,7 +3,7 @@ module QBWC
     attr_reader :integration, :config, :s3_settings
 
     def initialize(config = {}, payload = {})
-      @config = config
+      @config = config.with_indifferent_access
       @integration = Persistence::Object.new config, payload
       @s3_settings = Persistence::Settings.new config
     end
