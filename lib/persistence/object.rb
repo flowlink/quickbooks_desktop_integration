@@ -236,6 +236,8 @@ module Persistence
         _, status, _, object_ref, _ = filename.split("_")
         content = amazon_s3.convert_download('csv',s3_object.read).first
 
+        object_ref = id_for_notifications(content, object_ref)
+
         if content.has_key?('message')
           notifications[status][content['message']] ||= []
           notifications[status][content['message']] << object_ref
@@ -390,6 +392,11 @@ module Persistence
       else
         object['id']
       end
+    end
+
+    def id_for_notifications(object, object_ref)
+      return object['id']  if payload_key.pluralize == 'customers'
+      object_ref
     end
   end
 end
