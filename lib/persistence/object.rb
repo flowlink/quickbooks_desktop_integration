@@ -120,7 +120,6 @@ module Persistence
     #                             :extra_data => { ... }, ]
     def update_objects_with_query_results(objects_to_be_renamed)
       prefix = "#{base_name}/#{ready}"
-puts "\n\n\n\n\n\n * update_objects_with_query_results: #{objects_to_be_renamed}"
 
       unless amazon_s3.bucket.objects.with_prefix(prefix).first
         puts " No Files to be updated at #{prefix}"
@@ -137,8 +136,17 @@ puts "\n\n\n\n\n\n * update_objects_with_query_results: #{objects_to_be_renamed}
         #   AWS::S3::Errors::NoSuchKey - No Such Key:
         #
         begin
-          s3_object    = amazon_s3.bucket.objects["#{filename}.csv"]
-          s3_object.move_to("#{filename}#{object[:list_id]}_#{object[:edit_sequence]}.csv")
+          s3_object     = amazon_s3.bucket.objects["#{filename}.csv"]
+          new_file_name = "#{filename}#{object[:list_id]}_#{object[:edit_sequence]}.csv"
+          s3_object.move_to(new_file_name)
+
+          if !object[:extra_data].to_s.empty?
+            contents = amazon_s3.bucket.objects[new_file_name].read
+            amazon_s3.bucket.objects[new_file_name].delete
+
+            with_extra_data = Converter.csv_to_hash(contents).first.merge(object[:extra_data])
+            amazon_s3.export file_name: new_file_name, objects: [with_extra_data]
+          end
         rescue AWS::S3::Errors::NoSuchKey => e
           puts " File not found: #{filename}.csv"
         end

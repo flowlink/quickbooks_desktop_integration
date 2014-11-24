@@ -42,13 +42,13 @@ module QBWC
         end
 
         def update_xml_to_send(record, params= {}, session_id)
+          #{record['items'].map { |l| sales_receipt_line_mod l }.join("")}
           <<-XML
             <SalesReceiptModRq requestID="#{session_id}">
               <SalesReceiptMod>
                 <TxnID>#{record['list_id']}</TxnID>
                 <EditSequence>#{record['edit_sequence']}</EditSequence>
                 #{sales_receipt record, params}
-                #{record['items'].map { |l| sales_receipt_line_mod l }.join("")}
               </SalesReceiptMod>
             </SalesReceiptModRq>
           XML
