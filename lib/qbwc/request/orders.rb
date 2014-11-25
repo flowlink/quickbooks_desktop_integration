@@ -37,6 +37,7 @@ module QBWC
   <SalesOrderAdd>
     #{sales_order record, params}
     #{record['line_items'].map { |l| sales_order_line_add l }.join("")}
+    #{(record['adjustments'] || []).map { |l| sales_order_line_add_from_adjustment l }.join("")}
   </SalesOrderAdd>
 </SalesOrderAddRq>
           XML
@@ -109,6 +110,16 @@ module QBWC
           XML
         end
 
+        def sales_order_line_add_from_adjustment(adjustment)
+          line = {
+            'product_id' => adjustment['name'],
+            'quantity' => 1,
+            'price' => adjustment['value']
+          }
+
+          sales_order_line_add line
+        end
+
         def sales_order_line_mod(line)
           <<-XML
 
@@ -163,6 +174,17 @@ module QBWC
               'description' => item['description'],
               'price'       => item['price'],
               'cost_price'  => item['price']
+            }
+          end
+        end
+
+        def build_products_from_adjustments(object)
+          (object.first['adjustments'] || []).map do |item|
+            {
+              'id'          => item['name'],
+              'description' => "Wombat Order Adjustment #{item['name']}",
+              'price'       => item['value'],
+              'cost_price'  => item['value']
             }
           end
         end

@@ -290,8 +290,10 @@ module Persistence
     private
 
     def generate_error_notification(content, object_type)
-      new_filename = "#{base_name}/#{ready}/notification_failed_#{object_type}_#{content[:object]['id']}_.csv"
-      amazon_s3.export(file_name: new_filename, objects: [content])
+      if content[:object]
+        new_filename = "#{base_name}/#{ready}/notification_failed_#{object_type}_#{content[:object]['id']}_.csv"
+        amazon_s3.export(file_name: new_filename, objects: [content])
+      end
     end
 
     def valid_object?(object)
@@ -320,8 +322,11 @@ module Persistence
       if payload_key.pluralize == 'orders'
         customer = QBWC::Request::Orders.build_customer_from_order(object)
         products = QBWC::Request::Orders.build_products_from_order(objects)
+        products.push QBWC::Request::Orders.build_products_from_adjustments(objects)
+
         save_pending_file(customer['id'], 'customers', customer)
-        products.each do |product|
+
+        products.flatten.each do |product|
           save_pending_file(product['id'], 'products', product)
         end
       elsif payload_key.pluralize == 'returns'
