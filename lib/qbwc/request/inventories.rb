@@ -32,7 +32,7 @@ module QBWC
           <<-XML
 <ItemInventoryQueryRq requestID="#{session_id}">
   <MaxReturned>100</MaxReturned>
-  <FromModifiedDate>#{time.utc.xmlschema.split('Z').first}</FromModifiedDate>
+  <FromModifiedDate>#{time.xmlschema.split('Z').first}</FromModifiedDate>
   <!-- <IncludeRetElement>Name</IncludeRetElement> -->
 </ItemInventoryQueryRq>
           XML

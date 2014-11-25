@@ -65,7 +65,7 @@ module QBWC
       end
 
       def last_time_modified
-        records.sort_by { |r| r['TimeModified'] }.last['TimeModified'].utc.iso8601
+        records.sort_by { |r| r['TimeModified'] }.last['TimeModified'].iso8601
       end
 
       private
