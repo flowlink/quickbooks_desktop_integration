@@ -52,6 +52,7 @@ module QBWC
     <EditSequence>#{record['edit_sequence']}</EditSequence>
     #{sales_order record, params}
     #{record['line_items'].map { |l| sales_order_line_mod l }.join("")}
+    #{(record['adjustments'] || []).map { |l| sales_order_line_adjustment_mod l }.join("")}
   </SalesOrderMod>
 </SalesOrderModRq>
           XML
@@ -128,6 +129,17 @@ module QBWC
       #{sales_order_line(line)}
     </SalesOrderLineMod>
           XML
+        end
+
+        def sales_order_line_adjustment_mod(adjustment)
+          line = {
+            'product_id' => adjustment['name'],
+            'quantity' => 1,
+            'price' => adjustment['value'],
+            'txn_line_id' => adjustment['txn_line_id']
+          }
+
+          sales_order_line_mod line
         end
 
         def sales_order_line(line)

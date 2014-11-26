@@ -210,6 +210,9 @@ module Persistence
           types.keys.each do |object_type|
             object = types[object_type]
 
+            # NOTE seeing an nil `object` var here sometimes, investigate it
+            # happens when you have both add_orders and get_products flows enabled
+
             filename = "#{base_name}/#{ready}/#{object_type}_#{object[:id]}_"
 
             collection = amazon_s3.bucket.objects

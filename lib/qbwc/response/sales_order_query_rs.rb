@@ -42,8 +42,21 @@ module QBWC
       def build_extra_data(config, record)
         hash_items = build_hash_items(record)
         object_source = Persistence::Object.new(config, {}).load_session(record['request_id'])
-        { 'line_items' => object_source['line_items'].
-                           map{|item| item['txn_line_id'] = hash_items[item['product_id']]; item } }
+
+        mapped_lines = object_source['line_items'].map do |item|
+          item['txn_line_id'] = hash_items[item['product_id']]
+          item
+        end
+
+        mapped_adjustments = object_source['adjustments'].map do |item|
+          item['txn_line_id'] = hash_items[item['name']]
+          item
+        end
+
+        {
+          'line_items' => mapped_lines,
+          'adjustments' => mapped_adjustments
+        }
       end
 
       def build_hash_items(record)
