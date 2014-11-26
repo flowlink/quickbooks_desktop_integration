@@ -200,6 +200,25 @@ module QBWC
             }
           end
         end
+
+        def payment(session_id)
+          <<-XML
+            <ReceivePaymentAddRq requestID="#{session_id}">
+              <ReceivePaymentAdd>
+                <CustomerRef>
+                  <FullName>spree@example.com</FullName>
+                </CustomerRef>
+                <TxnDate>2014-03-02</TxnDate>
+                <RefNumber>R154817935</RefNumber>
+                <TotalAmount>210.00</TotalAmount>
+                <PaymentMethodRef>
+                  <FullName>Check</FullName>
+                </PaymentMethodRef>
+                <IsAutoApply>true</IsAutoApply>
+              </ReceivePaymentAdd>
+            </ReceivePaymentAddRq>
+          XML
+        end
       end
     end
   end

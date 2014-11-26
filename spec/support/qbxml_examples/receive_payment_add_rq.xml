@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?qbxml version="13.0"?>
+<QBXML>
+  <QBXMLMsgsRq onError="stopOnError">
+    <ReceivePaymentAddRq>
+      <ReceivePaymentAdd defMacro="MACROTYPE">
+        <!-- required -->
+        <CustomerRef>
+          <!-- required -->
+          <ListID>IDTYPE</ListID>
+          <!-- optional -->
+          <FullName>STRTYPE</FullName>
+          <!-- optional -->
+        </CustomerRef>
+        <ARAccountRef>
+          <!-- optional -->
+          <ListID>IDTYPE</ListID>
+          <!-- optional -->
+          <FullName>STRTYPE</FullName>
+          <!-- optional -->
+        </ARAccountRef>
+        <TxnDate>DATETYPE</TxnDate>
+        <!-- optional -->
+        <RefNumber>STRTYPE</RefNumber>
+        <!-- optional -->
+        <TotalAmount>AMTTYPE</TotalAmount>
+        <!-- optional -->
+        <ExchangeRate>FLOATTYPE</ExchangeRate>
+        <!-- optional -->
+        <PaymentMethodRef>
+          <!-- optional -->
+          <ListID>IDTYPE</ListID>
+          <!-- optional -->
+          <FullName>STRTYPE</FullName>
+          <!-- optional -->
+        </PaymentMethodRef>
+        <Memo>STRTYPE</Memo>
+        <!-- optional -->
+        <DepositToAccountRef>
+          <!-- optional -->
+          <ListID>IDTYPE</ListID>
+          <!-- optional -->
+          <FullName>STRTYPE</FullName>
+          <!-- optional -->
+        </DepositToAccountRef>
+        <CreditCardTxnInfo>
+          <!-- optional -->
+          <CreditCardTxnInputInfo>
+            <!-- required -->
+            <CreditCardNumber>STRTYPE</CreditCardNumber>
+            <!-- required -->
+            <ExpirationMonth>INTTYPE</ExpirationMonth>
+            <!-- required -->
+            <ExpirationYear>INTTYPE</ExpirationYear>
+            <!-- required -->
+            <NameOnCard>STRTYPE</NameOnCard>
+            <!-- required -->
+            <CreditCardAddress>STRTYPE</CreditCardAddress>
+            <!-- optional -->
+            <CreditCardPostalCode>STRTYPE</CreditCardPostalCode>
+            <!-- optional -->
+            <CommercialCardCode>STRTYPE</CommercialCardCode>
+            <!-- optional -->
+            <!-- TransactionMode may have one of the following values: CardNotPresent [DEFAULT], CardPresent -->
+            <TransactionMode>ENUMTYPE</TransactionMode>
+            <!-- optional -->
+            <!-- CreditCardTxnType may have one of the following values: Authorization, Capture, Charge, Refund, VoiceAuthorization -->
+            <CreditCardTxnType>ENUMTYPE</CreditCardTxnType>
+            <!-- optional -->
+          </CreditCardTxnInputInfo>
+          <CreditCardTxnResultInfo>
+            <!-- required -->
+            <ResultCode>INTTYPE</ResultCode>
+            <!-- required -->
+            <ResultMessage>STRTYPE</ResultMessage>
+            <!-- required -->
+            <CreditCardTransID>STRTYPE</CreditCardTransID>
+            <!-- required -->
+            <MerchantAccountNumber>STRTYPE</MerchantAccountNumber>
+            <!-- required -->
+            <AuthorizationCode>STRTYPE</AuthorizationCode>
+            <!-- optional -->
+            <!-- AVSStreet may have one of the following values: Pass, Fail, NotAvailable -->
+            <AVSStreet>ENUMTYPE</AVSStreet>
+            <!-- optional -->
+            <!-- AVSZip may have one of the following values: Pass, Fail, NotAvailable -->
+            <AVSZip>ENUMTYPE</AVSZip>
+            <!-- optional -->
+            <!-- CardSecurityCodeMatch may have one of the following values: Pass, Fail, NotAvailable -->
+            <CardSecurityCodeMatch>ENUMTYPE</CardSecurityCodeMatch>
+            <!-- optional -->
+            <ReconBatchID>STRTYPE</ReconBatchID>
+            <!-- optional -->
+            <PaymentGroupingCode>INTTYPE</PaymentGroupingCode>
+            <!-- optional -->
+            <!-- PaymentStatus may have one of the following values: Unknown, Completed -->
+            <PaymentStatus>ENUMTYPE</PaymentStatus>
+            <!-- required -->
+            <TxnAuthorizationTime>DATETIMETYPE</TxnAuthorizationTime>
+            <!-- required -->
+            <TxnAuthorizationStamp>INTTYPE</TxnAuthorizationStamp>
+            <!-- optional -->
+            <ClientTransID>STRTYPE</ClientTransID>
+            <!-- optional -->
+          </CreditCardTxnResultInfo>
+        </CreditCardTxnInfo>
+        <ExternalGUID>GUIDTYPE</ExternalGUID>
+        <!-- optional -->
+        <!-- BEGIN OR -->
+        <IsAutoApply>BOOLTYPE</IsAutoApply>
+        <!-- optional -->
+        <!-- OR -->
+        <AppliedToTxnAdd>
+          <!-- optional, may repeat -->
+          <TxnID useMacro="MACROTYPE">IDTYPE</TxnID>
+          <!-- required -->
+          <PaymentAmount>AMTTYPE</PaymentAmount>
+          <!-- optional -->
+          <SetCredit>
+            <!-- optional, may repeat -->
+            <CreditTxnID useMacro="MACROTYPE">IDTYPE</CreditTxnID>
+            <!-- required -->
+            <AppliedAmount>AMTTYPE</AppliedAmount>
+            <!-- required -->
+            <Override>BOOLTYPE</Override>
+            <!-- optional -->
+          </SetCredit>
+          <DiscountAmount>AMTTYPE</DiscountAmount>
+          <!-- optional -->
+          <DiscountAccountRef>
+            <!-- optional -->
+            <ListID>IDTYPE</ListID>
+            <!-- optional -->
+            <FullName>STRTYPE</FullName>
+            <!-- optional -->
+          </DiscountAccountRef>
+          <DiscountClassRef>
+            <!-- optional -->
+            <ListID>IDTYPE</ListID>
+            <!-- optional -->
+            <FullName>STRTYPE</FullName>
+            <!-- optional -->
+          </DiscountClassRef>
+        </AppliedToTxnAdd>
+        <!-- END OR -->
+      </ReceivePaymentAdd>
+      <IncludeRetElement>STRTYPE</IncludeRetElement>
+      <!-- optional, may repeat -->
+    </ReceivePaymentAddRq>
+  </QBXMLMsgsRq>
+</QBXML>
