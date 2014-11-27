@@ -1,72 +1,63 @@
 module QBWC
-  module Request
+  module Requestnven
     class Inventories
       class << self
-#         def generate_request_insert_update(objects, params = {})
-#           objects.inject('') do |request, object|
-#             request << (object[:list_id].to_s.empty?? add_xml_to_send(object, params) : update_xml_to_send(object, params))
-#           end
-#         end
+        def generate_request_insert_update(objects, params = {})
+          objects.inject("") do |request, object|
+            session_id = Persistence::Object.new({connection_id: params['connection_id']}.with_indifferent_access,{}).save_session(object)
+            request << if object[:list_id].to_s.empty?
+                         add_xml_to_send(object, params, session_id)
+                       else
+                         update_xml_to_send(object, params, session_id)
+                       end
+          end
+        end
 
-#         def generate_request_queries(objects)
-#           objects.inject('') { |request, object| request << search_xml(object['id']) }
-#         end
+        def generate_request_queries(objects, params)
+          # TODO There is no query
+          ''
+        end
 
-#         def search_xml(object_id)
-#           <<-XML
-# <ItemInventoryQueryRq>
-#   <MaxReturned>50</MaxReturned>
-#   <NameFilter>
-#     <MatchCriterion>StartsWith</MatchCriterion>
-#     <Name>#{object_id}</Name>
-#   </NameFilter>
-# </ItemInventoryQueryRq>
-#           XML
-#         end
+        def add_xml_to_send(inventory, params, session_id)
+          <<-XML
+<InventoryAdjustmentAddRq requestID="#{session_id}">
+   <InventoryAdjustmentAdd>
+    #{inventory_xml(inventory, params)}
+   </InventoryAdjustmentAdd>
+</InventoryAdjustmentAddRq>
+          XML
+        end
 
+        def update_xml_to_send(inventory, params, session_id)
+          <<-XML
+<InventoryAdjustmentModRq requestID="#{session_id}">
+   <InventoryAdjustmentMod>
+      <TxnID>#{inventory['list_id']}</TxnID>
+      <EditSequence>#{inventory['edit_sequence']}</EditSequence>
+      #{inventory_xml(inventory, params)}
+   </InventoryAdjustmentMod>
+</InventoryAdjustmentModRq>
+          XML
+        end
 
-#         private
-
-#         def add_xml_to_send(object, params)
-#           <<-XML
-# <ItemInventoryAddRq requestID="SXRlbUludmVudG9yeUFkZHwxNTA=" >
-#   <ItemInventoryAdd>
-#     <Name>#{object['id']}</Name>
-#     <IncomeAccountRef>
-#        <FullName>#{params['quickbooks_income_account']}</FullName>
-#     </IncomeAccountRef>
-#     <COGSAccountRef>
-#        <FullName>#{params['quickbooks_cogs_account']}</FullName>
-#     </COGSAccountRef>
-#     <AssetAccountRef>
-#        <FullName>#{params['quickbooks_inventory_account']}</FullName>
-#     </AssetAccountRef>
-#   </ItemInventoryAdd>
-# </ItemInventoryAddRq>
-#           XML
-#         end
-
-#         def update_xml_to_send(object, params)
-#           <<-XML
-# <ItemInventoryModRq>
-#    <ItemInventoryMod>
-#       <ListID>IDTYPE</ListID> <!-- required -->
-#       <EditSequence>STRTYPE</EditSequence> <!-- required -->
-#       <Name>#{object['id']}</Name>
-#       <QuantityOnHand>#{object['quantity']}</QuantityOnHand>
-#       <IncomeAccountRef>
-#          <FullName>#{params['quickbooks_income_account']}</FullName>
-#       </IncomeAccountRef>
-#       <COGSAccountRef>
-#         <FullName>#{params['quickbooks_cogs_account']}</FullName>
-#       </COGSAccountRef>
-#       <AssetAccountRef>
-#          <FullName>#{params['quickbooks_inventory_account']}</FullName>
-#       </AssetAccountRef>
-#    </ItemInventoryMod>
-# </ItemInventoryModRq>
-#           XML
-#         end
+        def inventory_xml(inventory, params)
+          <<-XML
+      AccountRef>
+        <FullName>#{params['quickbooks_income_account']}</FullName>
+      </AccountRef>
+      <TxnDate>#{Time.now}</TxnDate>
+      <RefNumber>#{inventory['id']}</RefNumber>
+      <InventoryAdjustmentLineAdd>
+        <ItemRef>
+          <FullName>#{inventory['product_id']}</FullName>
+        </ItemRef>
+        <QuantityAdjustment>
+          <NewQuantity>#{inventory['quantity']}</NewQuantity>
+        </QuantityAdjustment>
+      </InventoryAdjustmentLineAdd>
+      </InventoryAdjustmentAdd>
+          XML
+        end
       end
     end
   end
