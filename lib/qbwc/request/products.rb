@@ -73,6 +73,21 @@ module QBWC
           XML
         end
 
+        def polling_xml(timestamp, config)
+          session_id = Persistence::Object.new(config,{}).save_session({"polling" => timestamp})
+
+          time = Time.parse(timestamp).in_time_zone "Pacific Time (US & Canada)"
+
+          <<-XML
+<ItemInventoryQueryRq requestID="#{session_id}">
+ <MaxReturned>100</MaxReturned>
+  <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
+  <!-- <IncludeRetElement>Name</IncludeRetElement> -->
+</ItemInventoryQueryRq>
+          XML
+        end
+
+
         def complement_inventory(product)
           if product.has_key?('product_id')
             product['id']          = product['product_id']

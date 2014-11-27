@@ -24,6 +24,13 @@ module QBWC
           expect(request).to match(/ItemInventoryModRq/)
         end
       end
+
+      it "parses timestamp and return request xml" do
+        time = Time.now.utc.to_s
+        xml = subject.polling_xml(time, {})
+        expect(xml).to match time.split.first
+      end
+
     end
   end
 end
