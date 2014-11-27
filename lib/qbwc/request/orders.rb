@@ -40,6 +40,8 @@ module QBWC
     #{(record['adjustments'] || []).map { |l| sales_order_line_add_from_adjustment l }.join("")}
   </SalesOrderAdd>
 </SalesOrderAddRq>
+
+#{record['payments'].inject("") { |s, p| s << payment_request(p, record, session_id) } }
           XML
         end
 
@@ -201,16 +203,16 @@ module QBWC
           end
         end
 
-        def payment(session_id)
+        def payment_request(payment, order, session_id)
           <<-XML
             <ReceivePaymentAddRq requestID="#{session_id}">
               <ReceivePaymentAdd>
                 <CustomerRef>
-                  <FullName>spree@example.com</FullName>
+                  <FullName>#{order['email']}</FullName>
                 </CustomerRef>
-                <TxnDate>2014-03-02</TxnDate>
-                <RefNumber>R154817935</RefNumber>
-                <TotalAmount>210.00</TotalAmount>
+                <!-- <TxnDate>2014-03-02</TxnDate> -->
+                <RefNumber>#{order['id']}</RefNumber>
+                <TotalAmount>#{'%.2f' % payment['amount'].to_f}</TotalAmount>
                 <PaymentMethodRef>
                   <FullName>Check</FullName>
                 </PaymentMethodRef>
