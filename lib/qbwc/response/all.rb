@@ -17,6 +17,8 @@ require 'qbwc/response/sales_receipt_mod_rs'
 
 require 'qbwc/response/receive_payment_add_rs'
 
+require 'qbwc/response/invoice_add_rs'
+
 module QBWC
   module Response
     class All

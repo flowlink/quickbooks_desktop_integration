@@ -8,7 +8,7 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
   # Changing the endpoint paths might break internal logic as they're expected
   # to be always in plural. e.g. products not product
 
-  ['products', 'orders', 'returns', 'customers'].each do |path|
+  ['products', 'orders', 'returns', 'customers', 'shipments'].each do |path|
     post "/add_#{path}" do
       config = {
         connection_id: request.env['HTTP_X_HUB_STORE'],
