@@ -1,7 +1,5 @@
 module Persistence
   class Object
-    SUCCESS_NOTIFICATION_MESSAGE="Object successfully sent to Quickbooks Desktop"
-
     attr_reader :config, :objects, :payload_key, :amazon_s3
 
     # +payload+ might have a collection of records when writing to s3
@@ -245,8 +243,8 @@ module Persistence
           notifications[status][content['message']] ||= []
           notifications[status][content['message']] << object_ref
         else
-          notifications[status][SUCCESS_NOTIFICATION_MESSAGE] ||= []
-          notifications[status][SUCCESS_NOTIFICATION_MESSAGE] << object_ref
+          notifications[status][success_notification_message(payload_key)] ||= []
+          notifications[status][success_notification_message(payload_key)] << object_ref
         end
 
         s3_object.move_to("#{base_name}/#{processed}/#{filename}")
@@ -291,6 +289,9 @@ module Persistence
 
 
     private
+    def success_notification_message(object)
+      "#{object.singularize.capitalize} successfully sent to Quickbooks Desktop"
+    end
 
     def generate_error_notification(content, object_type)
       if content[:object]
