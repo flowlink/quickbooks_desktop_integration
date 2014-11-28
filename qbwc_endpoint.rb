@@ -123,8 +123,6 @@ class QBWCEndpoint < Sinatra::Base
 </QBXML>
     XML
 
-    #{CGI.escapeHTML(QBWC::Producer.new(connection_id: connection_id).build_available_actions_to_request)}
-
     puts @qbxml
     erb :'qbwc/send_request_xml'
   end
