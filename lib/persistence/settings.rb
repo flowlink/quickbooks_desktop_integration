@@ -32,7 +32,7 @@ module Persistence
       collection.with_prefix(prefix).enum.map do |s3_object|
         connection_id, folder, filename = s3_object.key.split("/")
         flow, extension = filename.split(".")
-        object_type = flow.split("_").last
+        object_type = flow.split("_").last.pluralize
 
         contents = s3_object.read
 
