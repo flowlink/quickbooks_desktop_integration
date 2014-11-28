@@ -40,22 +40,23 @@ describe QuickbooksDesktopEndpoint do
   #   end
   # end
 
-  it "returns notifications in batch format" do
-    headers = auth.merge("HTTP_X_HUB_STORE" => "x123")
+  # it "returns notifications in batch format" do
+  #   headers = auth.merge("HTTP_X_HUB_STORE" => "x123")
 
-    request = {
-      parameters: {
-        object_type: "products"
-      }
-    }
+  #   request = {
+  #     parameters: {
+  #       object_type: "products"
+  #     }
+  #   }
 
-    VCR.use_cassette "requests/get_notifications" do
-      post "/get_notifications", request.to_json, headers
-      expect(json_response[:summary]).to eq nil
-      expect(last_response.status).to eq 200
-      puts last_response.inspect
-    end
-  end
+  #   VCR.use_cassette "requests/get_notifications" do
+  #     post "/get_notifications", request.to_json, headers
+
+  #     expect(json_response[:summary]).to eq nil
+  #     expect(last_response.status).to eq 200
+  #     puts last_response.inspect
+  #   end
+  # end
 
   it "gets inventories from quickbooks" do
     headers = auth.merge("HTTP_X_HUB_STORE" => "54591b3a5869632afc090000")

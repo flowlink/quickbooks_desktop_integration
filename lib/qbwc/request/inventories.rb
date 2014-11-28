@@ -10,7 +10,7 @@ module QBWC
         end
 
         def generate_request_queries(objects, params)
-          # TODO There is no query
+          # There is no query
           ''
         end
 
@@ -29,7 +29,6 @@ module QBWC
       AccountRef>
         <FullName>#{params['quickbooks_income_account']}</FullName>
       </AccountRef>
-      <TxnDate>#{Time.now}</TxnDate>
       <RefNumber>#{inventory['id']}</RefNumber>
       <InventoryAdjustmentLineAdd>
         <ItemRef>
