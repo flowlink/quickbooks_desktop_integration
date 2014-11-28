@@ -87,7 +87,6 @@ module QBWC
           XML
         end
 
-
         def complement_inventory(product)
           if product.has_key?('product_id')
             product['id']          = product['product_id']

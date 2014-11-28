@@ -1,15 +1,12 @@
 module QBWC
-  module Requestnven
+  module Request
     class Inventories
       class << self
         def generate_request_insert_update(objects, params = {})
+          puts "\n\n\n params #{params.inspect}"
           objects.inject("") do |request, object|
             session_id = Persistence::Object.new({connection_id: params['connection_id']}.with_indifferent_access,{}).save_session(object)
-            request << if object[:list_id].to_s.empty?
-                         add_xml_to_send(object, params, session_id)
-                       else
-                         update_xml_to_send(object, params, session_id)
-                       end
+            request << add_xml_to_send(object, params, session_id)
           end
         end
 
@@ -25,18 +22,6 @@ module QBWC
     #{inventory_xml(inventory, params)}
    </InventoryAdjustmentAdd>
 </InventoryAdjustmentAddRq>
-          XML
-        end
-
-        def update_xml_to_send(inventory, params, session_id)
-          <<-XML
-<InventoryAdjustmentModRq requestID="#{session_id}">
-   <InventoryAdjustmentMod>
-      <TxnID>#{inventory['list_id']}</TxnID>
-      <EditSequence>#{inventory['edit_sequence']}</EditSequence>
-      #{inventory_xml(inventory, params)}
-   </InventoryAdjustmentMod>
-</InventoryAdjustmentModRq>
           XML
         end
 
@@ -62,3 +47,4 @@ module QBWC
     end
   end
 end
+

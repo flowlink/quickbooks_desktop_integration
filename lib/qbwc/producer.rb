@@ -42,14 +42,15 @@ module QBWC
     private
 
     def process_insert_update(objects_hash)
-      send_settings = s3_settings.settings('add_') if objects_hash.any?
-
       objects_hash.inject('') do |result, object_hash|
         object_type = object_hash.keys.first
 
+        send_settings = s3_settings.settings('add_') if object_type.pluralize != 'inventories'
+        send_settings = s3_settings.settings('set_') if object_type.pluralize == 'inventories'
+
         klass = "QBWC::Request::#{object_type.capitalize}".constantize
         records = object_hash.values.flatten
-
+puts "\n\n send_settings#{send_settings.inspect}"
         params = send_settings.find { |s| s[object_type] } || {}
         result << klass.generate_request_insert_update(records, params[object_type] || {})
       end

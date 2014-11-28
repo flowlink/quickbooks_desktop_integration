@@ -37,8 +37,7 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
   post "/set_inventory" do
     config = {
       connection_id: request.env['HTTP_X_HUB_STORE'],
-      flow: "set_inventory",
-      quickbooks_force_config: true
+      flow: "set_inventory"
     }.merge(@config).with_indifferent_access
 
     Persistence::Settings.new(config).setup
@@ -56,19 +55,21 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
   end
 
   post "/get_notifications" do
+    # THIS IS NOT USED, just to not confuse
+
     # NOTE Confirm this would be the same sent in the Send webhooks
-    config = @config.merge connection_id: request.env['HTTP_X_HUB_STORE']
+    # config = @config.merge connection_id: request.env['HTTP_X_HUB_STORE']
 
-    object_type = @payload.keys.first
+    # object_type = @payload.keys.first
 
-    payload       = { object_type.pluralize => nil }
-    integration   = Persistence::Object.new config, payload
-    notifications = integration.get_notifications
+    # payload       = { object_type.pluralize => nil }
+    # integration   = Persistence::Object.new config, payload
+    # notifications = integration.get_notifications
 
-    add_value "success", { "Object successfully received in batch" => notifications['processed'] }
-    add_value "fail", { "Error to process objects in quickbooks" => notifications['failed'] }
+    # add_value "success", { "Object successfully received in batch" => notifications['processed'] }
+    # add_value "fail", { "Error to process objects in quickbooks" => notifications['failed'] }
 
-    result 200
+    # result 200
   end
 
   ["get_inventories", "get_products"].each do |path|
