@@ -50,7 +50,7 @@ module QBWC
 
         klass = "QBWC::Request::#{object_type.capitalize}".constantize
         records = object_hash.values.flatten
-puts "\n\n send_settings#{send_settings.inspect}"
+
         params = send_settings.find { |s| s[object_type] } || {}
         result << klass.generate_request_insert_update(records, params[object_type] || {})
       end
