@@ -13,7 +13,7 @@ module QBWC
           # There is no query
           ''
         end
-
+        # TODO BUG: http://www.productivecomputing.com/forum/index.php?topic=2559.0
         def add_xml_to_send(inventory, params, session_id)
           <<-XML
 <InventoryAdjustmentAddRq requestID="#{session_id}">
@@ -26,21 +26,43 @@ module QBWC
 
         def inventory_xml(inventory, params)
           <<-XML
-      AccountRef>
+
+      <AccountRef>
         <FullName>#{params['quickbooks_income_account']}</FullName>
       </AccountRef>
       <RefNumber>#{inventory['id']}</RefNumber>
+      <Memo>test adjustment</Memo>
       <InventoryAdjustmentLineAdd>
         <ItemRef>
           <FullName>#{inventory['product_id']}</FullName>
         </ItemRef>
-        <QuantityAdjustment>
-          <NewQuantity>#{inventory['quantity']}</NewQuantity>
-        </QuantityAdjustment>
+        <ValueAdjustment>
+          <NewQuantity>#{inventory['quantity'].to_f}</NewQuantity>
+        </ValueAdjustment>
       </InventoryAdjustmentLineAdd>
-      </InventoryAdjustmentAdd>
+
           XML
         end
+
+        # <InventoryAdjustmentAddRq requestID="1">
+        #     <InventoryAdjustmentAdd>
+        #         <AccountRef>
+        #             <FullName>Inventory Asset</FullName>
+        #         </AccountRef>
+        #         <Memo>test adjustment</Memo>
+        #         <InventoryAdjustmentLineAdd>
+        #             <ItemRef>
+        #                 <FullName>SPREE-T-SHIRT</FullName>
+        #             </ItemRef>
+        #             <ValueAdjustment>
+        #                 <NewQuantity>200.00</NewQuantity>
+        #             </ValueAdjustment>
+        #         </InventoryAdjustmentLineAdd>
+        #     </InventoryAdjustmentAdd>
+        # </InventoryAdjustmentAddRq>
+
+
+
       end
     end
   end

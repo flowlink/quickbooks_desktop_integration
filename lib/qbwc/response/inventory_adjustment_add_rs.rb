@@ -19,9 +19,9 @@ module QBWC
       def process(config = {})
         return { 'statuses_objects' => nil } if records.empty?
 
-        products = []
+        inventories = []
         records.each do |object|
-          products << { :inventories => {
+          inventories << { :inventories => {
                                        :id            => object['RefNumber'],
                                        :list_id       => object['TxnID'],
                                        :edit_sequence => object['EditSequence']
@@ -29,7 +29,7 @@ module QBWC
                       }
         end
 
-        Persistence::Object.update_statuses(config, products)
+        Persistence::Object.update_statuses(config, inventories)
       end
     end
   end

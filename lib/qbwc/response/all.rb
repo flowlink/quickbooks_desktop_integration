@@ -19,6 +19,8 @@ require 'qbwc/response/receive_payment_add_rs'
 
 require 'qbwc/response/invoice_add_rs'
 
+require 'qbwc/response/inventory_adjustment_add_rs'
+
 module QBWC
   module Response
     class All

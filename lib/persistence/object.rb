@@ -202,7 +202,6 @@ module Persistence
     #   :failed => [] }
     def update_objects_files(statuses_objects)
       return if statuses_objects.nil?
-
       statuses_objects.keys.each do |status_key|
         statuses_objects[status_key].each do |types|
           types.keys.each do |object_type|
@@ -394,9 +393,7 @@ module Persistence
     def id_of_object(object)
       key = payload_key.pluralize
 
-      if key == 'inventories'
-        object['product_id']
-      elsif key == 'customers'
+      if key == 'customers'
         object['email']
       else
         object['id']
