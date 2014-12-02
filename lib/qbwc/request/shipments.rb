@@ -3,12 +3,6 @@ module QBWC
     class Shipments
       class << self
         def generate_request_queries(objects, params)
-          # objects.inject("") do |request, object|
-          #   config = { connection_id: params['connection_id'] }.with_indifferent_access
-          #   session_id = Persistence::Object.new(config, {}).save_session(object)
-
-          #   request << search_xml(object['id'], session_id)
-          # end
           ""
         end
 
@@ -21,34 +15,59 @@ module QBWC
             request << if object[:list_id].to_s.empty?
                          add_xml_to_send(object, params, session_id)
                       else
-                        update_xml_to_send(object, params, session_id)
+                        ""
                       end
           end
         end
 
-        def invoice_add_rq
+        def add_xml_to_send(record, params = {}, session_id = nil)
           <<-XML
-            <InvoiceAddRq>
+            <InvoiceAddRq requestID="#{session_id}">
               <InvoiceAdd>
                 <CustomerRef>
-                  <FullName>spree@example.com</FullName>
+                  <FullName>#{record['email']}</FullName>
                 </CustomerRef>
                 <!-- <TxnDate>DATETYPE</TxnDate> -->
-                <RefNumber>R1TT46883</RefNumber>
+                <RefNumber>#{record['order_id']}</RefNumber>
+                <!-- <IsFinanceCharge>BOOLTYPE</IsFinanceCharge> -->
+                <BillAddress>
+                  <Addr1>#{record['billing_address']['address1']}</Addr1>
+                  <Addr2>#{record['billing_address']['address2']}</Addr2>
+                  <City>#{record['billing_address']['city']}</City>
+                  <State>#{record['billing_address']['state']}</State>
+                  <PostalCode>#{record['billing_address']['zipcode']}</PostalCode>
+                  <Country>#{record['billing_address']['country']}</Country>
+                </BillAddress>
+                <ShipAddress>
+                  <Addr1>#{record['shipping_address']['address1']}</Addr1>
+                  <Addr2>#{record['shipping_address']['address2']}</Addr2>
+                  <City>#{record['shipping_address']['city']}</City>
+                  <State>#{record['shipping_address']['state']}</State>
+                  <PostalCode>#{record['shipping_address']['zipcode']}</PostalCode>
+                  <Country>#{record['shipping_address']['country']}</Country>
+                </ShipAddress>
+                <IsPending>false</IsPending>
+                <PONumber>#{record['id']}</PONumber>
                 <!--
                 <ShipMethodRef>
                   <FullName></FullName>
                 </ShipMethodRef>
                 -->
-                <InvoiceLineAdd defMacro="MACROTYPE">
-                  <ItemRef>
-                    <FullName>SPREE-T-SHIRT</FullName>
-                  </ItemRef>
-                  <Quantity>2</Quantity>
-                  <Rate>103</Rate>
-                </InvoiceLineAdd>
+                #{record['items'].map { |i| invoice_line_add i }.join("")}
               </InvoiceAdd>
             </InvoiceAddRq>
+          XML
+        end
+
+        def invoice_line_add(item)
+          <<-XML
+            <InvoiceLineAdd defMacro="MACROTYPE">
+              <ItemRef>
+                <FullName>#{item['product_id']}</FullName>
+              </ItemRef>
+              <Quantity>#{item['quantity']}</Quantity>
+              <Rate>#{item['price']}</Rate>
+            </InvoiceLineAdd>
           XML
         end
       end
