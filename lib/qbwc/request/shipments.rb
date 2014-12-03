@@ -48,6 +48,9 @@ module QBWC
                 </ShipAddress>
                 <IsPending>false</IsPending>
                 <PONumber>#{record['id']}</PONumber>
+                <!--<SetCredit>
+                  <CreditTxnID useMacro="MACROTYPE">16A-1417633850</CreditTxnID>
+                </SetCredit>-->
                 <!--
                 <ShipMethodRef>
                   <FullName></FullName>
