@@ -214,7 +214,7 @@ module QBWC
                 <RefNumber>#{order['id']}</RefNumber>
                 <TotalAmount>#{'%.2f' % payment['amount'].to_f}</TotalAmount>
                 <PaymentMethodRef>
-                  <FullName>Check</FullName>
+                  <FullName>#{payment['payment_method']}</FullName>
                 </PaymentMethodRef>
                 <IsAutoApply>true</IsAutoApply>
               </ReceivePaymentAdd>
