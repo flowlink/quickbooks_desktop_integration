@@ -202,6 +202,7 @@ module Persistence
     #   :failed => [] }
     def update_objects_files(statuses_objects)
       return if statuses_objects.nil?
+
       statuses_objects.keys.each do |status_key|
         statuses_objects[status_key].each do |types|
           types.keys.each do |object_type|
@@ -209,18 +210,21 @@ module Persistence
 
             # NOTE seeing an nil `object` var here sometimes, investigate it
             # happens when you have both add_orders and get_products flows enabled
+            begin
+              filename = "#{base_name}/#{ready}/#{object_type}_#{object[:id]}_"
 
-            filename = "#{base_name}/#{ready}/#{object_type}_#{object[:id]}_"
+              collection = amazon_s3.bucket.objects
+              collection.with_prefix(filename).enum.each do |s3_object|
+                status_folder = send status_key
+                new_filename = "#{base_name}/#{status_folder}/#{object_type}_#{object[:id]}_"
+                new_filename << "#{object[:list_id]}_#{object[:edit_sequence]}" unless object[:list_id].to_s.empty?
 
-            collection = amazon_s3.bucket.objects
-            collection.with_prefix(filename).enum.each do |s3_object|
-              status_folder = send status_key
-              new_filename = "#{base_name}/#{status_folder}/#{object_type}_#{object[:id]}_"
-              new_filename << "#{object[:list_id]}_#{object[:edit_sequence]}" unless object[:list_id].to_s.empty?
+                s3_object.move_to("#{new_filename}.csv")
 
-              s3_object.move_to("#{new_filename}.csv")
-
-              create_notifications("#{new_filename}.csv", status_key) if status_key == 'processed'
+                create_notifications("#{new_filename}.csv", status_key) if status_key == 'processed'
+              end
+            rescue Exception => e
+              puts " update_objects_files: #{statuses_objects} #{e.e.backtrace.inspect}"
             end
           end
         end
