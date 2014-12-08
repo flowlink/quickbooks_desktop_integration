@@ -336,6 +336,13 @@ module Persistence
         products.flatten.each do |product|
           save_pending_file(product['id'], 'products', product)
         end
+      elsif payload_key.pluralize == 'shipments'
+        customer = QBWC::Request::Shipments.build_customer_from_shipments(object)
+        products = QBWC::Request::Shipments.build_products_from_shipments(objects)
+        save_pending_file(customer['id'], 'customers', customer)
+        products.each do |product|
+          save_pending_file(product['id'], 'products', product)
+        end
       elsif payload_key.pluralize == 'returns'
         customer = QBWC::Request::Returns.build_customer_from_return(object)
         products = QBWC::Request::Returns.build_products_from_return(objects)
@@ -351,7 +358,7 @@ module Persistence
     end
 
     def two_phase?
-      ['orders', 'returns'].include?(payload_key.pluralize)
+      ['orders', 'returns', 'shipments'].include?(payload_key.pluralize)
     end
 
     def two_phase_pending
