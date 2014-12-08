@@ -24,7 +24,7 @@ module QBWC
         objects = records.map do |object|
           {
             shipments: {
-              id: object['RefNumber'],
+              id: object['PONumber'],
               list_id: object['TxnID'],
               edit_sequence: object['EditSequence']
             }
