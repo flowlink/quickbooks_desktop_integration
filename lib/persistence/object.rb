@@ -270,7 +270,7 @@ module Persistence
       begin
         contents = amazon_s3.convert_download('csv',amazon_s3.bucket.objects[file].read)
       rescue AWS::S3::Errors::NoSuchKey => e
-        puts "File not found: #{file}"
+        puts "File not found[load_session]: #{file}"
       end
 
       contents.first unless contents.empty?
@@ -321,6 +321,8 @@ module Persistence
       if content[:object]
         new_filename = "#{base_name}/#{ready}/notification_failed_#{object_type}_#{content[:object]['id']}_.csv"
         amazon_s3.export(file_name: new_filename, objects: [content])
+      else
+        puts "generate_error_notification: #{content.inspect}:#{object_type}"
       end
     end
 
