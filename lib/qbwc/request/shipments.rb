@@ -48,9 +48,6 @@ module QBWC
                 </ShipAddress>
                 <IsPending>false</IsPending>
                 <PONumber>#{record['id']}</PONumber>
-                <!--<SetCredit>
-                  <CreditTxnID useMacro="MACROTYPE">16A-1417633850</CreditTxnID>
-                </SetCredit>-->
                 <!--
                 <ShipMethodRef>
                   <FullName></FullName>
@@ -64,12 +61,13 @@ module QBWC
 
         def invoice_line_add(item)
           <<-XML
-            <InvoiceLineAdd defMacro="MACROTYPE">
-              <ItemRef>
-                <FullName>#{item['product_id']}</FullName>
-              </ItemRef>
+            <InvoiceLineAdd>
               <Quantity>#{item['quantity']}</Quantity>
               <Rate>#{item['price']}</Rate>
+              <LinkToTxn>
+                <TxnID>#{item['txn_id']}</TxnID>
+                <TxnLineID>#{item['txn_line_id']}</TxnLineID>
+              </LinkToTxn>
             </InvoiceLineAdd>
           XML
         end
