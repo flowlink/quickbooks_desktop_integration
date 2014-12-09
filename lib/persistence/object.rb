@@ -292,7 +292,6 @@ module Persistence
     end
 
     def update_shipments_with_qb_ids(shipment_id, object)
-      line_items = object[:extra_data]['line_items']
       file_name = "#{base_name}/#{pending}/shipments_#{shipment_id}_.csv"
 
       begin
@@ -301,7 +300,10 @@ module Persistence
       rescue AWS::S3::Errors::NoSuchKey => e
         puts "File not found[update_shipments_with_qb_ids]: #{file_name}"
       end
-      contents.first['items'] = line_items
+
+      contents.first['items']       = object[:extra_data]['line_items']
+      contents.first['adjustments'] = object[:extra_data]['adjustments']
+
       amazon_s3.export file_name: file_name, objects: contents
 
       begin
