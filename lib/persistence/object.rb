@@ -224,7 +224,7 @@ module Persistence
                 create_notifications("#{new_filename}.csv", status_key) if status_key == 'processed'
               end
             rescue Exception => e
-              puts " update_objects_files: #{statuses_objects} #{e.e.backtrace.inspect}"
+              puts " update_objects_files: #{statuses_objects} #{e.backtrace.inspect}"
             end
           end
         end
