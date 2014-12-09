@@ -37,8 +37,8 @@ module QBWC
 <SalesOrderAddRq requestID="#{session_id}">
   <SalesOrderAdd>
     #{sales_order record, params}
-    #{record['line_items'].map { |l| sales_order_line_add l }.join("")}
-    #{(record['adjustments'] || []).map { |l| sales_order_line_add_from_adjustment l }.join("")}
+    #{record['line_items'].to_a.map { |l| sales_order_line_add l }.join("")}
+    #{(record['adjustments'] || []).to_a.select{ |adj| adj['value'].to_f > 0.0 }.map { |l| sales_order_line_add_from_adjustment l }.join("")}
   </SalesOrderAdd>
 </SalesOrderAddRq>
 
@@ -54,8 +54,8 @@ module QBWC
     <TxnID>#{record['list_id']}</TxnID>
     <EditSequence>#{record['edit_sequence']}</EditSequence>
     #{sales_order record, params}
-    #{record['line_items'].map { |l| sales_order_line_mod l }.join("")}
-    #{(record['adjustments'] || []).map { |l| sales_order_line_adjustment_mod l }.join("")}
+    #{record['line_items'].to_a.map { |l| sales_order_line_mod l }.join("")}
+    #{(record['adjustments'] || []).to_a.select{ |adj| adj['value'].to_f > 0.0 }.map { |l| sales_order_line_adjustment_mod l }.join("")}
   </SalesOrderMod>
 </SalesOrderModRq>
           XML
