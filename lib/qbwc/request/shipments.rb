@@ -53,7 +53,8 @@ module QBWC
                   <FullName></FullName>
                 </ShipMethodRef>
                 -->
-                #{record['items'].map { |i| invoice_line_add i }.join("")}
+                #{record['items'].to_a.map { |i| invoice_line_add i }.join("")}
+                #{record['ajustments'].to_a.select{ |adj| adj['value'].to_f > 0.0 }.map { |i| invoice_adjustment_add i }.join("")}
               </InvoiceAdd>
             </InvoiceAddRq>
           XML
@@ -64,6 +65,16 @@ module QBWC
             <InvoiceLineAdd>
               <Quantity>#{item['quantity']}</Quantity>
               <Rate>#{item['price']}</Rate>
+              #{link_to_sales_order(item)}
+            </InvoiceLineAdd>
+          XML
+        end
+
+        def invoice_adjustment_add(item)
+          <<-XML
+            <InvoiceLineAdd>
+              <Quantity>1</Quantity>
+              <Rate>#{item['value']}</Rate>
               #{link_to_sales_order(item)}
             </InvoiceLineAdd>
           XML
