@@ -256,8 +256,9 @@ module Persistence
       end
     end
 
-    def save_session(object)
+    def save_session(object, extra=nil)
       session_id = SecureRandom.uuid
+      session_id = "#{extra}#{session_id}" if extra
       file = "#{base_name}/#{sessions}/#{session_id}.csv"
       amazon_s3.export file_name: file, objects: [object]
       session_id
@@ -290,6 +291,26 @@ module Persistence
       end
     end
 
+    def update_shipments_with_qb_ids(shipment_id, object)
+      line_items = object[:extra_data]['line_items']
+      file_name = "#{base_name}/#{pending}/shipments_#{shipment_id}_.csv"
+
+      begin
+        contents = amazon_s3.convert_download('csv',amazon_s3.bucket.objects[file_name].read)
+        amazon_s3.bucket.objects[file_name].delete
+      rescue AWS::S3::Errors::NoSuchKey => e
+        puts "File not found[update_shipments_with_qb_ids]: #{file_name}"
+      end
+      contents.first['items'] = line_items
+      amazon_s3.export file_name: file_name, objects: contents
+
+      begin
+        order_file_name = "#{base_name}/#{ready}/orders_#{object[:object_ref]}_.csv"
+        amazon_s3.bucket.objects[order_file_name].delete
+      rescue AWS::S3::Errors::NoSuchKey => e
+        puts "File not found[delete orders]: #{file_name}"
+      end
+    end
 
     private
     def success_notification_message(object)
@@ -339,7 +360,10 @@ module Persistence
       elsif payload_key.pluralize == 'shipments'
         customer = QBWC::Request::Shipments.build_customer_from_shipments(object)
         products = QBWC::Request::Shipments.build_products_from_shipments(objects)
+        order    = QBWC::Request::Shipments.build_order_from_shipments(object)
+
         save_pending_file(customer['id'], 'customers', customer)
+        save_pending_file(order['id'], 'orders', order)
         products.each do |product|
           save_pending_file(product['id'], 'products', product)
         end

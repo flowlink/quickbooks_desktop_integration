@@ -5,7 +5,8 @@ module QBWC
 
         def generate_request_queries(objects, params)
           objects.inject("") do |request, object|
-            session_id = Persistence::Object.new({connection_id: params['connection_id']}.with_indifferent_access,{}).save_session(object)
+            extra = "shipment-#{object['shipment_id']}-" if object.has_key?('shipment_id')
+            session_id = Persistence::Object.new({connection_id: params['connection_id']}.with_indifferent_access,{}).save_session(object, extra)
             request << search_xml(object['id'], session_id)
           end
         end
