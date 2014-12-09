@@ -64,11 +64,19 @@ module QBWC
             <InvoiceLineAdd>
               <Quantity>#{item['quantity']}</Quantity>
               <Rate>#{item['price']}</Rate>
-              <LinkToTxn>
-                <TxnID>#{item['txn_id']}</TxnID>
-                <TxnLineID>#{item['txn_line_id']}</TxnLineID>
-              </LinkToTxn>
+              #{link_to_sales_order(item)}
             </InvoiceLineAdd>
+          XML
+        end
+
+        def link_to_sales_order(item)
+          return '' unless item.has_key?('txn_id')
+
+          <<-XML
+          <LinkToTxn>
+            <TxnID>#{item['txn_id']}</TxnID>
+            <TxnLineID>#{item['txn_line_id']}</TxnLineID>
+          </LinkToTxn>
           XML
         end
 
@@ -94,6 +102,20 @@ module QBWC
               'cost_price'  => item['price']
             }
           end
+        end
+
+        def build_order_from_shipments(object)
+          {
+            'id'               => object['order_id'],
+            'shipment_id'      => object['id'],
+            'firstname'        => object['billing_address']['firstname'],
+            'lastname'         => object['billing_address']['lastname'],
+            'email'            => object['email'],
+            'billing_address'  => object['billing_address'],
+            'shipping_address' => object['shipping_address'],
+            'totals'           => object['totals'],
+            'line_items'       => object['items']
+          }
         end
 
       end
