@@ -197,7 +197,7 @@ module QBWC
           (object.first['adjustments'] || []).map do |item|
             {
               'id'          => item['name'],
-              'description' => "Wombat Order Adjustment #{item['name']}",
+              'description' => "Order Adjustment #{item['name']}",
               'price'       => item['value'],
               'cost_price'  => item['value']
             }
