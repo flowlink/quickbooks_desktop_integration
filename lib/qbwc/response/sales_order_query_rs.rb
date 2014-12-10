@@ -52,13 +52,13 @@ module QBWC
         object_source = Persistence::Object.new(config, {}).load_session(record['request_id'])
 
         mapped_lines = object_source['line_items'].to_a.map do |item|
-          item['txn_line_id'] = hash_items[item['product_id']]
+          item['txn_line_id'] = hash_items[item['product_id'].downcase]
           item['txn_id']      = record['TxnID']
           item
         end
 
         mapped_adjustments = object_source['adjustments'].to_a.map do |item|
-          item['txn_line_id'] = hash_items[item['name']]
+          item['txn_line_id'] = hash_items[item['name'].downcase]
           item['txn_id']      = record['TxnID']
           item
         end
@@ -76,7 +76,7 @@ module QBWC
         record['SalesOrderLineRet'] = [record['SalesOrderLineRet']] unless record['SalesOrderLineRet'].is_a? Array
 
         record['SalesOrderLineRet'].to_a.each do |item|
-          hash[item['ItemRef']['FullName']] = item['TxnLineID']
+          hash[item['ItemRef']['FullName'].downcase] = item['TxnLineID']
         end
         hash
       end
