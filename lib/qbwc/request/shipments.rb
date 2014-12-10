@@ -118,6 +118,7 @@ module QBWC
         def build_order_from_shipments(object)
           {
             'id'               => object['order_id'],
+            'placed_on'        => (object.has_key?('placed_on') ? object['placed_on'] : object['shipped_at']),
             'shipment_id'      => object['id'],
             'firstname'        => object['billing_address']['firstname'],
             'lastname'         => object['billing_address']['lastname'],
