@@ -37,8 +37,8 @@ module QBWC
 <SalesOrderAddRq requestID="#{session_id}">
   <SalesOrderAdd>
     #{sales_order record, params}
-    #{record['line_items'].to_a.map { |l| sales_order_line_add l }.join("")}
-    #{record['adjustments'].to_a.select{ |adj| adj['value'].to_f > 0.0 }.map { |l| sales_order_line_add_from_adjustment l }.join("")}
+    #{items(record).map { |l| sales_order_line_add l }.join("")}
+    #{adjustments(record).map { |l| sales_order_line_add_from_adjustment l }.join("")}
   </SalesOrderAdd>
 </SalesOrderAddRq>
 
@@ -54,8 +54,8 @@ module QBWC
     <TxnID>#{record['list_id']}</TxnID>
     <EditSequence>#{record['edit_sequence']}</EditSequence>
     #{sales_order record, params}
-    #{record['line_items'].to_a.map { |l| sales_order_line_mod l }.join("")}
-    #{record['adjustments'].to_a.select{ |adj| adj['value'].to_f > 0.0 }.map { |l| sales_order_line_adjustment_mod l }.join("")}
+    #{items(record).map { |l| sales_order_line_mod l }.join("")}
+    #{adjustments(record).map { |l| sales_order_line_adjustment_mod l }.join("")}
   </SalesOrderMod>
 </SalesOrderModRq>
           XML
@@ -221,6 +221,16 @@ module QBWC
               </ReceivePaymentAdd>
             </ReceivePaymentAddRq>
           XML
+        end
+
+        private
+
+        def items(record)
+          record['line_items'].to_a.sort{ |a,b| a['product_id'] <=> b['product_id'] }
+        end
+
+        def adjustments(record)
+          record['adjustments'].to_a.select{ |adj| adj['value'].to_f > 0.0 }.sort{ |a,b| a['name'].downcase <=> b['name'].downcase }
         end
       end
     end
