@@ -72,9 +72,9 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
     # result 200
   end
 
-  ["get_inventories", "get_products"].each do |path|
+  ["get_inventory", "get_inventories", "get_products"].each do |path|
     post "/#{path}" do
-      object_type = path.split("_").last
+      object_type = path.split("_").last.pluralize
 
       config = {
         connection_id: request.env['HTTP_X_HUB_STORE'],
