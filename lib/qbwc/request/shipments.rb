@@ -54,7 +54,7 @@ module QBWC
                 </ShipMethodRef>
                 -->
                 #{record['items'].to_a.map { |i| invoice_line_add i }.join("")}
-                #{record['ajustments'].to_a.select{ |adj| adj['value'].to_f > 0.0 }.map { |i| invoice_adjustment_add i }.join("")}
+                #{record['adjustments'].to_a.select{ |adj| adj['value'].to_f > 0.0 }.map { |i| invoice_adjustment_add i }.join("")}
               </InvoiceAdd>
             </InvoiceAddRq>
           XML
@@ -125,10 +125,20 @@ module QBWC
             'billing_address'  => object['billing_address'],
             'shipping_address' => object['shipping_address'],
             'totals'           => object['totals'],
-            'line_items'       => object['items']
+            'line_items'       => object['items'],
+            'adjustments'      => build_adjustments(object)
           }
         end
 
+        private
+        def build_adjustments(object)
+          ['discount', 'tax', 'shipping'].select{ |name| object['totals'][name].to_f > 0.0 }.map do |adj_name|
+            {
+              'name'  => adj_name,
+              'value' => object['totals'][adj_name]
+            }
+          end
+        end
       end
     end
   end
