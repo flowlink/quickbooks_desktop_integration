@@ -142,30 +142,6 @@ module QBWC
             </SalesTaxCodeRef>
           XML
         end
-
-        def build_customer_from_return(object)
-          billing_address = object['billing_address']
-
-          {
-            'id'               => object['email'],
-            'firstname'        => billing_address['firstname'],
-            'lastname'         => billing_address['lastname'],
-            'email'            => object['email'],
-            'billing_address'  => billing_address,
-            'shipping_address' => object['shipping_address']
-          }
-        end
-
-        def build_products_from_return(object)
-          object.first['items'].map do |item|
-            {
-              'id'          => item['product_id'],
-              'description' => item['name'],
-              'price'       => item['price'],
-              'cost_price'  => item['price']
-            }
-          end
-        end
       end
     end
   end
