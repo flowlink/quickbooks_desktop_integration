@@ -56,7 +56,7 @@ module QBWC
                <SalesOrPurchase>
                  <Desc>#{adjustment['description']}</Desc>
                  <AccountRef>
-                   <FullName>#{params['quickbooks_income_account']}</FullName>
+                   <FullName>#{params['quickbooks_other_charge_account']}</FullName>
                  </AccountRef>
                </SalesOrPurchase>
           XML
