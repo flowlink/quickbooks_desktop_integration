@@ -352,24 +352,33 @@ module Persistence
     def generate_inserts_for_two_phase(object)
       # TODO Create a better way to choose between types
       if payload_key.pluralize == 'orders'
-        customer = QBWC::Request::Orders.build_customer_from_order(object)
-        products = QBWC::Request::Orders.build_products_from_order(objects)
-        products.push QBWC::Request::Orders.build_products_from_adjustments(objects)
+        customer    = QBWC::Request::Orders.build_customer_from_order(object)
+        products    = QBWC::Request::Orders.build_products_from_order(objects)
+        adjustments = QBWC::Request::Orders.build_products_from_adjustments(objects)
 
         save_pending_file(customer['id'], 'customers', customer)
 
         products.flatten.each do |product|
           save_pending_file(product['id'], 'products', product)
         end
+
+        adjustments.flatten.each do |adjustment|
+          save_pending_file(adjustment['id'], 'adjustments', adjustment)
+        end
       elsif payload_key.pluralize == 'shipments'
-        customer = QBWC::Request::Shipments.build_customer_from_shipments(object)
-        products = QBWC::Request::Shipments.build_products_from_shipments(objects)
-        order    = QBWC::Request::Shipments.build_order_from_shipments(object)
+        customer    = QBWC::Request::Shipments.build_customer_from_shipments(object)
+        products    = QBWC::Request::Shipments.build_products_from_shipments(objects)
+        adjustments = QBWC::Request::Shipments.build_adjustments_from_shipments(object)
+        order       = QBWC::Request::Shipments.build_order_from_shipments(object)
 
         save_pending_file(customer['id'], 'customers', customer)
         save_pending_file(order['id'], 'orders', order)
         products.each do |product|
           save_pending_file(product['id'], 'products', product)
+        end
+
+        adjustments.flatten.each do |adjustment|
+          save_pending_file(adjustment['id'], 'adjustments', adjustment)
         end
       end
     end
