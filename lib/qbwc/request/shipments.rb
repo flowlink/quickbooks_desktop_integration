@@ -104,13 +104,24 @@ module QBWC
           }
         end
 
-        def build_products_from_shipments(object)
-          object.first['items'].map do |item|
+        def build_products_from_shipments(objects)
+          objects.first['items'].map do |item|
             {
               'id'          => item['product_id'],
               'description' => item['name'],
               'price'       => item['price'],
               'cost_price'  => item['price']
+            }
+          end
+        end
+
+        def build_adjustments_from_shipments(object)
+          build_adjustments(object).map do |item|
+            {
+              'id'          => item['name'],
+              'description' => "Order Adjustment #{item['name']}",
+              'price'       => item['value'],
+              'cost_price'  => item['value']
             }
           end
         end
@@ -142,7 +153,7 @@ module QBWC
         end
 
         def build_adjustments(object)
-          ['discount', 'tax', 'shipping'].select{ |name| object['totals'][name].to_f > 0.0 }.map do |adj_name|
+          ['discount', 'tax', 'shipping'].select{ |name| object['totals'].has_key?(name) && object['totals'][name].to_f > 0.0 }.map do |adj_name|
             {
               'name'  => adj_name,
               'value' => object['totals'][adj_name]
