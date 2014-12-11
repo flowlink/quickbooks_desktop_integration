@@ -45,15 +45,20 @@ module QBWC
       objects_hash.inject('') do |result, object_hash|
         object_type = object_hash.keys.first
 
-        send_settings = s3_settings.settings('add_') if object_type.pluralize != 'inventories'
-        send_settings = s3_settings.settings('set_') if object_type.pluralize == 'inventories'
-
         klass = "QBWC::Request::#{object_type.capitalize}".constantize
         records = object_hash.values.flatten
 
-        params = send_settings.find { |s| s[object_type] } || {}
-        result << klass.generate_request_insert_update(records, params[object_type] || {})
+        result << klass.generate_request_insert_update(records,  add_flows_params(object_type) || {})
       end
+    end
+
+    def add_flows_params(object_type)
+      send_settings = s3_settings.settings('add_') if object_type.pluralize != 'inventories'
+      send_settings = s3_settings.settings('set_') if object_type.pluralize == 'inventories'
+
+      object_type = 'products' if object_type == 'adjustments'
+      params = send_settings.find { |s| s[object_type] } || {}
+      params[object_type]
     end
 
     def process_queries(objects_hash)
