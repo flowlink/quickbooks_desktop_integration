@@ -13,6 +13,7 @@ require 'qbwc/request/products'
 require 'qbwc/request/orders'
 require 'qbwc/request/returns'
 require 'qbwc/request/shipments'
+require 'qbwc/request/adjustments'
 
 require 'qbwc/consumer'
 require 'qbwc/producer'

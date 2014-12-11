@@ -3,6 +3,10 @@ require 'nori'
 require 'qbwc/response/item_inventory_add_rs'
 require 'qbwc/response/item_inventory_mod_rs'
 require 'qbwc/response/item_inventory_query_rs'
+
+require 'qbwc/response/item_other_charge_query_rs'
+require 'qbwc/response/item_other_charge_add_rs'
+
 require 'qbwc/response/customer_query_rs'
 require 'qbwc/response/customer_add_rs'
 require 'qbwc/response/customer_mod_rs'
