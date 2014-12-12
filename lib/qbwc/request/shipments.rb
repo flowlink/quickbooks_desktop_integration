@@ -142,6 +142,13 @@ module QBWC
           }
         end
 
+        def build_payment_from_shipments(object)
+          {
+            'id'               => object['order_id'],
+            'shipment_id'      => object['id'],
+          }
+        end
+
         private
 
         def items(record)
