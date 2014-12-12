@@ -57,6 +57,7 @@ module QBWC
       send_settings = s3_settings.settings('set_') if object_type.pluralize == 'inventories'
 
       object_type = 'products' if object_type == 'adjustments'
+      object_type = 'shipments' if object_type == 'payments'
       params = send_settings.find { |s| s[object_type] } || {}
       params[object_type]
     end
