@@ -196,7 +196,7 @@ module QBWC
         def build_products_from_adjustments(object)
           (object.first['adjustments'] || []).map do |item|
             {
-              'id'          => item['name'],
+              'id'          => item['name'].downcase,
               'description' => "Order Adjustment #{item['name']}",
               'price'       => item['value'],
               'cost_price'  => item['value']

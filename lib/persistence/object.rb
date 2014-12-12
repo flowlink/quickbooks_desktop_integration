@@ -277,9 +277,13 @@ module Persistence
     end
 
     def create_error_notifications(error_context, object_type, request_id)
-      session      = load_session(request_id)
-      generate_error_notification(error_context.merge({ object: session }), object_type)
-      update_objects_files({ processed: [], failed: [{ object_type => session }] }.with_indifferent_access)
+      # When there is an error in one request, QB invalidate all other requests, to avoid a lack of objects being processed
+      # if the error was this, then the object stay there to process next time
+      if error_context[:message] != 'The request has not been processed.'
+        session      = load_session(request_id)
+        generate_error_notification(error_context.merge({ object: session }), object_type)
+        update_objects_files({ processed: [], failed: [{ object_type => session }] }.with_indifferent_access)
+      end
     end
 
     class << self
