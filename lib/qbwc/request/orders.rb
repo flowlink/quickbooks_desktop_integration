@@ -42,7 +42,7 @@ module QBWC
   </SalesOrderAdd>
 </SalesOrderAddRq>
 
-#{record['payments'].inject("") { |s, p| s << payment_request(p, record, session_id) } }
+#{record['payments'].to_a.inject("") { |s, p| s << payment_request(p, record, session_id) } }
           XML
         end
 
