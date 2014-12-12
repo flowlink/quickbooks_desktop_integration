@@ -291,6 +291,28 @@ module Persistence
       end
     end
 
+    def update_shipments_with_payment_ids(shipment_id, object)
+      file_name = "#{base_name}/#{pending}/shipments_#{shipment_id}_.csv"
+
+      begin
+        contents = amazon_s3.convert_download('csv',amazon_s3.bucket.objects[file_name].read)
+        amazon_s3.bucket.objects[file_name].delete
+      rescue AWS::S3::Errors::NoSuchKey => e
+        puts "File not found[update_shipments_with_payment_ids]: #{file_name}"
+      end
+
+      contents.first['payment'] = object
+
+      amazon_s3.export file_name: file_name, objects: contents
+
+      begin
+        order_file_name = "#{base_name}/#{ready}/payments_#{object[:object_ref]}_.csv"
+        amazon_s3.bucket.objects[order_file_name].delete
+      rescue AWS::S3::Errors::NoSuchKey => e
+        puts "File not found[delete payments]: #{file_name}"
+      end
+    end
+
     def update_shipments_with_qb_ids(shipment_id, object)
       file_name = "#{base_name}/#{pending}/shipments_#{shipment_id}_.csv"
 
@@ -312,6 +334,29 @@ module Persistence
       rescue AWS::S3::Errors::NoSuchKey => e
         puts "File not found[delete orders]: #{file_name}"
       end
+    end
+
+    def create_payments_updates_from_shipments(config, shipment_id, invoice_txn_id)
+      file_name = "#{base_name}/#{ready}/shipments_#{shipment_id}_.csv"
+
+      begin
+        contents = amazon_s3.convert_download('csv',amazon_s3.bucket.objects[file_name].read)
+      rescue AWS::S3::Errors::NoSuchKey => e
+        puts "File not found[create_payments_updates_from_shipments]: #{file_name}"
+      end
+      object = contents.first
+
+      save_object = [{
+                       'invoice_txn_id' => invoice_txn_id,
+                       'amount'         => object['totals']['payment'],
+                       'object_ref'     => object['order_id'],
+                       'list_id'        => object['payment']['list_id'],
+                       'edit_sequence'  => object['payment']['edit_sequence']
+                      }]
+
+      new_file_name = "#{base_name}/#{ready}/payments_#{object['order_id']}_.csv"
+      amazon_s3.export file_name: new_file_name, objects: save_object
+
     end
 
     private
@@ -370,9 +415,11 @@ module Persistence
         products    = QBWC::Request::Shipments.build_products_from_shipments(objects)
         adjustments = QBWC::Request::Shipments.build_adjustments_from_shipments(object)
         order       = QBWC::Request::Shipments.build_order_from_shipments(object)
+        payment     = QBWC::Request::Shipments.build_payment_from_shipments(object)
 
         save_pending_file(customer['id'], 'customers', customer)
         save_pending_file(order['id'], 'orders', order)
+        save_pending_file(payment['id'], 'payments', order)
         products.each do |product|
           save_pending_file(product['id'], 'products', product)
         end
