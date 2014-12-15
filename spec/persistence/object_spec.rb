@@ -97,5 +97,25 @@ module Persistence
                                             error[:request_id])
       end
     end
+
+    it "#generate_inserts_for_two_phase" do
+      config = { origin: 'wombat', connection_id: '54372cb069702d1f59000000' }
+
+      VCR.use_cassette "persistence/generate_inserts_for_two_phase" do
+        payload = Factory.orders
+        object = payload["orders"].first
+
+        subject = described_class.new config, payload
+        subject.save
+
+        payload = Factory.shipments
+        object = payload["shipments"].first
+
+        subject = described_class.new config, payload
+        subject.save
+
+      end
+    end
+
   end
 end
