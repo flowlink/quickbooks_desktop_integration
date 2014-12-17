@@ -505,7 +505,7 @@ module Persistence
     end
 
     def id_for_notifications(object, object_ref)
-      return object['id']  if payload_key.pluralize == 'customers'
+      return object['email'] if payload_key.pluralize == 'customers'
       object_ref
     end
   end

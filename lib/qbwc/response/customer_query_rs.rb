@@ -34,6 +34,7 @@ module QBWC
         records.map do |record|
           {
             object_type: 'customer',
+            email: record['Name'],
             object_ref: record['Name'],
             list_id: record['ListID'],
             edit_sequence: record['EditSequence']
