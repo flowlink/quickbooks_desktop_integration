@@ -352,6 +352,7 @@ module Persistence
       object = contents.first
 
       save_object = [{
+                      'id'              => object['order_id'],
                        'invoice_txn_id' => invoice_txn_id,
                        'amount'         => object['totals']['payment'],
                        'object_ref'     => object['order_id'],

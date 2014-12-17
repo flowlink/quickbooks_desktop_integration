@@ -42,9 +42,10 @@ module QBWC
         def payment_xml(payment, params)
           <<-XML
               <RefNumber>#{payment['object_ref']}</RefNumber>
+              <TotalAmount>#{'%.2f' % payment['amount'].to_f}</TotalAmount>
               <AppliedToTxnMod>
                 <TxnID>#{payment['invoice_txn_id']}</TxnID>
-                <PaymentAmount>#{payment['amount'].to_f}</PaymentAmount>
+                <PaymentAmount>#{'%.2f' % payment['amount'].to_f}</PaymentAmount>
               </AppliedToTxnMod>
           XML
         end
