@@ -11,19 +11,22 @@ module QBWC
     # Create a XML Requests that englobe all operations available on this time
     def build_available_actions_to_request
       request_xml = ''
+      begin
+        request_xml << build_polling_request
 
-      request_xml << build_polling_request
+        # NOTE Wouldn't this take forever depending on how many objects are
+        # waiting to be integrated? Verify if we should limit the s3 queries
 
-      # NOTE Wouldn't this take forever depending on how many objects are
-      # waiting to be integrated? Verify if we should limit the s3 queries
+        # Get Objets are ready
+        request_xml << process_insert_update(integration.get_ready_objects_to_send)
 
-      # Get Objets are ready
-      request_xml << process_insert_update(integration.get_ready_objects_to_send)
+        # Get Objects to query
+        request_xml << process_queries(integration.process_pending_objects)
 
-      # Get Objects to query
-      request_xml << process_queries(integration.process_pending_objects)
-
-      integration.process_two_phase_pending_objects
+        integration.process_two_phase_pending_objects
+      rescue  Exception => e
+        puts "Exception: build_available_actions_to_request: #{e.backtrace.inspect}"
+      end
       request_xml
     end
 
