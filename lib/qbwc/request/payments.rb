@@ -44,7 +44,7 @@ module QBWC
               <RefNumber>#{payment['object_ref']}</RefNumber>
               <AppliedToTxnMod>
                 <TxnID>#{payment['invoice_txn_id']}</TxnID>
-                <PaymentAmount>#{payment['amount']}</PaymentAmount>
+                <PaymentAmount>#{payment['amount'].to_f}</PaymentAmount>
               </AppliedToTxnMod>
           XML
         end
