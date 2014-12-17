@@ -48,9 +48,16 @@ module QBWC
                <ItemInventoryMod>
                   <ListID>#{product['list_id']}</ListID>
                   <EditSequence>#{product['edit_sequence']}</EditSequence>
-                  #{product_xml(product, params)}
+                  #{product.has_key?('active') ? product_only_touch_xml(product, params) : product_xml(product, params)}
                </ItemInventoryMod>
             </ItemInventoryModRq>
+          XML
+        end
+
+        def product_only_touch_xml(product, params)
+          <<-XML
+                  <Name>#{product['id']}</Name>
+                  <IsActive>true</IsActive>
           XML
         end
 
