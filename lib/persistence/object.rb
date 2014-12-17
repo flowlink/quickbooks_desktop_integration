@@ -46,6 +46,7 @@ module Persistence
           file = "#{base_name}/#{pending}/#{payload_key.pluralize}_#{id_of_object(object)}_.csv"
           amazon_s3.export file_name: file, objects: [object]
         end
+        generate_extra_objects(object)
       end
     end
 
@@ -396,6 +397,16 @@ module Persistence
         end
       end
       true
+    end
+
+    def generate_extra_objects(object)
+      if payload_key.pluralize == 'inventories'
+        object_aux = object.dup
+        object_aux['id'] = object_aux['product_id']
+        object_aux['active'] = true
+
+        save_pending_file(object_aux['id'], 'products', object_aux)
+      end
     end
 
     def generate_inserts_for_two_phase(object)
