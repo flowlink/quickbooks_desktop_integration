@@ -42,7 +42,6 @@ module QBWC
         def payment_xml(payment, params)
           <<-XML
               <RefNumber>#{payment['object_ref']}</RefNumber>
-              <TotalAmount>#{payment['amount']}</TotalAmount>
               <AppliedToTxnMod>
                 <TxnID>#{payment['invoice_txn_id']}</TxnID>
                 <PaymentAmount>#{payment['amount']}</PaymentAmount>
