@@ -416,6 +416,7 @@ module Persistence
         customer    = QBWC::Request::Orders.build_customer_from_order(object)
         products    = QBWC::Request::Orders.build_products_from_order(objects)
         adjustments = QBWC::Request::Orders.build_products_from_adjustments(objects)
+        payments    = QBWC::Request::Orders.build_payments_from_order(object)
 
         save_pending_file(customer['id'], 'customers', customer)
 
@@ -425,6 +426,10 @@ module Persistence
 
         adjustments.flatten.each do |adjustment|
           save_pending_file(adjustment['id'], 'adjustments', adjustment)
+        end
+
+        payments.flatten.each do |payment|
+          save_pending_file(payment['id'], 'payments', payment)
         end
       elsif payload_key.pluralize == 'shipments'
         customer    = QBWC::Request::Shipments.build_customer_from_shipments(object)
