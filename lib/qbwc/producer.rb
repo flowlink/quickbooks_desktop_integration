@@ -25,7 +25,7 @@ module QBWC
 
         integration.process_two_phase_pending_objects
       rescue  Exception => e
-        puts "Exception: build_available_actions_to_request: #{e.backtrace.inspect}"
+        puts "Exception: build_available_actions_to_request: #{e.message} #{e.backtrace.inspect}"
       end
       request_xml
     end
