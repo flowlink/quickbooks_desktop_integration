@@ -5,7 +5,11 @@ module QBWC
         def generate_request_insert_update(objects, params = {})
           objects.inject("") do |request, object|
             session_id = Persistence::Object.new({connection_id: params['connection_id']}.with_indifferent_access,{}).save_session(object)
-            request << update_xml_to_send(object, params, session_id)
+            request << if object[:list_id].to_s.empty?
+                         add_xml_to_send(object, params, session_id)
+                      else
+                        update_xml_to_send(object, params, session_id)
+                      end
           end
         end
 
@@ -27,19 +31,29 @@ module QBWC
           XML
         end
 
+        def add_xml_to_send(payment, params, session_id)
+          <<-XML
+            <ReceivePaymentAddRq requestID="#{session_id}">
+              <ReceivePaymentAdd>
+                #{payment_xml(payment, params)}
+              </ReceivePaymentAdd>
+            </ReceivePaymentAddRq>
+          XML
+        end
+
         def update_xml_to_send(payment, params, session_id)
           <<-XML
             <ReceivePaymentModRq requestID="#{session_id}">
                <ReceivePaymentMod>
                   <TxnID>#{payment['list_id']}</TxnID>
                   <EditSequence>#{payment['edit_sequence']}</EditSequence>
-                  #{payment_xml(payment, params)}
+                  #{payment.has_key?('invoice_txn_id') ? payment_apply_invoice_xml(payment, params) : payment_xml(payment, params) }
                </ReceivePaymentMod>
             </ReceivePaymentModRq>
           XML
         end
 
-        def payment_xml(payment, params)
+        def payment_apply_invoice_xml(payment, params)
           <<-XML
               <RefNumber>#{payment['object_ref']}</RefNumber>
               <TotalAmount>#{'%.2f' % payment['amount'].to_f}</TotalAmount>
@@ -47,6 +61,20 @@ module QBWC
                 <TxnID>#{payment['invoice_txn_id']}</TxnID>
                 <PaymentAmount>#{'%.2f' % payment['amount'].to_f}</PaymentAmount>
               </AppliedToTxnMod>
+          XML
+        end
+
+        def payment_xml(payment, params)
+          <<-XML
+              <CustomerRef>
+                <FullName>#{payment['email']}</FullName>
+              </CustomerRef>
+              <RefNumber>#{payment['object_ref']}</RefNumber>
+              <TotalAmount>#{'%.2f' % payment['amount'].to_f}</TotalAmount>
+              <PaymentMethodRef>
+                <FullName>#{payment['payment_method']}</FullName>
+              </PaymentMethodRef>
+              <IsAutoApply>true</IsAutoApply>
           XML
         end
 

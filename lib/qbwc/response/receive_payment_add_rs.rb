@@ -25,14 +25,14 @@ module QBWC
           {
             payments: {
               id: object['RefNumber'],
+              object_ref: object['RefNumber'],
               list_id: object['TxnID'],
               edit_sequence: object['EditSequence']
             }
           }
         end
 
-        # NOTE Not clear yet we need to persist these payments separately
-        # Persistence::Object.update_statuses(config, objects)
+        Persistence::Object.update_statuses(config, objects)
       end
     end
   end

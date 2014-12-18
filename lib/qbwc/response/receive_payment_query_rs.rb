@@ -28,7 +28,7 @@ module QBWC
           _, shipment_id, _ = records.first['request_id'].split('-')
           Persistence::Object.new(config, {}).update_shipments_with_payment_ids(shipment_id, objects_updated.first)
         else
-          puts "[ReceivePaymentQueryRs] This should not happen, ever! #{records.inspect}"
+          Persistence::Object.new(config, {}).update_objects_with_query_results(objects_to_update)
         end
 
         nil
@@ -39,6 +39,7 @@ module QBWC
           {
             object_type: 'payment',
             object_ref: record['RefNumber'],
+            id: record['RefNumber'],
             list_id: record['TxnID'],
             edit_sequence: record['EditSequence'],
           }.with_indifferent_access
