@@ -28,7 +28,7 @@ module QBWC
           _, shipment_id, _ = records.first['request_id'].split('-')
           Persistence::Object.new(config, {}).update_shipments_with_payment_ids(shipment_id, objects_updated.first)
         else
-          Persistence::Object.new(config, {}).update_objects_with_query_results(objects_to_update)
+          Persistence::Object.new(config, {}).update_objects_with_query_results(objects_updated)
         end
 
         nil

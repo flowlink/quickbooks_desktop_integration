@@ -36,6 +36,7 @@ module QBWC
             <ReceivePaymentAddRq requestID="#{session_id}">
               <ReceivePaymentAdd>
                 #{payment_xml(payment, params)}
+                <IsAutoApply>true</IsAutoApply>
               </ReceivePaymentAdd>
             </ReceivePaymentAddRq>
           XML
@@ -74,7 +75,6 @@ module QBWC
               <PaymentMethodRef>
                 <FullName>#{payment['payment_method']}</FullName>
               </PaymentMethodRef>
-              <IsAutoApply>true</IsAutoApply>
           XML
         end
 
