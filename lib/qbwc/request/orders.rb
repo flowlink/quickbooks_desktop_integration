@@ -100,6 +100,7 @@ module QBWC
       <PostalCode>#{record['shipping_address']['zipcode']}</PostalCode>
       <Country>#{record['shipping_address']['country']}</Country>
     </ShipAddress>
+    #{cancel_order?(record)}
           XML
         end
 
@@ -164,6 +165,16 @@ module QBWC
       <SalesTaxCodeRef>
         <FullName>#{line['tax_code_id']}</FullName>
       </SalesTaxCodeRef>
+          XML
+        end
+
+        def cancel_order?(object)
+          return '' unless object['status'].to_s == 'cancelled'
+
+          <<-XML
+
+          <IsManuallyClosed>true</IsManuallyClosed>
+
           XML
         end
 

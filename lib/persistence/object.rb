@@ -37,6 +37,7 @@ module Persistence
     def save
       objects.each do |object|
         next unless valid_object?(object)
+        prepare_objects_before_save(object)
 
         if two_phase?
           file = "#{base_name}/#{two_phase_pending}/#{payload_key.pluralize}_#{id_of_object(object)}_.csv"
@@ -398,6 +399,10 @@ module Persistence
         end
       end
       true
+    end
+
+    def prepare_objects_before_save(object)
+      object['status'] = 'cancelled' if config['flow'] == 'cancel_order'
     end
 
     def generate_extra_objects(object)
