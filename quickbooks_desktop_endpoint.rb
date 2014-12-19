@@ -8,11 +8,11 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
   # Changing the endpoint paths might break internal logic as they're expected
   # to be always in plural. e.g. products not product
 
-  ['products', 'orders', 'returns', 'customers', 'shipments'].each do |path|
-    post "/add_#{path}" do
+  ['add_products', 'add_orders', 'add_returns', 'add_customers', 'add_shipments', 'cancel_order'].each do |path|
+    post "/#{path}" do
       config = {
         connection_id: request.env['HTTP_X_HUB_STORE'],
-        flow: "add_#{path}",
+        flow: "#{path}",
         # NOTE could save us some time and http calls by not persisting configs
         # on every call. Use same approach on polling instead by always setting
         # this flag back to false on return?
