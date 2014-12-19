@@ -56,10 +56,20 @@ module QBWC
                <SalesOrPurchase>
                  <Desc>#{adjustment['description']}</Desc>
                  <AccountRef>
-                   <FullName>#{params['quickbooks_other_charge_account']}</FullName>
+                   <FullName>#{account(adjustment, params)}</FullName>
                  </AccountRef>
                </SalesOrPurchase>
           XML
+        end
+
+        def account(adjustment, params)
+          if adjustment['id'].downcase.match(/'discount'/)
+            params['quickbooks_other_charge_discount_account']
+          elsif adjustment['id'].downcase.match(/'shipping'/)
+            params['quickbooks_other_charge_shipping_account']
+          else
+            params['quickbooks_other_charge_tax_account']
+         end
         end
       end
     end
