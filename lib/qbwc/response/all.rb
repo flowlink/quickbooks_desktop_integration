@@ -24,6 +24,8 @@ require 'qbwc/response/receive_payment_mod_rs'
 require 'qbwc/response/receive_payment_query_rs'
 
 require 'qbwc/response/invoice_add_rs'
+require 'qbwc/response/invoice_mod_rs'
+require 'qbwc/response/invoice_query_rs'
 
 require 'qbwc/response/inventory_adjustment_add_rs'
 
