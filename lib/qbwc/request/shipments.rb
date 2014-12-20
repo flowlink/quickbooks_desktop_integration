@@ -3,7 +3,10 @@ module QBWC
     class Shipments
       class << self
         def generate_request_queries(objects, params)
-          ""
+          objects.inject("") do |request, object|
+            session_id = Persistence::Object.new({connection_id: params['connection_id']}.with_indifferent_access,{}).save_session(object)
+            request << search_xml(object['id'], session_id)
+          end
         end
 
         def generate_request_insert_update(objects, params = {})
@@ -18,6 +21,16 @@ module QBWC
                         ""
                       end
           end
+        end
+
+
+        def search_xml(shipment_id, session_id)
+          <<-XML
+  <InvoiceQueryRq requestID="#{session_id}">
+    <RefNumberCaseSensitive>#{shipment_id}</RefNumberCaseSensitive>
+    <IncludeLineItems>true</IncludeLineItems>
+  </InvoiceQueryRq>
+          XML
         end
 
         def add_xml_to_send(record, params = {}, session_id = nil)
