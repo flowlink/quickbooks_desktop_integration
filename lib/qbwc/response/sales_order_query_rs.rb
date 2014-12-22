@@ -24,6 +24,7 @@ module QBWC
         config  = config.merge({ origin: 'wombat', connection_id: config[:connection_id]  }).with_indifferent_access
         objects_updated = objects_to_update(config)
 
+
         if records.first['request_id'].start_with?('shipment')
           _, shipment_id, _ = records.first['request_id'].split('-')
           Persistence::Object.new(config, {}).update_shipments_with_qb_ids(shipment_id, objects_updated.first)
@@ -58,7 +59,7 @@ module QBWC
         end
 
         mapped_adjustments = object_source['adjustments'].to_a.map do |item|
-          item['txn_line_id'] = hash_items[QBWC::Request::Adjustments.adjustment_product_from_qb(item['name'].downcase, config)]
+          item['txn_line_id'] = hash_items[QBWC::Request::Adjustments.adjustment_product_from_qb(item['name'].downcase, config).to_s.downcase]
           item['txn_id']      = record['TxnID']
           item
         end

@@ -13,6 +13,11 @@ module QBWC
       receive_settings = s3_settings.settings 'get_'
       params = config.merge receive: receive_settings
 
+      send_settings = s3_settings.settings('add_')
+      ['orders', 'shippments'].each do |object_type|
+        send_params = send_settings.find { |s| s[object_type] } || {}
+        params = params.merge(send_params[object_type]) if send_params.has_key?(object_type)
+      end
       Response::All.new(response_xml).process(params)
     end
   end
