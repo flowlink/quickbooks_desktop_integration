@@ -128,16 +128,16 @@ module QBWC
           end
         end
 
-        def build_adjustments_from_shipments(object)
-          build_adjustments(object).map do |item|
-            {
-              'id'          => item['name'],
-              'description' => "Order Adjustment #{item['name']}",
-              'price'       => item['value'],
-              'cost_price'  => item['value']
-            }
-          end
-        end
+        # def build_adjustments_from_shipments(object)
+        #   build_adjustments(object).map do |item|
+        #     {
+        #       'id'          => item['name'],
+        #       'description' => "Order Adjustment #{item['name']}",
+        #       'price'       => item['value'],
+        #       'cost_price'  => item['value']
+        #     }
+        #   end
+        # end
 
         def build_order_from_shipments(object)
           {
