@@ -1,5 +1,6 @@
 module QBWC
   module Request
+    # We will not remove this class, because the customer probably will change their mind and we will start to use again
     class Adjustments
       class << self
         def generate_request_insert_update(objects, params = {})
@@ -63,14 +64,25 @@ module QBWC
         end
 
         def account(adjustment, params)
-          if adjustment['id'].downcase.match(/'discount'/)
+          if adjustment['id'].downcase.match(/discount/)
             params['quickbooks_other_charge_discount_account']
-          elsif adjustment['id'].downcase.match(/'shipping'/)
+          elsif adjustment['id'].downcase.match(/shipping/)
             params['quickbooks_other_charge_shipping_account']
           else
             params['quickbooks_other_charge_tax_account']
          end
         end
+
+        def adjustment_product_from_qb(adjustment_name, params)
+          if adjustment_name.downcase.match(/discount/)
+            params['quickbooks_discount_item']
+          elsif adjustment_name.downcase.match(/shipping/)
+            params['quickbooks_shipping_item']
+          elsif adjustment_name.downcase.match(/tax/)
+            params['quickbooks_tax_item']
+         end
+        end
+
       end
     end
   end
