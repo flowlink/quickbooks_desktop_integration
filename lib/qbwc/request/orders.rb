@@ -38,7 +38,7 @@ module QBWC
   <SalesOrderAdd>
     #{sales_order record, params}
     #{items(record).map { |l| sales_order_line_add l }.join("")}
-    #{adjustments(record).map { |l| sales_order_line_add_from_adjustment l }.join("")}
+    #{adjustments(record).map { |l| sales_order_line_add_from_adjustment(l, params) }.join("")}
   </SalesOrderAdd>
 </SalesOrderAddRq>
           XML
@@ -53,7 +53,7 @@ module QBWC
     <EditSequence>#{record['edit_sequence']}</EditSequence>
     #{sales_order record, params}
     #{items(record).map { |l| sales_order_line_mod l }.join("")}
-    #{adjustments(record).map { |l| sales_order_line_adjustment_mod l }.join("")}
+    #{adjustments(record).map { |l| sales_order_line_adjustment_mod(l, params) }.join("")}
   </SalesOrderMod>
 </SalesOrderModRq>
           XML
@@ -113,9 +113,9 @@ module QBWC
           XML
         end
 
-        def sales_order_line_add_from_adjustment(adjustment)
+        def sales_order_line_add_from_adjustment(adjustment, params)
           line = {
-            'product_id' => adjustment['name'],
+            'product_id' => QBWC::Request::Adjustments.adjustment_product_from_qb(adjustment['name'], params),
             'quantity' => 1,
             'price' => adjustment['value']
           }
@@ -133,9 +133,9 @@ module QBWC
           XML
         end
 
-        def sales_order_line_adjustment_mod(adjustment)
+        def sales_order_line_adjustment_mod(adjustment, params)
           line = {
-            'product_id' => adjustment['name'],
+            'product_id' => QBWC::Request::Adjustments.adjustment_product_from_qb(adjustment['name'], params),
             'quantity' => 1,
             'price' => adjustment['value'],
             'txn_line_id' => adjustment['txn_line_id']
@@ -202,16 +202,16 @@ module QBWC
           end
         end
 
-        def build_products_from_adjustments(object)
-          (object.first['adjustments'] || []).map do |item|
-            {
-              'id'          => item['name'].downcase,
-              'description' => "Order Adjustment #{item['name']}",
-              'price'       => item['value'],
-              'cost_price'  => item['value']
-            }
-          end
-        end
+        # def build_products_from_adjustments(object)
+        #   (object.first['adjustments'] || []).map do |item|
+        #     {
+        #       'id'          => item['name'].downcase,
+        #       'description' => "Order Adjustment #{item['name']}",
+        #       'price'       => item['value'],
+        #       'cost_price'  => item['value']
+        #     }
+        #   end
+        # end
 
         def build_payments_from_order(object)
           object['payments'].to_a.map do |item|
