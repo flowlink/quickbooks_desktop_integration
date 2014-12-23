@@ -17,9 +17,9 @@ module QBWC
 
             request << if object[:list_id].to_s.empty?
                          add_xml_to_send(object, params, session_id)
-                      else
-                        ""
-                      end
+                       else
+                         update_xml_to_send(object, params, session_id)
+                       end
           end
         end
 
@@ -33,10 +33,32 @@ module QBWC
           XML
         end
 
+        def update_xml_to_send(record, params = {}, session_id = nil)
+          <<-XML
+            <InvoiceModRq requestID="#{session_id}">
+              <InvoiceMod>
+                #{invoice_xml(record, params)}
+                #{items(record).map { |i| invoice_line_mod i }.join("")}
+                #{adjustments(record).map { |i| invoice_adjustment_mod i }.join("")}
+              </InvoiceMod>
+            </InvoiceModRq>
+          XML
+        end
+
         def add_xml_to_send(record, params = {}, session_id = nil)
           <<-XML
             <InvoiceAddRq requestID="#{session_id}">
               <InvoiceAdd>
+                #{invoice_xml(record, params)}
+                #{items(record).map { |i| invoice_line_add i }.join("")}
+                #{adjustments(record).map { |i| invoice_adjustment_add i }.join("")}
+              </InvoiceAdd>
+            </InvoiceAddRq>
+          XML
+        end
+
+        def invoice_xml(record, params)
+          <<-XML
                 <CustomerRef>
                   <FullName>#{record['email']}</FullName>
                 </CustomerRef>
@@ -66,10 +88,6 @@ module QBWC
                   <FullName></FullName>
                 </ShipMethodRef>
                 -->
-                #{items(record).map { |i| invoice_line_add i }.join("")}
-                #{adjustments(record).map { |i| invoice_adjustment_add i }.join("")}
-              </InvoiceAdd>
-            </InvoiceAddRq>
           XML
         end
 
@@ -83,6 +101,16 @@ module QBWC
           XML
         end
 
+        def invoice_line_mod(item)
+          <<-XML
+            <InvoiceLineMod>
+              <Quantity>#{item['quantity']}</Quantity>
+              <Rate>#{item['price']}</Rate>
+              #{link_to_sales_order(item)}
+            </InvoiceLineMod>
+          XML
+        end
+
         def invoice_adjustment_add(item)
           <<-XML
             <InvoiceLineAdd>
@@ -90,6 +118,16 @@ module QBWC
               <Rate>#{item['value']}</Rate>
               #{link_to_sales_order(item)}
             </InvoiceLineAdd>
+          XML
+        end
+
+        def invoice_adjustment_mod(item)
+          <<-XML
+            <InvoiceLineMod>
+              <Quantity>1</Quantity>
+              <Rate>#{item['value']}</Rate>
+              #{link_to_sales_order(item)}
+            </InvoiceLineMod>
           XML
         end
 
