@@ -329,8 +329,23 @@ module Persistence
         puts "File not found[update_shipments_with_qb_ids]: #{file_name}"
       end
 
-      contents.first['items']       = object[:extra_data]['line_items']
-      contents.first['adjustments'] = object[:extra_data]['adjustments']
+      contents.first['items'] = object[:extra_data]['line_items'].
+                                  map do |item|
+                                   item['sales_order_txn_line_id'] = item['txn_line_id']
+                                   item['sales_order_txn_id']      = item['txn_id']
+                                   item.delete('txn_line_id')
+                                   item.delete('txn_id')
+                                   item
+                                  end
+
+      contents.first['adjustments'] = object[:extra_data]['adjustments'].
+                                        map do |item|
+                                         item['sales_order_txn_line_id'] = item['txn_line_id']
+                                         item['sales_order_txn_id']      = item['txn_id']
+                                         item.delete('txn_line_id')
+                                         item.delete('txn_id')
+                                         item
+                                        end
 
       amazon_s3.export file_name: file_name, objects: contents
 
@@ -499,6 +514,8 @@ module Persistence
 
       if key == 'customers'
         object['email']
+      elsif key == 'shipments'
+        object['order_id']
       else
         object['id']
       end
@@ -506,6 +523,8 @@ module Persistence
 
     def id_for_notifications(object, object_ref)
       return object['email'] if payload_key.pluralize == 'customers'
+      return object['order_id'] if payload_key.pluralize == 'shipments'
+
       object_ref
     end
   end
