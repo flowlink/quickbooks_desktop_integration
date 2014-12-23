@@ -208,17 +208,17 @@ module Persistence
       statuses_objects.keys.each do |status_key|
         statuses_objects[status_key].each do |types|
           types.keys.each do |object_type|
-            object = types[object_type]
+            object = types[object_type].with_indifferent_access
 
             # NOTE seeing an nil `object` var here sometimes, investigate it
             # happens when you have both add_orders and get_products flows enabled
             begin
-              filename = "#{base_name}/#{ready}/#{object_type}_#{object[:id]}_"
+              filename = "#{base_name}/#{ready}/#{object_type}_#{id_for_object(object, object_type)}_"
 
               collection = amazon_s3.bucket.objects
               collection.with_prefix(filename).enum.each do |s3_object|
                 status_folder = send status_key
-                new_filename = "#{base_name}/#{status_folder}/#{object_type}_#{object[:id]}_"
+                new_filename = "#{base_name}/#{status_folder}/#{object_type}_#{id_for_object(object, object_type)}_"
                 new_filename << "#{object[:list_id]}_#{object[:edit_sequence]}" unless object[:list_id].to_s.empty?
 
                 s3_object.move_to("#{new_filename}.csv")
@@ -387,8 +387,10 @@ module Persistence
     end
 
     def generate_error_notification(content, object_type)
+      @payload_key = object_type
       if content[:object]
-        new_filename = "#{base_name}/#{ready}/notification_failed_#{object_type}_#{content[:object]['id']}_.csv"
+        aux_id = id_for_notifications(content[:object], content[:object]['id'])
+        new_filename = "#{base_name}/#{ready}/notification_failed_#{object_type}_#{aux_id}_.csv"
         amazon_s3.export(file_name: new_filename, objects: [content])
       else
         puts "generate_error_notification: #{content.inspect}:#{object_type}"
@@ -509,8 +511,21 @@ module Persistence
       Time.now.to_i
     end
 
+    #deprecated
     def id_of_object(object)
-      key = payload_key.pluralize
+      id_for_object(object, payload_key.pluralize)
+    end
+
+    #deprecated
+    def id_for_notifications(object, object_ref)
+      id = id_for_object(object, payload_key.pluralize)
+      return id if id != object['id']
+
+      object_ref
+    end
+
+    def id_for_object(object, object_type)
+      key = object_type.pluralize
 
       if key == 'customers'
         object['email']
@@ -521,11 +536,5 @@ module Persistence
       end
     end
 
-    def id_for_notifications(object, object_ref)
-      return object['email'] if payload_key.pluralize == 'customers'
-      return object['order_id'] if payload_key.pluralize == 'shipments'
-
-      object_ref
-    end
   end
 end
