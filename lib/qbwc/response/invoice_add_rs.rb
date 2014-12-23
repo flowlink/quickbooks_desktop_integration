@@ -25,13 +25,14 @@ module QBWC
           {
             shipments: {
               id: object['PONumber'],
+              order_id:object['RefNumber'],
               list_id: object['TxnID'],
               edit_sequence: object['EditSequence']
             }
           }
         end
 
-        Persistence::Object.new(config, {}).create_payments_updates_from_shipments(config, records.first['PONumber'], records.first['TxnID'])
+        Persistence::Object.new(config, {}).create_payments_updates_from_shipments(config, records.first['RefNumber'], records.first['TxnID'])
 
         Persistence::Object.update_statuses(config, objects)
       end

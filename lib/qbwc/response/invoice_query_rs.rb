@@ -33,6 +33,7 @@ module QBWC
           {
             object_type: 'shipment',
             object_ref: record['RefNumber'],
+            order_id: record['RefNumber'],
             id: record['RefNumber'],
             list_id: record['TxnID'],
             edit_sequence: record['EditSequence'],
@@ -52,7 +53,7 @@ module QBWC
         end
 
         mapped_adjustments = object_source['adjustments'].to_a.map do |item|
-          item['txn_line_id'] = hash_items[QBWC::Request::Adjustments.adjustment_product_from_qb(item['name'].downcase, config).to_s..downcase]
+          item['txn_line_id'] = hash_items[QBWC::Request::Adjustments.adjustment_product_from_qb(item['name'].downcase, config).to_s.downcase]
           item['txn_id']      = record['TxnID']
           item
         end
@@ -67,9 +68,9 @@ module QBWC
         hash = {}
 
         # Sometimes is an array, sometimes is not :-/
-        record['SalesOrderLineRet'] = [record['SalesOrderLineRet']] unless record['SalesOrderLineRet'].is_a? Array
+        record['InvoiceLineRet'] = [record['InvoiceLineRet']] unless record['InvoiceLineRet'].is_a? Array
 
-        record['SalesOrderLineRet'].to_a.each do |item|
+        record['InvoiceLineRet'].to_a.each do |item|
           hash[item['ItemRef']['FullName'].downcase] = item['TxnLineID']
         end
         hash
