@@ -5,7 +5,7 @@ module QBWC
         def generate_request_queries(objects, params)
           objects.inject("") do |request, object|
             session_id = Persistence::Object.new({connection_id: params['connection_id']}.with_indifferent_access,{}).save_session(object)
-            request << search_xml(object['id'], session_id)
+            request << search_xml(object['order_id'], session_id)
           end
         end
 
@@ -37,9 +37,11 @@ module QBWC
           <<-XML
             <InvoiceModRq requestID="#{session_id}">
               <InvoiceMod>
+                <TxnID>#{record['list_id']}</TxnID>
+                <EditSequence>#{record['edit_sequence']}</EditSequence>
                 #{invoice_xml(record, params)}
                 #{items(record).map { |i| invoice_line_mod i }.join("")}
-                #{adjustments(record).map { |i| invoice_adjustment_mod i }.join("")}
+                #{adjustments(record).map { |i| invoice_adjustment_mod(i, params) }.join("")}
               </InvoiceMod>
             </InvoiceModRq>
           XML
@@ -104,9 +106,12 @@ module QBWC
         def invoice_line_mod(item)
           <<-XML
             <InvoiceLineMod>
+              <TxnLineID>#{item['txn_line_id']}</TxnLineID>
+              <ItemRef>
+                <FullName>#{item['product_id']}</FullName>
+              </ItemRef>
               <Quantity>#{item['quantity']}</Quantity>
               <Rate>#{item['price']}</Rate>
-              #{link_to_sales_order(item)}
             </InvoiceLineMod>
           XML
         end
@@ -121,23 +126,26 @@ module QBWC
           XML
         end
 
-        def invoice_adjustment_mod(item)
+        def invoice_adjustment_mod(item, params)
           <<-XML
             <InvoiceLineMod>
+              <TxnLineID>#{item['txn_line_id']}</TxnLineID>
+              <ItemRef>
+                <FullName>#{QBWC::Request::Adjustments.adjustment_product_from_qb(item['name'].downcase, params)}</FullName>
+              </ItemRef>
               <Quantity>1</Quantity>
               <Rate>#{item['value']}</Rate>
-              #{link_to_sales_order(item)}
             </InvoiceLineMod>
           XML
         end
 
         def link_to_sales_order(item)
-          return '' unless item.has_key?('txn_id')
+          return '' unless item.has_key?('sales_order_txn_line_id') && !item['sales_order_txn_line_id'].to_s.empty?
 
           <<-XML
           <LinkToTxn>
-            <TxnID>#{item['txn_id']}</TxnID>
-            <TxnLineID>#{item['txn_line_id']}</TxnLineID>
+            <TxnID>#{item['sales_order_txn_id']}</TxnID>
+            <TxnLineID>#{item['sales_order_txn_line_id']}</TxnLineID>
           </LinkToTxn>
           XML
         end
@@ -181,7 +189,8 @@ module QBWC
           {
             'id'               => object['order_id'],
             'placed_on'        => (object.has_key?('placed_on') ? object['placed_on'] : object['shipped_at']),
-            'shipment_id'      => object['id'],
+            'shipment_id'      => object['order_id'],
+            'order_id'         => object['order_id'],
             'firstname'        => object['billing_address']['firstname'],
             'lastname'         => object['billing_address']['lastname'],
             'email'            => object['email'],
@@ -196,7 +205,7 @@ module QBWC
         def build_payment_from_shipments(object)
           {
             'id'               => object['order_id'],
-            'shipment_id'      => object['id'],
+            'order_id'         => object['order_id'],
           }
         end
 
