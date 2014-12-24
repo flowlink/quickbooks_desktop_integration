@@ -389,8 +389,7 @@ module Persistence
     def generate_error_notification(content, object_type)
       @payload_key = object_type
       if content[:object]
-        aux_id = id_for_notifications(content[:object], content[:object]['id'])
-        new_filename = "#{base_name}/#{ready}/notification_failed_#{object_type}_#{aux_id}_.csv"
+        new_filename = "#{base_name}/#{ready}/notification_failed_#{object_type}_#{id_for_object(content[:object], object_type)}_.csv"
         amazon_s3.export(file_name: new_filename, objects: [content])
       else
         puts "generate_error_notification: #{content.inspect}:#{object_type}"
@@ -511,7 +510,6 @@ module Persistence
       Time.now.to_i
     end
 
-    #deprecated
     def id_of_object(object)
       id_for_object(object, payload_key.pluralize)
     end
