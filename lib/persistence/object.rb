@@ -2,6 +2,15 @@ module Persistence
   class Object
     attr_reader :config, :objects, :payload_key, :amazon_s3
 
+    class << self
+      def handle_error(config, error_context, object_type, request_id)
+        Persistence::Object.new(config, {}).create_error_notifications(error_context, object_type, request_id)
+      end
+      def update_statuses(config = {}, processed = [], failed = [])
+        Persistence::Object.new(config, {}).update_objects_files({ processed: processed, failed: failed }.with_indifferent_access)
+      end
+    end
+
     # +payload+ might have a collection of records when writing to s3
     #
     #   e.g. { orders: [{ id: "123" }, { id: "123" }] }
@@ -288,15 +297,7 @@ module Persistence
       end
     end
 
-    class << self
-      def handle_error(config, error_context, object_type, request_id)
-        Persistence::Object.new(config, {}).create_error_notifications(error_context, object_type, request_id)
-      end
-      def update_statuses(config = {}, processed = [], failed = [])
-        Persistence::Object.new(config, {}).update_objects_files({ processed: processed, failed: failed }.with_indifferent_access)
-      end
-    end
-
+    # This link invoices and payments
     def update_shipments_with_payment_ids(shipment_id, object)
       file_name = "#{base_name}/#{pending}/shipments_#{shipment_id}_.csv"
 
@@ -319,6 +320,7 @@ module Persistence
       end
     end
 
+    # This link Invoices with Sales Orders
     def update_shipments_with_qb_ids(shipment_id, object)
       file_name = "#{base_name}/#{pending}/shipments_#{shipment_id}_.csv"
 
@@ -357,6 +359,8 @@ module Persistence
       end
     end
 
+    # Creates payments to updates Invoices IDs into Payments and link one to another,
+    # needs to be separated, because we need QB IDs and it's only exists after processed
     def create_payments_updates_from_shipments(config, shipment_id, invoice_txn_id)
       file_name = "#{base_name}/#{ready}/shipments_#{shipment_id}_.csv"
 
@@ -382,6 +386,7 @@ module Persistence
     end
 
     private
+
     def success_notification_message(object)
       "#{object.singularize.capitalize} successfully sent to Quickbooks Desktop"
     end
@@ -394,6 +399,14 @@ module Persistence
       else
         puts "generate_error_notification: #{content.inspect}:#{object_type}"
       end
+    end
+
+    def create_notifications(objects_filename, status)
+      _, _, filename = objects_filename.split('/')
+      s3_object = amazon_s3.bucket.objects[objects_filename]
+
+      new_filename = "#{base_name}/#{ready}/notification_#{status}_#{filename}"
+      s3_object.copy_to(new_filename)
     end
 
     def valid_object?(object)
@@ -421,6 +434,8 @@ module Persistence
       object['status'] = 'cancelled' if config['flow'] == 'cancel_order'
     end
 
+    # When inventory is updated, QB doesn't update item inventory, this is to force this update and
+    # return to Wombat item inventories updated
     def generate_extra_objects(object)
       if payload_key.pluralize == 'inventories'
         object_aux = object.dup
@@ -472,14 +487,6 @@ module Persistence
 
     def two_phase_pending
       "#{config[:origin]}_two_phase_pending"
-    end
-
-    def create_notifications(objects_filename, status)
-      _, _, filename = objects_filename.split('/')
-      s3_object = amazon_s3.bucket.objects[objects_filename]
-
-      new_filename = "#{base_name}/#{ready}/notification_#{status}_#{filename}"
-      s3_object.copy_to(new_filename)
     end
 
     def sessions

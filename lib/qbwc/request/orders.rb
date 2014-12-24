@@ -203,17 +203,6 @@ module QBWC
           end
         end
 
-        # def build_products_from_adjustments(object)
-        #   (object.first['adjustments'] || []).map do |item|
-        #     {
-        #       'id'          => item['name'].downcase,
-        #       'description' => "Order Adjustment #{item['name']}",
-        #       'price'       => item['value'],
-        #       'cost_price'  => item['value']
-        #     }
-        #   end
-        # end
-
         def build_payments_from_order(object)
           object['payments'].to_a.map do |item|
             item.merge({

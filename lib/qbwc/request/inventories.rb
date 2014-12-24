@@ -43,26 +43,6 @@ module QBWC
 
           XML
         end
-
-        # <InventoryAdjustmentAddRq requestID="1">
-        #     <InventoryAdjustmentAdd>
-        #         <AccountRef>
-        #             <FullName>Inventory Asset</FullName>
-        #         </AccountRef>
-        #         <Memo>test adjustment</Memo>
-        #         <InventoryAdjustmentLineAdd>
-        #             <ItemRef>
-        #                 <FullName>SPREE-T-SHIRT</FullName>
-        #             </ItemRef>
-        #             <ValueAdjustment>
-        #                 <NewQuantity>200.00</NewQuantity>
-        #             </ValueAdjustment>
-        #         </InventoryAdjustmentLineAdd>
-        #     </InventoryAdjustmentAdd>
-        # </InventoryAdjustmentAddRq>
-
-
-
       end
     end
   end
