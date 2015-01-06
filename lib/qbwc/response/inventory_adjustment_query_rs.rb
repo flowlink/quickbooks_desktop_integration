@@ -19,7 +19,7 @@ module QBWC
       def process(config = {})
         return if records.empty?
 
-        puts records.inspect
+        puts "\n #{records.inspect}"
 
         receive_configs = config[:receive] || []
         inventory_params = receive_configs.find { |c| c['inventories'] }
@@ -28,7 +28,7 @@ module QBWC
         config = { origin: 'quickbooks' }.merge config
 
         poll_persistence = Persistence::Object.new(config, payload)
-        poll_persistence.save_for_polling
+        poll_persistence.save_for_query_later
 
         inventory_params['inventories']['quickbooks_since'] = last_time_modified
         inventory_params['inventories']['quickbooks_force_config'] = true
@@ -37,11 +37,6 @@ module QBWC
         # same inventories
         params = inventory_params['inventories']
         Persistence::Settings.new(params.with_indifferent_access).setup
-
-        # TODO maybe we will not need this
-        config = config.merge({ origin: 'wombat' })
-        object_persistence = Persistence::Object.new config
-        object_persistence.update_objects_with_query_results(objects_to_update)
 
         nil
       end
@@ -53,26 +48,12 @@ module QBWC
 
       private
 
-      def objects_to_update
-        records.map do |record|
-          {
-            object_type: 'product',
-            object_ref: record['Name'],
-            list_id: record['ListID'],
-            edit_sequence: record['EditSequence']
-          }
-        end
-      end
-
       def inventories_to_wombat
         records.map do |record|
-          object = {
-            id: record['Name'],
-            sku: record['Name'],
-            product_id: record['Name'],
-            quantity: record['QuantityOnHand']
-          }
-        end
+          object ||= [] << (record['InventoryAdjustmentLineRet'].is_a?(Array) ?
+                            record['InventoryAdjustmentLineRet'] :
+                            [record['InventoryAdjustmentLineRet']]).map { |item| { id: item['ItemRef']['FullName'] } }
+        end.flatten
       end
     end
   end
