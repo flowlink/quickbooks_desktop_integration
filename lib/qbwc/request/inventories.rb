@@ -13,6 +13,55 @@ module QBWC
           # There is no query
           ''
         end
+
+        def polling_current_items_xml(timestamp, config)
+          #Get objects from a file of IDs
+          objects = []
+          session_id = Persistence::Object.new(config,{}).save_session({"item_inventories_ids" => objects})
+          codes = objects.inject("") do |codes, object|
+            codes << "<FullName>#{object['id']}</FullName>"
+          end
+
+          <<-XML
+    <ItemInventoryQueryRq requestID="#{session_id}">
+      #{codes}
+    </ItemInventoryQueryRq>
+          XML
+        end
+
+
+        def polling_others_items_xml(timestamp, config)
+          session_id = Persistence::Object.new(config,{}).save_session({"polling" => timestamp})
+
+          time = Time.parse(timestamp).in_time_zone "Pacific Time (US & Canada)"
+
+          <<-XML
+<ItemInventoryQueryRq requestID="#{session_id}">
+ <MaxReturned>100</MaxReturned>
+ <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
+</ItemInventoryQueryRq>
+
+<InventoryAdjustmentQueryRq requestID="#{session_id}">
+  <MaxReturned>100</MaxReturned>
+  <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
+  <IncludeLineItems>true</IncludeLineItems>
+<InventoryAdjustmentQueryRq>
+
+<ItemReceiptQueryRq requestID="#{session_id}">
+  <MaxReturned>100</MaxReturned>
+  <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
+  <IncludeLineItems>true</IncludeLineItems>
+<ItemReceiptQueryRq>
+
+<PurchaseOrderQueryRq requestID="#{session_id}">
+  <MaxReturned>100</MaxReturned>
+  <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
+  <IncludeLineItems>true</IncludeLineItems>
+<PurchaseOrderQueryRq>
+          XML
+        end
+
+
         # TODO BUG: http://www.productivecomputing.com/forum/index.php?topic=2559.0
         def add_xml_to_send(inventory, params, session_id)
           <<-XML
