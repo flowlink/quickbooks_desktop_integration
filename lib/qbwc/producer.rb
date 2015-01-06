@@ -35,10 +35,9 @@ module QBWC
         object_type = record.keys.first
         params = record.values.first
 
-        # We support get_products and get_inventories but both match
-        # ItemInventoryQuery in quickbooks desktop
-        klass = QBWC::Request::Products
-        string << klass.polling_xml(params['quickbooks_since'], config)
+        klass = "QBWC::Request::#{object_type.capitalize}".constantize
+        string << klass.polling_others_items_xml(params['quickbooks_since'], config)
+        string << klass.polling_current_items_xml(params['quickbooks_since'], config)
       end
     end
 
