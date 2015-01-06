@@ -15,7 +15,7 @@ module QBWC
     end
 
     it "builds request xml for polling flows" do
-      subject = described_class.new connection_id: '54591b3a5869632afc090000'
+      subject = described_class.new connection_id: '54616145436f6e2fda030000'
 
       VCR.use_cassette "producer/543453253245353" do
         xml = subject.build_polling_request
