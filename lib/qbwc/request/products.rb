@@ -80,7 +80,12 @@ module QBWC
           XML
         end
 
-        def polling_xml(timestamp, config)
+        def polling_others_items_xml(timestamp, config)
+          # nothing on this class
+          ''
+        end
+        # TODO Migrating to inventories.rb
+        def polling_current_items_xml(timestamp, config)
           session_id = Persistence::Object.new(config,{}).save_session({"polling" => timestamp})
 
           time = Time.parse(timestamp).in_time_zone "Pacific Time (US & Canada)"
