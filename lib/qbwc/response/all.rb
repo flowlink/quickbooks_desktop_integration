@@ -28,6 +28,13 @@ require 'qbwc/response/invoice_mod_rs'
 require 'qbwc/response/invoice_query_rs'
 
 require 'qbwc/response/inventory_adjustment_add_rs'
+require 'qbwc/response/inventory_adjustment_query_rs'
+
+require 'qbwc/response/inventory_adjustment_query_rs'
+
+require 'qbwc/response/item_receipt_query_rs'
+
+require 'qbwc/response/purchase_order_query_rs'
 
 module QBWC
   module Response
