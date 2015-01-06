@@ -22,6 +22,8 @@ module QBWC
             codes << "<FullName>#{object['id']}</FullName>"
           end
 
+          return '' if codes.to_s.empty?
+
           <<-XML
     <ItemInventoryQueryRq requestID="#{session_id}">
       #{codes}
@@ -35,29 +37,43 @@ module QBWC
 
           time = Time.parse(timestamp).in_time_zone "Pacific Time (US & Canada)"
 
+
+
+
+
+
           <<-XML
-<ItemInventoryQueryRq requestID="#{session_id}">
- <MaxReturned>100</MaxReturned>
- <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
-</ItemInventoryQueryRq>
 
-<InventoryAdjustmentQueryRq requestID="#{session_id}">
-  <MaxReturned>100</MaxReturned>
-  <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
-  <IncludeLineItems>true</IncludeLineItems>
-<InventoryAdjustmentQueryRq>
+      <!-- begin polling inventories -->
+      <ItemInventoryQueryRq requestID="#{session_id}">
+       <MaxReturned>100</MaxReturned>
+       <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
+      </ItemInventoryQueryRq>
 
-<ItemReceiptQueryRq requestID="#{session_id}">
-  <MaxReturned>100</MaxReturned>
-  <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
-  <IncludeLineItems>true</IncludeLineItems>
-<ItemReceiptQueryRq>
+      <PurchaseOrderQueryRq requestID="#{session_id}">
+        <MaxReturned>100</MaxReturned>
+        <ModifiedDateRangeFilter>
+          <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
+        </ModifiedDateRangeFilter>
+        <IncludeLineItems>true</IncludeLineItems>
+      </PurchaseOrderQueryRq>
 
-<PurchaseOrderQueryRq requestID="#{session_id}">
-  <MaxReturned>100</MaxReturned>
-  <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
-  <IncludeLineItems>true</IncludeLineItems>
-<PurchaseOrderQueryRq>
+      <InventoryAdjustmentQueryRq requestID="#{session_id}">
+        <MaxReturned>100</MaxReturned>
+        <ModifiedDateRangeFilter>
+          <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
+        </ModifiedDateRangeFilter>
+        <IncludeLineItems>true</IncludeLineItems>
+      </InventoryAdjustmentQueryRq>
+
+      <ItemReceiptQueryRq requestID="#{session_id}">
+        <MaxReturned>100</MaxReturned>
+        <ModifiedDateRangeFilter>
+          <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
+        </ModifiedDateRangeFilter>
+        <IncludeLineItems>true</IncludeLineItems>
+      </ItemReceiptQueryRq>
+      <!-- end polling inventories -->
           XML
         end
 
