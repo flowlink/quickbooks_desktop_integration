@@ -15,9 +15,14 @@ module QBWC
         end
 
         def polling_current_items_xml(timestamp, config)
-          #Get objects from a file of IDs
-          objects = []
-          session_id = Persistence::Object.new(config,{}).save_session({"item_inventories_ids" => objects})
+          query_later = Persistence::Object.new({ origin: 'quickbooks' }.merge(config), { inventories: {} }).
+                  process_waiting_query_later_ids
+
+          return '' if query_later.empty?
+
+          objects = query_later.inject([]) {|all_items,obj| all_items << obj['inventories'] }.flatten
+          session_id = Persistence::Object.new({ origin: 'wombat' }.merge(config),{}).save_session({"item_inventories_ids" => objects})
+
           codes = objects.inject("") do |codes, object|
             codes << "<FullName>#{object['id']}</FullName>"
           end
@@ -36,11 +41,6 @@ module QBWC
           session_id = Persistence::Object.new(config,{}).save_session({"polling" => timestamp})
 
           time = Time.parse(timestamp).in_time_zone "Pacific Time (US & Canada)"
-
-
-
-
-
 
           <<-XML
 

@@ -87,6 +87,23 @@ module Persistence
       end
     end
 
+    def process_waiting_query_later_ids
+      prefix = "#{base_name}/#{pending}/query_#{payload_key}_"
+      collection = amazon_s3.bucket.objects
+
+      collection.with_prefix(prefix).enum.map do |s3_object|
+        _, _, filename = s3_object.key.split("/")
+        object_type    = filename.split("_").second
+
+        contents = s3_object.read
+
+        s3_object.move_to("#{base_name}/#{processed}/#{filename}")
+
+        # return the content of file to create the requests
+        { object_type => Converter.csv_to_hash(contents) }
+      end
+    end
+
     # Get object files to query and get ListID and EditSequence
     #
     #   - Fetch files from s3
