@@ -65,6 +65,11 @@ module Persistence
       amazon_s3.export file_name: file, objects: objects
     end
 
+    def save_for_query_later
+      file = "#{base_name}/#{pending}/query_#{payload_key}_#{current_time}.csv"
+      amazon_s3.export file_name: file, objects: objects
+    end
+
     def process_waiting_records
       prefix = "#{base_name}/#{pending}/#{payload_key}_"
       collection = amazon_s3.bucket.objects
