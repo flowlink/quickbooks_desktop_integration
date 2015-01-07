@@ -38,7 +38,14 @@ module QBWC
 
 
         def polling_others_items_xml(timestamp, config)
-          session_id = Persistence::Object.new(config,{}).save_session({"polling" => timestamp})
+          session_id  = Persistence::Object.new(config,{}).save_session({"polling" => timestamp})
+
+          inventory_params = Persistence::Settings.new(config).
+            settings('get_').select{ |setting| setting.keys.first == 'inventories' }.first
+
+          inventory_params['inventories']['quickbooks_since'] = Time.now.in_time_zone("Pacific Time (US & Canada)").iso8601
+          inventory_params['inventories']['quickbooks_force_config'] = true
+          Persistence::Settings.new(inventory_params['inventories'].with_indifferent_access).setup
 
           time = Time.parse(timestamp).in_time_zone "Pacific Time (US & Canada)"
 
