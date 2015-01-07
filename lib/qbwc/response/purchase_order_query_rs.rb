@@ -30,20 +30,7 @@ module QBWC
         poll_persistence = Persistence::Object.new(config, payload)
         poll_persistence.save_for_query_later
 
-        inventory_params['inventories']['quickbooks_since'] = last_time_modified
-        inventory_params['inventories']['quickbooks_force_config'] = true
-
-        # Override configs to update timestamp so it doesn't keep geting the
-        # same inventories
-        params = inventory_params['inventories']
-        Persistence::Settings.new(params.with_indifferent_access).setup
-
         nil
-      end
-
-      def last_time_modified
-        time = records.sort_by { |r| r['TimeModified'] }.last['TimeModified'].to_s
-        Time.parse(time).in_time_zone("Pacific Time (US & Canada)").iso8601
       end
 
       private

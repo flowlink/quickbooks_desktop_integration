@@ -31,14 +31,6 @@ module QBWC
 
           poll_persistence = Persistence::Object.new(config, payload)
           poll_persistence.save_for_polling
-
-          inventory_params['inventories']['quickbooks_since'] = last_time_modified
-          inventory_params['inventories']['quickbooks_force_config'] = true
-
-          # Override configs to update timestamp so it doesn't keep geting the
-          # same inventories
-          params = inventory_params['inventories']
-          Persistence::Settings.new(params.with_indifferent_access).setup
         end
 
         if product_params
