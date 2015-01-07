@@ -32,6 +32,8 @@ module QBWC
           }
         end
 
+        Persistence::Object.new(config, {}).create_payments_updates_from_shipments(config, records.first['RefNumber'], records.first['TxnID'])
+
         Persistence::Object.update_statuses(config, objects)
       end
     end

@@ -384,10 +384,12 @@ module Persistence
     # Creates payments to updates Invoices IDs into Payments and link one to another,
     # needs to be separated, because we need QB IDs and it's only exists after processed
     def create_payments_updates_from_shipments(config, shipment_id, invoice_txn_id)
-      file_name = "#{base_name}/#{ready}/shipments_#{shipment_id}_.csv"
+      file_name = "#{base_name}/#{ready}/shipments_#{shipment_id}_"
 
       begin
-        contents = amazon_s3.convert_download('csv',amazon_s3.bucket.objects[file_name].read)
+        file = amazon_s3.bucket.objects.with_prefix(file_name).enum.first
+
+        contents = amazon_s3.convert_download('csv',file.read)
       rescue AWS::S3::Errors::NoSuchKey => e
         puts "File not found[create_payments_updates_from_shipments]: #{file_name}"
       end
