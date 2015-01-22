@@ -115,7 +115,7 @@ class QBWCEndpoint < Sinatra::Base
   def send_request_xml(connection_id, body)
     @qbxml = <<-XML
 <?xml version="1.0" encoding="utf-8"?>
-<?qbxml version="13.0"?>
+<?qbxml version="11.0"?>
 <QBXML>
    <QBXMLMsgsRq onError="stopOnError">
     #{QBWC::Producer.new(connection_id: connection_id).build_available_actions_to_request}
