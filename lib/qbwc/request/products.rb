@@ -64,7 +64,7 @@ module QBWC
         def product_xml(product, params)
           product = complement_inventory(product)
           <<-XML
-              <Name>#{product['id']}</Name>
+              <Name>#{product['id'].split(':').last}</Name>
               <SalesDesc>#{product['description']}</SalesDesc>
               <SalesPrice>#{product['price']}</SalesPrice>
               <IncomeAccountRef>
