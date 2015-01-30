@@ -67,10 +67,12 @@ module QBWC
         records.map do |record|
           {
             object_type: 'product',
-            object_ref: record['Name'],
+            object_ref: (record['ParentRef'].is_a?(Array) ? record['ParentRef'] : (record['ParentRef'].nil? ? [] : [record['ParentRef']]) ).map{ |item| item['FullName']+':' }.join('')+record['Name'],
             list_id: record['ListID'],
             edit_sequence: record['EditSequence']
           }
+
+
         end
       end
 
