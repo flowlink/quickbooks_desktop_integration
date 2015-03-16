@@ -219,7 +219,7 @@ module QBWC
         end
 
         def adjustments(record)
-          record['adjustments'].to_a.select{ |adj| adj['value'].to_f > 0.0 }.sort{ |a,b| a['name'].downcase <=> b['name'].downcase }
+          record['adjustments'].to_a.reject{ |adj| adj['value'].to_f == 0.0 }.sort{ |a,b| a['name'].downcase <=> b['name'].downcase }
         end
       end
     end
