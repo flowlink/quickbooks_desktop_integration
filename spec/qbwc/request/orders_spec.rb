@@ -11,13 +11,27 @@ module QBWC
 
       it "builds xml request from orders" do
         orders = Factory.orders['orders']
+        orders.first['line_items'].first['quantity'] = 2
         VCR.use_cassette "requests/insert_update_orders" do
           xml = subject.generate_request_insert_update orders
           expect(xml).to match /SalesOrderAdd/
           expect(xml).to match /SalesOrderLineAdd/
           expect(xml).to match /100.00/
+          expect(xml).to match /\<Quantity\>2\<\/Quantity\>/
         end
       end
+
+      it "builds xml request from orders with zero quantity" do
+        orders = Factory.orders['orders']
+        orders.first['line_items'].first['quantity'] = 0
+
+        xml = subject.generate_request_insert_update orders
+        expect(xml).to match /SalesOrderAdd/
+        expect(xml).to match /SalesOrderLineAdd/
+        expect(xml).to match /100.00/
+        expect(xml.match(/Quantity/).size).to eq(1)
+      end
+
     end
   end
 end
