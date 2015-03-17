@@ -117,7 +117,7 @@ module QBWC
         def sales_order_line_add_from_adjustment(adjustment, params)
           line = {
             'product_id' => QBWC::Request::Adjustments.adjustment_product_from_qb(adjustment['name'], params),
-            'quantity' => 1,
+            'quantity' => 0,
             'price' => adjustment['value']
           }
 
@@ -137,7 +137,7 @@ module QBWC
         def sales_order_line_adjustment_mod(adjustment, params)
           line = {
             'product_id' => QBWC::Request::Adjustments.adjustment_product_from_qb(adjustment['name'], params),
-            'quantity' => 1,
+            'quantity' => 0,
             'price' => adjustment['value'],
             'txn_line_id' => adjustment['txn_line_id']
           }

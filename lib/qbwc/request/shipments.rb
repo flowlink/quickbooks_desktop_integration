@@ -125,7 +125,6 @@ module QBWC
         def invoice_adjustment_add(item)
           <<-XML
             <InvoiceLineAdd>
-              <Quantity>1</Quantity>
               <Rate>#{item['value']}</Rate>
               #{link_to_sales_order(item)}
             </InvoiceLineAdd>
@@ -139,7 +138,6 @@ module QBWC
               <ItemRef>
                 <FullName>#{QBWC::Request::Adjustments.adjustment_product_from_qb(item['name'].downcase, params)}</FullName>
               </ItemRef>
-              <Quantity>1</Quantity>
               <Rate>#{item['value']}</Rate>
             </InvoiceLineMod>
           XML
