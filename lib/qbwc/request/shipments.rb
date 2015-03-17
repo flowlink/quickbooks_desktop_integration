@@ -96,7 +96,7 @@ module QBWC
         def invoice_line_add(item)
           <<-XML
             <InvoiceLineAdd>
-              <Quantity>#{item['quantity']}</Quantity>
+              #{quantity(item)}
               <Rate>#{item['price']}</Rate>
               #{link_to_sales_order(item)}
             </InvoiceLineAdd>
@@ -110,10 +110,16 @@ module QBWC
               <ItemRef>
                 <FullName>#{item['product_id']}</FullName>
               </ItemRef>
-              <Quantity>#{item['quantity']}</Quantity>
+              #{quantity(item)}
               <Rate>#{item['price']}</Rate>
             </InvoiceLineMod>
           XML
+        end
+
+        def quantity(line)
+          return '' if line['quantity'].to_f == 0.0
+
+          "<Quantity>#{line['quantity']}</Quantity>"
         end
 
         def invoice_adjustment_add(item)
@@ -164,7 +170,7 @@ module QBWC
         end
 
         def build_products_from_shipments(objects)
-          objects.first['items'].map do |item|
+          objects.first['items'].reject { |line| line['quantity'].to_f == 0.0 }.map do |item|
             {
               'id'          => item['product_id'],
               'description' => item['name'],
@@ -205,11 +211,11 @@ module QBWC
         end
 
         def adjustments(record)
-          record['adjustments'].to_a.select{ |adj| adj['value'].to_f > 0.0 }.sort{ |a,b| a['name'].downcase <=> b['name'].downcase }
+          record['adjustments'].to_a.reject{ |adj| adj['value'].to_f == 0.0 }.sort{ |a,b| a['name'].downcase <=> b['name'].downcase }
         end
 
         def build_adjustments(object)
-          ['discount', 'tax', 'shipping'].select{ |name| object['totals'].has_key?(name) && object['totals'][name].to_f > 0.0 }.map do |adj_name|
+          ['discount', 'tax', 'shipping'].select{ |name| object['totals'].has_key?(name) && object['totals'][name].to_f != 0.0 }.map do |adj_name|
             {
               'name'  => adj_name,
               'value' => object['totals'][adj_name]
