@@ -151,11 +151,17 @@ module QBWC
       <ItemRef>
         <FullName>#{line['product_id']}</FullName>
       </ItemRef>
-      <Quantity>#{line['quantity']}</Quantity>
+      #{quantity(line)}
       <!-- <Amount>#{'%.2f' % line['price'].to_f}</Amount> -->
       <Rate>#{line['price']}</Rate>
       #{tax_code_line(line)}
           XML
+        end
+
+        def quantity(line)
+          return '' if line['quantity'].to_f == 0.0
+
+          "<Quantity>#{line['quantity']}</Quantity>"
         end
 
         def tax_code_line(line)
@@ -193,7 +199,7 @@ module QBWC
         end
 
         def build_products_from_order(object)
-          object.first['line_items'].map do |item|
+          object.first['line_items'].reject { |line| line['quantity'].to_f == 0.0 }.map do |item|
             {
               'id'          => item['product_id'],
               'description' => item['description'],
