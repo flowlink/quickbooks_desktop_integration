@@ -123,12 +123,12 @@ class QBWCEndpoint < Sinatra::Base
 </QBXML>
     XML
 
-    puts @qbxml
+    puts @qbxml.gsub("\n","")
     erb :'qbwc/send_request_xml'
   end
 
   def receive_response_xml(connection_id, body)
-    puts body
+    puts body.gsub("\n","")
     QBWC::Consumer.new(connection_id: connection_id).digest_response_into_actions(body)
 
     erb :'qbwc/receive_response_xml'
