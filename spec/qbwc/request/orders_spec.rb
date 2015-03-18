@@ -29,7 +29,7 @@ module QBWC
         expect(xml).to match /SalesOrderAdd/
         expect(xml).to match /SalesOrderLineAdd/
         expect(xml).to match /100.00/
-        expect(xml.match(/Quantity/).size).to eq(1)
+        expect(xml.match(/Quantity/)).to be_nil
       end
 
     end
