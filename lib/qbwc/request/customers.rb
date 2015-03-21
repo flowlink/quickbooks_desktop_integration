@@ -4,6 +4,8 @@ module QBWC
       class << self
         def generate_request_insert_update(objects, params = {})
           objects.inject('') do |request, object|
+            sanitize_customer(object)
+
             session_id = Persistence::Object.new({connection_id: params['connection_id']}.with_indifferent_access,{}).save_session(object)
             request << (object[:list_id].to_s.empty?? add_xml_to_send(object, session_id) : update_xml_to_send(object, session_id))
           end
@@ -11,6 +13,8 @@ module QBWC
 
         def generate_request_queries(objects, params)
           objects.inject('') do |request, object|
+            sanitize_customer(object)
+
             session_id = Persistence::Object.new({connection_id: params['connection_id']}.with_indifferent_access,{}).save_session(object)
             request << search_xml(object['email'], session_id)
           end
@@ -91,6 +95,24 @@ module QBWC
 </CustomerModRq>
           XML
         end
+
+        private
+
+        def sanitize_customer(customer)
+          customer['billing_address']['address1'].gsub!(/[^0-9A-Za-z\s]/, '')
+          customer['billing_address']['address2'].gsub!(/[^0-9A-Za-z\s]/, '')
+          customer['billing_address']['city'].gsub!(/[^0-9A-Za-z\s]/, '')
+          customer['billing_address']['state'].gsub!(/[^0-9A-Za-z\s]/, '')
+          customer['billing_address']['zipcode'].gsub!(/[^0-9A-Za-z\s]/, '')
+          customer['billing_address']['country'].gsub!(/[^0-9A-Za-z\s]/, '')
+          customer['shipping_address']['address1'].gsub!(/[^0-9A-Za-z\s]/, '')
+          customer['shipping_address']['address2'].gsub!(/[^0-9A-Za-z\s]/, '')
+          customer['shipping_address']['city'].gsub!(/[^0-9A-Za-z\s]/, '')
+          customer['shipping_address']['state'].gsub!(/[^0-9A-Za-z\s]/, '')
+          customer['shipping_address']['zipcode'].gsub!(/[^0-9A-Za-z\s]/, '')
+          customer['shipping_address']['country'].gsub!(/[^0-9A-Za-z\s]/, '')
+        end
+
       end
     end
   end
