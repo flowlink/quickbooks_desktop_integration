@@ -32,6 +32,29 @@ module QBWC
         expect(xml.match(/Quantity/)).to be_nil
       end
 
+
+      it "builds xml request sanitizing address fields" do
+        orders = Factory.orders['orders']
+        order = orders.first
+        order['billing_address']['address1'] << '21 1ª6'
+        order['billing_address']['address2'] << '21 1ª6'
+        order['billing_address']['city'] << '21 1ª6'
+        order['billing_address']['state'] << '21 1ª6'
+        order['billing_address']['zipcode'] << '21 1ª6'
+        order['billing_address']['country'] << '21 1ª6'
+        order['shipping_address']['address1'] << '21 1ª6'
+        order['shipping_address']['address2'] << '21 1ª6'
+        order['shipping_address']['city'] << '21 1ª6'
+        order['shipping_address']['state'] << '21 1ª6'
+        order['shipping_address']['zipcode'] << '21 1ª6'
+        order['shipping_address']['country'] << '21 1ª6'
+
+
+        xml = subject.generate_request_insert_update orders
+        expect(xml).to match /SalesOrderAdd/
+        expect(xml).to match /SalesOrderLineAdd/
+        expect(xml.match(/ª/)).to be_nil
+      end
     end
   end
 end

@@ -5,6 +5,8 @@ module QBWC
 
         def generate_request_queries(objects, params)
           objects.inject("") do |request, object|
+            sanitize_order(object)
+
             # Needed to keep shipment ID b/c and Order already has a order_id
             extra = "shipment-#{object['order_id']}-" if object.has_key?('shipment_id')
             session_id = Persistence::Object.new({connection_id: params['connection_id']}.with_indifferent_access,{}).save_session(object, extra)
@@ -14,6 +16,8 @@ module QBWC
 
         def generate_request_insert_update(objects, params = {})
           objects.inject("") do |request, object|
+            sanitize_order(object)
+
             session_id = Persistence::Object.new({connection_id: params['connection_id']}.with_indifferent_access,{}).save_session(object)
             request << if object[:list_id].to_s.empty?
                          add_xml_to_send(object, params, session_id)
@@ -226,6 +230,21 @@ module QBWC
 
         def adjustments(record)
           record['adjustments'].to_a.reject{ |adj| adj['value'].to_f == 0.0 }.sort{ |a,b| a['name'].downcase <=> b['name'].downcase }
+        end
+
+        def sanitize_order(order)
+          order['billing_address']['address1'].gsub!(/[^0-9A-Za-z\s]/, '')
+          order['billing_address']['address2'].gsub!(/[^0-9A-Za-z\s]/, '')
+          order['billing_address']['city'].gsub!(/[^0-9A-Za-z\s]/, '')
+          order['billing_address']['state'].gsub!(/[^0-9A-Za-z\s]/, '')
+          order['billing_address']['zipcode'].gsub!(/[^0-9A-Za-z\s]/, '')
+          order['billing_address']['country'].gsub!(/[^0-9A-Za-z\s]/, '')
+          order['shipping_address']['address1'].gsub!(/[^0-9A-Za-z\s]/, '')
+          order['shipping_address']['address2'].gsub!(/[^0-9A-Za-z\s]/, '')
+          order['shipping_address']['city'].gsub!(/[^0-9A-Za-z\s]/, '')
+          order['shipping_address']['state'].gsub!(/[^0-9A-Za-z\s]/, '')
+          order['shipping_address']['zipcode'].gsub!(/[^0-9A-Za-z\s]/, '')
+          order['shipping_address']['country'].gsub!(/[^0-9A-Za-z\s]/, '')
         end
       end
     end
