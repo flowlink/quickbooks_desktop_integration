@@ -4,10 +4,13 @@ module Persistence
 
     class << self
       def handle_error(config, error_context, object_type, request_id)
-        Persistence::Object.new(config, {}).create_error_notifications(error_context, object_type, request_id)
+        Persistence::Object.new(config, {})
+          .create_error_notifications(error_context, object_type, request_id)
       end
+
       def update_statuses(config = {}, processed = [], failed = [])
-        Persistence::Object.new(config, {}).update_objects_files({ processed: processed, failed: failed }.with_indifferent_access)
+        Persistence::Object.new(config, {})
+          .update_objects_files({ processed: processed, failed: failed }.with_indifferent_access)
       end
     end
 
@@ -35,13 +38,15 @@ module Persistence
 
     # Doesn't check whether the record (s) is already in s3. Only save it.
     #
-    # AmazonS3 will append a number to the end of the file. e.g. orders_123123(1)
+    # AmazonS3 will append a number to the end of the file.
+    # e.g. orders_123123(1)
     # if it already exists.
     #
-    # Files MUST be named like this /connectionid/folder/objecttype_object_ref.csv
+    # Files MUST be named like this
+    # /connectionid/folder/objecttype_object_ref.csv
     #
-    #   e.g. 54372cb069702d1f59000000/wombat_pending/orders_T-SHIRT-SPREE1.csv
-    #   e.g. 54372cb069702d1f59000000/quickbooks_pending/orders_T-SHIRT-SPREE1.csv
+    # e.g. 54372cb069702d1f59000000/wombat_pending/orders_T-SHIRT-SPREE1.csv
+    # e.g. 54372cb069702d1f59000000/quickbooks_pending/orders_T-SHIRT-SPREE1.csv
     #
     def save
       objects.each do |object|
@@ -75,8 +80,8 @@ module Persistence
       collection = amazon_s3.bucket.objects
 
       collection.with_prefix(prefix).enum.map do |s3_object|
-        _, _, filename = s3_object.key.split("/")
-        object_type    = filename.split("_").first
+        _, _, filename = s3_object.key.split('/')
+        object_type    = filename.split('_').first
 
         contents = s3_object.read
 
@@ -92,8 +97,8 @@ module Persistence
       collection = amazon_s3.bucket.objects
 
       collection.with_prefix(prefix).enum.map do |s3_object|
-        _, _, filename = s3_object.key.split("/")
-        object_type    = filename.split("_").second
+        _, _, filename = s3_object.key.split('/')
+        object_type    = filename.split('_').second
 
         contents = s3_object.read
 
@@ -109,14 +114,15 @@ module Persistence
     #   - Fetch files from s3
     #   - Move them to ready folder
     #   - Give it back as a Hash to be created a request
-    #   - On Quickbooks callback request response we rename with ListID and EditSequence
+    #   - On Quickbooks callback request response we rename
+    #    with ListID and EditSequence
     def process_pending_objects
       prefix = "#{base_name}/#{pending}"
       collection = amazon_s3.bucket.objects
 
       collection.with_prefix(prefix).enum.map do |s3_object|
-        _, _, filename    = s3_object.key.split("/")
-        object_type, _, _ = filename.split("_")
+        _, _, filename    = s3_object.key.split('/')
+        object_type, _, _ = filename.split('_')
 
         contents = s3_object.read
 
@@ -127,19 +133,19 @@ module Persistence
       end.flatten
     end
 
-    # Moves from two_phase_pending to pending, than will be executed the next time
+    # Moves from two_phase_pending to pending, than will
+    # be executed the next time
     def process_two_phase_pending_objects
       prefix = "#{base_name}/#{two_phase_pending}"
       collection = amazon_s3.bucket.objects
 
       collection.with_prefix(prefix).enum.each do |s3_object|
-        _, _, filename    = s3_object.key.split("/")
-        object_type, _, _ = filename.split("_")
+        _, _, filename    = s3_object.key.split('/')
+        object_type, _, _ = filename.split('_')
 
         contents = s3_object.read
 
         s3_object.move_to("#{base_name}/#{pending}/#{filename}")
-
       end
     end
 
@@ -171,7 +177,7 @@ module Persistence
           new_file_name = "#{filename}#{object[:list_id]}_#{object[:edit_sequence]}.csv"
           s3_object.move_to(new_file_name)
 
-          if !object[:extra_data].to_s.empty?
+          unless object[:extra_data].to_s.empty?
             contents = amazon_s3.bucket.objects[new_file_name].read
             amazon_s3.bucket.objects[new_file_name].delete
 
@@ -201,7 +207,7 @@ module Persistence
       prefix = "#{base_name}/#{ready}"
       collection = amazon_s3.bucket.objects
 
-      collection.with_prefix(prefix).enum.select{ |s3| !s3.key.match(/notification/) }.map do |s3_object|
+      collection.with_prefix(prefix).enum.select { |s3| !s3.key.match(/notification/) }.map do |s3_object|
         _, _, filename                         = s3_object.key.split('/')
         object_type, _, list_id, edit_sequence = filename.split('_')
 
@@ -211,8 +217,8 @@ module Persistence
         contents = s3_object.read
 
         { object_type.pluralize =>
-            { list_id: list_id, edit_sequence: edit_sequence }.
-                                           merge(Converter.csv_to_hash(contents).first).with_indifferent_access
+            { list_id: list_id, edit_sequence: edit_sequence }
+              .merge(Converter.csv_to_hash(contents).first).with_indifferent_access
         }
       end.flatten
     end
@@ -268,14 +274,14 @@ module Persistence
       prefix = "#{base_name}/#{ready}/notification_"
       collection = amazon_s3.bucket.objects
 
-      collection.with_prefix(prefix).enum.select{ |s3| s3.key.match(payload_key) }.inject({ 'processed' => {}, 'failed' => {} }) do |notifications, s3_object|
-        _, _, filename              = s3_object.key.split("/")
-        _, status, _, object_ref, _ = filename.split("_")
-        content = amazon_s3.convert_download('csv',s3_object.read).first
+      collection.with_prefix(prefix).enum.select { |s3| s3.key.match(payload_key) }.inject('processed' => {}, 'failed' => {}) do |notifications, s3_object|
+        _, _, filename              = s3_object.key.split('/')
+        _, status, _, object_ref, _ = filename.split('_')
+        content = amazon_s3.convert_download('csv', s3_object.read).first
 
         object_ref = id_for_notifications(content, object_ref)
 
-        if content.has_key?('message')
+        if content.key?('message')
           notifications[status][content['message']] ||= []
           notifications[status][content['message']] << object_ref
         else
@@ -289,7 +295,7 @@ module Persistence
       end
     end
 
-    def save_session(object, extra=nil)
+    def save_session(object, extra = nil)
       session_id = SecureRandom.uuid
       session_id = "#{extra}#{session_id}" if extra
       file = "#{base_name}/#{sessions}/#{session_id}.csv"
@@ -301,7 +307,7 @@ module Persistence
       file = "#{base_name}/#{sessions}/#{session_id}.csv"
       contents = ''
       begin
-        contents = amazon_s3.convert_download('csv',amazon_s3.bucket.objects[file].read)
+        contents = amazon_s3.convert_download('csv', amazon_s3.bucket.objects[file].read)
       rescue AWS::S3::Errors::NoSuchKey => e
         puts "File not found[load_session]: #{file}"
       end
@@ -314,7 +320,7 @@ module Persistence
       # if the error was this, then the object stay there to process next time
       if error_context[:message] != 'The request has not been processed.'
         session      = load_session(request_id)
-        generate_error_notification(error_context.merge({ object: session }), object_type)
+        generate_error_notification(error_context.merge(object: session), object_type)
         update_objects_files({ processed: [], failed: [{ object_type => session }] }.with_indifferent_access)
       end
     end
@@ -324,9 +330,9 @@ module Persistence
       file_name = "#{base_name}/#{pending}/shipments_#{shipment_id}_.csv"
 
       begin
-        contents = amazon_s3.convert_download('csv',amazon_s3.bucket.objects[file_name].read)
+        contents = amazon_s3.convert_download('csv', amazon_s3.bucket.objects[file_name].read)
         amazon_s3.bucket.objects[file_name].delete
-      rescue AWS::S3::Errors::NoSuchKey => e
+      rescue AWS::S3::Errors::NoSuchKey => _e
         puts "File not found[update_shipments_with_payment_ids]: #{file_name}"
       end
 
@@ -337,7 +343,7 @@ module Persistence
       begin
         order_file_name = "#{base_name}/#{ready}/payments_#{object[:object_ref]}_.csv"
         amazon_s3.bucket.objects[order_file_name].delete
-      rescue AWS::S3::Errors::NoSuchKey => e
+      rescue AWS::S3::Errors::NoSuchKey => _e
         puts "File not found[delete payments]: #{file_name}"
       end
     end
@@ -347,66 +353,65 @@ module Persistence
       file_name = "#{base_name}/#{pending}/shipments_#{shipment_id}_.csv"
 
       begin
-        contents = amazon_s3.convert_download('csv',amazon_s3.bucket.objects[file_name].read)
+        contents = amazon_s3.convert_download('csv', amazon_s3.bucket.objects[file_name].read)
         amazon_s3.bucket.objects[file_name].delete
-      rescue AWS::S3::Errors::NoSuchKey => e
+      rescue AWS::S3::Errors::NoSuchKey => _e
         puts "File not found[update_shipments_with_qb_ids]: #{file_name}"
       end
 
-      contents.first['items'] = object[:extra_data]['line_items'].
-                                  map do |item|
-                                   item['sales_order_txn_line_id'] = item['txn_line_id']
-                                   item['sales_order_txn_id']      = item['txn_id']
-                                   item.delete('txn_line_id')
-                                   item.delete('txn_id')
-                                   item
-                                  end
+      contents.first['items'] = object[:extra_data]['line_items']
+                                .map do |item|
+        item['sales_order_txn_line_id'] = item['txn_line_id']
+        item['sales_order_txn_id']      = item['txn_id']
+        item.delete('txn_line_id')
+        item.delete('txn_id')
+        item
+      end
 
-      contents.first['adjustments'] = object[:extra_data]['adjustments'].
-                                        map do |item|
-                                         item['sales_order_txn_line_id'] = item['txn_line_id']
-                                         item['sales_order_txn_id']      = item['txn_id']
-                                         item.delete('txn_line_id')
-                                         item.delete('txn_id')
-                                         item
-                                        end
+      contents.first['adjustments'] = object[:extra_data]['adjustments']
+                                      .map do |item|
+        item['sales_order_txn_line_id'] = item['txn_line_id']
+        item['sales_order_txn_id']      = item['txn_id']
+        item.delete('txn_line_id')
+        item.delete('txn_id')
+        item
+      end
 
       amazon_s3.export file_name: file_name, objects: contents
 
       begin
         order_file_name = "#{base_name}/#{ready}/orders_#{object[:object_ref]}_.csv"
         amazon_s3.bucket.objects[order_file_name].delete
-      rescue AWS::S3::Errors::NoSuchKey => e
+      rescue AWS::S3::Errors::NoSuchKey => _e
         puts "File not found[delete orders]: #{file_name}"
       end
     end
 
     # Creates payments to updates Invoices IDs into Payments and link one to another,
     # needs to be separated, because we need QB IDs and it's only exists after processed
-    def create_payments_updates_from_shipments(config, shipment_id, invoice_txn_id)
+    def create_payments_updates_from_shipments(_config, shipment_id, invoice_txn_id)
       file_name = "#{base_name}/#{ready}/shipments_#{shipment_id}_"
 
       begin
         file = amazon_s3.bucket.objects.with_prefix(file_name).enum.first
 
-        contents = amazon_s3.convert_download('csv',file.read)
-      rescue AWS::S3::Errors::NoSuchKey => e
+        contents = amazon_s3.convert_download('csv', file.read)
+      rescue AWS::S3::Errors::NoSuchKey => _e
         puts "File not found[create_payments_updates_from_shipments]: #{file_name}"
       end
       object = contents.first
 
       save_object = [{
-                      'id'              => object['order_id'],
-                       'invoice_txn_id' => invoice_txn_id,
-                       'amount'         => object['totals']['payment'],
-                       'object_ref'     => object['order_id'],
-                       'list_id'        => object['payment']['list_id'],
-                       'edit_sequence'  => object['payment']['edit_sequence']
-                      }]
+        'id'              => object['order_id'],
+        'invoice_txn_id' => invoice_txn_id,
+        'amount'         => object['totals']['payment'],
+        'object_ref'     => object['order_id'],
+        'list_id'        => object['payment']['list_id'],
+        'edit_sequence'  => object['payment']['edit_sequence']
+      }]
 
       new_file_name = "#{base_name}/#{ready}/payments_#{object['order_id']}_.csv"
       amazon_s3.export file_name: new_file_name, objects: save_object
-
     end
 
     private
@@ -458,7 +463,8 @@ module Persistence
       object['status'] = 'cancelled' if config['flow'] == 'cancel_order'
     end
 
-    # When inventory is updated, QB doesn't update item inventory, this is to force this update and
+    # When inventory is updated, QB doesn't update item inventory,
+    # this is to force this update and
     # return to Wombat item inventories updated
     def generate_extra_objects(object)
       if payload_key.pluralize == 'inventories'
@@ -473,9 +479,9 @@ module Persistence
     def generate_inserts_for_two_phase(object)
       # TODO Create a better way to choose between types
       if payload_key.pluralize == 'orders'
-        customer    = QBWC::Request::Orders.build_customer_from_order(object)
-        products    = QBWC::Request::Orders.build_products_from_order(objects)
-        payments    = QBWC::Request::Orders.build_payments_from_order(object)
+        customer = QBWC::Request::Orders.build_customer_from_order(object)
+        products = QBWC::Request::Orders.build_products_from_order(objects)
+        payments = QBWC::Request::Orders.build_payments_from_order(object)
 
         save_pending_file(customer['id'], 'customers', customer)
 
@@ -487,10 +493,10 @@ module Persistence
           save_pending_file(payment['id'], 'payments', payment)
         end
       elsif payload_key.pluralize == 'shipments'
-        customer    = QBWC::Request::Shipments.build_customer_from_shipments(object)
-        products    = QBWC::Request::Shipments.build_products_from_shipments(objects)
-        order       = QBWC::Request::Shipments.build_order_from_shipments(object)
-        payment     = QBWC::Request::Shipments.build_payment_from_shipments(object)
+        customer = QBWC::Request::Shipments.build_customer_from_shipments(object)
+        products = QBWC::Request::Shipments.build_products_from_shipments(objects)
+        order    = QBWC::Request::Shipments.build_order_from_shipments(object)
+        payment  = QBWC::Request::Shipments.build_payment_from_shipments(object)
 
         save_pending_file(customer['id'], 'customers', customer)
         save_pending_file(order['id'], 'orders', order)
@@ -506,7 +512,7 @@ module Persistence
     end
 
     def two_phase?
-      ['orders', 'shipments'].include?(payload_key.pluralize)
+      %w(orders shipments).include?(payload_key.pluralize)
     end
 
     def two_phase_pending
@@ -545,7 +551,7 @@ module Persistence
       id_for_object(object, payload_key.pluralize)
     end
 
-    #deprecated
+    # deprecated
     def id_for_notifications(object, object_ref)
       id = id_for_object(object, payload_key.pluralize)
       return id if id != object['id']
@@ -564,6 +570,5 @@ module Persistence
         object['id']
       end
     end
-
   end
 end
