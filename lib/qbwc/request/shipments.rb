@@ -4,6 +4,8 @@ module QBWC
       class << self
         def generate_request_queries(objects, params)
           objects.inject("") do |request, object|
+            sanitize_shipment(object)
+
             session_id = Persistence::Object.new({connection_id: params['connection_id']}.with_indifferent_access,{}).save_session(object)
             request << search_xml(object['order_id'], session_id)
           end
@@ -11,6 +13,7 @@ module QBWC
 
         def generate_request_insert_update(objects, params = {})
           objects.inject("") do |request, object|
+            sanitize_shipment(object)
 
             config = { connection_id: params['connection_id'] }.with_indifferent_access
             session_id = Persistence::Object.new(config, {}).save_session(object)
@@ -203,6 +206,21 @@ module QBWC
         end
 
         private
+
+        def sanitize_shipment(shipment)
+          shipment['billing_address']['address1'].gsub!(/[^0-9A-Za-z\s]/, '')
+          shipment['billing_address']['address2'].gsub!(/[^0-9A-Za-z\s]/, '')
+          shipment['billing_address']['city'].gsub!(/[^0-9A-Za-z\s]/, '')
+          shipment['billing_address']['state'].gsub!(/[^0-9A-Za-z\s]/, '')
+          shipment['billing_address']['zipcode'].gsub!(/[^0-9A-Za-z\s]/, '')
+          shipment['billing_address']['country'].gsub!(/[^0-9A-Za-z\s]/, '')
+          shipment['shipping_address']['address1'].gsub!(/[^0-9A-Za-z\s]/, '')
+          shipment['shipping_address']['address2'].gsub!(/[^0-9A-Za-z\s]/, '')
+          shipment['shipping_address']['city'].gsub!(/[^0-9A-Za-z\s]/, '')
+          shipment['shipping_address']['state'].gsub!(/[^0-9A-Za-z\s]/, '')
+          shipment['shipping_address']['zipcode'].gsub!(/[^0-9A-Za-z\s]/, '')
+          shipment['shipping_address']['country'].gsub!(/[^0-9A-Za-z\s]/, '')
+        end
 
         def items(record)
           record['items'].to_a.sort{ |a,b| a['product_id'] <=> b['product_id'] }
