@@ -12,7 +12,7 @@
     "channel": "spree",
     "totals": {
       "item": 200,
-      "adjustment": 10,
+      "adjustment": -10,
       "tax": 10,
       "shipping": 0,
       "payment": 210,

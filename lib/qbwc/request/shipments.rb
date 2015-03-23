@@ -200,8 +200,8 @@ module QBWC
 
         def build_payment_from_shipments(object)
           {
-            'id'               => object['order_id'],
-            'order_id'         => object['order_id'],
+            'id'       => object['order_id'],
+            'order_id' => object['order_id']
           }
         end
 
@@ -227,16 +227,22 @@ module QBWC
         end
 
         def adjustments(record)
-          record['adjustments'].to_a.reject{ |adj| adj['value'].to_f == 0.0 }.sort{ |a,b| a['name'].downcase <=> b['name'].downcase }
+          build_adjustments(record).sort{ |a,b| a['name'].downcase <=> b['name'].downcase }
         end
 
         def build_adjustments(object)
-          ['discount', 'tax', 'shipping'].select{ |name| object['totals'].has_key?(name) && object['totals'][name].to_f != 0.0 }.map do |adj_name|
+          ['discount', 'adjustment', 'shipping', 'tax'].select{ |name| object['totals'].has_key?(name) && object['totals'][name].to_f != 0.0 }.map do |adj_name|
             {
-              'name'  => adj_name,
+              'name'  => adjustment_name_fixer(adj_name),
               'value' => object['totals'][adj_name]
             }
           end
+        end
+
+        def adjustment_name_fixer(adjustment_name)
+          return 'discount' if adjustment_name == 'adjustment'
+
+          adjustment_name
         end
       end
     end
