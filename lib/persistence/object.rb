@@ -207,12 +207,13 @@ module Persistence
       prefix = "#{base_name}/#{ready}"
       collection = amazon_s3.bucket.objects
 
-      collection.with_prefix(prefix).enum.select { |s3| !s3.key.match(/notification/) }.map do |s3_object|
+      collection.with_prefix(prefix).enum.reject { |s3| s3.key.match(/notification/) }.map do |s3_object|
         _, _, filename                         = s3_object.key.split('/')
         object_type, _, list_id, edit_sequence = filename.split('_')
 
         list_id.gsub!('.csv', '') unless list_id.nil?
         edit_sequence.gsub!('.csv', '') unless edit_sequence.nil?
+        list_id = nil if edit_sequence.nil? # To fix a problem with multiple files with (n) on it
 
         contents = s3_object.read
 
@@ -254,13 +255,19 @@ module Persistence
 
               collection = amazon_s3.bucket.objects
               collection.with_prefix(filename).enum.each do |s3_object|
+
+                # This is for files that end on (n)
+                _, _, ax_filename = s3_object.key.split('/')
+                _, _, end_of_file, ax_edit_sequence = ax_filename.split('_')
+                end_of_file = '.csv' unless ax_edit_sequence.nil?
+
                 status_folder = send status_key
                 new_filename = "#{base_name}/#{status_folder}/#{object_type}_#{id_for_object(object, object_type)}_"
                 new_filename << "#{object[:list_id]}_#{object[:edit_sequence]}" unless object[:list_id].to_s.empty?
 
-                s3_object.move_to("#{new_filename}.csv")
+                s3_object.move_to("#{new_filename}#{end_of_file}")
 
-                create_notifications("#{new_filename}.csv", status_key) if status_key == 'processed'
+                create_notifications("#{new_filename}#{end_of_file}", status_key) if status_key == 'processed'
               end
             rescue Exception => e
               puts " update_objects_files: #{statuses_objects} #{e.backtrace.inspect}"
