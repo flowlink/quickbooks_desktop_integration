@@ -12,7 +12,7 @@ module QBWC
           Persistence::Object.handle_error(
             config,
             error.merge(context: 'Adding Payments'),
-            "orders",
+            "payments",
             error[:request_id]
           )
         end
