@@ -261,31 +261,11 @@ module Persistence
       end
     end
 
-    def save_session(object, extra = nil)
-      session_id = SecureRandom.uuid
-      session_id = "#{extra}#{session_id}" if extra
-      file = "#{path.base_name}/#{path.sessions}/#{session_id}.csv"
-      amazon_s3.export file_name: file, objects: [object]
-      session_id
-    end
-
-    def load_session(session_id)
-      file = "#{path.base_name}/#{path.sessions}/#{session_id}.csv"
-      contents = ''
-      begin
-        contents = amazon_s3.convert_download('csv', amazon_s3.bucket.objects[file].read)
-      rescue AWS::S3::Errors::NoSuchKey => e
-        puts "File not found[load_session]: #{file}"
-      end
-
-      contents.first unless contents.empty?
-    end
-
     def create_error_notifications(error_context, object_type, request_id)
       # When there is an error in one request, QB invalidate all other requests, to avoid a lack of objects being processed
       # if the error was this, then the object stay there to process next time
       if error_context[:message] != 'The request has not been processed.'
-        session      = load_session(request_id)
+        session = Persistence::Session.load(config, request_id)
         generate_error_notification(error_context.merge(object: session), object_type)
         update_objects_files({ processed: [], failed: [{ object_type => session }] }.with_indifferent_access)
       end
