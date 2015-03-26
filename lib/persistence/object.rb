@@ -77,7 +77,7 @@ module Persistence
       prefix = "#{path.base_name}/#{path.pending}"
       collection = amazon_s3.bucket.objects.with_prefix(prefix).enum
 
-      select_precedence_files(collection).map do |s3_object|
+      collection.map do |s3_object|
         _, _, filename    = s3_object.key.split('/')
         object_type, _, _ = filename.split('_')
 
