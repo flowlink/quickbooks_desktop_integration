@@ -4,7 +4,9 @@ module QBWC
       class << self
         def generate_request_insert_update(objects, params = {})
           objects.inject("") do |request, object|
-            session_id = Persistence::Object.new({connection_id: params['connection_id']}.with_indifferent_access,{}).save_session(object)
+            config = { connection_id: params['connection_id'] }.with_indifferent_access
+            session_id = Persistence::Session.save(config, object)
+
             request << if object[:list_id].to_s.empty?
                          add_xml_to_send(object, params, session_id)
                        else
@@ -15,7 +17,9 @@ module QBWC
 
         def generate_request_queries(objects, params)
           objects.inject("") do |request, object|
-            session_id = Persistence::Object.new({connection_id: params['connection_id']}.with_indifferent_access,{}).save_session(object)
+            config = { connection_id: params['connection_id'] }.with_indifferent_access
+            session_id = Persistence::Session.save(config, object)
+
             request << self.search_xml(object.has_key?('product_id') ? object['product_id'] : object['id'], session_id)
           end
         end
@@ -86,7 +90,7 @@ module QBWC
         end
         # TODO Migrating to inventories.rb
         def polling_current_items_xml(timestamp, config)
-          session_id = Persistence::Object.new(config,{}).save_session({"polling" => timestamp})
+          session_id = Persistence::Session.save(config, {"polling" => timestamp})
 
           time = Time.parse(timestamp).in_time_zone "Pacific Time (US & Canada)"
 

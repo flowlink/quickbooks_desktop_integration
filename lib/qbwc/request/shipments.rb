@@ -6,7 +6,9 @@ module QBWC
           objects.inject("") do |request, object|
             sanitize_shipment(object)
 
-            session_id = Persistence::Object.new({connection_id: params['connection_id']}.with_indifferent_access,{}).save_session(object)
+            config = { connection_id: params['connection_id'] }.with_indifferent_access
+            session_id = Persistence::Session.save(config, object)
+
             request << search_xml(object['order_id'], session_id)
           end
         end
@@ -16,7 +18,7 @@ module QBWC
             sanitize_shipment(object)
 
             config = { connection_id: params['connection_id'] }.with_indifferent_access
-            session_id = Persistence::Object.new(config, {}).save_session(object)
+            session_id = Persistence::Session.save(config, object)
 
             request << if object[:list_id].to_s.empty?
                          add_xml_to_send(object, params, session_id)

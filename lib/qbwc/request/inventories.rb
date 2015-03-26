@@ -4,7 +4,9 @@ module QBWC
       class << self
         def generate_request_insert_update(objects, params = {})
           objects.inject('') do |request, object|
-            session_id = Persistence::Object.new({ connection_id: params['connection_id'] }.with_indifferent_access, {}).save_session(object)
+            config = { connection_id: params['connection_id'] }.with_indifferent_access
+            session_id = Persistence::Session.save(config, object)
+
             request << add_xml_to_send(object, params, session_id)
           end
         end
@@ -21,7 +23,8 @@ module QBWC
           return '' if query_later.empty?
 
           objects = query_later.inject([]) { |all_items, obj| all_items << obj['inventories'] }.flatten
-          session_id = Persistence::Object.new({ origin: 'wombat' }.merge(config), {}).save_session('item_inventories_ids' => objects)
+          config = { origin: 'wombat' }.merge(config)
+          session_id = Persistence::Session.save(config, 'item_inventories_ids' => objects)
 
           codes = objects.inject('') do |codes, object|
             codes << "<FullName>#{object['id']}</FullName>"
@@ -37,7 +40,7 @@ module QBWC
         end
 
         def polling_others_items_xml(timestamp, config)
-          session_id  = Persistence::Object.new(config, {}).save_session('polling' => timestamp)
+          session_id = Persistence::Session.save(config, 'polling' => timestamp)
 
           inventory_params = Persistence::Settings.new(config)
                              .settings('get_').select { |setting| setting.keys.first == 'inventories' }.first

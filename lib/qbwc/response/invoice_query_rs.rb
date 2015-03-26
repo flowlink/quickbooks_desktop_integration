@@ -44,7 +44,7 @@ module QBWC
 
       def build_extra_data(config, record)
         hash_items = build_hash_items(record)
-        object_source = Persistence::Object.new(config, {}).load_session(record['request_id'])
+        object_source = Persistence::Session.load(config, record['request_id'])
 
         mapped_lines = object_source['items'].to_a.map do |item|
           item['txn_line_id'] = hash_items[item['product_id'].downcase]

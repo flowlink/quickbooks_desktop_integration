@@ -5,7 +5,8 @@ module QBWC
       class << self
         def generate_request_insert_update(objects, params = {})
           objects.inject("") do |request, object|
-            session_id = Persistence::Object.new({connection_id: params['connection_id']}.with_indifferent_access,{}).save_session(object)
+            config = { connection_id: params['connection_id'] }.with_indifferent_access
+            session_id = Persistence::Session.save(config, object)
             if object[:list_id].to_s.empty?
               request = add_xml_to_send(object, params, session_id)
             else
@@ -24,7 +25,9 @@ module QBWC
 
         def generate_request_queries(objects, params)
           objects.inject("") do |request, object|
-            session_id = Persistence::Object.new({connection_id: params['connection_id']}.with_indifferent_access,{}).save_session(object)
+            config = { connection_id: params['connection_id'] }.with_indifferent_access
+            session_id = Persistence::Session.save(config, object)
+
             request << self.search_xml(object.has_key?('product_id') ? object['product_id'] : object['id'], session_id)
           end
         end

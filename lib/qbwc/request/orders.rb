@@ -9,7 +9,9 @@ module QBWC
 
             # Needed to keep shipment ID b/c and Order already has a order_id
             extra = "shipment-#{object['order_id']}-" if object.has_key?('shipment_id')
-            session_id = Persistence::Object.new({connection_id: params['connection_id']}.with_indifferent_access,{}).save_session(object, extra)
+            config = { connection_id: params['connection_id'] }.with_indifferent_access
+            session_id = Persistence::Session.save(config, object, extra)
+
             request << search_xml(object['id'], session_id)
           end
         end
@@ -18,7 +20,9 @@ module QBWC
           objects.inject("") do |request, object|
             sanitize_order(object)
 
-            session_id = Persistence::Object.new({connection_id: params['connection_id']}.with_indifferent_access,{}).save_session(object)
+            config = { connection_id: params['connection_id'] }.with_indifferent_access
+            session_id = Persistence::Session.save(config, object)
+
             request << if object[:list_id].to_s.empty?
                          add_xml_to_send(object, params, session_id)
                       else
