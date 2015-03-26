@@ -3,6 +3,7 @@ $:.unshift File.dirname(__FILE__)
 require 'quickbooks_desktop_helper'
 
 require 'persistence/path'
+require 'persistence/polling'
 require 'persistence/s3_util'
 require 'persistence/object'
 require 'persistence/settings'

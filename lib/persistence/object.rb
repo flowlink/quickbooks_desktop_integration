@@ -481,11 +481,6 @@ module Persistence
       %w(orders shipments).include?(payload_key.pluralize)
     end
 
-
-    def current_time
-      Time.now.to_i
-    end
-
     def id_of_object(object)
       id_for_object(object, payload_key.pluralize)
     end
