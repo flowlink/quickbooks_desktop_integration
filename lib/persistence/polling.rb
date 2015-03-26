@@ -1,12 +1,16 @@
 module Persistence
   # Responsible for polling tasks
   class Polling
-
     attr_reader :objects, :payload_key, :amazon_s3, :path
 
     def initialize(config = {}, payload = {})
       @payload_key = payload.keys.first
-      @objects     = payload[payload_key].is_a?(Hash) ? [payload[payload_key]] : Array(payload[payload_key])
+      @objects     = if payload[payload_key].is_a?(Hash)
+                       [payload[payload_key]]
+                     else
+                       Array(payload[payload_key])
+                     end
+
       @config      = { origin: 'wombat' }.merge(config).with_indifferent_access
       @amazon_s3   = S3Util.new
       @path        = Persistence::Path.new(@config)
