@@ -27,7 +27,7 @@ module QBWC
         payload = { inventories: inventories_to_wombat }
         config = { origin: 'quickbooks' }.merge config
 
-        poll_persistence = Persistence::Object.new(config, payload)
+        poll_persistence = Persistence::Polling.new(config, payload)
         poll_persistence.save_for_query_later
         nil
       end

@@ -69,7 +69,7 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
 
       add_parameter "quickbooks_force_config", false
 
-      persistence = Persistence::Object.new config, object_type => {}
+      persistence = Persistence::Polling.new config, object_type => {}
       records = persistence.process_waiting_records
 
       if records.any?

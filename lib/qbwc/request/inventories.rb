@@ -3,27 +3,27 @@ module QBWC
     class Inventories
       class << self
         def generate_request_insert_update(objects, params = {})
-          objects.inject("") do |request, object|
-            session_id = Persistence::Object.new({connection_id: params['connection_id']}.with_indifferent_access,{}).save_session(object)
+          objects.inject('') do |request, object|
+            session_id = Persistence::Object.new({ connection_id: params['connection_id'] }.with_indifferent_access, {}).save_session(object)
             request << add_xml_to_send(object, params, session_id)
           end
         end
 
-        def generate_request_queries(objects, params)
+        def generate_request_queries(_objects, _params)
           # There is no query
           ''
         end
 
-        def polling_current_items_xml(timestamp, config)
-          query_later = Persistence::Object.new({ origin: 'quickbooks' }.merge(config), { inventories: {} }).
-                  process_waiting_query_later_ids
+        def polling_current_items_xml(_timestamp, config)
+          query_later = Persistence::Polling.new({ origin: 'quickbooks' }.merge(config), inventories: {})
+                        .process_waiting_query_later_ids
 
           return '' if query_later.empty?
 
-          objects = query_later.inject([]) {|all_items,obj| all_items << obj['inventories'] }.flatten
-          session_id = Persistence::Object.new({ origin: 'wombat' }.merge(config),{}).save_session({"item_inventories_ids" => objects})
+          objects = query_later.inject([]) { |all_items, obj| all_items << obj['inventories'] }.flatten
+          session_id = Persistence::Object.new({ origin: 'wombat' }.merge(config), {}).save_session('item_inventories_ids' => objects)
 
-          codes = objects.inject("") do |codes, object|
+          codes = objects.inject('') do |codes, object|
             codes << "<FullName>#{object['id']}</FullName>"
           end
 
@@ -36,18 +36,17 @@ module QBWC
           XML
         end
 
-
         def polling_others_items_xml(timestamp, config)
-          session_id  = Persistence::Object.new(config,{}).save_session({"polling" => timestamp})
+          session_id  = Persistence::Object.new(config, {}).save_session('polling' => timestamp)
 
-          inventory_params = Persistence::Settings.new(config).
-            settings('get_').select{ |setting| setting.keys.first == 'inventories' }.first
+          inventory_params = Persistence::Settings.new(config)
+                             .settings('get_').select { |setting| setting.keys.first == 'inventories' }.first
 
-          inventory_params['inventories']['quickbooks_since'] = Time.now.in_time_zone("Pacific Time (US & Canada)").iso8601
+          inventory_params['inventories']['quickbooks_since'] = Time.now.in_time_zone('Pacific Time (US & Canada)').iso8601
           inventory_params['inventories']['quickbooks_force_config'] = true
           Persistence::Settings.new(inventory_params['inventories'].with_indifferent_access).setup
 
-          time = Time.parse(timestamp).in_time_zone "Pacific Time (US & Canada)"
+          time = Time.parse(timestamp).in_time_zone 'Pacific Time (US & Canada)'
 
           <<-XML
 
@@ -84,7 +83,6 @@ module QBWC
           XML
         end
 
-
         # TODO BUG: http://www.productivecomputing.com/forum/index.php?topic=2559.0
         def add_xml_to_send(inventory, params, session_id)
           <<-XML
@@ -119,4 +117,3 @@ module QBWC
     end
   end
 end
-

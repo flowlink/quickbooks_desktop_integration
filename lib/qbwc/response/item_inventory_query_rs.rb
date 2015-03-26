@@ -29,7 +29,7 @@ module QBWC
           payload = { inventories: inventories_to_wombat }
           config = { origin: 'quickbooks' }.merge config
 
-          poll_persistence = Persistence::Object.new(config, payload)
+          poll_persistence = Persistence::Polling.new(config, payload)
           poll_persistence.save_for_polling
         end
 
@@ -37,7 +37,7 @@ module QBWC
           payload = { products: products_to_wombat }
           config = { origin: 'quickbooks' }.merge config
 
-          poll_persistence = Persistence::Object.new(config, payload)
+          poll_persistence = Persistence::Polling.new(config, payload)
           poll_persistence.save_for_polling
 
           product_params['products']['quickbooks_since'] = last_time_modified
