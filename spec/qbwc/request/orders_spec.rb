@@ -4,7 +4,7 @@ module QBWC
   module Request
     describe Orders do
       before do
-        allow_any_instance_of(Persistence::Object).to receive(:save_session).and_return("82bfb8e5-99e3-41c9-a4cc-19a0001b6ecf")
+        allow(Persistence::Session).to receive(:save).and_return("82bfb8e5-99e3-41c9-a4cc-19a0001b6ecf")
       end
 
       subject { described_class }

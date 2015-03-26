@@ -8,7 +8,7 @@ module QBWC
       let(:product_update) { [product_insert.first.merge({:list_id=>'1234567'})] }
 
       before do
-        allow_any_instance_of(Persistence::Object).to receive(:save_session).and_return("1f8d3ff5-6f6c-43d6-a084-0ac95e2e29ad")
+        allow(Persistence::Session).to receive(:save).and_return("1f8d3ff5-6f6c-43d6-a084-0ac95e2e29ad")
       end
 
       it "builds insert requests" do

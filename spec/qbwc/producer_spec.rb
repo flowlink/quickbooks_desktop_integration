@@ -3,7 +3,7 @@ require 'spec_helper'
 module QBWC
   describe Producer do
     before do
-      allow_any_instance_of(Persistence::Object).to receive(:save_session).and_return("1f8d3ff5-6f6c-43d6-a084-0ac95e2e29ad")
+      allow(Persistence::Session).to receive(:save).and_return("1f8d3ff5-6f6c-43d6-a084-0ac95e2e29ad")
     end
 
     it "build all request xml available per account" do
