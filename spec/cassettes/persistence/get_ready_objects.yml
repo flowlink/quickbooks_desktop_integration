@@ -12,24 +12,24 @@ http_interactions:
       Accept-Encoding:
       - ''
       User-Agent:
-      - aws-sdk-ruby/1.57.0 ruby/2.0.0 x86_64-darwin14.0.0
+      - aws-sdk-ruby/1.57.0 ruby/2.1.5 x86_64-darwin14.0
       Date:
-      - Wed, 12 Nov 2014 12:24:59 GMT
+      - Thu, 26 Mar 2015 16:59:53 GMT
       Authorization:
       - AUTHORIZATION
       Accept:
-      - '*/*'
+      - "*/*"
   response:
     status:
       code: 200
       message: OK
     headers:
       X-Amz-Id-2:
-      - b0D6a1IlEAEzI3bEBZli9d9FJroNsIYjAyoH6KKPl+id4TwOFjj5GPYf1pt1o0HwwVvtZTZGYPw=
+      - hmymSJcmrty4AS5+edc8cOQcYNt53NkNckepF0CFOv/U3Dq1UN26NYImraNl0VBNw/Dw7ImwATc=
       X-Amz-Request-Id:
-      - 734D486947BEA392
+      - 622A552E6C287ACF
       Date:
-      - Wed, 12 Nov 2014 12:25:01 GMT
+      - Thu, 26 Mar 2015 16:59:55 GMT
       Content-Type:
       - application/xml
       Transfer-Encoding:
@@ -40,12 +40,12 @@ http_interactions:
       encoding: UTF-8
       string: |-
         <?xml version="1.0" encoding="UTF-8"?>
-        <ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>quickbooks-desktop-integration</Name><Prefix>54372cb069702d1f59000000/wombat_ready</Prefix><Marker></Marker><MaxKeys>1000</MaxKeys><IsTruncated>false</IsTruncated><Contents><Key>54372cb069702d1f59000000/wombat_ready/inventory_12154(1).csv</Key><LastModified>2014-11-11T17:41:08.000Z</LastModified><ETag>&quot;16ea95ff47da599f0ff7aa4505f905ca&quot;</ETag><Size>67</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>aws</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>54372cb069702d1f59000000/wombat_ready/inventory_12154(2).csv</Key><LastModified>2014-11-11T17:41:10.000Z</LastModified><ETag>&quot;16ea95ff47da599f0ff7aa4505f905ca&quot;</ETag><Size>67</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>aws</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>54372cb069702d1f59000000/wombat_ready/inventory_12154(3).csv</Key><LastModified>2014-11-11T17:41:13.000Z</LastModified><ETag>&quot;16ea95ff47da599f0ff7aa4505f905ca&quot;</ETag><Size>67</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>aws</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>54372cb069702d1f59000000/wombat_ready/inventory_12154.csv</Key><LastModified>2014-11-11T17:41:15.000Z</LastModified><ETag>&quot;16ea95ff47da599f0ff7aa4505f905ca&quot;</ETag><Size>67</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>aws</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>54372cb069702d1f59000000/wombat_ready/products_H28573688670.csv</Key><LastModified>2014-11-10T11:55:05.000Z</LastModified><ETag>&quot;b713d885ffaacdd8c189a48cf19f0ff6&quot;</ETag><Size>664</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>aws</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>54372cb069702d1f59000000/wombat_ready/products_SPREE-T-SHIRT293178.csv</Key><LastModified>2014-11-11T18:25:52.000Z</LastModified><ETag>&quot;2b256dc335a778d105d189a67b17133b&quot;</ETag><Size>1138</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>aws</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents></ListBucketResult>
+        <ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>quickbooks-desktop-integration</Name><Prefix>54372cb069702d1f59000000/wombat_ready</Prefix><Marker></Marker><MaxKeys>1000</MaxKeys><IsTruncated>false</IsTruncated><Contents><Key>54372cb069702d1f59000000/wombat_ready/inventory_12154(1).csv</Key><LastModified>2014-11-11T17:41:08.000Z</LastModified><ETag>&quot;16ea95ff47da599f0ff7aa4505f905ca&quot;</ETag><Size>67</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>uberzealot</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>54372cb069702d1f59000000/wombat_ready/inventory_12154(2).csv</Key><LastModified>2014-11-11T17:41:10.000Z</LastModified><ETag>&quot;16ea95ff47da599f0ff7aa4505f905ca&quot;</ETag><Size>67</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>uberzealot</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>54372cb069702d1f59000000/wombat_ready/inventory_12154(3).csv</Key><LastModified>2014-11-11T17:41:13.000Z</LastModified><ETag>&quot;16ea95ff47da599f0ff7aa4505f905ca&quot;</ETag><Size>67</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>uberzealot</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>54372cb069702d1f59000000/wombat_ready/inventory_12154.csv</Key><LastModified>2014-11-11T17:41:15.000Z</LastModified><ETag>&quot;16ea95ff47da599f0ff7aa4505f905ca&quot;</ETag><Size>67</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>uberzealot</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>54372cb069702d1f59000000/wombat_ready/notification_failed_orders_R154085346708777_(1).csv</Key><LastModified>2014-12-15T13:14:27.000Z</LastModified><ETag>&quot;b89e1a9635db3070554b2c301b47da19&quot;</ETag><Size>1456</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>uberzealot</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>54372cb069702d1f59000000/wombat_ready/notification_failed_orders_R154085346708777_(2).csv</Key><LastModified>2014-12-23T18:49:08.000Z</LastModified><ETag>&quot;b89e1a9635db3070554b2c301b47da19&quot;</ETag><Size>1456</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>uberzealot</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>54372cb069702d1f59000000/wombat_ready/notification_failed_orders_R154085346708777_.csv</Key><LastModified>2014-12-15T13:09:32.000Z</LastModified><ETag>&quot;b89e1a9635db3070554b2c301b47da19&quot;</ETag><Size>1456</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>uberzealot</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>54372cb069702d1f59000000/wombat_ready/products_H28573688670.csv</Key><LastModified>2014-11-10T11:55:05.000Z</LastModified><ETag>&quot;b713d885ffaacdd8c189a48cf19f0ff6&quot;</ETag><Size>664</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>uberzealot</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>54372cb069702d1f59000000/wombat_ready/products_SPREE-T-SHIRT293178.csv</Key><LastModified>2014-11-11T18:25:52.000Z</LastModified><ETag>&quot;2b256dc335a778d105d189a67b17133b&quot;</ETag><Size>1138</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>uberzealot</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>54372cb069702d1f59000000/wombat_ready/products_SPREE-T-SHIRT293178_800000-88888_12312312321.csv</Key><LastModified>2014-11-12T18:24:54.000Z</LastModified><ETag>&quot;2b256dc335a778d105d189a67b17133b&quot;</ETag><Size>1138</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>uberzealot</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents></ListBucketResult>
     http_version: 
-  recorded_at: Wed, 12 Nov 2014 12:25:00 GMT
+  recorded_at: Thu, 26 Mar 2015 16:59:54 GMT
 - request:
     method: get
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54372cb069702d1f59000000/wombat_ready/inventory_12154(1).csv
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/?max-keys=1000&prefix=54372cb069702d1f59000000/wombat_ready
     body:
       encoding: US-ASCII
       string: ''
@@ -55,46 +55,40 @@ http_interactions:
       Accept-Encoding:
       - ''
       User-Agent:
-      - aws-sdk-ruby/1.57.0 ruby/2.0.0 x86_64-darwin14.0.0
+      - aws-sdk-ruby/1.57.0 ruby/2.1.5 x86_64-darwin14.0
       Date:
-      - Wed, 12 Nov 2014 12:25:00 GMT
+      - Thu, 26 Mar 2015 16:59:54 GMT
       Authorization:
       - AUTHORIZATION
       Accept:
-      - '*/*'
+      - "*/*"
   response:
     status:
       code: 200
       message: OK
     headers:
       X-Amz-Id-2:
-      - 9Y9OPDFISXXeXZhQ5Lsv335yN20CTSgsk+mbyJ21YYuG/p6KIoGNts4hKTBDIPf3g+DkRAQa+VU=
+      - Lk8DfBl5X/z/CvX91BS17G8eB1fXfw0cBvo/jjkStAICwewwfzsFLWCwyYqaM+WqKiGX081ArGY=
       X-Amz-Request-Id:
-      - 3BE99697CF681E1F
+      - B9480CE6FFC5C1DD
       Date:
-      - Wed, 12 Nov 2014 12:25:01 GMT
-      Last-Modified:
-      - Tue, 11 Nov 2014 17:41:08 GMT
-      Etag:
-      - '"16ea95ff47da599f0ff7aa4505f905ca"'
-      Accept-Ranges:
-      - bytes
+      - Thu, 26 Mar 2015 16:59:56 GMT
       Content-Type:
-      - ''
-      Content-Length:
-      - '67'
+      - application/xml
+      Transfer-Encoding:
+      - chunked
       Server:
       - AmazonS3
     body:
       encoding: UTF-8
       string: |-
-        id,location,product_id,quantity
-        12154,us_warehouse,SPREE-T-SHIRT,93
+        <?xml version="1.0" encoding="UTF-8"?>
+        <ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>quickbooks-desktop-integration</Name><Prefix>54372cb069702d1f59000000/wombat_ready</Prefix><Marker></Marker><MaxKeys>1000</MaxKeys><IsTruncated>false</IsTruncated><Contents><Key>54372cb069702d1f59000000/wombat_ready/inventory_12154(1).csv</Key><LastModified>2014-11-11T17:41:08.000Z</LastModified><ETag>&quot;16ea95ff47da599f0ff7aa4505f905ca&quot;</ETag><Size>67</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>uberzealot</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>54372cb069702d1f59000000/wombat_ready/inventory_12154(2).csv</Key><LastModified>2014-11-11T17:41:10.000Z</LastModified><ETag>&quot;16ea95ff47da599f0ff7aa4505f905ca&quot;</ETag><Size>67</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>uberzealot</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>54372cb069702d1f59000000/wombat_ready/inventory_12154(3).csv</Key><LastModified>2014-11-11T17:41:13.000Z</LastModified><ETag>&quot;16ea95ff47da599f0ff7aa4505f905ca&quot;</ETag><Size>67</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>uberzealot</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>54372cb069702d1f59000000/wombat_ready/inventory_12154.csv</Key><LastModified>2014-11-11T17:41:15.000Z</LastModified><ETag>&quot;16ea95ff47da599f0ff7aa4505f905ca&quot;</ETag><Size>67</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>uberzealot</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>54372cb069702d1f59000000/wombat_ready/notification_failed_orders_R154085346708777_(1).csv</Key><LastModified>2014-12-15T13:14:27.000Z</LastModified><ETag>&quot;b89e1a9635db3070554b2c301b47da19&quot;</ETag><Size>1456</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>uberzealot</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>54372cb069702d1f59000000/wombat_ready/notification_failed_orders_R154085346708777_(2).csv</Key><LastModified>2014-12-23T18:49:08.000Z</LastModified><ETag>&quot;b89e1a9635db3070554b2c301b47da19&quot;</ETag><Size>1456</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>uberzealot</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>54372cb069702d1f59000000/wombat_ready/notification_failed_orders_R154085346708777_.csv</Key><LastModified>2014-12-15T13:09:32.000Z</LastModified><ETag>&quot;b89e1a9635db3070554b2c301b47da19&quot;</ETag><Size>1456</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>uberzealot</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>54372cb069702d1f59000000/wombat_ready/products_H28573688670.csv</Key><LastModified>2014-11-10T11:55:05.000Z</LastModified><ETag>&quot;b713d885ffaacdd8c189a48cf19f0ff6&quot;</ETag><Size>664</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>uberzealot</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>54372cb069702d1f59000000/wombat_ready/products_SPREE-T-SHIRT293178.csv</Key><LastModified>2014-11-11T18:25:52.000Z</LastModified><ETag>&quot;2b256dc335a778d105d189a67b17133b&quot;</ETag><Size>1138</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>uberzealot</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>54372cb069702d1f59000000/wombat_ready/products_SPREE-T-SHIRT293178_800000-88888_12312312321.csv</Key><LastModified>2014-11-12T18:24:54.000Z</LastModified><ETag>&quot;2b256dc335a778d105d189a67b17133b&quot;</ETag><Size>1138</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>uberzealot</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents></ListBucketResult>
     http_version: 
-  recorded_at: Wed, 12 Nov 2014 12:25:00 GMT
+  recorded_at: Thu, 26 Mar 2015 16:59:55 GMT
 - request:
     method: get
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54372cb069702d1f59000000/wombat_ready/inventory_12154(2).csv
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/?max-keys=1000&prefix=54372cb069702d1f59000000/wombat_ready
     body:
       encoding: US-ASCII
       string: ''
@@ -104,141 +98,37 @@ http_interactions:
       Accept-Encoding:
       - ''
       User-Agent:
-      - aws-sdk-ruby/1.57.0 ruby/2.0.0 x86_64-darwin14.0.0
+      - aws-sdk-ruby/1.57.0 ruby/2.1.5 x86_64-darwin14.0
       Date:
-      - Wed, 12 Nov 2014 12:25:00 GMT
+      - Thu, 26 Mar 2015 16:59:55 GMT
       Authorization:
       - AUTHORIZATION
       Accept:
-      - '*/*'
+      - "*/*"
   response:
     status:
       code: 200
       message: OK
     headers:
       X-Amz-Id-2:
-      - /ypQV/N4iDsiY9oMpfmmla8UnRgzu00jVpjOJ4bfp3gWGVIbeGaXnX0QCNPSDmvUyF2z9WQR+bg=
+      - a1il00zGtAB6CtpYPrXP2+KKrHtWuZdgKxjlOfKyVwIOtgU2VH1l3TyOy04WYyJkL6qHeJKpzcM=
       X-Amz-Request-Id:
-      - B19380D803F67AC6
+      - 6FB8BDC23FB0026A
       Date:
-      - Wed, 12 Nov 2014 12:25:02 GMT
-      Last-Modified:
-      - Tue, 11 Nov 2014 17:41:10 GMT
-      Etag:
-      - '"16ea95ff47da599f0ff7aa4505f905ca"'
-      Accept-Ranges:
-      - bytes
+      - Thu, 26 Mar 2015 16:59:56 GMT
       Content-Type:
-      - ''
-      Content-Length:
-      - '67'
+      - application/xml
+      Transfer-Encoding:
+      - chunked
       Server:
       - AmazonS3
     body:
       encoding: UTF-8
       string: |-
-        id,location,product_id,quantity
-        12154,us_warehouse,SPREE-T-SHIRT,93
+        <?xml version="1.0" encoding="UTF-8"?>
+        <ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>quickbooks-desktop-integration</Name><Prefix>54372cb069702d1f59000000/wombat_ready</Prefix><Marker></Marker><MaxKeys>1000</MaxKeys><IsTruncated>false</IsTruncated><Contents><Key>54372cb069702d1f59000000/wombat_ready/inventory_12154(1).csv</Key><LastModified>2014-11-11T17:41:08.000Z</LastModified><ETag>&quot;16ea95ff47da599f0ff7aa4505f905ca&quot;</ETag><Size>67</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>uberzealot</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>54372cb069702d1f59000000/wombat_ready/inventory_12154(2).csv</Key><LastModified>2014-11-11T17:41:10.000Z</LastModified><ETag>&quot;16ea95ff47da599f0ff7aa4505f905ca&quot;</ETag><Size>67</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>uberzealot</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>54372cb069702d1f59000000/wombat_ready/inventory_12154(3).csv</Key><LastModified>2014-11-11T17:41:13.000Z</LastModified><ETag>&quot;16ea95ff47da599f0ff7aa4505f905ca&quot;</ETag><Size>67</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>uberzealot</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>54372cb069702d1f59000000/wombat_ready/inventory_12154.csv</Key><LastModified>2014-11-11T17:41:15.000Z</LastModified><ETag>&quot;16ea95ff47da599f0ff7aa4505f905ca&quot;</ETag><Size>67</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>uberzealot</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>54372cb069702d1f59000000/wombat_ready/notification_failed_orders_R154085346708777_(1).csv</Key><LastModified>2014-12-15T13:14:27.000Z</LastModified><ETag>&quot;b89e1a9635db3070554b2c301b47da19&quot;</ETag><Size>1456</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>uberzealot</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>54372cb069702d1f59000000/wombat_ready/notification_failed_orders_R154085346708777_(2).csv</Key><LastModified>2014-12-23T18:49:08.000Z</LastModified><ETag>&quot;b89e1a9635db3070554b2c301b47da19&quot;</ETag><Size>1456</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>uberzealot</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>54372cb069702d1f59000000/wombat_ready/notification_failed_orders_R154085346708777_.csv</Key><LastModified>2014-12-15T13:09:32.000Z</LastModified><ETag>&quot;b89e1a9635db3070554b2c301b47da19&quot;</ETag><Size>1456</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>uberzealot</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>54372cb069702d1f59000000/wombat_ready/products_H28573688670.csv</Key><LastModified>2014-11-10T11:55:05.000Z</LastModified><ETag>&quot;b713d885ffaacdd8c189a48cf19f0ff6&quot;</ETag><Size>664</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>uberzealot</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>54372cb069702d1f59000000/wombat_ready/products_SPREE-T-SHIRT293178.csv</Key><LastModified>2014-11-11T18:25:52.000Z</LastModified><ETag>&quot;2b256dc335a778d105d189a67b17133b&quot;</ETag><Size>1138</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>uberzealot</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>54372cb069702d1f59000000/wombat_ready/products_SPREE-T-SHIRT293178_800000-88888_12312312321.csv</Key><LastModified>2014-11-12T18:24:54.000Z</LastModified><ETag>&quot;2b256dc335a778d105d189a67b17133b&quot;</ETag><Size>1138</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>uberzealot</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents></ListBucketResult>
     http_version: 
-  recorded_at: Wed, 12 Nov 2014 12:25:01 GMT
-- request:
-    method: get
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54372cb069702d1f59000000/wombat_ready/inventory_12154(3).csv
-    body:
-      encoding: US-ASCII
-      string: ''
-    headers:
-      Content-Type:
-      - ''
-      Accept-Encoding:
-      - ''
-      User-Agent:
-      - aws-sdk-ruby/1.57.0 ruby/2.0.0 x86_64-darwin14.0.0
-      Date:
-      - Wed, 12 Nov 2014 12:25:01 GMT
-      Authorization:
-      - AUTHORIZATION
-      Accept:
-      - '*/*'
-  response:
-    status:
-      code: 200
-      message: OK
-    headers:
-      X-Amz-Id-2:
-      - IpkXUM1TRxH4uiZcJWLxkexygNzCFQb7xE61YEecdiu4+NM8ReR+ktn5OeZeybCaCaa4hldaRk4=
-      X-Amz-Request-Id:
-      - 7BE344691D39DECD
-      Date:
-      - Wed, 12 Nov 2014 12:25:03 GMT
-      Last-Modified:
-      - Tue, 11 Nov 2014 17:41:13 GMT
-      Etag:
-      - '"16ea95ff47da599f0ff7aa4505f905ca"'
-      Accept-Ranges:
-      - bytes
-      Content-Type:
-      - ''
-      Content-Length:
-      - '67'
-      Server:
-      - AmazonS3
-    body:
-      encoding: UTF-8
-      string: |-
-        id,location,product_id,quantity
-        12154,us_warehouse,SPREE-T-SHIRT,93
-    http_version: 
-  recorded_at: Wed, 12 Nov 2014 12:25:02 GMT
-- request:
-    method: get
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54372cb069702d1f59000000/wombat_ready/inventory_12154.csv
-    body:
-      encoding: US-ASCII
-      string: ''
-    headers:
-      Content-Type:
-      - ''
-      Accept-Encoding:
-      - ''
-      User-Agent:
-      - aws-sdk-ruby/1.57.0 ruby/2.0.0 x86_64-darwin14.0.0
-      Date:
-      - Wed, 12 Nov 2014 12:25:02 GMT
-      Authorization:
-      - AUTHORIZATION
-      Accept:
-      - '*/*'
-  response:
-    status:
-      code: 200
-      message: OK
-    headers:
-      X-Amz-Id-2:
-      - WBUrJFPK6liooSS4qqkqBwqvBT4GknMqIZSYc2kWjWlE8GKsuSWYPg4qn0PCEjb/+lhYIqj27Yc=
-      X-Amz-Request-Id:
-      - 46A8E82C9FB50AFA
-      Date:
-      - Wed, 12 Nov 2014 12:25:03 GMT
-      Last-Modified:
-      - Tue, 11 Nov 2014 17:41:15 GMT
-      Etag:
-      - '"16ea95ff47da599f0ff7aa4505f905ca"'
-      Accept-Ranges:
-      - bytes
-      Content-Type:
-      - ''
-      Content-Length:
-      - '67'
-      Server:
-      - AmazonS3
-    body:
-      encoding: UTF-8
-      string: |-
-        id,location,product_id,quantity
-        12154,us_warehouse,SPREE-T-SHIRT,93
-    http_version: 
-  recorded_at: Wed, 12 Nov 2014 12:25:02 GMT
+  recorded_at: Thu, 26 Mar 2015 16:59:55 GMT
 - request:
     method: get
     uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54372cb069702d1f59000000/wombat_ready/products_H28573688670.csv
@@ -251,24 +141,24 @@ http_interactions:
       Accept-Encoding:
       - ''
       User-Agent:
-      - aws-sdk-ruby/1.57.0 ruby/2.0.0 x86_64-darwin14.0.0
+      - aws-sdk-ruby/1.57.0 ruby/2.1.5 x86_64-darwin14.0
       Date:
-      - Wed, 12 Nov 2014 12:25:02 GMT
+      - Thu, 26 Mar 2015 16:59:55 GMT
       Authorization:
       - AUTHORIZATION
       Accept:
-      - '*/*'
+      - "*/*"
   response:
     status:
       code: 200
       message: OK
     headers:
       X-Amz-Id-2:
-      - /rJAAjSQsNnBvohnKv/w2sJzkEwNET88nF+mUMY2/AKyno6UtskdJngN9LyLME0A7TZssDjodt4=
+      - liqMyDoVCgkOGTJsslsKJ2xuAbeqjkJ7gc2JPRFg82riaMoWZ6uejyvtS2PMj6VqgTFpn838DDw=
       X-Amz-Request-Id:
-      - 661C57CCF67AD3E3
+      - 47D024166FEF6E53
       Date:
-      - Wed, 12 Nov 2014 12:25:04 GMT
+      - Thu, 26 Mar 2015 16:59:57 GMT
       Last-Modified:
       - Mon, 10 Nov 2014 11:55:05 GMT
       Etag:
@@ -287,7 +177,7 @@ http_interactions:
         id,order_id,email,cost,status,stock_location,shipping_method,tracking,updated_at,shipped_at,channel,shipping_address.firstname,shipping_address.lastname,shipping_address.address1,shipping_address.address2,shipping_address.zipcode,shipping_address.city,shipping_address.state,shipping_address.country,shipping_address.phone,items.0.product_id,items.0.name,items.0.quantity,items.0.price,items.1.product_id,items.1.name,items.1.quantity,items.1.price
         H28573688670,R709781525,glossier@godynamo.com,9.95,pending,default,Slow (UPS Ground),,2014-09-11T15:34:15Z,,spree,alix,gt,123 street,,10007,city,AL,US,555-123-1223,balm,Balm Dotcom,1,49,phase1,Glossier Phase I,1,100
     http_version: 
-  recorded_at: Wed, 12 Nov 2014 12:25:03 GMT
+  recorded_at: Thu, 26 Mar 2015 16:59:56 GMT
 - request:
     method: get
     uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54372cb069702d1f59000000/wombat_ready/products_SPREE-T-SHIRT293178.csv
@@ -300,24 +190,24 @@ http_interactions:
       Accept-Encoding:
       - ''
       User-Agent:
-      - aws-sdk-ruby/1.57.0 ruby/2.0.0 x86_64-darwin14.0.0
+      - aws-sdk-ruby/1.57.0 ruby/2.1.5 x86_64-darwin14.0
       Date:
-      - Wed, 12 Nov 2014 12:25:03 GMT
+      - Thu, 26 Mar 2015 16:59:56 GMT
       Authorization:
       - AUTHORIZATION
       Accept:
-      - '*/*'
+      - "*/*"
   response:
     status:
       code: 200
       message: OK
     headers:
       X-Amz-Id-2:
-      - iPzzdo0wj88yR3IH0MMKBQdu8H+7QlckVT1ad86t6zDigdkW804h8Pbxg4ZMV81vYOwVRnYHm7A=
+      - XGneD2XXrOqqrNRqAPi13PfMmPK40R8bH/BQeMuTD3IPI7+zIGkB9YMMm9Lp3GQkKarTtxjPIJs=
       X-Amz-Request-Id:
-      - 66E159B33B0B0CF9
+      - F139216A9FABB583
       Date:
-      - Wed, 12 Nov 2014 12:25:05 GMT
+      - Thu, 26 Mar 2015 16:59:58 GMT
       Last-Modified:
       - Tue, 11 Nov 2014 18:25:52 GMT
       Etag:
@@ -336,5 +226,54 @@ http_interactions:
         id,name,sku,description,price,cost_price,available_on,permalink,meta_description,meta_keywords,shipping_category,taxons.0.0,taxons.0.1,taxons.0.2,taxons.1.0,taxons.1.1,taxons.2.0,taxons.2.1,options.0,options.1,properties.material,properties.fit,images.0.url,images.0.position,images.0.title,images.0.type,images.0.dimensions.height,images.0.dimensions.width,variants.0.sku,variants.0.price,variants.0.cost_price,variants.0.quantity,variants.0.options.color,variants.0.options.size,variants.0.images.0.url,variants.0.images.0.position,variants.0.images.0.title,variants.0.images.0.type,variants.0.images.0.dimensions.height,variants.0.images.0.dimensions.width
         SPREE-T-SHIRT293178,Spree T-Shirt,SPREE-T-SHIRT,Awesome Spree T-Shirt,35,22.33,2014-01-29T14:01:28.000Z,spree-tshirt,,,Default,Categories,Clothes,T-Shirts,Brands,Spree,Brands,Open Source,color,size,cotton,smart fit,http://dummyimage.com/600x400/000/fff.jpg&text=Spree T-Shirt,1,Spree T-Shirt - Grey Small,thumbnail,220,100,SPREE-T-SHIRT-S,39.99,22.33,1,GREY,S,http://dummyimage.com/600x400/000/fff.jpg&text=Spree T-Shirt Grey Small,1,Spree T-Shirt - Grey Small,thumbnail,220,100
     http_version: 
-  recorded_at: Wed, 12 Nov 2014 12:25:04 GMT
+  recorded_at: Thu, 26 Mar 2015 16:59:57 GMT
+- request:
+    method: get
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54372cb069702d1f59000000/wombat_ready/products_SPREE-T-SHIRT293178_800000-88888_12312312321.csv
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby/1.57.0 ruby/2.1.5 x86_64-darwin14.0
+      Date:
+      - Thu, 26 Mar 2015 16:59:57 GMT
+      Authorization:
+      - AUTHORIZATION
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amz-Id-2:
+      - mIPwTzfmR+1xBh0fIptSWxHAjimo41UGbY9VJRO8LrfA7ugcmw7OyAR1cX/yyDpBiqG/HA25vwg=
+      X-Amz-Request-Id:
+      - 8E983BAEA1CAED9D
+      Date:
+      - Thu, 26 Mar 2015 16:59:58 GMT
+      Last-Modified:
+      - Wed, 12 Nov 2014 18:24:54 GMT
+      Etag:
+      - '"2b256dc335a778d105d189a67b17133b"'
+      Accept-Ranges:
+      - bytes
+      Content-Type:
+      - ''
+      Content-Length:
+      - '1138'
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: |-
+        id,name,sku,description,price,cost_price,available_on,permalink,meta_description,meta_keywords,shipping_category,taxons.0.0,taxons.0.1,taxons.0.2,taxons.1.0,taxons.1.1,taxons.2.0,taxons.2.1,options.0,options.1,properties.material,properties.fit,images.0.url,images.0.position,images.0.title,images.0.type,images.0.dimensions.height,images.0.dimensions.width,variants.0.sku,variants.0.price,variants.0.cost_price,variants.0.quantity,variants.0.options.color,variants.0.options.size,variants.0.images.0.url,variants.0.images.0.position,variants.0.images.0.title,variants.0.images.0.type,variants.0.images.0.dimensions.height,variants.0.images.0.dimensions.width
+        SPREE-T-SHIRT293178,Spree T-Shirt,SPREE-T-SHIRT,Awesome Spree T-Shirt,35,22.33,2014-01-29T14:01:28.000Z,spree-tshirt,,,Default,Categories,Clothes,T-Shirts,Brands,Spree,Brands,Open Source,color,size,cotton,smart fit,http://dummyimage.com/600x400/000/fff.jpg&text=Spree T-Shirt,1,Spree T-Shirt - Grey Small,thumbnail,220,100,SPREE-T-SHIRT-S,39.99,22.33,1,GREY,S,http://dummyimage.com/600x400/000/fff.jpg&text=Spree T-Shirt Grey Small,1,Spree T-Shirt - Grey Small,thumbnail,220,100
+    http_version: 
+  recorded_at: Thu, 26 Mar 2015 16:59:58 GMT
 recorded_with: VCR 2.9.3

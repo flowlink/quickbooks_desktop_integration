@@ -49,7 +49,7 @@ module Persistence
         subject = described_class.new config, payload
         objects = subject.get_ready_objects_to_send
 
-        expect(objects.first).to have_key('inventories')
+        expect(objects.first).to have_key('products')
       end
     end
 

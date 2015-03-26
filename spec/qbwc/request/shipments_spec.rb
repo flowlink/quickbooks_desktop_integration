@@ -12,7 +12,7 @@ module QBWC
 
       it 'builds request xml' do
         xml = subject.add_xml_to_send Factory.shipment['shipment'], {}, 123
-        expect(xml).to match(/-10/)
+        expect(xml).to match(/30/)
       end
 
       it 'builds xml request sanitizing address fields' do
