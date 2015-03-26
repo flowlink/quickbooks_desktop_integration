@@ -66,8 +66,6 @@ module Persistence
       end
     end
 
-
-
     # Get object files to query and get ListID and EditSequence
     #
     #   - Fetch files from s3
@@ -77,9 +75,9 @@ module Persistence
     #    with ListID and EditSequence
     def process_pending_objects
       prefix = "#{path.base_name}/#{path.pending}"
-      collection = amazon_s3.bucket.objects
+      collection = amazon_s3.bucket.objects.with_prefix(prefix).enum
 
-      collection.with_prefix(prefix).enum.map do |s3_object|
+      select_precedence_files(collection).map do |s3_object|
         _, _, filename    = s3_object.key.split('/')
         object_type, _, _ = filename.split('_')
 
@@ -164,9 +162,9 @@ module Persistence
     #   }]
     def get_ready_objects_to_send
       prefix = "#{path.base_name}/#{path.ready}"
-      collection = amazon_s3.bucket.objects
+      collection = amazon_s3.bucket.objects.with_prefix(prefix).enum
 
-      collection.with_prefix(prefix).enum.reject { |s3| s3.key.match(/notification/) }.map do |s3_object|
+      select_precedence_files(collection).reject { |s3| s3.key.match(/notification/) }.map do |s3_object|
         _, _, filename                         = s3_object.key.split('/')
         object_type, _, list_id, edit_sequence = filename.split('_')
 
@@ -361,6 +359,40 @@ module Persistence
     end
 
     private
+
+    def select_precedence_files(collection)
+      first_precedence_types = ['customers', 'products', 'adjustments', 'inventories', 'payments']
+      second_precedence_types = ['orders']
+
+      has_first_precedence_files = collection.select do |file|
+        _, _, filename    = file.key.split('/')
+        object_type, _, _ = filename.split('_')
+        first_precedence_types.include?(object_type)
+      end.any?
+
+      has_second_precedence_files = collection.select do |file|
+        _, _, filename    = file.key.split('/')
+        object_type, _, _ = filename.split('_')
+        second_precedence_types.include?(object_type)
+      end.any?
+
+      if has_first_precedence_files
+        objects_to_process = collection.select do |file|
+          _, _, filename    = file.key.split('/')
+          object_type, _, _ = filename.split('_')
+          first_precedence_types.include?(object_type)
+        end
+      elsif has_second_precedence_files
+        objects_to_process = collection.select do |file|
+          _, _, filename    = file.key.split('/')
+          object_type, _, _ = filename.split('_')
+          second_precedence_types.include?(object_type)
+        end
+      else
+        objects_to_process = collection
+      end
+      objects_to_process
+    end
 
     def success_notification_message(object)
       "#{object.singularize.capitalize} successfully sent to Quickbooks Desktop"
