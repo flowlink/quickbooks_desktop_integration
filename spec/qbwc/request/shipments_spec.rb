@@ -36,6 +36,13 @@ module QBWC
         expect(xml).to match(/InvoiceLineAdd/)
         expect(xml.match(/ª/)).to be_nil
       end
+
+      it 'builds and order from shipments' do
+        xml = subject.build_order_from_shipments(Factory.shipment['shipment'])
+
+        expect(xml['adjustments'].first['name']).to eq('discount')
+      end
+
     end
   end
 end
