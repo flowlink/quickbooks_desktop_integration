@@ -236,11 +236,15 @@ module Persistence
 
     def get_notifications
       prefix = "#{path.base_name}/#{path.ready}/notification_"
-      collection = amazon_s3.bucket.objects
+      collection = amazon_s3.bucket.objects.with_prefix(prefix).enum
 
-      collection.with_prefix(prefix).enum.select { |s3| s3.key.match(payload_key) }.inject('processed' => {}, 'failed' => {}) do |notifications, s3_object|
-        _, _, filename              = s3_object.key.split('/')
-        _, status, _, object_ref, _ = filename.split('_')
+      notification_files = collection.select do |s3|
+        s3.key.match(payload_key) || (payload_key == 'orders' && s3.key.match('payments'))
+      end
+
+      notification_files.inject('processed' => {}, 'failed' => {}) do |notifications, s3_object|
+        _, _, filename  = s3_object.key.split('/')
+        _, status, object_type, object_ref, _ = filename.split('_')
         content = amazon_s3.convert_download('csv', s3_object.read).first
 
         object_ref = id_for_notifications(content, object_ref)
@@ -249,8 +253,8 @@ module Persistence
           notifications[status][content['message']] ||= []
           notifications[status][content['message']] << object_ref
         else
-          notifications[status][success_notification_message(payload_key)] ||= []
-          notifications[status][success_notification_message(payload_key)] << object_ref
+          notifications[status][success_notification_message(object_type)] ||= []
+          notifications[status][success_notification_message(object_type)] << object_ref
         end
 
         s3_object.move_to("#{path.base_name}/#{path.processed}/#{filename}")
