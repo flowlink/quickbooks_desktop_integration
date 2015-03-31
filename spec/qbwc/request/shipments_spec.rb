@@ -37,8 +37,7 @@ module QBWC
         expect(xml.match(/ª/)).to be_nil
       end
 
-      # removed until check with the customer
-      xit 'builds and order from shipments' do
+      it 'builds and order from shipments' do
         xml = subject.build_order_from_shipments(Factory.shipment['shipment'])
 
         expect(xml['adjustments'].first['name']).to eq('discount')

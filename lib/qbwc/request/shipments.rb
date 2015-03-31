@@ -233,7 +233,7 @@ module QBWC
         end
 
         def build_adjustments(object)
-          ['discount', 'shipping', 'tax'].select{ |name| object['totals'].has_key?(name) && object['totals'][name].to_f != 0.0 }.map do |adj_name|
+          ['discount', 'adjustment', 'shipping', 'tax'].select{ |name| object['totals'].has_key?(name) && object['totals'][name].to_f != 0.0 }.map do |adj_name|
             {
               'name'  => adjustment_name_fixer(adj_name),
               'value' => object['totals'][adj_name]
