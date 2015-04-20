@@ -44,23 +44,23 @@ module QBWC
     <FirstName>#{object['firstname']}</FirstName>
     <LastName>#{object['lastname']}</LastName>
     <BillAddress>
-      <Addr1>#{object['billing_address']['address1'] if customer['billing_address']}</Addr1>
-      <Addr2>#{object['billing_address']['address2'] if customer['billing_address']}</Addr2>
-      <City>#{object['billing_address']['city'] if customer['billing_address']}</City>
-      <State>#{object['billing_address']['state'] if customer['billing_address']}</State>
-      <PostalCode>#{object['billing_address']['zipcode'] if customer['billing_address']}</PostalCode>
-      <Country>#{object['billing_address']['country'] if customer['billing_address']}</Country>
+      <Addr1>#{object['billing_address']['address1'] if object['billing_address']}</Addr1>
+      <Addr2>#{object['billing_address']['address2'] if object['billing_address']}</Addr2>
+      <City>#{object['billing_address']['city'] if object['billing_address']}</City>
+      <State>#{object['billing_address']['state'] if object['billing_address']}</State>
+      <PostalCode>#{object['billing_address']['zipcode'] if object['billing_address']}</PostalCode>
+      <Country>#{object['billing_address']['country'] if object['billing_address']}</Country>
     </BillAddress>
     <ShipAddress>
-      <Addr1>#{object['shipping_address']['address1'] if customer['shipping_address']}</Addr1>
-      <Addr2>#{object['shipping_address']['address2'] if customer['shipping_address']}</Addr2>
-      <City>#{object['shipping_address']['city'] if customer['shipping_address']}</City>
-      <State>#{object['shipping_address']['state'] if customer['shipping_address']}</State>
-      <PostalCode>#{object['shipping_address']['zipcode'] if customer['shipping_address']}</PostalCode>
-      <Country>#{object['shipping_address']['country'] if customer['shipping_address']}</Country>
+      <Addr1>#{object['shipping_address']['address1'] if object['shipping_address']}</Addr1>
+      <Addr2>#{object['shipping_address']['address2'] if object['shipping_address']}</Addr2>
+      <City>#{object['shipping_address']['city'] if object['shipping_address']}</City>
+      <State>#{object['shipping_address']['state'] if object['shipping_address']}</State>
+      <PostalCode>#{object['shipping_address']['zipcode'] if object['shipping_address']}</PostalCode>
+      <Country>#{object['shipping_address']['country'] if object['shipping_address']}</Country>
     </ShipAddress>
-    <Phone>#{object['billing_address']['phone'] if customer['billing_address']}</Phone>
-    <AltPhone>#{object['shipping_address']['phone'] if customer['shipping_address']}</AltPhone>
+    <Phone>#{object['billing_address']['phone'] if object['billing_address']}</Phone>
+    <AltPhone>#{object['shipping_address']['phone'] if object['shipping_address']}</AltPhone>
     <Email>#{object['email']}</Email>
    </CustomerAdd>
 </CustomerAddRq>
@@ -77,23 +77,23 @@ module QBWC
       <FirstName>#{object['firstname']}</FirstName>
       <LastName>#{object['lastname']}</LastName>
       <BillAddress>
-        <Addr1>#{object['billing_address']['address1'] if customer['billing_address']}</Addr1>
-        <Addr2>#{object['billing_address']['address2'] if customer['billing_address']}</Addr2>
-        <City>#{object['billing_address']['city'] if customer['billing_address']}</City>
-        <State>#{object['billing_address']['state'] if customer['billing_address']}</State>
-        <PostalCode>#{object['billing_address']['zipcode'] if customer['billing_address']}</PostalCode>
-        <Country>#{object['billing_address']['country'] if customer['billing_address']}</Country>
+        <Addr1>#{object['billing_address']['address1'] if object['billing_address']}</Addr1>
+        <Addr2>#{object['billing_address']['address2'] if object['billing_address']}</Addr2>
+        <City>#{object['billing_address']['city'] if object['billing_address']}</City>
+        <State>#{object['billing_address']['state'] if object['billing_address']}</State>
+        <PostalCode>#{object['billing_address']['zipcode'] if object['billing_address']}</PostalCode>
+        <Country>#{object['billing_address']['country'] if object['billing_address']}</Country>
       </BillAddress>
       <ShipAddress>
-        <Addr1>#{object['shipping_address']['address1'] if customer['shipping_address']}</Addr1>
-        <Addr2>#{object['shipping_address']['address2'] if customer['shipping_address']}</Addr2>
-        <City>#{object['shipping_address']['city'] if customer['shipping_address']}</City>
-        <State>#{object['shipping_address']['state'] if customer['shipping_address']}</State>
-        <PostalCode>#{object['shipping_address']['zipcode'] if customer['shipping_address']}</PostalCode>
-        <Country>#{object['shipping_address']['country'] if customer['shipping_address']}</Country>
+        <Addr1>#{object['shipping_address']['address1'] if object['shipping_address']}</Addr1>
+        <Addr2>#{object['shipping_address']['address2'] if object['shipping_address']}</Addr2>
+        <City>#{object['shipping_address']['city'] if object['shipping_address']}</City>
+        <State>#{object['shipping_address']['state'] if object['shipping_address']}</State>
+        <PostalCode>#{object['shipping_address']['zipcode'] if object['shipping_address']}</PostalCode>
+        <Country>#{object['shipping_address']['country'] if object['shipping_address']}</Country>
       </ShipAddress>
-      <Phone>#{object['billing_address']['phone'] if customer['billing_address']}</Phone>
-      <AltPhone>#{object['shipping_address']['phone'] if customer['shipping_address']}</AltPhone>
+      <Phone>#{object['billing_address']['phone'] if object['billing_address']}</Phone>
+      <AltPhone>#{object['shipping_address']['phone'] if object['shipping_address']}</AltPhone>
       <Email>#{object['email']}</Email>
    </CustomerMod>
 </CustomerModRq>
