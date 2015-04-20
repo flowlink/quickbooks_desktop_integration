@@ -36,7 +36,7 @@ module QBWC
       private
 
       def inventories_to_wombat
-        records.map do |record|
+        records.reject { |item| item['PurchaseOrderLineRet'].nil? }.map do |record|
           object ||= [] << (record['PurchaseOrderLineRet'].is_a?(Array) ?
                             record['PurchaseOrderLineRet'] :
                             [record['PurchaseOrderLineRet']]).map { |item| { id: item['ItemRef']['FullName'] } }
