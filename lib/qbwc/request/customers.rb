@@ -44,23 +44,23 @@ module QBWC
     <FirstName>#{object['firstname']}</FirstName>
     <LastName>#{object['lastname']}</LastName>
     <BillAddress>
-      <Addr1>#{object['billing_address']['address1']}</Addr1>
-      <Addr2>#{object['billing_address']['address2']}</Addr2>
-      <City>#{object['billing_address']['city']}</City>
-      <State>#{object['billing_address']['state']}</State>
-      <PostalCode>#{object['billing_address']['zipcode']}</PostalCode>
-      <Country>#{object['billing_address']['country']}</Country>
+      <Addr1>#{object['billing_address']['address1'] if customer['billing_address']}</Addr1>
+      <Addr2>#{object['billing_address']['address2'] if customer['billing_address']}</Addr2>
+      <City>#{object['billing_address']['city'] if customer['billing_address']}</City>
+      <State>#{object['billing_address']['state'] if customer['billing_address']}</State>
+      <PostalCode>#{object['billing_address']['zipcode'] if customer['billing_address']}</PostalCode>
+      <Country>#{object['billing_address']['country'] if customer['billing_address']}</Country>
     </BillAddress>
     <ShipAddress>
-      <Addr1>#{object['shipping_address']['address1']}</Addr1>
-      <Addr2>#{object['shipping_address']['address2']}</Addr2>
-      <City>#{object['shipping_address']['city']}</City>
-      <State>#{object['shipping_address']['state']}</State>
-      <PostalCode>#{object['shipping_address']['zipcode']}</PostalCode>
-      <Country>#{object['shipping_address']['country']}</Country>
+      <Addr1>#{object['shipping_address']['address1'] if customer['shipping_address']}</Addr1>
+      <Addr2>#{object['shipping_address']['address2'] if customer['shipping_address']}</Addr2>
+      <City>#{object['shipping_address']['city'] if customer['shipping_address']}</City>
+      <State>#{object['shipping_address']['state'] if customer['shipping_address']}</State>
+      <PostalCode>#{object['shipping_address']['zipcode'] if customer['shipping_address']}</PostalCode>
+      <Country>#{object['shipping_address']['country'] if customer['shipping_address']}</Country>
     </ShipAddress>
-    <Phone>#{object['billing_address']['phone']}</Phone>
-    <AltPhone>#{object['shipping_address']['phone']}</AltPhone>
+    <Phone>#{object['billing_address']['phone'] if customer['billing_address']}</Phone>
+    <AltPhone>#{object['shipping_address']['phone'] if customer['shipping_address']}</AltPhone>
     <Email>#{object['email']}</Email>
    </CustomerAdd>
 </CustomerAddRq>
@@ -77,23 +77,23 @@ module QBWC
       <FirstName>#{object['firstname']}</FirstName>
       <LastName>#{object['lastname']}</LastName>
       <BillAddress>
-        <Addr1>#{object['billing_address']['address1']}</Addr1>
-        <Addr2>#{object['billing_address']['address2']}</Addr2>
-        <City>#{object['billing_address']['city']}</City>
-        <State>#{object['billing_address']['state']}</State>
-        <PostalCode>#{object['billing_address']['zipcode']}</PostalCode>
-        <Country>#{object['billing_address']['country']}</Country>
+        <Addr1>#{object['billing_address']['address1'] if customer['billing_address']}</Addr1>
+        <Addr2>#{object['billing_address']['address2'] if customer['billing_address']}</Addr2>
+        <City>#{object['billing_address']['city'] if customer['billing_address']}</City>
+        <State>#{object['billing_address']['state'] if customer['billing_address']}</State>
+        <PostalCode>#{object['billing_address']['zipcode'] if customer['billing_address']}</PostalCode>
+        <Country>#{object['billing_address']['country'] if customer['billing_address']}</Country>
       </BillAddress>
       <ShipAddress>
-        <Addr1>#{object['shipping_address']['address1']}</Addr1>
-        <Addr2>#{object['shipping_address']['address2']}</Addr2>
-        <City>#{object['shipping_address']['city']}</City>
-        <State>#{object['shipping_address']['state']}</State>
-        <PostalCode>#{object['shipping_address']['zipcode']}</PostalCode>
-        <Country>#{object['shipping_address']['country']}</Country>
+        <Addr1>#{object['shipping_address']['address1'] if customer['shipping_address']}</Addr1>
+        <Addr2>#{object['shipping_address']['address2'] if customer['shipping_address']}</Addr2>
+        <City>#{object['shipping_address']['city'] if customer['shipping_address']}</City>
+        <State>#{object['shipping_address']['state'] if customer['shipping_address']}</State>
+        <PostalCode>#{object['shipping_address']['zipcode'] if customer['shipping_address']}</PostalCode>
+        <Country>#{object['shipping_address']['country'] if customer['shipping_address']}</Country>
       </ShipAddress>
-      <Phone>#{object['billing_address']['phone']}</Phone>
-      <AltPhone>#{object['shipping_address']['phone']}</AltPhone>
+      <Phone>#{object['billing_address']['phone'] if customer['billing_address']}</Phone>
+      <AltPhone>#{object['shipping_address']['phone'] if customer['shipping_address']}</AltPhone>
       <Email>#{object['email']}</Email>
    </CustomerMod>
 </CustomerModRq>
@@ -103,18 +103,18 @@ module QBWC
         private
 
         def sanitize_customer(customer)
-          customer['billing_address']['address1'].gsub!(/[^0-9A-Za-z\s]/, '')
-          customer['billing_address']['address2'].gsub!(/[^0-9A-Za-z\s]/, '')
-          customer['billing_address']['city'].gsub!(/[^0-9A-Za-z\s]/, '')
-          customer['billing_address']['state'].gsub!(/[^0-9A-Za-z\s]/, '')
-          customer['billing_address']['zipcode'].gsub!(/[^0-9A-Za-z\s]/, '')
-          customer['billing_address']['country'].gsub!(/[^0-9A-Za-z\s]/, '')
-          customer['shipping_address']['address1'].gsub!(/[^0-9A-Za-z\s]/, '')
-          customer['shipping_address']['address2'].gsub!(/[^0-9A-Za-z\s]/, '')
-          customer['shipping_address']['city'].gsub!(/[^0-9A-Za-z\s]/, '')
-          customer['shipping_address']['state'].gsub!(/[^0-9A-Za-z\s]/, '')
-          customer['shipping_address']['zipcode'].gsub!(/[^0-9A-Za-z\s]/, '')
-          customer['shipping_address']['country'].gsub!(/[^0-9A-Za-z\s]/, '')
+          customer['billing_address']['address1'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['billing_address']
+          customer['billing_address']['address2'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['billing_address']
+          customer['billing_address']['city'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['billing_address']
+          customer['billing_address']['state'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['billing_address']
+          customer['billing_address']['zipcode'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['billing_address']
+          customer['billing_address']['country'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['billing_address']
+          customer['shipping_address']['address1'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['shipping_address']
+          customer['shipping_address']['address2'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['shipping_address']
+          customer['shipping_address']['city'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['shipping_address']
+          customer['shipping_address']['state'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['shipping_address']
+          customer['shipping_address']['zipcode'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['shipping_address']
+          customer['shipping_address']['country'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['shipping_address']
         end
 
       end
