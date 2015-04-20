@@ -36,10 +36,10 @@ module QBWC
       private
 
       def inventories_to_wombat
-        records.reject { |item| item['PurchaseOrderLineRet'].nil? }.map do |record|
+        records.reject { |item| item.nil? || item['PurchaseOrderLineRet'].nil? }.map do |record|
           object ||= [] << (record['PurchaseOrderLineRet'].is_a?(Array) ?
                             record['PurchaseOrderLineRet'] :
-                            [record['PurchaseOrderLineRet']]).map { |item| { id: item['ItemRef']['FullName'] } }
+                            [record['PurchaseOrderLineRet']]).select { |line| line.has_key?('ItemRef') }.map { |item| { id: item['ItemRef']['FullName'] } }
         end.flatten
       end
     end
