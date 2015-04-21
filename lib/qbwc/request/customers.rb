@@ -103,18 +103,18 @@ module QBWC
         private
 
         def sanitize_customer(customer)
-          customer['billing_address']['address1'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['billing_address']
-          customer['billing_address']['address2'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['billing_address']
-          customer['billing_address']['city'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['billing_address']
-          customer['billing_address']['state'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['billing_address']
-          customer['billing_address']['zipcode'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['billing_address']
-          customer['billing_address']['country'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['billing_address']
-          customer['shipping_address']['address1'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['shipping_address']
-          customer['shipping_address']['address2'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['shipping_address']
-          customer['shipping_address']['city'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['shipping_address']
-          customer['shipping_address']['state'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['shipping_address']
-          customer['shipping_address']['zipcode'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['shipping_address']
-          customer['shipping_address']['country'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['shipping_address']
+          customer['billing_address']['address1'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['billing_address'] && customer['billing_address']['address1']
+          customer['billing_address']['address2'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['billing_address'] && customer['billing_address']['address2']
+          customer['billing_address']['city'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['billing_address'] && customer['billing_address']['city']
+          customer['billing_address']['state'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['billing_address'] && customer['billing_address']['state']
+          customer['billing_address']['zipcode'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['billing_address'] && customer['billing_address']['zipcode']
+          customer['billing_address']['country'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['billing_address'] && customer['billing_address']['country']
+          customer['shipping_address']['address1'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['shipping_address'] && customer['shipping_address']['address1']
+          customer['shipping_address']['address2'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['shipping_address'] && customer['shipping_address']['address2']
+          customer['shipping_address']['city'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['shipping_address'] && customer['shipping_address']['city']
+          customer['shipping_address']['state'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['shipping_address'] && customer['shipping_address']['state']
+          customer['shipping_address']['zipcode'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['shipping_address'] && customer['shipping_address']['zipcode']
+          customer['shipping_address']['country'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['shipping_address'] && customer['shipping_address']['country']
         end
       end
     end
