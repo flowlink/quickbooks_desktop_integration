@@ -9,7 +9,7 @@ module QBWC
             config = { connection_id: params['connection_id'] }.with_indifferent_access
             session_id = Persistence::Session.save(config, object)
 
-            request << (object[:list_id].to_s.empty?? add_xml_to_send(object, session_id) : update_xml_to_send(object, session_id))
+            request << (object[:list_id].to_s.empty? ? add_xml_to_send(object, session_id) : update_xml_to_send(object, session_id))
           end
         end
 
@@ -116,7 +116,6 @@ module QBWC
           customer['shipping_address']['zipcode'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['shipping_address']
           customer['shipping_address']['country'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['shipping_address']
         end
-
       end
     end
   end
