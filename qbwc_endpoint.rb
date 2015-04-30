@@ -8,7 +8,7 @@ require 'active_support/core_ext/numeric/time'
 
 require File.expand_path(File.dirname(__FILE__) + '/lib/quickbooks_desktop_integration')
 
-if File.exists? File.join(File.expand_path(File.dirname(__FILE__)), '.env')
+if File.exist? File.join(File.expand_path(File.dirname(__FILE__)), '.env')
   # TODO check an ENV variable i.e. RACK_ENV
   begin
     require 'dotenv'
@@ -25,11 +25,11 @@ class QBWCEndpoint < Sinatra::Base
   unless String.respond_to? :underscore
     class String
       def underscore
-        self.gsub(/::/, '/').
-          gsub(/([A-Z]+)([A-Z][a-z])/,'\1_\2').
-          gsub(/([a-z\d])([A-Z])/,'\1_\2').
-          tr("-", "_").
-          downcase
+        gsub(/::/, '/')
+          .gsub(/([A-Z]+)([A-Z][a-z])/, '\1_\2')
+          .gsub(/([a-z\d])([A-Z])/, '\1_\2')
+          .tr('-', '_')
+          .downcase
       end
     end
   end
@@ -73,21 +73,19 @@ class QBWCEndpoint < Sinatra::Base
     send operation, params[:connection_id], body
   end
 
-  def server_version(connection_id, body)
+  def server_version(_connection_id, _body)
     erb :'qbwc/server_version'
   end
 
-
-
-  def client_version(connection_id, body)
+  def client_version(_connection_id, _body)
     erb :'qbwc/client_version'
   end
 
-  def authenticate(connection_id, body)
+  def authenticate(_connection_id, body)
     body = CGI.unescapeHTML(body)
 
     body.slice! '<?xml version="1.0" ?>'
-    parser = Nori.new :strip_namespaces => true
+    parser = Nori.new strip_namespaces: true
     envelope = parser.parse body
 
     response = envelope['Envelope']['Body']['authenticate']
@@ -104,15 +102,14 @@ class QBWCEndpoint < Sinatra::Base
       @result = 'nvu' # invalid password - not valid user
     end
 
-
     erb :'qbwc/authenticate'
   end
 
-  def connection_error(connection_id, body)
+  def connection_error(_connection_id, _body)
     erb :'qbwc/connection_error'
   end
 
-  def send_request_xml(connection_id, body)
+  def send_request_xml(connection_id, _body)
     @qbxml = <<-XML
 <?xml version="1.0" encoding="utf-8"?>
 <?qbxml version="11.0"?>
@@ -123,22 +120,22 @@ class QBWCEndpoint < Sinatra::Base
 </QBXML>
     XML
 
-    puts @qbxml.gsub("\n","")
+    puts @qbxml.gsub("\n", '')
     erb :'qbwc/send_request_xml'
   end
 
   def receive_response_xml(connection_id, body)
-    puts body.gsub("\n","")
+    puts body.gsub("\n", '')
     QBWC::Consumer.new(connection_id: connection_id).digest_response_into_actions(body)
 
     erb :'qbwc/receive_response_xml'
   end
 
-  def get_last_error(connection_id, body)
+  def get_last_error(_connection_id, _body)
     erb :'qbwc/get_last_error'
   end
 
-  def close_connection(connection_id, body)
+  def close_connection(_connection_id, _body)
     erb :'qbwc/close_connection'
   end
 end

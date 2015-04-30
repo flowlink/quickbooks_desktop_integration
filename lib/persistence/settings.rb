@@ -8,8 +8,8 @@ module Persistence
       @config = config
       @connection_id = config[:connection_id]
       @flow = config[:flow]
-      @force_save = config[:quickbooks_force_config].to_s == "1" ||
-        config[:quickbooks_force_config].to_s == "true"
+      @force_save = config[:quickbooks_force_config].to_s == '1' ||
+                    config[:quickbooks_force_config].to_s == 'true'
     end
 
     # Files MUST be named like this /connectionid/settings/flow.csv
@@ -23,12 +23,12 @@ module Persistence
       if !s3_object.exists? || force_save
         amazon_s3.export file_name: file, objects: [config], override: true
       end
-      generate_extra_flows if ['add_orders', 'add_shipments'].include?(flow)
+      generate_extra_flows if %w(add_orders add_shipments).include?(flow)
     end
 
     def generate_extra_flows
       config_aux = config.dup
-      ['add_products', 'add_customers'].each do |extra_flow|
+      %w(add_products add_customers).each do |extra_flow|
         config_aux['flow'] = extra_flow
         file = "#{base_name}/#{extra_flow}.csv"
         s3_object = amazon_s3.bucket.objects[file]
@@ -44,9 +44,9 @@ module Persistence
       prefix = "#{base_name}/#{prefix}"
 
       collection.with_prefix(prefix).enum.map do |s3_object|
-        connection_id, folder, filename = s3_object.key.split("/")
-        flow, extension = filename.split(".")
-        object_type = flow.split("_").last.pluralize
+        connection_id, folder, filename = s3_object.key.split('/')
+        flow, extension = filename.split('.')
+        object_type = flow.split('_').last.pluralize
 
         contents = s3_object.read
 

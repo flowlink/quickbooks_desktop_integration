@@ -6,7 +6,7 @@ module Persistence
 
     def initialize(s3_client: nil)
       @s3_client = s3_client || AWS::S3.new
-      @bucket_name = "quickbooks-desktop-integration"
+      @bucket_name = 'quickbooks-desktop-integration'
     end
 
     def export(file_name: nil, objects: nil, override: false)
@@ -44,7 +44,7 @@ module Persistence
       # NOTE if you got a long list this will probably take a while to fetch all
       # files with the prefix?
       if s3_object.exists?
-        prefix = file_name.gsub(".#{extension}", "(")
+        prefix = file_name.gsub(".#{extension}", '(')
         copies = bucket.objects.with_prefix(prefix).map do |s3_object|
           # extracts the id: already_exists/shipments(2).csv -> 2
           s3_object.key.match(/\A.*\((\d+)\)\.#{extension}\z/)[1].to_i
@@ -89,12 +89,12 @@ module Persistence
         s3_object.delete
         contents
       else
-        ""
+        ''
       end
     end
 
     def extension(file_name)
-      file_name.split(".").last
+      file_name.split('.').last
     end
 
     def verify_bucket!

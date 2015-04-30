@@ -23,7 +23,7 @@ class Converter
       when Array
         json_path(json[leftmost_path(path).to_i], rest_of_path(path))
       else
-        path == "" ? json.to_s : "" # trying to traverse even more?
+        path == '' ? json.to_s : '' # trying to traverse even more?
       end
     end
 
@@ -36,7 +36,7 @@ class Converter
 
       body = body.join("\n")
 
-      [header.join(","), body].join("\n")
+      [header.join(','), body].join("\n")
     end
 
     def hash_to_csv(hash, header: csv_header(hash), skip_header: false)
@@ -45,19 +45,19 @@ class Converter
       end
 
       if skip_header
-        output.join(",")
+        output.join(',')
       else
-        [header.join(","), output.join(",")].join("\n")
+        [header.join(','), output.join(',')].join("\n")
       end
     end
 
     def csv_to_hash(csv)
       header, *lines = csv.split /\n|\r/ # csv can end with \r or \n
 
-      header = header.to_s.split(",")
+      header = header.to_s.split(',')
 
       lines.inject([]) do |objects, current_line|
-        values = current_line.split(",")
+        values = current_line.split(',')
 
         objects << header.each_with_index.inject({}) do |buff, (path, index)|
           json_path_set(buff, path, values[index])
@@ -66,11 +66,11 @@ class Converter
     end
 
     def json_path_set(json, path, value)
-      return value if path == ""
+      return value if path == ''
 
       current = leftmost_path(path)
 
-      if current.to_i.to_s == current #number?
+      if current.to_i.to_s == current # number?
         json = [] unless json.is_a? Array
         case json[current.to_i]
         when nil
@@ -93,6 +93,7 @@ class Converter
     end
 
     private
+
     def generate_master_header(array)
       master_header = array.inject([]) do |total, current_hash|
         total.push(csv_header(current_hash))
@@ -102,14 +103,14 @@ class Converter
     end
 
     def rest_of_path(path)
-      path.split(".")[1..-1].join(".")
+      path.split('.')[1..-1].join('.')
     end
 
     def leftmost_path(path)
-      path.split(".")[0]
+      path.split('.')[0]
     end
 
-    def prepare_prefix(a , b)
+    def prepare_prefix(a, b)
       return b unless a
 
       "#{a}.#{b}"

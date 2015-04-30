@@ -212,7 +212,6 @@ module Persistence
 
               collection = amazon_s3.bucket.objects
               collection.with_prefix(filename).enum.each do |s3_object|
-
                 # This is for files that end on (n)
                 _, _, ax_filename = s3_object.key.split('/')
                 _, _, end_of_file, ax_edit_sequence = ax_filename.split('_')
@@ -365,8 +364,8 @@ module Persistence
     private
 
     def select_precedence_files(collection)
-      first_precedence_types = ['customers', 'products', 'adjustments', 'inventories', 'payments']
-      second_precedence_types = ['orders', 'returns']
+      first_precedence_types = %w(customers products adjustments inventories payments)
+      second_precedence_types = %w(orders returns)
 
       has_first_precedence_files = collection.select do |file|
         _, _, filename    = file.key.split('/')
