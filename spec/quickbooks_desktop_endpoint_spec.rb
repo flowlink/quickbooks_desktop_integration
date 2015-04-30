@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 describe QuickbooksDesktopEndpoint do
-  it "sends product to be persisted in s3" do
-    headers = auth.merge("HTTP_X_HUB_STORE" => "54591b3a5869632afc090000")
+  it 'sends product to be persisted in s3' do
+    headers = auth.merge('HTTP_X_HUB_STORE' => '54591b3a5869632afc090000')
     request = {
       product: Factory.product_single,
       parameters: {
@@ -12,9 +12,9 @@ describe QuickbooksDesktopEndpoint do
       }
     }
 
-    VCR.use_cassette "products/32425454354353" do
-      post "/add_products", request.to_json, headers
-      expect(json_response[:summary]).to match "waiting for"
+    VCR.use_cassette 'products/32425454354353' do
+      post '/add_products', request.to_json, headers
+      expect(json_response[:summary]).to match 'waiting for'
       expect(last_response.status).to be 200
     end
   end
@@ -58,8 +58,8 @@ describe QuickbooksDesktopEndpoint do
   #   end
   # end
 
-  it "gets inventories from quickbooks" do
-    headers = auth.merge("HTTP_X_HUB_STORE" => "54591b3a5869632afc090000")
+  it 'gets inventories from quickbooks' do
+    headers = auth.merge('HTTP_X_HUB_STORE' => '54591b3a5869632afc090000')
     request = {
       parameters: {
         quickbooks_since: '2014-11-10T09:10:55Z',
@@ -67,10 +67,10 @@ describe QuickbooksDesktopEndpoint do
       }
     }
 
-    VCR.use_cassette "requests/425435435234532" do
-      post "/get_inventories", request.to_json, headers
+    VCR.use_cassette 'requests/425435435234532' do
+      post '/get_inventories', request.to_json, headers
 
-      expect(json_response[:summary]).to match "records from quickbooks"
+      expect(json_response[:summary]).to match 'records from quickbooks'
       expect(last_response.status).to eq 200
       expect(json_response[:inventories].count).to be >= 1
 
@@ -80,11 +80,11 @@ describe QuickbooksDesktopEndpoint do
     end
   end
 
-  it "gets no inventories" do
-    headers = auth.merge("HTTP_X_HUB_STORE" => "54591b3a5869632afc090000")
+  it 'gets no inventories' do
+    headers = auth.merge('HTTP_X_HUB_STORE' => '54591b3a5869632afc090000')
 
-    VCR.use_cassette "requests/43535345325" do
-      post "/get_inventories", {}.to_json, headers
+    VCR.use_cassette 'requests/43535345325' do
+      post '/get_inventories', {}.to_json, headers
       expect(json_response[:summary]).to eq nil
       expect(last_response.status).to eq 200
 
@@ -93,8 +93,8 @@ describe QuickbooksDesktopEndpoint do
     end
   end
 
-  it "gets products from quickbooks" do
-    headers = auth.merge("HTTP_X_HUB_STORE" => "54591b3a5869632afc090000")
+  it 'gets products from quickbooks' do
+    headers = auth.merge('HTTP_X_HUB_STORE' => '54591b3a5869632afc090000')
     request = {
       parameters: {
         quickbooks_since: '2014-11-01T09:10:55Z',
@@ -102,10 +102,10 @@ describe QuickbooksDesktopEndpoint do
       }
     }
 
-    VCR.use_cassette "requests/4253442355352" do
-      post "/get_products", request.to_json, headers
+    VCR.use_cassette 'requests/4253442355352' do
+      post '/get_products', request.to_json, headers
 
-      expect(json_response[:summary]).to match "records from quickbooks"
+      expect(json_response[:summary]).to match 'records from quickbooks'
       expect(last_response.status).to eq 200
       expect(json_response[:products].count).to be >= 1
 

@@ -42,7 +42,6 @@ module QBWC
 
         expect(xml['adjustments'].first['name']).to eq('discount')
       end
-
     end
   end
 end
