@@ -1,0 +1,67 @@
+{
+  "returns": [ {
+  "email": "reinaldo+1@example.com",
+  "id": "RMA42671148",
+  "RMA_Number": "RMA42671148",
+  "order_id": "R346390231",
+  "status": "authorized",
+  "channel": "spree",
+  "stock_location": "default",
+  "shipping_method": "UPS Ground",
+  "shipping_carrier": "UPS",
+  "currency": "USD",
+  "tracking": null,
+  "placed_on": "2014-11-22T21:29:09Z",
+  "updated_at": "2014-10-02T21:57:29Z",
+  "shipped_at": "2014-10-02T21:57:12Z",
+  "refund_amount": "26.24",
+  "order_totals": {
+    "item": 19.99,
+    "adjustment": 1.25,
+    "tax": 1.25,
+    "shipping": 5,
+    "payment": 26.24,
+    "order": 26.24
+  },
+  "refunds": [
+    {
+      "number": "RWDKDCYY",
+      "status": "authorized",
+      "amount": 26.24,
+      "payment_method": "CHECK"
+    }
+  ],
+  "items": [
+    {
+      "product_id": "SPREE-T-SHIRT",
+      "name": "SPREE-T-SHIRT",
+      "quantity_shipped": 1,
+      "quantity_returned": 0,
+      "return_authorized": 1,
+      "price": 19.99
+    }
+  ],
+  "billing_address": {
+    "firstname": "Reinaldo",
+    "lastname": "Braga",
+    "address1": "3627 Ordway Street NW",
+    "address2": "",
+    "zipcode": "20016",
+    "city": "Washington",
+    "state": "DC",
+    "country": "US",
+    "phone": "408455563"
+  },
+  "shipping_address": {
+    "firstname": "Sameer",
+    "lastname": "Gulati",
+    "address1": "3627 Ordway Street NW",
+    "address2": "",
+    "zipcode": "20016",
+    "city": "Washington",
+    "state": "DC",
+    "country": "US",
+    "phone": "408455563"
+  }
+} ]
+}
