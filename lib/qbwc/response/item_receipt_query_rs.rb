@@ -19,8 +19,6 @@ module QBWC
       def process(config = {})
         return if records.empty?
 
-        puts "\n #{records.inspect}"
-
         receive_configs = config[:receive] || []
         inventory_params = receive_configs.find { |c| c['inventories'] }
 
