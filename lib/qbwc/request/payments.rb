@@ -3,26 +3,26 @@ module QBWC
     class Payments
       class << self
         def generate_request_insert_update(objects, params = {})
-          objects.inject("") do |request, object|
+          objects.inject('') do |request, object|
             config = { connection_id: params['connection_id'] }.with_indifferent_access
             session_id = Persistence::Session.save(config, object)
 
             request << if object[:list_id].to_s.empty?
                          add_xml_to_send(object, params, session_id)
-                      else
-                        update_xml_to_send(object, params, session_id)
+                       else
+                         update_xml_to_send(object, params, session_id)
                       end
           end
         end
 
         def generate_request_queries(objects, params)
-          objects.inject("") do |request, object|
-            extra = "shipment-#{object['order_id']}-" if object.has_key?('order_id')
+          objects.inject('') do |request, object|
+            extra = "shipment-#{object['order_id']}-" if object.key?('order_id')
 
             config = { connection_id: params['connection_id'] }.with_indifferent_access
             session_id = Persistence::Session.save(config, object, extra)
 
-            request << self.search_xml(object['id'], session_id)
+            request << search_xml(object['id'], session_id)
           end
         end
 
@@ -53,13 +53,13 @@ module QBWC
                <ReceivePaymentMod>
                   <TxnID>#{payment['list_id']}</TxnID>
                   <EditSequence>#{payment['edit_sequence']}</EditSequence>
-                  #{payment.has_key?('invoice_txn_id') ? payment_apply_invoice_xml(payment, params) : payment_xml(payment, params) }
+                  #{payment.key?('invoice_txn_id') ? payment_apply_invoice_xml(payment, params) : payment_xml(payment, params) }
                </ReceivePaymentMod>
             </ReceivePaymentModRq>
           XML
         end
 
-        def payment_apply_invoice_xml(payment, params)
+        def payment_apply_invoice_xml(payment, _params)
           <<-XML
               <RefNumber>#{payment['object_ref']}</RefNumber>
               <TotalAmount>#{'%.2f' % payment['amount'].to_f}</TotalAmount>
@@ -70,7 +70,7 @@ module QBWC
           XML
         end
 
-        def payment_xml(payment, params)
+        def payment_xml(payment, _params)
           <<-XML
               <CustomerRef>
                 <FullName>#{payment['email']}</FullName>
@@ -82,7 +82,6 @@ module QBWC
               </PaymentMethodRef>
           XML
         end
-
       end
     end
   end

@@ -12,7 +12,7 @@ module QBWC
           Persistence::Object.handle_error(
             config,
             error.merge(context: 'Updating Shipments'),
-            "shipments",
+            'shipments',
             error[:request_id]
           )
         end
@@ -25,7 +25,7 @@ module QBWC
           {
             shipments: {
               id: object['RefNumber'],
-              order_id:object['RefNumber'],
+              order_id: object['RefNumber'],
               list_id: object['TxnID'],
               edit_sequence: object['EditSequence']
             }

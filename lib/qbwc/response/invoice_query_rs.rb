@@ -10,8 +10,8 @@ module QBWC
       def handle_error(errors, config)
         errors.each do |error|
           Persistence::Object.handle_error(config,
-                                           error.merge({context: 'Querying Shipments'}),
-                                           "shipments",
+                                           error.merge(context: 'Querying Shipments'),
+                                           'shipments',
                                            error[:request_id])
         end
       end
@@ -21,7 +21,7 @@ module QBWC
 
         puts records.inspect
 
-        config  = config.merge({ origin: 'wombat', connection_id: config[:connection_id]  }).with_indifferent_access
+        config  = config.merge(origin: 'wombat', connection_id: config[:connection_id]).with_indifferent_access
 
         Persistence::Object.new(config, {}).update_objects_with_query_results(objects_to_update(config))
 
@@ -80,7 +80,7 @@ module QBWC
         # TODO finish the map
         records.map do |record|
           object = {
-            id: record['RefNumber'],
+            id: record['RefNumber']
           }
 
           object

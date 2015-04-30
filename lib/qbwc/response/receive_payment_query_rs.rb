@@ -10,8 +10,8 @@ module QBWC
       def handle_error(errors, config)
         errors.each do |error|
           Persistence::Object.handle_error(config,
-                                           error.merge({context: 'Querying Payments'}),
-                                           "payments",
+                                           error.merge(context: 'Querying Payments'),
+                                           'payments',
                                            error[:request_id])
         end
       end
@@ -34,24 +34,23 @@ module QBWC
         nil
       end
 
-      def objects_to_update(config)
+      def objects_to_update(_config)
         records.map do |record|
           {
             object_type: 'payment',
             object_ref: record['RefNumber'],
             id: record['RefNumber'],
             list_id: record['TxnID'],
-            edit_sequence: record['EditSequence'],
+            edit_sequence: record['EditSequence']
           }.with_indifferent_access
         end
       end
-
 
       def to_wombat
         # TODO finish the map
         records.map do |record|
           object = {
-            id: record['RefNumber'],
+            id: record['RefNumber']
           }
 
           object

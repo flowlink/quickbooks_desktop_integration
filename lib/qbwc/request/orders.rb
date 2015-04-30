@@ -2,13 +2,12 @@ module QBWC
   module Request
     class Orders
       class << self
-
         def generate_request_queries(objects, params)
-          objects.inject("") do |request, object|
+          objects.inject('') do |request, object|
             sanitize_order(object)
 
             # Needed to keep shipment ID b/c and Order already has a order_id
-            extra = "shipment-#{object['order_id']}-" if object.has_key?('shipment_id')
+            extra = "shipment-#{object['order_id']}-" if object.key?('shipment_id')
             config = { connection_id: params['connection_id'] }.with_indifferent_access
             session_id = Persistence::Session.save(config, object, extra)
 
@@ -17,7 +16,7 @@ module QBWC
         end
 
         def generate_request_insert_update(objects, params = {})
-          objects.inject("") do |request, object|
+          objects.inject('') do |request, object|
             sanitize_order(object)
 
             config = { connection_id: params['connection_id'] }.with_indifferent_access
@@ -25,14 +24,14 @@ module QBWC
 
             request << if object[:list_id].to_s.empty?
                          add_xml_to_send(object, params, session_id)
-                      else
-                        update_xml_to_send(object, params, session_id)
+                       else
+                         update_xml_to_send(object, params, session_id)
                       end
           end
         end
 
         def search_xml(order_id, session_id)
-         <<-XML
+          <<-XML
 <SalesOrderQueryRq requestID="#{session_id}">
   <RefNumberCaseSensitive>#{order_id}</RefNumberCaseSensitive>
   <IncludeLineItems>true</IncludeLineItems>
@@ -46,8 +45,8 @@ module QBWC
 <SalesOrderAddRq requestID="#{session_id}">
   <SalesOrderAdd>
     #{sales_order record, params}
-    #{items(record).map { |l| sales_order_line_add l }.join("")}
-    #{adjustments(record).map { |l| sales_order_line_add_from_adjustment(l, params) }.join("")}
+    #{items(record).map { |l| sales_order_line_add l }.join('')}
+    #{adjustments(record).map { |l| sales_order_line_add_from_adjustment(l, params) }.join('')}
   </SalesOrderAdd>
 </SalesOrderAddRq>
           XML
@@ -61,8 +60,8 @@ module QBWC
     <TxnID>#{record['list_id']}</TxnID>
     <EditSequence>#{record['edit_sequence']}</EditSequence>
     #{sales_order record, params}
-    #{items(record).map { |l| sales_order_line_mod l }.join("")}
-    #{adjustments(record).map { |l| sales_order_line_adjustment_mod(l, params) }.join("")}
+    #{items(record).map { |l| sales_order_line_mod l }.join('')}
+    #{adjustments(record).map { |l| sales_order_line_adjustment_mod(l, params) }.join('')}
   </SalesOrderMod>
 </SalesOrderModRq>
           XML
@@ -85,7 +84,7 @@ module QBWC
         # 'placed_on' needs to be a valid date string otherwise an exception
         # will be raised
         #
-        def sales_order(record, params)
+        def sales_order(record, _params)
           <<-XML
 
     <CustomerRef>
@@ -216,24 +215,23 @@ module QBWC
             }
           end
         end
+
         def build_payments_from_order(object)
-          object['payments'].to_a.select{|pay| ['completed', 'paid', 'ready'].include?(pay['status']) && pay['amount'].to_f > 0.0 }.map do |item|
-            item.merge({
-              'id'          => object['id'],
-              'object_ref'  => object['id'],
-              'email'       => object['email']
-            })
+          object['payments'].to_a.select { |pay| %w(completed paid ready).include?(pay['status']) && pay['amount'].to_f > 0.0 }.map do |item|
+            item.merge('id'          => object['id'],
+                       'object_ref'  => object['id'],
+                       'email'       => object['email'])
           end
         end
 
         private
 
         def items(record)
-          record['line_items'].to_a.sort{ |a,b| a['product_id'] <=> b['product_id'] }
+          record['line_items'].to_a.sort { |a, b| a['product_id'] <=> b['product_id'] }
         end
 
         def adjustments(record)
-          record['adjustments'].to_a.reject{ |adj| adj['value'].to_f == 0.0 }.sort{ |a,b| a['name'].downcase <=> b['name'].downcase }
+          record['adjustments'].to_a.reject { |adj| adj['value'].to_f == 0.0 }.sort { |a, b| a['name'].downcase <=> b['name'].downcase }
         end
 
         def sanitize_order(order)

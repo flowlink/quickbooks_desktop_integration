@@ -10,8 +10,8 @@ module QBWC
       def handle_error(errors, config)
         errors.each do |error|
           Persistence::Object.handle_error(config,
-                                           error.merge({context: 'Updating products'}),
-                                           "products",
+                                           error.merge(context: 'Updating products'),
+                                           'products',
                                            error[:request_id])
         end
       end
@@ -21,11 +21,11 @@ module QBWC
 
         products = []
         records.each do |object|
-          products << { :products => {
-                                       :id            => (object['ParentRef'].is_a?(Array) ? object['ParentRef'] : (object['ParentRef'].nil? ? [] : [object['ParentRef']])).map{ |item| item['FullName']+':' }.join('')+object['Name'],
-                                       :list_id       => object['ListID'],
-                                       :edit_sequence => object['EditSequence']
-                                      }
+          products << { products: {
+            id: (object['ParentRef'].is_a?(Array) ? object['ParentRef'] : (object['ParentRef'].nil? ? [] : [object['ParentRef']])).map { |item| item['FullName'] + ':' }.join('') + object['Name'],
+            list_id: object['ListID'],
+            edit_sequence: object['EditSequence']
+          }
                       }
         end
 

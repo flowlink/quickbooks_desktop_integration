@@ -10,8 +10,8 @@ module QBWC
       def handle_error(errors, config)
         errors.each do |error|
           Persistence::Object.handle_error(config,
-                                           error.merge({context: 'Querying products'}),
-                                           "products",
+                                           error.merge(context: 'Querying products'),
+                                           'products',
                                            error[:request_id])
         end
       end
@@ -47,7 +47,7 @@ module QBWC
           Persistence::Settings.new(params.with_indifferent_access).setup
         end
 
-        config = config.merge({ origin: 'wombat' })
+        config = config.merge(origin: 'wombat')
         object_persistence = Persistence::Object.new config
         object_persistence.update_objects_with_query_results(objects_to_update)
 
@@ -56,7 +56,7 @@ module QBWC
 
       def last_time_modified
         time = records.sort_by { |r| r['TimeModified'] }.last['TimeModified'].to_s
-        Time.parse(time).in_time_zone("Pacific Time (US & Canada)").iso8601
+        Time.parse(time).in_time_zone('Pacific Time (US & Canada)').iso8601
       end
 
       private
@@ -65,12 +65,10 @@ module QBWC
         records.map do |record|
           {
             object_type: 'product',
-            object_ref: (record['ParentRef'].is_a?(Array) ? record['ParentRef'] : (record['ParentRef'].nil? ? [] : [record['ParentRef']]) ).map{ |item| item['FullName']+':' }.join('')+record['Name'],
+            object_ref: (record['ParentRef'].is_a?(Array) ? record['ParentRef'] : (record['ParentRef'].nil? ? [] : [record['ParentRef']])).map { |item| item['FullName'] + ':' }.join('') + record['Name'],
             list_id: record['ListID'],
             edit_sequence: record['EditSequence']
           }
-
-
         end
       end
 

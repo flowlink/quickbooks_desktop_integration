@@ -4,18 +4,18 @@ module QBWC
     class Adjustments
       class << self
         def generate_request_insert_update(objects, params = {})
-          objects.inject("") do |request, object|
+          objects.inject('') do |request, object|
             config = { connection_id: params['connection_id'] }.with_indifferent_access
             session_id = Persistence::Session.save(config, object)
             if object[:list_id].to_s.empty?
               request = add_xml_to_send(object, params, session_id)
             else
               request           = ''
-              objects_to_update = [{ :adjustments => {
-                                             :id            => object['id'],
-                                             :list_id       => object['list_id'],
-                                             :edit_sequence => object['edit_sequence']
-                                            }
+              objects_to_update = [{ adjustments: {
+                id: object['id'],
+                list_id: object['list_id'],
+                edit_sequence: object['edit_sequence']
+              }
                                    }]
               Persistence::Object.update_statuses(params, objects_to_update)
             end
@@ -24,16 +24,16 @@ module QBWC
         end
 
         def generate_request_queries(objects, params)
-          objects.inject("") do |request, object|
+          objects.inject('') do |request, object|
             config = { connection_id: params['connection_id'] }.with_indifferent_access
             session_id = Persistence::Session.save(config, object)
 
-            request << self.search_xml(object.has_key?('product_id') ? object['product_id'] : object['id'], session_id)
+            request << search_xml(object.key?('product_id') ? object['product_id'] : object['id'], session_id)
           end
         end
 
         def search_xml(adjustment_id, session_id)
-         <<-XML
+          <<-XML
             <ItemOtherChargeQueryRq requestID="#{session_id}">
               <MaxReturned>100</MaxReturned>
               <NameRangeFilter>
@@ -85,7 +85,6 @@ module QBWC
             params['quickbooks_tax_item']
          end
         end
-
       end
     end
   end

@@ -10,8 +10,8 @@ module QBWC
       def handle_error(errors, config)
         errors.each do |error|
           Persistence::Object.handle_error(config,
-                                           error.merge({context: 'Querying adjustments'}),
-                                           "adjustments",
+                                           error.merge(context: 'Querying adjustments'),
+                                           'adjustments',
                                            error[:request_id])
         end
       end
@@ -21,7 +21,7 @@ module QBWC
 
         puts records.inspect
 
-        config = config.merge({ origin: 'wombat' })
+        config = config.merge(origin: 'wombat')
         object_persistence = Persistence::Object.new config
         object_persistence.update_objects_with_query_results(objects_to_update)
 

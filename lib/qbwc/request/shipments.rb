@@ -3,7 +3,7 @@ module QBWC
     class Shipments
       class << self
         def generate_request_queries(objects, params)
-          objects.inject("") do |request, object|
+          objects.inject('') do |request, object|
             sanitize_shipment(object)
 
             config = { connection_id: params['connection_id'] }.with_indifferent_access
@@ -14,7 +14,7 @@ module QBWC
         end
 
         def generate_request_insert_update(objects, params = {})
-          objects.inject("") do |request, object|
+          objects.inject('') do |request, object|
             sanitize_shipment(object)
 
             config = { connection_id: params['connection_id'] }.with_indifferent_access
@@ -27,7 +27,6 @@ module QBWC
                        end
           end
         end
-
 
         def search_xml(shipment_id, session_id)
           <<-XML
@@ -45,8 +44,8 @@ module QBWC
                 <TxnID>#{record['list_id']}</TxnID>
                 <EditSequence>#{record['edit_sequence']}</EditSequence>
                 #{invoice_xml(record, params)}
-                #{items(record).map { |i| invoice_line_mod i }.join("")}
-                #{adjustments(record).map { |i| invoice_adjustment_mod(i, params) }.join("")}
+                #{items(record).map { |i| invoice_line_mod i }.join('')}
+                #{adjustments(record).map { |i| invoice_adjustment_mod(i, params) }.join('')}
               </InvoiceMod>
             </InvoiceModRq>
           XML
@@ -57,14 +56,14 @@ module QBWC
             <InvoiceAddRq requestID="#{session_id}">
               <InvoiceAdd>
                 #{invoice_xml(record, params)}
-                #{items(record).map { |i| invoice_line_add i }.join("")}
-                #{adjustments(record).map { |i| invoice_adjustment_add i }.join("")}
+                #{items(record).map { |i| invoice_line_add i }.join('')}
+                #{adjustments(record).map { |i| invoice_adjustment_add i }.join('')}
               </InvoiceAdd>
             </InvoiceAddRq>
           XML
         end
 
-        def invoice_xml(record, params)
+        def invoice_xml(record, _params)
           <<-XML
                 <CustomerRef>
                   <FullName>#{record['email']}</FullName>
@@ -149,7 +148,7 @@ module QBWC
         end
 
         def link_to_sales_order(item)
-          return '' unless item.has_key?('sales_order_txn_line_id') && !item['sales_order_txn_line_id'].to_s.empty?
+          return '' unless item.key?('sales_order_txn_line_id') && !item['sales_order_txn_line_id'].to_s.empty?
 
           <<-XML
           <LinkToTxn>
@@ -186,7 +185,7 @@ module QBWC
         def build_order_from_shipments(object)
           {
             'id'               => object['order_id'],
-            'placed_on'        => (object.has_key?('placed_on') ? object['placed_on'] : object['shipped_at']),
+            'placed_on'        => (object.key?('placed_on') ? object['placed_on'] : object['shipped_at']),
             'shipment_id'      => object['order_id'],
             'order_id'         => object['order_id'],
             'firstname'        => object['billing_address']['firstname'],
@@ -225,15 +224,15 @@ module QBWC
         end
 
         def items(record)
-          record['items'].to_a.sort{ |a,b| a['product_id'] <=> b['product_id'] }
+          record['items'].to_a.sort { |a, b| a['product_id'] <=> b['product_id'] }
         end
 
         def adjustments(record)
-          record['adjustments'].to_a.reject{ |adj| adj['value'].to_f == 0.0 }.sort{ |a,b| a['name'].downcase <=> b['name'].downcase }
+          record['adjustments'].to_a.reject { |adj| adj['value'].to_f == 0.0 }.sort { |a, b| a['name'].downcase <=> b['name'].downcase }
         end
 
         def build_adjustments(object)
-          ['discount', 'adjustment', 'shipping', 'tax'].select{ |name| object['totals'].has_key?(name) && object['totals'][name].to_f != 0.0 }.map do |adj_name|
+          %w(discount adjustment shipping tax).select { |name| object['totals'].key?(name) && object['totals'][name].to_f != 0.0 }.map do |adj_name|
             {
               'name'  => adjustment_name_fixer(adj_name),
               'value' => object['totals'][adj_name]

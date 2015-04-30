@@ -3,7 +3,7 @@ module QBWC
     class Products
       class << self
         def generate_request_insert_update(objects, params = {})
-          objects.inject("") do |request, object|
+          objects.inject('') do |request, object|
             config = { connection_id: params['connection_id'] }.with_indifferent_access
             session_id = Persistence::Session.save(config, object)
 
@@ -16,16 +16,16 @@ module QBWC
         end
 
         def generate_request_queries(objects, params)
-          objects.inject("") do |request, object|
+          objects.inject('') do |request, object|
             config = { connection_id: params['connection_id'] }.with_indifferent_access
             session_id = Persistence::Session.save(config, object)
 
-            request << self.search_xml(object.has_key?('product_id') ? object['product_id'] : object['id'], session_id)
+            request << search_xml(object.key?('product_id') ? object['product_id'] : object['id'], session_id)
           end
         end
 
         def search_xml(product_id, session_id)
-         <<-XML
+          <<-XML
             <ItemInventoryQueryRq requestID="#{session_id}">
               <MaxReturned>100</MaxReturned>
               <NameRangeFilter>
@@ -52,13 +52,13 @@ module QBWC
                <ItemInventoryMod>
                   <ListID>#{product['list_id']}</ListID>
                   <EditSequence>#{product['edit_sequence']}</EditSequence>
-                  #{product.has_key?('active') ? product_only_touch_xml(product, params) : product_xml(product, params)}
+                  #{product.key?('active') ? product_only_touch_xml(product, params) : product_xml(product, params)}
                </ItemInventoryMod>
             </ItemInventoryModRq>
           XML
         end
 
-        def product_only_touch_xml(product, params)
+        def product_only_touch_xml(product, _params)
           <<-XML
                   <Name>#{product['id']}</Name>
                   <IsActive>true</IsActive>
@@ -84,15 +84,15 @@ module QBWC
           XML
         end
 
-        def polling_others_items_xml(timestamp, config)
+        def polling_others_items_xml(_timestamp, _config)
           # nothing on this class
           ''
         end
         # TODO Migrating to inventories.rb
         def polling_current_items_xml(timestamp, config)
-          session_id = Persistence::Session.save(config, {"polling" => timestamp})
+          session_id = Persistence::Session.save(config, 'polling' => timestamp)
 
-          time = Time.parse(timestamp).in_time_zone "Pacific Time (US & Canada)"
+          time = Time.parse(timestamp).in_time_zone 'Pacific Time (US & Canada)'
 
           <<-XML
 
@@ -106,7 +106,7 @@ module QBWC
         end
 
         def complement_inventory(product)
-          if product.has_key?('product_id')
+          if product.key?('product_id')
             product['id']          = product['product_id']
             product['description'] = product['product_id']
             product['price']       = 0

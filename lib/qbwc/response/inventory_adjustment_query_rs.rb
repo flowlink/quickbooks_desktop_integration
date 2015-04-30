@@ -10,8 +10,8 @@ module QBWC
       def handle_error(errors, config)
         errors.each do |error|
           Persistence::Object.handle_error(config,
-                                           error.merge({context: 'Querying inventory adjustments'}),
-                                           "inventories",
+                                           error.merge(context: 'Querying inventory adjustments'),
+                                           'inventories',
                                            error[:request_id])
         end
       end

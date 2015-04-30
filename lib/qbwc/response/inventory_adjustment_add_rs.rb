@@ -10,8 +10,8 @@ module QBWC
       def handle_error(errors, config)
         errors.each do |error|
           Persistence::Object.handle_error(config,
-                                           error.merge({context: 'Seting inventories'}),
-                                           "inventories",
+                                           error.merge(context: 'Seting inventories'),
+                                           'inventories',
                                            error[:request_id])
         end
       end
@@ -21,11 +21,11 @@ module QBWC
 
         inventories = []
         records.each do |object|
-          inventories << { :inventories => {
-                                       :id            => object['RefNumber'],
-                                       :list_id       => object['TxnID'],
-                                       :edit_sequence => object['EditSequence']
-                                      }
+          inventories << { inventories: {
+            id: object['RefNumber'],
+            list_id: object['TxnID'],
+            edit_sequence: object['EditSequence']
+          }
                       }
         end
 

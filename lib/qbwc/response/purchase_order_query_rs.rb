@@ -10,8 +10,8 @@ module QBWC
       def handle_error(errors, config)
         errors.each do |error|
           Persistence::Object.handle_error(config,
-                                           error.merge({context: 'Querying inventory adjustments'}),
-                                           "inventories",
+                                           error.merge(context: 'Querying inventory adjustments'),
+                                           'inventories',
                                            error[:request_id])
         end
       end
@@ -37,7 +37,7 @@ module QBWC
         records.reject { |item| item.nil? || item['PurchaseOrderLineRet'].nil? }.map do |record|
           object ||= [] << (record['PurchaseOrderLineRet'].is_a?(Array) ?
                             record['PurchaseOrderLineRet'] :
-                            [record['PurchaseOrderLineRet']]).select { |line| line.has_key?('ItemRef') }.map { |item| { id: item['ItemRef']['FullName'] } }
+                            [record['PurchaseOrderLineRet']]).select { |line| line.key?('ItemRef') }.map { |item| { id: item['ItemRef']['FullName'] } }
         end.flatten
       end
     end
