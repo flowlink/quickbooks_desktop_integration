@@ -366,7 +366,7 @@ module Persistence
 
     def select_precedence_files(collection)
       first_precedence_types = ['customers', 'products', 'adjustments', 'inventories', 'payments']
-      second_precedence_types = ['orders']
+      second_precedence_types = ['orders', 'returns']
 
       has_first_precedence_files = collection.select do |file|
         _, _, filename    = file.key.split('/')
