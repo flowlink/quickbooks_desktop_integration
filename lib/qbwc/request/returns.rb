@@ -2,9 +2,8 @@ module QBWC
   module Request
     class Returns
       class << self
-
         def generate_request_queries(objects, params)
-          objects.inject("") do |request, object|
+          objects.inject('') do |request, object|
             config = { connection_id: params['connection_id'] }.with_indifferent_access
             session_id = Persistence::Session.save(config, object)
 
@@ -13,20 +12,20 @@ module QBWC
         end
 
         def generate_request_insert_update(objects, params = {})
-          objects.inject("") do |request, object|
+          objects.inject('') do |request, object|
             config = { connection_id: params['connection_id'] }.with_indifferent_access
             session_id = Persistence::Session.save(config, object)
 
             request << if object[:list_id].to_s.empty?
                          add_xml_to_send(object, params, session_id)
-                      else
-                        update_xml_to_send(object, params, session_id)
-                      end
+                       else
+                         update_xml_to_send(object, params, session_id)
+                       end
           end
         end
 
         def search_xml(return_id, session_id)
-         <<-XML
+          <<-XML
           <SalesReceiptQueryRq requestID="#{session_id}">
             <RefNumberCaseSensitive>#{return_id}</RefNumberCaseSensitive>
             <IncludeLineItems>true</IncludeLineItems>
@@ -39,14 +38,14 @@ module QBWC
             <SalesReceiptAddRq requestID="#{session_id}">
               <SalesReceiptAdd>
                 #{sales_receipt record, params}
-                #{record['items'].map { |l| sales_receipt_line_add l }.join("")}
+                #{record['items'].map { |l| sales_receipt_line_add l }.join('')}
               </SalesReceiptAdd>
             </SalesReceiptAddRq>
           XML
         end
 
         def update_xml_to_send(record, params= {}, session_id)
-          #{record['items'].map { |l| sales_receipt_line_mod l }.join("")}
+          # {record['items'].map { |l| sales_receipt_line_mod l }.join("")}
           <<-XML
             <SalesReceiptModRq requestID="#{session_id}">
               <SalesReceiptMod>
@@ -86,7 +85,7 @@ module QBWC
           XML
         end
 
-        def payment_ref(record, params)
+        def payment_ref(record, _params)
           return '' if record['refunds'].to_a.empty?
 
           <<-XML
@@ -97,7 +96,7 @@ module QBWC
         end
 
         def deposit_account(params)
-          return '' unless params.has_key?('quickbooks_deposit_account') &&
+          return '' unless params.key?('quickbooks_deposit_account') &&
                            !params['quickbooks_deposit_account'].to_s.empty?
 
           <<-XML
