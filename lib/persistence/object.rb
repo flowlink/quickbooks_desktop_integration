@@ -203,11 +203,11 @@ module Persistence
       statuses_objects.keys.each do |status_key|
         statuses_objects[status_key].each do |types|
           types.keys.each do |object_type|
-            object = types[object_type].with_indifferent_access
-
             # NOTE seeing an nil `object` var here sometimes, investigate it
             # happens when you have both add_orders and get_products flows enabled
             begin
+              object = types[object_type].with_indifferent_access
+
               filename = "#{path.base_name}/#{path.ready}/#{object_type}_#{id_for_object(object, object_type)}_"
 
               collection = amazon_s3.bucket.objects
