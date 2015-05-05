@@ -29,17 +29,20 @@ module Persistence
     def process_waiting_records
       prefix = "#{path.base_name}/#{path.pending}/#{payload_key}_"
       collection = amazon_s3.bucket.objects
+      begin
+        collection.with_prefix(prefix).enum.map do |s3_object|
+          _, _, filename = s3_object.key.split('/')
+          object_type    = filename.split('_').first
 
-      collection.with_prefix(prefix).enum.map do |s3_object|
-        _, _, filename = s3_object.key.split('/')
-        object_type    = filename.split('_').first
+          contents = s3_object.read
 
-        contents = s3_object.read
+          s3_object.move_to("#{path.base_name}/#{path.processed}/#{filename}")
 
-        s3_object.move_to("#{path.base_name}/#{path.processed}/#{filename}")
-
-        # return the content of file to create the requests
-        { object_type => Converter.csv_to_hash(contents) }
+          # return the content of file to create the requests
+          { object_type => Converter.csv_to_hash(contents) }
+        end
+      rescue AWS::S3::Errors::NoSuchKey
+        puts " File not found(process_waiting_records): #{prefix}"
       end
     end
 
