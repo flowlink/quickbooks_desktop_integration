@@ -10,6 +10,7 @@ gem 'nori'
 gem 'aws-sdk'
 gem 'rake'
 gem 'fast_xs'
+gem 'nokogiri'
 
 group :development do
   gem 'pry'
