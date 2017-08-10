@@ -18,7 +18,7 @@ module Persistence
     #
     def setup
       file = "#{base_name}/#{flow}.csv"
-      s3_object = amazon_s3.bucket.objects[file]
+      s3_object = amazon_s3.bucket.object(file)
 
       if !s3_object.exists? || force_save
         amazon_s3.export file_name: file, objects: [config], override: true
@@ -31,7 +31,7 @@ module Persistence
       %w(add_products add_customers).each do |extra_flow|
         config_aux['flow'] = extra_flow
         file = "#{base_name}/#{extra_flow}.csv"
-        s3_object = amazon_s3.bucket.objects[file]
+        s3_object = amazon_s3.bucket.object(file)
 
         if !s3_object.exists? || force_save
           amazon_s3.export file_name: file, objects: [config_aux], override: true
@@ -43,12 +43,12 @@ module Persistence
       collection = amazon_s3.bucket.objects
       prefix = "#{base_name}/#{prefix}"
 
-      collection.with_prefix(prefix).enum.map do |s3_object|
+      collection(prefix: prefix).map do |s3_object|
         connection_id, folder, filename = s3_object.key.split('/')
         flow, extension = filename.split('.')
         object_type = flow.split('_').last.pluralize
 
-        contents = s3_object.read
+        contents = s3_object.get.body.read
 
         # [
         #   {
