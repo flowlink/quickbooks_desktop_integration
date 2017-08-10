@@ -35,10 +35,7 @@ class QBWCEndpoint < Sinatra::Base
   end
 
   get '/support' do
-    'ok'
-    # send_request_xml
-    #
-    redirect 'https://support.wombat.co'
+    redirect 'https://flowlink.io'
   end
 
   get '/:connection_id' do
