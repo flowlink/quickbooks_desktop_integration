@@ -75,13 +75,13 @@ module Persistence
     #    with ListID and EditSequence
     def process_pending_objects
       prefix = "#{path.base_name}/#{path.pending}"
-      collection = amazon_s3.bucket.objects.with_prefix(prefix).enum
+      collection = amazon_s3.bucket.objects(prefix: prefix)
 
       collection.map do |s3_object|
         _, _, filename    = s3_object.key.split('/')
         object_type, _, _ = filename.split('_')
 
-        contents = s3_object.read
+        contents = s3_object.get.body.read
 
         s3_object.move_to("#{path.base_name}/#{path.ready}/#{filename}")
 
@@ -96,11 +96,11 @@ module Persistence
       prefix = "#{path.base_name}/#{path.two_phase_pending}"
       collection = amazon_s3.bucket.objects
 
-      collection.with_prefix(prefix).enum.each do |s3_object|
+      collection(prefix: prefix).each do |s3_object|
         _, _, filename    = s3_object.key.split('/')
         object_type, _, _ = filename.split('_')
 
-        contents = s3_object.read
+        contents = s3_object.get.body.read
 
         s3_object.move_to("#{path.base_name}/#{path.pending}/#{filename}")
       end
@@ -115,7 +115,7 @@ module Persistence
     def update_objects_with_query_results(objects_to_be_renamed)
       prefix = "#{path.base_name}/#{path.ready}"
 
-      unless amazon_s3.bucket.objects.with_prefix(prefix).first
+      unless amazon_s3.bucket.objects(prefix: prefix).first
         puts " No Files to be updated at #{prefix}"
         return
       end
@@ -135,8 +135,8 @@ module Persistence
           s3_object.move_to(new_file_name)
 
           unless object[:extra_data].to_s.empty?
-            contents = amazon_s3.bucket.objects[new_file_name].read
-            amazon_s3.bucket.objects[new_file_name].delete
+            contents = amazon_s3.bucket.object(new_file_name).get.body.read
+            amazon_s3.bucket.object(new_file_name).delete
 
             with_extra_data = Converter.csv_to_hash(contents).first.merge(object[:extra_data])
             amazon_s3.export file_name: new_file_name, objects: [with_extra_data]
@@ -162,7 +162,7 @@ module Persistence
     #   }]
     def get_ready_objects_to_send
       prefix = "#{path.base_name}/#{path.ready}"
-      collection = amazon_s3.bucket.objects.with_prefix(prefix).enum
+      collection = amazon_s3.bucket.objects(prefix: prefix)
 
       select_precedence_files(collection).reject { |s3| s3.key.match(/notification/) }.map do |s3_object|
         _, _, filename                         = s3_object.key.split('/')
@@ -172,7 +172,7 @@ module Persistence
         edit_sequence.gsub!('.csv', '') unless edit_sequence.nil?
         list_id = nil if edit_sequence.nil? # To fix a problem with multiple files with (n) on it
 
-        contents = s3_object.read
+        contents = s3_object.get.body.read
 
         { object_type.pluralize =>
             { list_id: list_id, edit_sequence: edit_sequence }
@@ -211,7 +211,7 @@ module Persistence
               filename = "#{path.base_name}/#{path.ready}/#{object_type}_#{id_for_object(object, object_type)}_"
 
               collection = amazon_s3.bucket.objects
-              collection.with_prefix(filename).enum.each do |s3_object|
+              collection(prefix: filename).each do |s3_object|
                 # This is for files that end on (n)
                 _, _, ax_filename = s3_object.key.split('/')
                 _, _, end_of_file, ax_edit_sequence = ax_filename.split('_')
@@ -235,7 +235,7 @@ module Persistence
 
     def get_notifications
       prefix = "#{path.base_name}/#{path.ready}/notification_"
-      collection = amazon_s3.bucket.objects.with_prefix(prefix).enum
+      collection = amazon_s3.bucket.objects(prefix: prefix)
 
       notification_files = collection.select do |s3|
         s3.key.match(payload_key) || (payload_key == 'orders' && s3.key.match('payments'))
@@ -244,7 +244,7 @@ module Persistence
       notification_files.inject('processed' => {}, 'failed' => {}) do |notifications, s3_object|
         _, _, filename  = s3_object.key.split('/')
         _, status, object_type, object_ref, _ = filename.split('_')
-        content = amazon_s3.convert_download('csv', s3_object.read).first
+        content = amazon_s3.convert_download('csv', s3_object.get.body.read).first
 
         object_ref = id_for_notifications(content, object_ref)
 
@@ -277,7 +277,7 @@ module Persistence
       file_name = "#{path.base_name}/#{path.pending}/shipments_#{shipment_id}_.csv"
 
       begin
-        contents = amazon_s3.convert_download('csv', amazon_s3.bucket.objects[file_name].read)
+        contents = amazon_s3.convert_download('csv', amazon_s3.bucket.object(file_name).get.body.read)
         amazon_s3.bucket.objects[file_name].delete
       rescue AWS::S3::Errors::NoSuchKey => _e
         puts "File not found[update_shipments_with_payment_ids]: #{file_name}"
@@ -300,7 +300,7 @@ module Persistence
       file_name = "#{path.base_name}/#{path.pending}/shipments_#{shipment_id}_.csv"
 
       begin
-        contents = amazon_s3.convert_download('csv', amazon_s3.bucket.objects[file_name].read)
+        contents = amazon_s3.convert_download('csv', amazon_s3.bucket.object(file_name).get.body.read)
         amazon_s3.bucket.objects[file_name].delete
       rescue AWS::S3::Errors::NoSuchKey => _e
         puts "File not found[update_shipments_with_qb_ids]: #{file_name}"
@@ -340,9 +340,9 @@ module Persistence
       file_name = "#{path.base_name}/#{path.ready}/shipments_#{shipment_id}_"
 
       begin
-        file = amazon_s3.bucket.objects.with_prefix(file_name).enum.first
+        file = amazon_s3.bucket.objects(prefix: file_name).first
 
-        contents = amazon_s3.convert_download('csv', file.read)
+        contents = amazon_s3.convert_download('csv', file.get.body.read)
       rescue AWS::S3::Errors::NoSuchKey => _e
         puts "File not found[create_payments_updates_from_shipments]: #{file_name}"
       end

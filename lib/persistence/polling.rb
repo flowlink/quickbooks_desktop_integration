@@ -30,11 +30,11 @@ module Persistence
       prefix = "#{path.base_name}/#{path.pending}/#{payload_key}_"
       collection = amazon_s3.bucket.objects
       begin
-        collection.with_prefix(prefix).enum.map do |s3_object|
+        collection(prefix: prefix).map do |s3_object|
           _, _, filename = s3_object.key.split('/')
           object_type    = filename.split('_').first
 
-          contents = s3_object.read
+          contents = s3_object.get.body.read
 
           s3_object.move_to("#{path.base_name}/#{path.processed}/#{filename}")
 
@@ -50,11 +50,11 @@ module Persistence
       prefix = "#{path.base_name}/#{path.pending}/query_#{payload_key}_"
       collection = amazon_s3.bucket.objects
 
-      collection.with_prefix(prefix).enum.map do |s3_object|
+      collection(prefix: prefix).map do |s3_object|
         _, _, filename = s3_object.key.split('/')
         object_type    = filename.split('_').second
 
-        contents = s3_object.read
+        contents = s3_object.get.body.read
 
         s3_object.move_to("#{path.base_name}/#{path.processed}/#{filename}")
 

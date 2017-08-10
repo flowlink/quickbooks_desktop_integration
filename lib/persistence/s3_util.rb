@@ -5,7 +5,7 @@ module Persistence
     attr_reader :s3_client
 
     def initialize(s3_client: nil)
-      @s3_client = s3_client || AWS::S3.new
+      @s3_client = s3_client || Aws::S3::Resource.new
       @bucket_name = 'quickbooks-desktop-integration'
     end
 
@@ -13,12 +13,12 @@ module Persistence
       verify_bucket!
 
       if override
-        s3_object = bucket.objects[file_name]
+        s3_object = bucket.object(file_name)
       else
         s3_object = find_next_s3_object(file_name)
       end
 
-      s3_object.write(convert_upload(extension(file_name), objects))
+      s3_object.put(body: convert_upload(extension(file_name), objects))
       s3_object
     end
 
@@ -35,7 +35,7 @@ module Persistence
     end
 
     def find_next_s3_object(file_name)
-      s3_object = bucket.objects[file_name]
+      s3_object = bucket.object(file_name)
       extension = extension(file_name)
 
       # file.csv exists?
@@ -45,7 +45,7 @@ module Persistence
       # files with the prefix?
       if s3_object.exists?
         prefix = file_name.gsub(".#{extension}", '(')
-        copies = bucket.objects.with_prefix(prefix).map do |s3_object|
+        copies = bucket.objects(prefix: prefix).map do |s3_object|
           # extracts the id: already_exists/shipments(2).csv -> 2
           s3_object.key.match(/\A.*\((\d+)\)\.#{extension}\z/)[1].to_i
         end
@@ -53,7 +53,7 @@ module Persistence
         next_id = copies.max.to_i + 1
 
         file_name = file_name.gsub(".#{extension}", "(#{next_id}).#{extension}")
-        bucket.objects[file_name]
+        bucket.object(file_name)
       else
         s3_object
       end
@@ -85,7 +85,7 @@ module Persistence
       s3_object = bucket.objects[file_name]
 
       if s3_object.exists?
-        contents = s3_object.read
+        contents = s3_object.get.body.read
         s3_object.delete
         contents
       else
@@ -102,7 +102,7 @@ module Persistence
     end
 
     def bucket
-      @s3_client.buckets[@bucket_name]
+      @s3_client.bucket(@bucket_name)
     end
   end
 end
