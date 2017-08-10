@@ -30,7 +30,7 @@ module Persistence
     #   e.g. { origin: 'quickbooks', connection_id: '54372cb069702d1f59000000' }
     #
     def initialize(config = {}, payload = {})
-      @payload_key = payload.keys.first
+      @payload_key = payload[:parameters][:payload_type]
       @objects     = payload[payload_key].is_a?(Hash) ? [payload[payload_key]] : Array(payload[payload_key])
       @config      = { origin: 'wombat' }.merge(config).with_indifferent_access
       @amazon_s3   = S3Util.new
