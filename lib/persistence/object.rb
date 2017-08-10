@@ -51,6 +51,10 @@ module Persistence
     #
     def save
       objects.each do |object|
+        if object['id'].size > 11
+          object['id'] = object['id'].split(//).last(11).join
+        end
+        
         next unless valid_object?(object)
         prepare_objects_before_save(object)
 
