@@ -40,10 +40,10 @@ module Persistence
     end
 
     def fetch(prefix = nil)
-      collection = amazon_s3.bucket.objects
+      collection = amazon_s3.bucket.objects(prefix: prefix)
       prefix = "#{base_name}/#{prefix}"
 
-      collection(prefix: prefix).map do |s3_object|
+      collection.map do |s3_object|
         connection_id, folder, filename = s3_object.key.split('/')
         flow, extension = filename.split('.')
         object_type = flow.split('_').last.pluralize

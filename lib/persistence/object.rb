@@ -30,7 +30,7 @@ module Persistence
     #   e.g. { origin: 'quickbooks', connection_id: '54372cb069702d1f59000000' }
     #
     def initialize(config = {}, payload = {})
-      @payload_key = payload[:parameters][:payload_type]
+      @payload_key = payload[:parameters] ? payload[:parameters][:payload_type] : payload.keys.first
       @objects     = payload[payload_key].is_a?(Hash) ? [payload[payload_key]] : Array(payload[payload_key])
       @config      = { origin: 'wombat' }.merge(config).with_indifferent_access
       @amazon_s3   = S3Util.new
@@ -54,7 +54,7 @@ module Persistence
         if object['id'].size > 11
           object['id'] = object['id'].split(//).last(11).join
         end
-        
+
         next unless valid_object?(object)
         prepare_objects_before_save(object)
 
@@ -98,9 +98,9 @@ module Persistence
     # be executed the next time
     def process_two_phase_pending_objects
       prefix = "#{path.base_name}/#{path.two_phase_pending}"
-      collection = amazon_s3.bucket.objects
+      collection = amazon_s3.bucket.objects(prefix: prefix)
 
-      collection(prefix: prefix).each do |s3_object|
+      collection.each do |s3_object|
         _, _, filename    = s3_object.key.split('/')
         object_type, _, _ = filename.split('_')
 
@@ -214,8 +214,8 @@ module Persistence
 
               filename = "#{path.base_name}/#{path.ready}/#{object_type}_#{id_for_object(object, object_type)}_"
 
-              collection = amazon_s3.bucket.objects
-              collection(prefix: filename).each do |s3_object|
+              collection = amazon_s3.bucket.objects(prefix: filename)
+              collection.each do |s3_object|
                 # This is for files that end on (n)
                 _, _, ax_filename = s3_object.key.split('/')
                 _, _, end_of_file, ax_edit_sequence = ax_filename.split('_')

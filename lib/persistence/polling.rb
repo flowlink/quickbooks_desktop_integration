@@ -28,9 +28,9 @@ module Persistence
 
     def process_waiting_records
       prefix = "#{path.base_name}/#{path.pending}/#{payload_key}_"
-      collection = amazon_s3.bucket.objects
       begin
-        collection(prefix: prefix).map do |s3_object|
+        collection = amazon_s3.bucket.objects(prefix: prefix)
+        collection.map do |s3_object|
           _, _, filename = s3_object.key.split('/')
           object_type    = filename.split('_').first
 
@@ -48,9 +48,9 @@ module Persistence
 
     def process_waiting_query_later_ids
       prefix = "#{path.base_name}/#{path.pending}/query_#{payload_key}_"
-      collection = amazon_s3.bucket.objects
+      collection = amazon_s3.bucket.objects(prefix: prefix)
 
-      collection(prefix: prefix).map do |s3_object|
+      collection.map do |s3_object|
         _, _, filename = s3_object.key.split('/')
         object_type    = filename.split('_').second
 
