@@ -41,7 +41,7 @@ module Persistence
           # return the content of file to create the requests
           { object_type => Converter.csv_to_hash(contents) }
         end
-      rescue AWS::S3::Errors::NoSuchKey
+      rescue Aws::S3::Errors::NoSuchKey
         puts " File not found(process_waiting_records): #{prefix}"
       end
     end

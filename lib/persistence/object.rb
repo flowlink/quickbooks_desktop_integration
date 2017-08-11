@@ -131,7 +131,7 @@ module Persistence
         # rescue / log the exception properly and move on with the others?
         # raises when file is not found:
         #
-        #   AWS::S3::Errors::NoSuchKey - No Such Key:
+        #   Aws::S3::Errors::NoSuchKey - No Such Key:
         #
         begin
           s3_object     = amazon_s3.bucket.objects["#{filename}.csv"]
@@ -145,7 +145,7 @@ module Persistence
             with_extra_data = Converter.csv_to_hash(contents).first.merge(object[:extra_data])
             amazon_s3.export file_name: new_file_name, objects: [with_extra_data]
           end
-        rescue AWS::S3::Errors::NoSuchKey => e
+        rescue Aws::S3::Errors::NoSuchKey => e
           puts " File not found: #{filename}.csv"
         end
       end
@@ -283,7 +283,7 @@ module Persistence
       begin
         contents = amazon_s3.convert_download('csv', amazon_s3.bucket.object(file_name).get.body.read)
         amazon_s3.bucket.objects[file_name].delete
-      rescue AWS::S3::Errors::NoSuchKey => _e
+      rescue Aws::S3::Errors::NoSuchKey => _e
         puts "File not found[update_shipments_with_payment_ids]: #{file_name}"
       end
 
@@ -294,7 +294,7 @@ module Persistence
       begin
         order_file_name = "#{path.base_name}/#{path.ready}/payments_#{object[:object_ref]}_.csv"
         amazon_s3.bucket.objects[order_file_name].delete
-      rescue AWS::S3::Errors::NoSuchKey => _e
+      rescue Aws::S3::Errors::NoSuchKey => _e
         puts "File not found[delete payments]: #{file_name}"
       end
     end
@@ -306,7 +306,7 @@ module Persistence
       begin
         contents = amazon_s3.convert_download('csv', amazon_s3.bucket.object(file_name).get.body.read)
         amazon_s3.bucket.objects[file_name].delete
-      rescue AWS::S3::Errors::NoSuchKey => _e
+      rescue Aws::S3::Errors::NoSuchKey => _e
         puts "File not found[update_shipments_with_qb_ids]: #{file_name}"
       end
 
@@ -333,7 +333,7 @@ module Persistence
       begin
         order_file_name = "#{path.base_name}/#{path.ready}/orders_#{object[:object_ref]}_.csv"
         amazon_s3.bucket.objects[order_file_name].delete
-      rescue AWS::S3::Errors::NoSuchKey => _e
+      rescue Aws::S3::Errors::NoSuchKey => _e
         puts "File not found[delete orders]: #{file_name}"
       end
     end
@@ -347,7 +347,7 @@ module Persistence
         file = amazon_s3.bucket.objects(prefix: file_name).first
 
         contents = amazon_s3.convert_download('csv', file.get.body.read)
-      rescue AWS::S3::Errors::NoSuchKey => _e
+      rescue Aws::S3::Errors::NoSuchKey => _e
         puts "File not found[create_payments_updates_from_shipments]: #{file_name}"
       end
       object = contents.first
