@@ -7,6 +7,10 @@ module Persistence
       @config = config
     end
 
+    def bucket_name
+      'quickbooks-desktop-integration'
+    end
+
     def two_phase_pending
       "#{config[:origin]}_two_phase_pending"
     end
