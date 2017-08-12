@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com//wombat_sessions/.csv
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com//flowlink_sessions/.csv
     body:
       encoding: US-ASCII
       string: ''
@@ -40,7 +40,7 @@ http_interactions:
       encoding: UTF-8
       string: |-
         <?xml version="1.0" encoding="UTF-8"?>
-        <Error><Code>NoSuchKey</Code><Message>The specified key does not exist.</Message><Key>/wombat_sessions/.csv</Key><RequestId>EB5BCED8A775086A</RequestId><HostId>dKjebmLsVF+dJG4ndNBd9aEPB6YB7y0TsdUiAEjM8bLRis+PFueUMzYIphECs8iP</HostId></Error>
+        <Error><Code>NoSuchKey</Code><Message>The specified key does not exist.</Message><Key>/flowlink_sessions/.csv</Key><RequestId>EB5BCED8A775086A</RequestId><HostId>dKjebmLsVF+dJG4ndNBd9aEPB6YB7y0TsdUiAEjM8bLRis+PFueUMzYIphECs8iP</HostId></Error>
     http_version: 
   recorded_at: Wed, 19 Nov 2014 23:33:08 GMT
 recorded_with: VCR 2.9.3

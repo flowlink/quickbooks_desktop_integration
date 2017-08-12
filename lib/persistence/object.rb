@@ -32,7 +32,7 @@ module Persistence
     def initialize(config = {}, payload = {})
       @payload_key = payload[:parameters] ? payload[:parameters][:payload_type] : payload.keys.first
       @objects     = payload[payload_key].is_a?(Hash) ? [payload[payload_key]] : Array(payload[payload_key])
-      @config      = { origin: 'wombat' }.merge(config).with_indifferent_access
+      @config      = { origin: 'flowlink' }.merge(config).with_indifferent_access
       @amazon_s3   = S3Util.new
       @path        = Persistence::Path.new(@config)
     end
@@ -46,7 +46,7 @@ module Persistence
     # Files MUST be named like this
     # /connectionid/folder/objecttype_object_ref.csv
     #
-    # e.g. 54372cb069702d1f59000000/wombat_pending/orders_T-SHIRT-SPREE1.csv
+    # e.g. 54372cb069702d1f59000000/flowlink_pending/orders_T-SHIRT-SPREE1.csv
     # e.g. 54372cb069702d1f59000000/quickbooks_pending/orders_T-SHIRT-SPREE1.csv
     #
     def save
@@ -80,6 +80,10 @@ module Persistence
     def process_pending_objects
       prefix = "#{path.base_name}/#{path.pending}"
       collection = amazon_s3.bucket.objects(prefix: prefix)
+
+      puts '-' * 100
+      puts "prefix: " + prefix
+      puts '-' * 100
 
       collection.map do |s3_object|
         _, _, filename    = s3_object.key.split('/')

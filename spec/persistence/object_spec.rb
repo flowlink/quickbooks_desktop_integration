@@ -10,12 +10,12 @@ module Persistence
       }
     end
 
-    it 'defaults to wombat on config origin' do
+    it 'defaults to flowlink on config origin' do
       subject = described_class.new
-      expect(subject.config[:origin]).to eq 'wombat'
+      expect(subject.config[:origin]).to eq 'flowlink'
 
       subject = described_class.new {}
-      expect(subject.config[:origin]).to eq 'wombat'
+      expect(subject.config[:origin]).to eq 'flowlink'
 
       subject = described_class.new origin: 'quickbooks'
       expect(subject.config[:origin]).to eq 'quickbooks'
@@ -23,7 +23,7 @@ module Persistence
 
     it 'persists s3 file' do
       payload = Factory.products
-      config = { origin: 'wombat', connection_id: '54372cb069702d1f59000000' }
+      config = { origin: 'flowlink', connection_id: '54372cb069702d1f59000000' }
 
       VCR.use_cassette 'persistence/save_products' do
         subject = described_class.new config, payload
@@ -33,7 +33,7 @@ module Persistence
 
     it '#process_pending_objects' do
       payload = Factory.products
-      config = { origin: 'wombat', connection_id: '54372cb069702d1f59000000' }
+      config = { origin: 'flowlink', connection_id: '54372cb069702d1f59000000' }
 
       VCR.use_cassette 'persistence/process_pending_objects' do
         subject = described_class.new config, payload
@@ -43,7 +43,7 @@ module Persistence
 
     it '#get_ready_objects_to_send' do
       payload = Factory.products
-      config = { origin: 'wombat', connection_id: '54372cb069702d1f59000000' }
+      config = { origin: 'flowlink', connection_id: '54372cb069702d1f59000000' }
 
       VCR.use_cassette 'persistence/get_ready_objects' do
         subject = described_class.new config, payload
@@ -55,7 +55,7 @@ module Persistence
 
     it '#update_objects_with_query_results' do
       objects_to_be_renamed = [Factory.query_results_to_update_objects]
-      config = { origin: 'wombat', connection_id: '54372cb069702d1f59000000' }
+      config = { origin: 'flowlink', connection_id: '54372cb069702d1f59000000' }
 
       VCR.use_cassette 'persistence/update_objects_with_query_results' do
         subject = described_class.new config, {}
@@ -66,7 +66,7 @@ module Persistence
     it '#update_objects_files' do
       payload = Factory.products
       statuses_objects = Factory.objects_results_status
-      config = { origin: 'wombat', connection_id: '54372cb069702d1f59000000' }
+      config = { origin: 'flowlink', connection_id: '54372cb069702d1f59000000' }
 
       VCR.use_cassette 'persistence/update_objects_files' do
         subject = described_class.new config, payload
@@ -76,7 +76,7 @@ module Persistence
 
     it '#get_notifications' do
       payload = Factory.products
-      config = { origin: 'wombat', connection_id: '53ab0943436f6e9a6f080000' }
+      config = { origin: 'flowlink', connection_id: '53ab0943436f6e9a6f080000' }
 
       VCR.use_cassette 'persistence/get_notifications' do
         subject = described_class.new config, payload
@@ -88,7 +88,7 @@ module Persistence
 
     it '#create_error_notifications' do
       payload = Factory.products
-      config = { origin: 'wombat', connection_id: '53ab0943436f6e9a6f080000' }
+      config = { origin: 'flowlink', connection_id: '53ab0943436f6e9a6f080000' }
 
       VCR.use_cassette 'persistence/create_error_notifications' do
         subject = described_class.new config, payload
@@ -99,7 +99,7 @@ module Persistence
     end
 
     it '#generate_inserts_for_two_phase' do
-      config = { origin: 'wombat', connection_id: '54372cb069702d1f59000000' }
+      config = { origin: 'flowlink', connection_id: '54372cb069702d1f59000000' }
 
       VCR.use_cassette 'persistence/generate_inserts_for_two_phase' do
         payload = Factory.orders

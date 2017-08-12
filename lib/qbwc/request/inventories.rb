@@ -23,7 +23,7 @@ module QBWC
           return '' if query_later.empty?
 
           objects = query_later.inject([]) { |all_items, obj| all_items << obj['inventories'] }.flatten
-          config = { origin: 'wombat' }.merge(config)
+          config = { origin: 'flowlink' }.merge(config)
           session_id = Persistence::Session.save(config, 'item_inventories_ids' => objects)
 
           codes = objects.inject('') do |codes, object|

@@ -305,7 +305,7 @@ http_interactions:
   recorded_at: Mon, 24 Nov 2014 12:22:20 GMT
 - request:
     method: get
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/?max-keys=1&prefix=54591b3a5869632afc090000/wombat_ready
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/?max-keys=1&prefix=54591b3a5869632afc090000/flowlink_ready
     body:
       encoding: US-ASCII
       string: ''
@@ -343,12 +343,12 @@ http_interactions:
       encoding: UTF-8
       string: |-
         <?xml version="1.0" encoding="UTF-8"?>
-        <ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>quickbooks-desktop-integration</Name><Prefix>54591b3a5869632afc090000/wombat_ready</Prefix><Marker></Marker><MaxKeys>1</MaxKeys><IsTruncated>true</IsTruncated><Contents><Key>54591b3a5869632afc090000/wombat_ready/orders_R15408534641_.csv</Key><LastModified>2014-11-14T04:19:52.000Z</LastModified><ETag>&quot;9c5e48e7a012d55e96a739616655f9b5&quot;</ETag><Size>1093</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>aws</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents></ListBucketResult>
+        <ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>quickbooks-desktop-integration</Name><Prefix>54591b3a5869632afc090000/flowlink_ready</Prefix><Marker></Marker><MaxKeys>1</MaxKeys><IsTruncated>true</IsTruncated><Contents><Key>54591b3a5869632afc090000/flowlink_ready/orders_R15408534641_.csv</Key><LastModified>2014-11-14T04:19:52.000Z</LastModified><ETag>&quot;9c5e48e7a012d55e96a739616655f9b5&quot;</ETag><Size>1093</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>aws</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents></ListBucketResult>
     http_version: 
   recorded_at: Mon, 24 Nov 2014 12:22:21 GMT
 - request:
     method: put
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/wombat_ready/products_Ruby%20T-Shirt_80000002-1415025717_1415025717.csv
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/flowlink_ready/products_Ruby%20T-Shirt_80000002-1415025717_1415025717.csv
     body:
       encoding: UTF-8
       string: ''
@@ -358,7 +358,7 @@ http_interactions:
       Accept-Encoding:
       - ''
       X-Amz-Copy-Source:
-      - "/quickbooks-desktop-integration/54591b3a5869632afc090000/wombat_ready/products_Ruby%20T-Shirt_.csv"
+      - "/quickbooks-desktop-integration/54591b3a5869632afc090000/flowlink_ready/products_Ruby%20T-Shirt_.csv"
       X-Amz-Metadata-Directive:
       - COPY
       X-Amz-Storage-Class:
@@ -390,7 +390,7 @@ http_interactions:
       - AmazonS3
     body:
       encoding: UTF-8
-      string: "<Error><Code>NoSuchKey</Code><Message>The specified key does not exist.</Message><Key>54591b3a5869632afc090000/wombat_ready/products_Ruby
+      string: "<Error><Code>NoSuchKey</Code><Message>The specified key does not exist.</Message><Key>54591b3a5869632afc090000/flowlink_ready/products_Ruby
         T-Shirt_.csv</Key><RequestId>FBCCE42A1C07165A</RequestId><HostId>xKbGLiCyHoKIlvIOew27PD/N0aZfLwB2QTaEOAe3YfUj/sWuRLO6SKC74JuHBvSlHGXUx48AeVg=</HostId></Error>"
     http_version: 
   recorded_at: Mon, 24 Nov 2014 12:22:21 GMT

@@ -22,7 +22,7 @@ module QBWC
         receive_configs = config[:receive] || []
         inventory_params = receive_configs.find { |c| c['inventories'] }
 
-        payload = { inventories: inventories_to_wombat }
+        payload = { inventories: inventories_to_flowlink }
         config = { origin: 'quickbooks' }.merge config
 
         poll_persistence = Persistence::Polling.new(config, payload)
@@ -32,7 +32,7 @@ module QBWC
 
       private
 
-      def inventories_to_wombat
+      def inventories_to_flowlink
         records.map do |record|
           object ||= [] << (record['InventoryAdjustmentLineRet'].is_a?(Array) ?
                             record['InventoryAdjustmentLineRet'] :

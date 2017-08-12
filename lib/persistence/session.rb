@@ -4,7 +4,7 @@ module Persistence
     attr_reader :amazon_s3, :path
 
     def initialize(config = {})
-      @config      = { origin: 'wombat' }.merge(config).with_indifferent_access
+      @config      = { origin: 'flowlink' }.merge(config).with_indifferent_access
       @amazon_s3   = S3Util.new
       @path        = Persistence::Path.new(@config)
     end

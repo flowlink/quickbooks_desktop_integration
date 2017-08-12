@@ -43,7 +43,7 @@ http_interactions:
   recorded_at: Thu, 26 Mar 2015 12:48:06 GMT
 - request:
     method: head
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com//wombat_sessions/825f953f-1a5f-4367-8a33-a5bc1a62e793.csv
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com//flowlink_sessions/825f953f-1a5f-4367-8a33-a5bc1a62e793.csv
     body:
       encoding: US-ASCII
       string: ''
@@ -84,7 +84,7 @@ http_interactions:
   recorded_at: Thu, 26 Mar 2015 12:48:07 GMT
 - request:
     method: put
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com//wombat_sessions/825f953f-1a5f-4367-8a33-a5bc1a62e793.csv
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com//flowlink_sessions/825f953f-1a5f-4367-8a33-a5bc1a62e793.csv
     body:
       encoding: ASCII-8BIT
       string: |-
