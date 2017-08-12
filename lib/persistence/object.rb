@@ -134,7 +134,7 @@ module Persistence
         #   Aws::S3::Errors::NoSuchKey - No Such Key:
         #
         begin
-          s3_object     = amazon_s3.bucket.objects["#{filename}.csv"]
+          s3_object     = amazon_s3.bucket.object("#{filename}.csv")
           new_file_name = "#{filename}#{object[:list_id]}_#{object[:edit_sequence]}.csv"
           s3_object.move_to(new_file_name)
 
@@ -282,7 +282,7 @@ module Persistence
 
       begin
         contents = amazon_s3.convert_download('csv', amazon_s3.bucket.object(file_name).get.body.read)
-        amazon_s3.bucket.objects[file_name].delete
+        amazon_s3.bucket.object(file_name).delete
       rescue Aws::S3::Errors::NoSuchKey => _e
         puts "File not found[update_shipments_with_payment_ids]: #{file_name}"
       end
@@ -293,7 +293,7 @@ module Persistence
 
       begin
         order_file_name = "#{path.base_name}/#{path.ready}/payments_#{object[:object_ref]}_.csv"
-        amazon_s3.bucket.objects[order_file_name].delete
+        amazon_s3.bucket.object(order_file_name).delete
       rescue Aws::S3::Errors::NoSuchKey => _e
         puts "File not found[delete payments]: #{file_name}"
       end
@@ -305,7 +305,7 @@ module Persistence
 
       begin
         contents = amazon_s3.convert_download('csv', amazon_s3.bucket.object(file_name).get.body.read)
-        amazon_s3.bucket.objects[file_name].delete
+        amazon_s3.bucket.object(file_name).delete
       rescue Aws::S3::Errors::NoSuchKey => _e
         puts "File not found[update_shipments_with_qb_ids]: #{file_name}"
       end
@@ -332,7 +332,7 @@ module Persistence
 
       begin
         order_file_name = "#{path.base_name}/#{path.ready}/orders_#{object[:object_ref]}_.csv"
-        amazon_s3.bucket.objects[order_file_name].delete
+        amazon_s3.bucket.object(order_file_name).delete
       rescue Aws::S3::Errors::NoSuchKey => _e
         puts "File not found[delete orders]: #{file_name}"
       end
@@ -417,7 +417,7 @@ module Persistence
 
     def create_notifications(objects_filename, status)
       _, _, filename = objects_filename.split('/')
-      s3_object = amazon_s3.bucket.objects[objects_filename]
+      s3_object = amazon_s3.bucket.object(objects_filename)
 
       new_filename = "#{path.base_name}/#{path.ready}/notification_#{status}_#{filename}"
       s3_object.copy_to(new_filename)
