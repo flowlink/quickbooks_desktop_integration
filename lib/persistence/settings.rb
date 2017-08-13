@@ -17,7 +17,7 @@ module Persistence
     #   e.g. 54372cb069702d1f59000000/settings/receive_product.csv
     #
     def setup
-      file = "#{base_name}/#{flow}.csv"
+      file = "#{base_name_no_bucket}/#{flow}.csv"
       s3_object = amazon_s3.bucket.object(file)
 
       if !s3_object.exists? || force_save

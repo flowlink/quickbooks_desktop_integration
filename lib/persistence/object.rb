@@ -91,7 +91,7 @@ module Persistence
 
         contents = s3_object.get.body.read
 
-        s3_object.move_to("#{path.base_name}/#{path.ready}/#{filename}")
+        s3_object.move_to("#{path.base_name_w_bucket}/#{path.ready}/#{filename}")
 
         # return the content of file to create the requests
         { object_type => Converter.csv_to_hash(contents) }
@@ -110,7 +110,7 @@ module Persistence
 
         contents = s3_object.get.body.read
 
-        s3_object.move_to("#{path.base_name}/#{path.pending}/#{filename}")
+        s3_object.move_to("#{path.base_name_w_bucket}/#{path.pending}/#{filename}")
       end
     end
 
@@ -121,7 +121,7 @@ module Persistence
     #                             :edit_sequence => '12312312321'}
     #                             :extra_data => { ... }, ]
     def update_objects_with_query_results(objects_to_be_renamed)
-      prefix = "#{path.base_name}/#{path.ready}"
+      prefix = "#{path.base_name_w_bucket}/#{path.ready}"
 
       unless amazon_s3.bucket.objects(prefix: prefix).first
         puts " No Files to be updated at #{prefix}"
@@ -226,7 +226,7 @@ module Persistence
                 end_of_file = '.csv' unless ax_edit_sequence.nil?
 
                 status_folder = path.send status_key
-                new_filename = "#{path.base_name}/#{status_folder}/#{object_type}_#{id_for_object(object, object_type)}_"
+                new_filename = "#{path.base_name_w_bucket}/#{status_folder}/#{object_type}_#{id_for_object(object, object_type)}_"
                 new_filename << "#{object[:list_id]}_#{object[:edit_sequence]}" unless object[:list_id].to_s.empty?
 
                 s3_object.move_to("#{new_filename}#{end_of_file}")
@@ -264,7 +264,7 @@ module Persistence
           notifications[status][success_notification_message(object_type)] << object_ref
         end
 
-        s3_object.move_to("#{path.base_name}/#{path.processed}/#{filename}")
+        s3_object.move_to("#{path.base_name_w_bucket}/#{path.processed}/#{filename}")
 
         notifications
       end
@@ -423,7 +423,7 @@ module Persistence
       _, _, filename = objects_filename.split('/')
       s3_object = amazon_s3.bucket.object(objects_filename)
 
-      new_filename = "#{path.base_name}/#{path.ready}/notification_#{status}_#{filename}"
+      new_filename = "#{path.base_name_w_bucket}/#{path.ready}/notification_#{status}_#{filename}"
       s3_object.copy_to(new_filename)
     end
 

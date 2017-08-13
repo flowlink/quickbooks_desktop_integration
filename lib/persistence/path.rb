@@ -19,8 +19,12 @@ module Persistence
       "#{config[:origin]}_sessions"
     end
 
-    def base_name
+    def base_name_w_bucket
       "#{bucket_name}/#{config[:connection_id]}"
+    end
+
+    def base_name
+      "#{config[:connection_id]}"
     end
 
     def pending
