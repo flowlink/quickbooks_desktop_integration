@@ -9,6 +9,10 @@ module Persistence
       end
 
       def update_statuses(config = {}, processed = [], failed = [])
+        puts '-' * 100
+        puts "Processed: " + processed.to_s
+        puts "Failed: " + failed.to_s
+        puts '-' * 100
         Persistence::Object.new(config, {})
           .update_objects_files({ processed: processed, failed: failed }.with_indifferent_access)
       end
@@ -230,7 +234,7 @@ module Persistence
                 create_notifications("#{new_filename}#{end_of_file}", status_key) if status_key == 'processed'
               end
             rescue Exception => e
-              puts " update_objects_files: #{statuses_objects} #{e.backtrace.inspect}"
+              puts "Error in update_objects_files: #{statuses_objects} #{e.message} ... #{e.backtrace.inspect}"
             end
           end
         end
