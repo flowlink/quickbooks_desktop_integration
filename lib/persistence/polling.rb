@@ -36,7 +36,7 @@ module Persistence
 
           contents = s3_object.get.body.read
 
-          s3_object.move_to("#{path.bucket_name}/#{path.base_name}/#{path.processed}/#{filename}")
+          s3_object.move_to("#{path.base_name}/#{path.processed}/#{filename}")
 
           # return the content of file to create the requests
           { object_type => Converter.csv_to_hash(contents) }
@@ -56,7 +56,7 @@ module Persistence
 
         contents = s3_object.get.body.read
 
-        s3_object.move_to("#{path.bucket_name}/#{path.base_name}/#{path.processed}/#{filename}")
+        s3_object.move_to("#{path.base_name}/#{path.processed}/#{filename}")
 
         # return the content of file to create the requests
         { object_type => Converter.csv_to_hash(contents) }

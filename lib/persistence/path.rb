@@ -20,7 +20,7 @@ module Persistence
     end
 
     def base_name
-      "#{config[:connection_id]}"
+      "#{bucket_name}/#{config[:connection_id]}"
     end
 
     def pending
