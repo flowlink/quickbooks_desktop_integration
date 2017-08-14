@@ -18,12 +18,12 @@ module QBWC
         # waiting to be integrated? Verify if we should limit the s3 queries
 
         # Get Objets are ready
-        request_xml << process_insert_update(integration.get_ready_objects_to_send)
+        request_xml << process_insert_update(@integration.get_ready_objects_to_send)
 
         # Get Objects to query
-        request_xml << process_queries(integration.process_pending_objects)
+        request_xml << process_queries(@integration.process_pending_objects)
 
-        integration.process_two_phase_pending_objects
+        @integration.process_two_phase_pending_objects
       rescue  Exception => e
         puts "Exception: build_available_actions_to_request: #{e.message} #{e.backtrace.inspect}"
       end
@@ -31,7 +31,7 @@ module QBWC
     end
 
     def build_polling_request
-      s3_settings.settings('get_').inject('') do |string, record|
+      @s3_settings.settings('get_').inject('') do |string, record|
         object_type = record.keys.first
         params = record.values.first
 
@@ -57,8 +57,8 @@ module QBWC
     end
 
     def add_flows_params(object_type)
-      send_settings = s3_settings.settings('add_') if object_type.pluralize != 'inventories'
-      send_settings = s3_settings.settings('set_') if object_type.pluralize == 'inventories'
+      send_settings = @s3_settings.settings('add_') if object_type.pluralize != 'inventories'
+      send_settings = @s3_settings.settings('set_') if object_type.pluralize == 'inventories'
 
       object_type = 'products' if object_type == 'adjustments'
       object_type = 'shipments' if object_type == 'payments'
