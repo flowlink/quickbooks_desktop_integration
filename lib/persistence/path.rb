@@ -12,35 +12,35 @@ module Persistence
     end
 
     def two_phase_pending
-      "#{config[:origin]}_two_phase_pending"
+      "#{@config[:origin]}_two_phase_pending"
     end
 
     def sessions
-      "#{config[:origin]}_sessions"
+      "#{@config[:origin]}_sessions"
     end
 
     def base_name_w_bucket
-      "#{bucket_name}/#{config[:connection_id]}"
+      "#{bucket_name}/#{@config[:connection_id]}"
     end
 
     def base_name
-      "#{config[:connection_id]}"
+      "#{@config[:connection_id]}"
     end
 
     def pending
-      "#{config[:origin]}_pending"
+      "#{@config[:origin]}_pending"
     end
 
     def ready
-      "#{config[:origin]}_ready"
+      "#{@config[:origin]}_ready"
     end
 
     def processed
-      "#{config[:origin]}_processed"
+      "#{@config[:origin]}_processed"
     end
 
     def failed
-      "#{config[:origin]}_failed"
+      "#{@config[:origin]}_failed"
     end
   end
 end

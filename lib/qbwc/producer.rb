@@ -36,8 +36,8 @@ module QBWC
         params = record.values.first
 
         klass = "QBWC::Request::#{object_type.capitalize}".constantize
-        string << klass.polling_others_items_xml(params['quickbooks_since'], config)
-        string << klass.polling_current_items_xml(params['quickbooks_since'], config)
+        string << klass.polling_others_items_xml(params['quickbooks_since'], @config)
+        string << klass.polling_current_items_xml(params['quickbooks_since'], @config)
       end
     end
 
@@ -49,8 +49,10 @@ module QBWC
 
         klass = "QBWC::Request::#{object_type.capitalize}".constantize
         records = object_hash.values.flatten
-
-        result << klass.generate_request_insert_update(records,  add_flows_params(object_type) || {})
+        result << klass.generate_request_insert_update(
+          records,
+          config.merge(add_flows_params(object_type) || {})
+        )
       end
     end
 
@@ -70,7 +72,7 @@ module QBWC
 
         class_name = "QBWC::Request::#{object_type.capitalize}".constantize
 
-        result << class_name.generate_request_queries(objects[object_type], config)
+        result << class_name.generate_request_queries(objects[object_type], @config)
       end
     end
   end
