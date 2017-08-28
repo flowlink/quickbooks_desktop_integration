@@ -234,7 +234,7 @@ module Persistence
                 create_notifications("#{new_filename}#{end_of_file}", status_key) if status_key == 'processed'
               end
             rescue Exception => e
-              puts "Error in update_objects_files: #{statuses_objects} #{e.message} ... #{e.backtrace.inspect}"
+              puts "Error in update_objects_files: #{statuses_objects} #{e.message} \n\n #{e.backtrace.join('\n')}"
             end
           end
         end
