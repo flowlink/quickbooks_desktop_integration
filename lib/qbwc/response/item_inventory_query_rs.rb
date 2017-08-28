@@ -24,7 +24,7 @@ module QBWC
         product_params = receive_configs.find { |c| c['products'] }
 
         if inventory_params
-          payload = { inventories: inventories_to_wombat }
+          payload = { inventories: inventories_to_flowlink }
           config = { origin: 'quickbooks' }.merge config
 
           poll_persistence = Persistence::Polling.new(config, payload)
@@ -32,7 +32,7 @@ module QBWC
         end
 
         if product_params
-          payload = { products: products_to_wombat }
+          payload = { products: products_to_flowlink }
           config = { origin: 'quickbooks' }.merge config
 
           poll_persistence = Persistence::Polling.new(config, payload)
@@ -47,7 +47,7 @@ module QBWC
           Persistence::Settings.new(params.with_indifferent_access).setup
         end
 
-        config = config.merge(origin: 'wombat')
+        config = config.merge(origin: 'flowlink')
         object_persistence = Persistence::Object.new config
         object_persistence.update_objects_with_query_results(objects_to_update)
 
@@ -72,7 +72,7 @@ module QBWC
         end
       end
 
-      def inventories_to_wombat
+      def inventories_to_flowlink
         records.map do |record|
           object = {
             id: record['Name'],
@@ -83,7 +83,7 @@ module QBWC
         end
       end
 
-      def products_to_wombat
+      def products_to_flowlink
         records.map do |record|
           object = {
             id: record['Name'],

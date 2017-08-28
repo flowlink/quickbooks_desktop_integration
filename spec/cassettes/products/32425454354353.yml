@@ -176,7 +176,7 @@ http_interactions:
   recorded_at: Tue, 18 Nov 2014 17:27:34 GMT
 - request:
     method: head
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/wombat_pending/products_the%20internets_.csv
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/flowlink_pending/products_the%20internets_.csv
     body:
       encoding: US-ASCII
       string: ''
@@ -217,7 +217,7 @@ http_interactions:
   recorded_at: Tue, 18 Nov 2014 17:27:34 GMT
 - request:
     method: put
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/wombat_pending/products_the%20internets_.csv
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/flowlink_pending/products_the%20internets_.csv
     body:
       encoding: ASCII-8BIT
       string: |-
@@ -262,7 +262,7 @@ http_interactions:
   recorded_at: Tue, 18 Nov 2014 17:27:35 GMT
 - request:
     method: get
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/?max-keys=1000&prefix=54591b3a5869632afc090000/wombat_ready/notification_
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/?max-keys=1000&prefix=54591b3a5869632afc090000/flowlink_ready/notification_
     body:
       encoding: US-ASCII
       string: ''
@@ -300,7 +300,7 @@ http_interactions:
       encoding: UTF-8
       string: |-
         <?xml version="1.0" encoding="UTF-8"?>
-        <ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>quickbooks-desktop-integration</Name><Prefix>54591b3a5869632afc090000/wombat_ready/notification_</Prefix><Marker></Marker><MaxKeys>1000</MaxKeys><IsTruncated>false</IsTruncated></ListBucketResult>
+        <ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>quickbooks-desktop-integration</Name><Prefix>54591b3a5869632afc090000/flowlink_ready/notification_</Prefix><Marker></Marker><MaxKeys>1000</MaxKeys><IsTruncated>false</IsTruncated></ListBucketResult>
     http_version: 
   recorded_at: Tue, 18 Nov 2014 17:27:36 GMT
 recorded_with: VCR 2.9.3

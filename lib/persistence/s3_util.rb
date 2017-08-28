@@ -6,7 +6,7 @@ module Persistence
 
     def initialize(s3_client: nil)
       @s3_client = s3_client || Aws::S3::Resource.new
-      @bucket_name = 'quickbooks-desktop-integration'
+      @bucket_name = Persistence::Path.new({}).bucket_name
     end
 
     def export(file_name: nil, objects: nil, override: false)

@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/53ab0943436f6e9a6f080000/wombat_sessions/f9a42f99-03fc-4847-b71e-0091baa4e3ef.csv
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/53ab0943436f6e9a6f080000/flowlink_sessions/f9a42f99-03fc-4847-b71e-0091baa4e3ef.csv
     body:
       encoding: US-ASCII
       string: ''
@@ -92,7 +92,7 @@ http_interactions:
   recorded_at: Wed, 19 Nov 2014 23:32:57 GMT
 - request:
     method: head
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/53ab0943436f6e9a6f080000/wombat_ready/notification_failed_products_SPREE-T-SHIRT6978732_.csv
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/53ab0943436f6e9a6f080000/flowlink_ready/notification_failed_products_SPREE-T-SHIRT6978732_.csv
     body:
       encoding: US-ASCII
       string: ''
@@ -139,7 +139,7 @@ http_interactions:
   recorded_at: Wed, 19 Nov 2014 23:32:58 GMT
 - request:
     method: get
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/?max-keys=1000&prefix=53ab0943436f6e9a6f080000/wombat_ready/notification_failed_products_SPREE-T-SHIRT6978732_(
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/?max-keys=1000&prefix=53ab0943436f6e9a6f080000/flowlink_ready/notification_failed_products_SPREE-T-SHIRT6978732_(
     body:
       encoding: US-ASCII
       string: ''
@@ -177,12 +177,12 @@ http_interactions:
       encoding: UTF-8
       string: |-
         <?xml version="1.0" encoding="UTF-8"?>
-        <ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>quickbooks-desktop-integration</Name><Prefix>53ab0943436f6e9a6f080000/wombat_ready/notification_failed_products_SPREE-T-SHIRT6978732_(</Prefix><Marker></Marker><MaxKeys>1000</MaxKeys><IsTruncated>false</IsTruncated><Contents><Key>53ab0943436f6e9a6f080000/wombat_ready/notification_failed_products_SPREE-T-SHIRT6978732_(1).csv</Key><LastModified>2014-11-18T17:27:49.000Z</LastModified><ETag>&quot;9a496613e006f6f5766448d8e6086757&quot;</ETag><Size>1646</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>aws</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents></ListBucketResult>
+        <ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>quickbooks-desktop-integration</Name><Prefix>53ab0943436f6e9a6f080000/flowlink_ready/notification_failed_products_SPREE-T-SHIRT6978732_(</Prefix><Marker></Marker><MaxKeys>1000</MaxKeys><IsTruncated>false</IsTruncated><Contents><Key>53ab0943436f6e9a6f080000/flowlink_ready/notification_failed_products_SPREE-T-SHIRT6978732_(1).csv</Key><LastModified>2014-11-18T17:27:49.000Z</LastModified><ETag>&quot;9a496613e006f6f5766448d8e6086757&quot;</ETag><Size>1646</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>aws</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents></ListBucketResult>
     http_version: 
   recorded_at: Wed, 19 Nov 2014 23:32:59 GMT
 - request:
     method: put
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/53ab0943436f6e9a6f080000/wombat_ready/notification_failed_products_SPREE-T-SHIRT6978732_(2).csv
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/53ab0943436f6e9a6f080000/flowlink_ready/notification_failed_products_SPREE-T-SHIRT6978732_(2).csv
     body:
       encoding: ASCII-8BIT
       string: |-
@@ -227,7 +227,7 @@ http_interactions:
   recorded_at: Wed, 19 Nov 2014 23:32:59 GMT
 - request:
     method: get
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/?max-keys=1000&prefix=53ab0943436f6e9a6f080000/wombat_ready/products_SPREE-T-SHIRT6978732_
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/?max-keys=1000&prefix=53ab0943436f6e9a6f080000/flowlink_ready/products_SPREE-T-SHIRT6978732_
     body:
       encoding: US-ASCII
       string: ''
@@ -265,7 +265,7 @@ http_interactions:
       encoding: UTF-8
       string: |-
         <?xml version="1.0" encoding="UTF-8"?>
-        <ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>quickbooks-desktop-integration</Name><Prefix>53ab0943436f6e9a6f080000/wombat_ready/products_SPREE-T-SHIRT6978732_</Prefix><Marker></Marker><MaxKeys>1000</MaxKeys><IsTruncated>false</IsTruncated></ListBucketResult>
+        <ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>quickbooks-desktop-integration</Name><Prefix>53ab0943436f6e9a6f080000/flowlink_ready/products_SPREE-T-SHIRT6978732_</Prefix><Marker></Marker><MaxKeys>1000</MaxKeys><IsTruncated>false</IsTruncated></ListBucketResult>
     http_version: 
   recorded_at: Wed, 19 Nov 2014 23:33:07 GMT
 recorded_with: VCR 2.9.3

@@ -9,6 +9,10 @@ module Persistence
       end
 
       def update_statuses(config = {}, processed = [], failed = [])
+        puts '-' * 100
+        puts "Processed: " + processed.to_s
+        puts "Failed: " + failed.to_s
+        puts '-' * 100
         Persistence::Object.new(config, {})
           .update_objects_files({ processed: processed, failed: failed }.with_indifferent_access)
       end
@@ -30,9 +34,9 @@ module Persistence
     #   e.g. { origin: 'quickbooks', connection_id: '54372cb069702d1f59000000' }
     #
     def initialize(config = {}, payload = {})
-      @payload_key = payload.keys.first
+      @payload_key = payload[:parameters] ? payload[:parameters][:payload_type] : payload.keys.first
       @objects     = payload[payload_key].is_a?(Hash) ? [payload[payload_key]] : Array(payload[payload_key])
-      @config      = { origin: 'wombat' }.merge(config).with_indifferent_access
+      @config      = { origin: 'flowlink' }.merge(config).with_indifferent_access
       @amazon_s3   = S3Util.new
       @path        = Persistence::Path.new(@config)
     end
@@ -46,11 +50,15 @@ module Persistence
     # Files MUST be named like this
     # /connectionid/folder/objecttype_object_ref.csv
     #
-    # e.g. 54372cb069702d1f59000000/wombat_pending/orders_T-SHIRT-SPREE1.csv
+    # e.g. 54372cb069702d1f59000000/flowlink_pending/orders_T-SHIRT-SPREE1.csv
     # e.g. 54372cb069702d1f59000000/quickbooks_pending/orders_T-SHIRT-SPREE1.csv
     #
     def save
       objects.each do |object|
+        if object['id'].size > 11
+          object['id'] = object['id'].split(//).last(11).join
+        end
+
         next unless valid_object?(object)
         prepare_objects_before_save(object)
 
@@ -83,7 +91,7 @@ module Persistence
 
         contents = s3_object.get.body.read
 
-        s3_object.move_to("#{path.base_name}/#{path.ready}/#{filename}")
+        s3_object.move_to("#{path.base_name_w_bucket}/#{path.ready}/#{filename}")
 
         # return the content of file to create the requests
         { object_type => Converter.csv_to_hash(contents) }
@@ -94,15 +102,15 @@ module Persistence
     # be executed the next time
     def process_two_phase_pending_objects
       prefix = "#{path.base_name}/#{path.two_phase_pending}"
-      collection = amazon_s3.bucket.objects
+      collection = amazon_s3.bucket.objects(prefix: prefix)
 
-      collection(prefix: prefix).each do |s3_object|
+      collection.each do |s3_object|
         _, _, filename    = s3_object.key.split('/')
         object_type, _, _ = filename.split('_')
 
         contents = s3_object.get.body.read
 
-        s3_object.move_to("#{path.base_name}/#{path.pending}/#{filename}")
+        s3_object.move_to("#{path.base_name_w_bucket}/#{path.pending}/#{filename}")
       end
     end
 
@@ -113,7 +121,7 @@ module Persistence
     #                             :edit_sequence => '12312312321'}
     #                             :extra_data => { ... }, ]
     def update_objects_with_query_results(objects_to_be_renamed)
-      prefix = "#{path.base_name}/#{path.ready}"
+      prefix = "#{path.base_name_w_bucket}/#{path.ready}"
 
       unless amazon_s3.bucket.objects(prefix: prefix).first
         puts " No Files to be updated at #{prefix}"
@@ -127,10 +135,10 @@ module Persistence
         # rescue / log the exception properly and move on with the others?
         # raises when file is not found:
         #
-        #   AWS::S3::Errors::NoSuchKey - No Such Key:
+        #   Aws::S3::Errors::NoSuchKey - No Such Key:
         #
         begin
-          s3_object     = amazon_s3.bucket.objects["#{filename}.csv"]
+          s3_object     = amazon_s3.bucket.object("#{filename}.csv")
           new_file_name = "#{filename}#{object[:list_id]}_#{object[:edit_sequence]}.csv"
           s3_object.move_to(new_file_name)
 
@@ -141,7 +149,7 @@ module Persistence
             with_extra_data = Converter.csv_to_hash(contents).first.merge(object[:extra_data])
             amazon_s3.export file_name: new_file_name, objects: [with_extra_data]
           end
-        rescue AWS::S3::Errors::NoSuchKey => e
+        rescue Aws::S3::Errors::NoSuchKey => e
           puts " File not found: #{filename}.csv"
         end
       end
@@ -210,15 +218,15 @@ module Persistence
 
               filename = "#{path.base_name}/#{path.ready}/#{object_type}_#{id_for_object(object, object_type)}_"
 
-              collection = amazon_s3.bucket.objects
-              collection(prefix: filename).each do |s3_object|
+              collection = amazon_s3.bucket.objects(prefix: filename)
+              collection.each do |s3_object|
                 # This is for files that end on (n)
                 _, _, ax_filename = s3_object.key.split('/')
                 _, _, end_of_file, ax_edit_sequence = ax_filename.split('_')
                 end_of_file = '.csv' unless ax_edit_sequence.nil?
 
                 status_folder = path.send status_key
-                new_filename = "#{path.base_name}/#{status_folder}/#{object_type}_#{id_for_object(object, object_type)}_"
+                new_filename = "#{path.base_name_w_bucket}/#{status_folder}/#{object_type}_#{id_for_object(object, object_type)}_"
                 new_filename << "#{object[:list_id]}_#{object[:edit_sequence]}" unless object[:list_id].to_s.empty?
 
                 s3_object.move_to("#{new_filename}#{end_of_file}")
@@ -226,7 +234,7 @@ module Persistence
                 create_notifications("#{new_filename}#{end_of_file}", status_key) if status_key == 'processed'
               end
             rescue Exception => e
-              puts " update_objects_files: #{statuses_objects} #{e.backtrace.inspect}"
+              puts "Error in update_objects_files: #{statuses_objects} #{e.message} \n\n #{e.backtrace.join('\n')}"
             end
           end
         end
@@ -256,7 +264,7 @@ module Persistence
           notifications[status][success_notification_message(object_type)] << object_ref
         end
 
-        s3_object.move_to("#{path.base_name}/#{path.processed}/#{filename}")
+        s3_object.move_to("#{path.base_name_w_bucket}/#{path.processed}/#{filename}")
 
         notifications
       end
@@ -278,8 +286,8 @@ module Persistence
 
       begin
         contents = amazon_s3.convert_download('csv', amazon_s3.bucket.object(file_name).get.body.read)
-        amazon_s3.bucket.objects[file_name].delete
-      rescue AWS::S3::Errors::NoSuchKey => _e
+        amazon_s3.bucket.object(file_name).delete
+      rescue Aws::S3::Errors::NoSuchKey => _e
         puts "File not found[update_shipments_with_payment_ids]: #{file_name}"
       end
 
@@ -289,8 +297,8 @@ module Persistence
 
       begin
         order_file_name = "#{path.base_name}/#{path.ready}/payments_#{object[:object_ref]}_.csv"
-        amazon_s3.bucket.objects[order_file_name].delete
-      rescue AWS::S3::Errors::NoSuchKey => _e
+        amazon_s3.bucket.object(order_file_name).delete
+      rescue Aws::S3::Errors::NoSuchKey => _e
         puts "File not found[delete payments]: #{file_name}"
       end
     end
@@ -301,8 +309,8 @@ module Persistence
 
       begin
         contents = amazon_s3.convert_download('csv', amazon_s3.bucket.object(file_name).get.body.read)
-        amazon_s3.bucket.objects[file_name].delete
-      rescue AWS::S3::Errors::NoSuchKey => _e
+        amazon_s3.bucket.object(file_name).delete
+      rescue Aws::S3::Errors::NoSuchKey => _e
         puts "File not found[update_shipments_with_qb_ids]: #{file_name}"
       end
 
@@ -328,8 +336,8 @@ module Persistence
 
       begin
         order_file_name = "#{path.base_name}/#{path.ready}/orders_#{object[:object_ref]}_.csv"
-        amazon_s3.bucket.objects[order_file_name].delete
-      rescue AWS::S3::Errors::NoSuchKey => _e
+        amazon_s3.bucket.object(order_file_name).delete
+      rescue Aws::S3::Errors::NoSuchKey => _e
         puts "File not found[delete orders]: #{file_name}"
       end
     end
@@ -343,7 +351,7 @@ module Persistence
         file = amazon_s3.bucket.objects(prefix: file_name).first
 
         contents = amazon_s3.convert_download('csv', file.get.body.read)
-      rescue AWS::S3::Errors::NoSuchKey => _e
+      rescue Aws::S3::Errors::NoSuchKey => _e
         puts "File not found[create_payments_updates_from_shipments]: #{file_name}"
       end
       object = contents.first
@@ -413,9 +421,9 @@ module Persistence
 
     def create_notifications(objects_filename, status)
       _, _, filename = objects_filename.split('/')
-      s3_object = amazon_s3.bucket.objects[objects_filename]
+      s3_object = amazon_s3.bucket.object(objects_filename)
 
-      new_filename = "#{path.base_name}/#{path.ready}/notification_#{status}_#{filename}"
+      new_filename = "#{path.base_name_w_bucket}/#{path.ready}/notification_#{status}_#{filename}"
       s3_object.copy_to(new_filename)
     end
 

@@ -21,7 +21,7 @@ module QBWC
 
         puts records.inspect
 
-        config  = config.merge(origin: 'wombat', connection_id: config[:connection_id]).with_indifferent_access
+        config  = config.merge(origin: 'flowlink', connection_id: config[:connection_id]).with_indifferent_access
 
         Persistence::Object.new(config, {}).update_objects_with_query_results(objects_to_update(config))
 
@@ -76,7 +76,7 @@ module QBWC
         hash
       end
 
-      def to_wombat
+      def to_flowlink
         # TODO finish the map
         records.map do |record|
           object = {

@@ -43,7 +43,7 @@ http_interactions:
   recorded_at: Wed, 12 Nov 2014 12:24:57 GMT
 - request:
     method: head
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54372cb069702d1f59000000/wombat_pending/products_SPREE-T-SHIRT293178_.csv
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54372cb069702d1f59000000/flowlink_pending/products_SPREE-T-SHIRT293178_.csv
     body:
       encoding: US-ASCII
       string: ''
@@ -84,7 +84,7 @@ http_interactions:
   recorded_at: Wed, 12 Nov 2014 12:24:58 GMT
 - request:
     method: put
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54372cb069702d1f59000000/wombat_pending/products_SPREE-T-SHIRT293178_.csv
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54372cb069702d1f59000000/flowlink_pending/products_SPREE-T-SHIRT293178_.csv
     body:
       encoding: ASCII-8BIT
       string: |-
