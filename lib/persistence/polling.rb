@@ -11,7 +11,7 @@ module Persistence
                        Array(payload[payload_key])
                      end
 
-      @config      = { origin: 'wombat' }.merge(config).with_indifferent_access
+      @config      = { origin: 'flowlink' }.merge(config).with_indifferent_access
       @amazon_s3   = S3Util.new
       @path        = Persistence::Path.new(@config)
     end
@@ -28,35 +28,35 @@ module Persistence
 
     def process_waiting_records
       prefix = "#{path.base_name}/#{path.pending}/#{payload_key}_"
-      collection = amazon_s3.bucket.objects
       begin
-        collection(prefix: prefix).map do |s3_object|
+        collection = amazon_s3.bucket.objects(prefix: prefix)
+        collection.map do |s3_object|
           _, _, filename = s3_object.key.split('/')
           object_type    = filename.split('_').first
 
           contents = s3_object.get.body.read
 
-          s3_object.move_to("#{path.base_name}/#{path.processed}/#{filename}")
+          s3_object.move_to("#{path.base_name_w_bucket}/#{path.processed}/#{filename}")
 
           # return the content of file to create the requests
           { object_type => Converter.csv_to_hash(contents) }
         end
-      rescue AWS::S3::Errors::NoSuchKey
+      rescue Aws::S3::Errors::NoSuchKey
         puts " File not found(process_waiting_records): #{prefix}"
       end
     end
 
     def process_waiting_query_later_ids
       prefix = "#{path.base_name}/#{path.pending}/query_#{payload_key}_"
-      collection = amazon_s3.bucket.objects
+      collection = amazon_s3.bucket.objects(prefix: prefix)
 
-      collection(prefix: prefix).map do |s3_object|
+      collection.map do |s3_object|
         _, _, filename = s3_object.key.split('/')
         object_type    = filename.split('_').second
 
         contents = s3_object.get.body.read
 
-        s3_object.move_to("#{path.base_name}/#{path.processed}/#{filename}")
+        s3_object.move_to("#{path.base_name_w_bucket}/#{path.processed}/#{filename}")
 
         # return the content of file to create the requests
         { object_type => Converter.csv_to_hash(contents) }

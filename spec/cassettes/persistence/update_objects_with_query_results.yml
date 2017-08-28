@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/?max-keys=1&prefix=54372cb069702d1f59000000/wombat_ready
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/?max-keys=1&prefix=54372cb069702d1f59000000/flowlink_ready
     body:
       encoding: US-ASCII
       string: ''
@@ -40,12 +40,12 @@ http_interactions:
       encoding: UTF-8
       string: |-
         <?xml version="1.0" encoding="UTF-8"?>
-        <ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>quickbooks-desktop-integration</Name><Prefix>54372cb069702d1f59000000/wombat_ready</Prefix><Marker></Marker><MaxKeys>1</MaxKeys><IsTruncated>true</IsTruncated><Contents><Key>54372cb069702d1f59000000/wombat_ready/inventory_12154(1).csv</Key><LastModified>2014-11-11T17:41:08.000Z</LastModified><ETag>&quot;16ea95ff47da599f0ff7aa4505f905ca&quot;</ETag><Size>67</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>aws</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents></ListBucketResult>
+        <ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>quickbooks-desktop-integration</Name><Prefix>54372cb069702d1f59000000/flowlink_ready</Prefix><Marker></Marker><MaxKeys>1</MaxKeys><IsTruncated>true</IsTruncated><Contents><Key>54372cb069702d1f59000000/flowlink_ready/inventory_12154(1).csv</Key><LastModified>2014-11-11T17:41:08.000Z</LastModified><ETag>&quot;16ea95ff47da599f0ff7aa4505f905ca&quot;</ETag><Size>67</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>aws</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents></ListBucketResult>
     http_version: 
   recorded_at: Wed, 12 Nov 2014 18:24:53 GMT
 - request:
     method: put
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54372cb069702d1f59000000/wombat_ready/products_SPREE-T-SHIRT293178_800000-88888_12312312321.csv
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54372cb069702d1f59000000/flowlink_ready/products_SPREE-T-SHIRT293178_800000-88888_12312312321.csv
     body:
       encoding: UTF-8
       string: ''
@@ -55,7 +55,7 @@ http_interactions:
       Accept-Encoding:
       - ''
       X-Amz-Copy-Source:
-      - "/quickbooks-desktop-integration/54372cb069702d1f59000000/wombat_ready/products_SPREE-T-SHIRT293178_.csv"
+      - "/quickbooks-desktop-integration/54372cb069702d1f59000000/flowlink_ready/products_SPREE-T-SHIRT293178_.csv"
       X-Amz-Metadata-Directive:
       - COPY
       X-Amz-Storage-Class:
@@ -94,7 +94,7 @@ http_interactions:
   recorded_at: Wed, 12 Nov 2014 18:24:54 GMT
 - request:
     method: delete
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54372cb069702d1f59000000/wombat_ready/products_SPREE-T-SHIRT293178_.csv
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54372cb069702d1f59000000/flowlink_ready/products_SPREE-T-SHIRT293178_.csv
     body:
       encoding: US-ASCII
       string: ''

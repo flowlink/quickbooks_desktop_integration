@@ -21,7 +21,7 @@ module QBWC
 
         puts records.inspect
 
-        config  = { origin: 'wombat', connection_id: config[:connection_id]  }.with_indifferent_access
+        config  = { origin: 'flowlink', connection_id: config[:connection_id]  }.with_indifferent_access
         objects_updated = objects_to_update(config)
 
         if records.first['request_id'].start_with?('shipment')
@@ -46,7 +46,7 @@ module QBWC
         end
       end
 
-      def to_wombat
+      def to_flowlink
         # TODO finish the map
         records.map do |record|
           object = {

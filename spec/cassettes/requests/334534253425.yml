@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/?max-keys=10&prefix=wombat_to_be_integrated/_notification_orders
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/?max-keys=10&prefix=flowlink_to_be_integrated/_notification_orders
     body:
       encoding: US-ASCII
       string: ''
@@ -40,12 +40,12 @@ http_interactions:
       encoding: UTF-8
       string: |-
         <?xml version="1.0" encoding="UTF-8"?>
-        <ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>quickbooks-desktop-integration</Name><Prefix>wombat_to_be_integrated/_notification_orders</Prefix><Marker></Marker><MaxKeys>10</MaxKeys><IsTruncated>false</IsTruncated><Contents><Key>wombat_to_be_integrated/_notification_orders_1415134955.csv</Key><LastModified>2014-11-04T21:02:39.000Z</LastModified><ETag>&quot;d614b97efc293fe61a6799b65ba459d9&quot;</ETag><Size>84</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>aws</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents></ListBucketResult>
+        <ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>quickbooks-desktop-integration</Name><Prefix>flowlink_to_be_integrated/_notification_orders</Prefix><Marker></Marker><MaxKeys>10</MaxKeys><IsTruncated>false</IsTruncated><Contents><Key>flowlink_to_be_integrated/_notification_orders_1415134955.csv</Key><LastModified>2014-11-04T21:02:39.000Z</LastModified><ETag>&quot;d614b97efc293fe61a6799b65ba459d9&quot;</ETag><Size>84</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>aws</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents></ListBucketResult>
     http_version: 
   recorded_at: Tue, 04 Nov 2014 21:02:40 GMT
 - request:
     method: get
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/wombat_to_be_integrated/_notification_orders_1415134955.csv
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/flowlink_to_be_integrated/_notification_orders_1415134955.csv
     body:
       encoding: US-ASCII
       string: ''
@@ -94,7 +94,7 @@ http_interactions:
   recorded_at: Tue, 04 Nov 2014 21:02:41 GMT
 - request:
     method: head
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/wombat_integrated/_notification_orders_1415134955.csv
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/flowlink_integrated/_notification_orders_1415134955.csv
     body:
       encoding: US-ASCII
       string: ''
@@ -135,7 +135,7 @@ http_interactions:
   recorded_at: Tue, 04 Nov 2014 21:02:41 GMT
 - request:
     method: put
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/wombat_integrated/_notification_orders_1415134955.csv
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/flowlink_integrated/_notification_orders_1415134955.csv
     body:
       encoding: ASCII-8BIT
       string: |-
@@ -180,7 +180,7 @@ http_interactions:
   recorded_at: Tue, 04 Nov 2014 21:02:42 GMT
 - request:
     method: delete
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/wombat_to_be_integrated/_notification_orders_1415134955.csv
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/flowlink_to_be_integrated/_notification_orders_1415134955.csv
     body:
       encoding: US-ASCII
       string: ''

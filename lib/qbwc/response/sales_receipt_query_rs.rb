@@ -21,7 +21,7 @@ module QBWC
 
         puts records.inspect
 
-        config  = { origin: 'wombat', connection_id: config[:connection_id]  }
+        config  = { origin: 'flowlink', connection_id: config[:connection_id]  }
 
         Persistence::Object.new(config, {}).update_objects_with_query_results(objects_to_update)
 
@@ -39,7 +39,7 @@ module QBWC
         end
       end
 
-      def to_wombat
+      def to_flowlink
         # TODO finish the map
         records.map do |record|
           object = {
