@@ -165,6 +165,7 @@ module QBWC
       #{quantity(line)}
       <!-- <Amount>#{'%.2f' % line['price'].to_f}</Amount> -->
       <Rate>#{line['price']}</Rate>
+      <Desc>#{line['name']}</Desc>
       #{tax_code_line(line)}
           XML
         end
