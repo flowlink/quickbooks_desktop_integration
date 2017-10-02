@@ -1,9 +1,17 @@
 require 'endpoint_base'
+require 'sinatra/reloader'
 
 require File.expand_path(File.dirname(__FILE__) + '/lib/quickbooks_desktop_integration')
 
 class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
   set :logging, true
+
+  # Force Sinatra to autoreload this file or any file in the lib directory
+  # when they change in development
+  configure :development do
+    register Sinatra::Reloader
+    also_reload './lib/**/*'
+  end
 
   # Changing the endpoint paths might break internal logic as they're expected
   # to be always in plural. e.g. products not product
