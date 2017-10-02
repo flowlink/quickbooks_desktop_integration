@@ -85,6 +85,10 @@ module QBWC
         # will be raised
         #
         def sales_order(record, _params)
+          if record['placed_on'].nil? || record['placed_on'].empty?
+            record['placed_on'] = Time.now.to_s
+          end
+
           <<-XML
 
     <CustomerRef>
@@ -231,23 +235,26 @@ module QBWC
         end
 
         def adjustments(record)
-          record['adjustments'].to_a.reject { |adj| adj['value'].to_f == 0.0 }.sort { |a, b| a['name'].downcase <=> b['name'].downcase }
+          record['adjustments']
+            .to_a
+            .reject { |adj| adj['value'].to_f == 0.0 }
+            .sort { |a, b| a['name'].downcase <=> b['name'].downcase }
         end
 
         def sanitize_order(order)
-          order['billing_address']['address1'].gsub!(/[^0-9A-Za-z\s]/, '')
-          order['billing_address']['address2'].gsub!(/[^0-9A-Za-z\s]/, '')
-          order['billing_address']['city'].gsub!(/[^0-9A-Za-z\s]/, '')
-          order['billing_address']['state'].gsub!(/[^0-9A-Za-z\s]/, '')
-          order['billing_address']['zipcode'].gsub!(/[^0-9A-Za-z\s]/, '')
-          order['billing_address']['country'].gsub!(/[^0-9A-Za-z\s]/, '')
-          order['shipping_address']['address1'].gsub!(/[^0-9A-Za-z\s]/, '')
-          order['shipping_address']['address2'].gsub!(/[^0-9A-Za-z\s]/, '')
-          order['shipping_address']['city'].gsub!(/[^0-9A-Za-z\s]/, '')
-          order['shipping_address']['state'].gsub!(/[^0-9A-Za-z\s]/, '')
-          order['shipping_address']['zipcode'].gsub!(/[^0-9A-Za-z\s]/, '')
-          order['shipping_address']['country'].gsub!(/[^0-9A-Za-z\s]/, '')
+          ['billing_address', 'shipping_address'].each do |address_type|
+            if order[address_type].nil?
+              order[address_type] = { }
+            end
+
+            ['address1', 'address2', 'city', 'state', 'zipcode', 'county'].each do |field|
+              if !order[address_type][field].nil?
+                order[address_type][field].gsub!(/[^0-9A-Za-z\s]/, '')
+              end
+            end
+          end
         end
+
       end
     end
   end
