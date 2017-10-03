@@ -2,6 +2,7 @@ require 'pry-byebug'
 require 'nori'
 require 'nokogiri'
 require 'fast_xs'
+require 'sinatra/reloader'
 
 require 'active_support/core_ext/date/calculations'
 require 'active_support/core_ext/numeric/time'
@@ -21,6 +22,13 @@ end
 
 class QBWCEndpoint < Sinatra::Base
   set :logging, true
+
+  # Force Sinatra to autoreload this file or any file in the lib directory
+  # when they change in development
+  configure :development do
+    register Sinatra::Reloader
+    also_reload './lib/**/*'
+  end
 
   unless String.respond_to? :underscore
     class String

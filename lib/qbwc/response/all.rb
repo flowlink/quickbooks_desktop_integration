@@ -52,10 +52,10 @@ module QBWC
           value = value.is_a?(Hash)? [value] : Array(value)
           #value.map(&:values).flatten.select { |value| value.is_a?(Hash) }
 
-          records = value.map{ |item| item.values.flatten.select { |value| value.is_a?(Hash) }.flatten.
-                              map{ |sub| sub.merge({ 'request_id' => item['@requestID'] })
-          }
-          }.flatten
+          records = value.map { |item| item.values.flatten.select { |value| value.is_a?(Hash) }
+                                           .flatten
+                                           .map { |sub| sub.merge({ 'request_id' => item['@requestID'] }) }
+                              }.flatten
 
           # NOTE delete in case it's useless
           errors = value.map do |response|

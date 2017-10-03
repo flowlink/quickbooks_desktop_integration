@@ -46,7 +46,7 @@ module QBWC
   <SalesOrderAdd>
     #{sales_order record, params}
     #{items(record).map { |l| sales_order_line_add l }.join('')}
-    #{adjustments(record).map { |l| sales_order_line_add_from_adjustment(l, params) }.join('')}
+    #{adjustments_add_xml record, params}
   </SalesOrderAdd>
 </SalesOrderAddRq>
           XML
@@ -61,7 +61,7 @@ module QBWC
     <EditSequence>#{record['edit_sequence']}</EditSequence>
     #{sales_order record, params}
     #{items(record).map { |l| sales_order_line_mod l }.join('')}
-    #{adjustments(record).map { |l| sales_order_line_adjustment_mod(l, params) }.join('')}
+    #{adjustments_mod_xml record, params}
   </SalesOrderMod>
 </SalesOrderModRq>
           XML
@@ -85,6 +85,10 @@ module QBWC
         # will be raised
         #
         def sales_order(record, _params)
+          if record['placed_on'].nil? || record['placed_on'].empty?
+            record['placed_on'] = Time.now.to_s
+          end
+
           <<-XML
 
     <CustomerRef>
@@ -131,6 +135,17 @@ module QBWC
           sales_order_line_add line
         end
 
+        def sales_order_line_add_from_tax_line_item(tax_line_item, params)
+          line = {
+              'product_id' => QBWC::Request::Adjustments.adjustment_product_from_qb('tax', params),
+              'quantity' => 0,
+              'price' => tax_line_item['value'],
+              'name' => tax_line_item['name']
+          }
+
+          sales_order_line_add line
+        end
+
         def sales_order_line_mod(line)
           <<-XML
 
@@ -141,12 +156,24 @@ module QBWC
           XML
         end
 
-        def sales_order_line_adjustment_mod(adjustment, params)
+        def sales_order_line_mod_from_adjustment(adjustment, params)
           line = {
             'product_id' => QBWC::Request::Adjustments.adjustment_product_from_qb(adjustment['name'], params),
             'quantity' => 0,
             'price' => adjustment['value'],
             'txn_line_id' => adjustment['txn_line_id']
+          }
+
+          sales_order_line_mod line
+        end
+
+        def sales_order_line_mod_from_tax_line_item(tax_line_item, params)
+          line = {
+            'product_id' => QBWC::Request::Adjustments.adjustment_product_from_qb('tax', params),
+            'quantity' => 0,
+            'price' => tax_line_item['value'],
+            'txn_line_id' => tax_line_item['txn_line_id'],
+            'name' => tax_line_item['name']
           }
 
           sales_order_line_mod line
@@ -161,6 +188,7 @@ module QBWC
       #{quantity(line)}
       <!-- <Amount>#{'%.2f' % line['price'].to_f}</Amount> -->
       <Rate>#{line['price']}</Rate>
+      <Desc>#{line['name']}</Desc>
       #{tax_code_line(line)}
           XML
         end
@@ -230,24 +258,79 @@ module QBWC
           record['line_items'].to_a.sort { |a, b| a['product_id'] <=> b['product_id'] }
         end
 
+        # Generate XML for adding adjustments.
+        # If the quickbooks_use_tax_line_items is set, then don't include tax from the adjustments object, and instead
+        # use tax_line_items if it exists.
+        def adjustments_add_xml(record, params)
+          final_adjustments = []
+          use_tax_line_items = !params['quickbooks_use_tax_line_items'].nil? &&
+                                params['quickbooks_use_tax_line_items'] == "1" &&
+                               !record['tax_line_items'].nil? &&
+                               !record['tax_line_items'].empty?
+
+          adjustments(record).each do |adjustment|
+            if !use_tax_line_items ||
+               !QBWC::Request::Adjustments.is_adjustment_tax?(adjustment['name'])
+              final_adjustments << sales_order_line_add_from_adjustment(adjustment, params)
+            end
+          end
+
+          if use_tax_line_items
+            record['tax_line_items'].each do |tax_line_item|
+              final_adjustments << sales_order_line_add_from_tax_line_item(tax_line_item, params)
+            end
+          end
+
+          final_adjustments.join('')
+        end
+
+        # Generate XML for modifying adjustments.
+        # If the quickbooks_use_tax_line_items is set, then don't include tax from the adjustments object, and instead
+        # use tax_line_items if it exists.
+        def adjustments_mod_xml(record, params)
+          final_adjustments = []
+          use_tax_line_items = !params['quickbooks_use_tax_line_items'].nil? &&
+              params['quickbooks_use_tax_line_items'] == "1" &&
+              !record['tax_line_items'].nil? &&
+              !record['tax_line_items'].empty?
+
+          adjustments(record).each do |adjustment|
+            if !use_tax_line_items ||
+                !QBWC::Request::Adjustments.is_adjustment_tax?(adjustment['name'])
+              final_adjustments << sales_order_line_mod_from_adjustment(adjustment, params)
+            end
+          end
+
+          if use_tax_line_items
+            record['tax_line_items'].each do |tax_line_item|
+              final_adjustments << sales_order_line_mod_from_tax_line_item(tax_line_item, params)
+            end
+          end
+
+          final_adjustments.join('')
+        end
+
         def adjustments(record)
-          record['adjustments'].to_a.reject { |adj| adj['value'].to_f == 0.0 }.sort { |a, b| a['name'].downcase <=> b['name'].downcase }
+          record['adjustments']
+            .to_a
+            .reject { |adj| adj['value'].to_f == 0.0 }
+            .sort { |a, b| a['name'].downcase <=> b['name'].downcase }
         end
 
         def sanitize_order(order)
-          order['billing_address']['address1'].gsub!(/[^0-9A-Za-z\s]/, '')
-          order['billing_address']['address2'].gsub!(/[^0-9A-Za-z\s]/, '')
-          order['billing_address']['city'].gsub!(/[^0-9A-Za-z\s]/, '')
-          order['billing_address']['state'].gsub!(/[^0-9A-Za-z\s]/, '')
-          order['billing_address']['zipcode'].gsub!(/[^0-9A-Za-z\s]/, '')
-          order['billing_address']['country'].gsub!(/[^0-9A-Za-z\s]/, '')
-          order['shipping_address']['address1'].gsub!(/[^0-9A-Za-z\s]/, '')
-          order['shipping_address']['address2'].gsub!(/[^0-9A-Za-z\s]/, '')
-          order['shipping_address']['city'].gsub!(/[^0-9A-Za-z\s]/, '')
-          order['shipping_address']['state'].gsub!(/[^0-9A-Za-z\s]/, '')
-          order['shipping_address']['zipcode'].gsub!(/[^0-9A-Za-z\s]/, '')
-          order['shipping_address']['country'].gsub!(/[^0-9A-Za-z\s]/, '')
+          ['billing_address', 'shipping_address'].each do |address_type|
+            if order[address_type].nil?
+              order[address_type] = { }
+            end
+
+            ['address1', 'address2', 'city', 'state', 'zipcode', 'county'].each do |field|
+              if !order[address_type][field].nil?
+                order[address_type][field].gsub!(/[^0-9A-Za-z\s]/, '')
+              end
+            end
+          end
         end
+
       end
     end
   end
