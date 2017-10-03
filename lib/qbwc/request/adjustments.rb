@@ -76,6 +76,10 @@ module QBWC
          end
         end
 
+        def is_adjustment_tax?(adjustment_name)
+          adjustment_name.downcase.match(/tax/)
+        end
+
         def adjustment_product_from_qb(adjustment_name, params)
           if adjustment_name.downcase.match(/discount/)
             params['quickbooks_discount_item']

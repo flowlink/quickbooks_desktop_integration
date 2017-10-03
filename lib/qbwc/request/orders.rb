@@ -46,7 +46,7 @@ module QBWC
   <SalesOrderAdd>
     #{sales_order record, params}
     #{items(record).map { |l| sales_order_line_add l }.join('')}
-    #{adjustments(record).map { |l| sales_order_line_add_from_adjustment(l, params) }.join('')}
+    #{adjustments_add_xml record, params}
   </SalesOrderAdd>
 </SalesOrderAddRq>
           XML
@@ -61,7 +61,7 @@ module QBWC
     <EditSequence>#{record['edit_sequence']}</EditSequence>
     #{sales_order record, params}
     #{items(record).map { |l| sales_order_line_mod l }.join('')}
-    #{adjustments(record).map { |l| sales_order_line_adjustment_mod(l, params) }.join('')}
+    #{adjustments_mod_xml record, params}
   </SalesOrderMod>
 </SalesOrderModRq>
           XML
@@ -135,6 +135,17 @@ module QBWC
           sales_order_line_add line
         end
 
+        def sales_order_line_add_from_tax_line_item(tax_line_item, params)
+          line = {
+              'product_id' => QBWC::Request::Adjustments.adjustment_product_from_qb('tax', params),
+              'quantity' => 0,
+              'price' => tax_line_item['value'],
+              'name' => tax_line_item['name']
+          }
+
+          sales_order_line_add line
+        end
+
         def sales_order_line_mod(line)
           <<-XML
 
@@ -145,12 +156,24 @@ module QBWC
           XML
         end
 
-        def sales_order_line_adjustment_mod(adjustment, params)
+        def sales_order_line_mod_from_adjustment(adjustment, params)
           line = {
             'product_id' => QBWC::Request::Adjustments.adjustment_product_from_qb(adjustment['name'], params),
             'quantity' => 0,
             'price' => adjustment['value'],
             'txn_line_id' => adjustment['txn_line_id']
+          }
+
+          sales_order_line_mod line
+        end
+
+        def sales_order_line_mod_from_tax_line_item(tax_line_item, params)
+          line = {
+            'product_id' => QBWC::Request::Adjustments.adjustment_product_from_qb('tax', params),
+            'quantity' => 0,
+            'price' => tax_line_item['value'],
+            'txn_line_id' => tax_line_item['txn_line_id'],
+            'name' => tax_line_item['name']
           }
 
           sales_order_line_mod line
@@ -233,6 +256,58 @@ module QBWC
 
         def items(record)
           record['line_items'].to_a.sort { |a, b| a['product_id'] <=> b['product_id'] }
+        end
+
+        # Generate XML for adding adjustments.
+        # If the quickbooks_use_tax_line_items is set, then don't include tax from the adjustments object, and instead
+        # use tax_line_items if it exists.
+        def adjustments_add_xml(record, params)
+          final_adjustments = []
+          use_tax_line_items = !params['quickbooks_use_tax_line_items'].nil? &&
+                                params['quickbooks_use_tax_line_items'] == "1" &&
+                               !record['tax_line_items'].nil? &&
+                               !record['tax_line_items'].empty?
+
+          adjustments(record).each do |adjustment|
+            if !use_tax_line_items ||
+               !QBWC::Request::Adjustments.is_adjustment_tax?(adjustment['name'])
+              final_adjustments << sales_order_line_add_from_adjustment(adjustment, params)
+            end
+          end
+
+          if use_tax_line_items
+            record['tax_line_items'].each do |tax_line_item|
+              final_adjustments << sales_order_line_add_from_tax_line_item(tax_line_item, params)
+            end
+          end
+
+          final_adjustments.join('')
+        end
+
+        # Generate XML for modifying adjustments.
+        # If the quickbooks_use_tax_line_items is set, then don't include tax from the adjustments object, and instead
+        # use tax_line_items if it exists.
+        def adjustments_mod_xml(record, params)
+          final_adjustments = []
+          use_tax_line_items = !params['quickbooks_use_tax_line_items'].nil? &&
+              params['quickbooks_use_tax_line_items'] == "1" &&
+              !record['tax_line_items'].nil? &&
+              !record['tax_line_items'].empty?
+
+          adjustments(record).each do |adjustment|
+            if !use_tax_line_items ||
+                !QBWC::Request::Adjustments.is_adjustment_tax?(adjustment['name'])
+              final_adjustments << sales_order_line_mod_from_adjustment(adjustment, params)
+            end
+          end
+
+          if use_tax_line_items
+            record['tax_line_items'].each do |tax_line_item|
+              final_adjustments << sales_order_line_mod_from_tax_line_item(tax_line_item, params)
+            end
+          end
+
+          final_adjustments.join('')
         end
 
         def adjustments(record)
