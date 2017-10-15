@@ -27,6 +27,10 @@ module Persistence
       "#{@config[:connection_id]}"
     end
 
+    def qb_pending
+      'quickbooks_pending'
+    end
+
     def pending
       "#{@config[:origin]}_pending"
     end
