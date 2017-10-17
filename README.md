@@ -50,6 +50,7 @@ The following parameters are required when setting up a Flow with this webhook:
 | quickbooks_discount_item      | QB item to use for discounts |
 | quickbooks_tax_item           | QB item to use for taxes |
 | quickbooks_use_tax_line_items | If true, uses broken out taxes (if available) |
+| quickbooks_customer_email     | If present, uses given email and generic address for all customers |
 
 # About FlowLink
 
