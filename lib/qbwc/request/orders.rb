@@ -185,9 +185,9 @@ module QBWC
       <ItemRef>
         <FullName>#{line['product_id']}</FullName>
       </ItemRef>
+      <Desc>#{line['name']}</Desc>
       #{quantity(line)}
       <Rate>#{line['price']}</Rate>
-      <Desc>#{line['name']}</Desc>
       #{tax_code_line(line)}
           XML
         end
