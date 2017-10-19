@@ -65,7 +65,14 @@ module Persistence
         # If an alternate customer email is specified in flow params (should be order flows only)
         # then update to that email and generic customer billing and shipping info
         if !@config[:quickbooks_customer_email].nil? && !@config[:quickbooks_customer_email].empty?
-          update_customer_email(object, @config[:quickbooks_customer_email])
+          object[:email] = @config[:quickbooks_customer_email]
+        end
+
+        # Get rid of empty addresses
+        [:shipping_address, :billing_address].each do |address_type|
+          if object[address_type].nil? || object[address_type].empty?
+            object[address_type] = generic_address
+          end
         end
 
         if two_phase?
@@ -458,22 +465,18 @@ module Persistence
       object['status'] = 'cancelled' if config['flow'] == 'cancel_order'
     end
 
-    def update_customer_email(object, new_customer_email)
-      object[:email] = new_customer_email
-
-      generic_address = {
-        firstname: 'Generic',
-        lastname: 'Customer',
-        address1: 'No Address',
-        address2: 'No Address',
-        zipcode: '12345',
-        city: 'No City',
-        state: 'Pennsylvania',
-        country: 'US',
-        phone: '555-555-1212'
+    def generic_address
+      {
+          firstname: 'Generic',
+          lastname: 'Customer',
+          address1: 'No Address',
+          address2: 'No Address',
+          zipcode: '12345',
+          city: 'No City',
+          state: 'Pennsylvania',
+          country: 'US',
+          phone: '555-555-1212'
       }
-      object[:shipping_address] = generic_address
-      object[:billing_address] = generic_address
     end
 
     # When inventory is updated, QB doesn't update item inventory,
