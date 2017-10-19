@@ -80,12 +80,20 @@ module QBWC
           adjustment_name.downcase.match(/tax/)
         end
 
+        def is_adjustment_discount?(adjustment_name)
+          adjustment_name.downcase.match(/discount/)
+        end
+
+        def is_adjustment_shipping?(adjustment_name)
+          adjustment_name.downcase.match(/shipping/)
+        end
+
         def adjustment_product_from_qb(adjustment_name, params)
-          if adjustment_name.downcase.match(/discount/)
+          if is_adjustment_discount?(adjustment_name)
             params['quickbooks_discount_item']
-          elsif adjustment_name.downcase.match(/shipping/)
+          elsif is_adjustment_shipping?(adjustment_name)
             params['quickbooks_shipping_item']
-          elsif adjustment_name.downcase.match(/tax/)
+          elsif is_adjustment_tax?(adjustment_name)
             params['quickbooks_tax_item']
          end
         end
