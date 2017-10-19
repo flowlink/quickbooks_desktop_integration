@@ -137,7 +137,7 @@ module QBWC
 
         def sales_order_line_add_from_tax_line_item(tax_line_item, params)
           line = {
-              'product_id' => QBWC::Request::Adjustments.adjustment_product_from_qb('tax', params),
+              'product_id' => tax_line_item['name'],
               'quantity' => 0,
               'price' => tax_line_item['value'],
               'name' => tax_line_item['name']
@@ -186,7 +186,6 @@ module QBWC
         <FullName>#{line['product_id']}</FullName>
       </ItemRef>
       #{quantity(line)}
-      <!-- <Amount>#{'%.2f' % line['price'].to_f}</Amount> -->
       <Rate>#{line['price']}</Rate>
       <Desc>#{line['name']}</Desc>
       #{tax_code_line(line)}
