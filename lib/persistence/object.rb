@@ -62,6 +62,19 @@ module Persistence
         next unless valid_object?(object)
         prepare_objects_before_save(object)
 
+        # If an alternate customer email is specified in flow params (should be order flows only)
+        # then update to that email and generic customer billing and shipping info
+        if !@config[:quickbooks_customer_email].nil? && !@config[:quickbooks_customer_email].empty?
+          object[:email] = @config[:quickbooks_customer_email]
+        end
+
+        # Get rid of empty addresses
+        [:shipping_address, :billing_address].each do |address_type|
+          if object[address_type].nil? || object[address_type].empty?
+            object[address_type] = generic_address
+          end
+        end
+
         if two_phase?
           file = "#{path.base_name}/#{path.two_phase_pending}/#{payload_key.pluralize}_#{id_of_object(object)}_.csv"
           amazon_s3.export file_name: file, objects: [object]
@@ -450,6 +463,20 @@ module Persistence
 
     def prepare_objects_before_save(object)
       object['status'] = 'cancelled' if config['flow'] == 'cancel_order'
+    end
+
+    def generic_address
+      {
+          firstname: 'Generic',
+          lastname: 'Customer',
+          address1: 'No Address',
+          address2: 'No Address',
+          zipcode: '12345',
+          city: 'No City',
+          state: 'Pennsylvania',
+          country: 'US',
+          phone: '555-555-1212'
+      }
     end
 
     # When inventory is updated, QB doesn't update item inventory,
