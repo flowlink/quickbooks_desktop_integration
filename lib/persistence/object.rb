@@ -384,6 +384,12 @@ module Persistence
 
     private
 
+    def auto_create_products
+      return !@config[:quickbooks_auto_create_products].nil? &&
+             !@config[:quickbooks_auto_create_products].empty? &&
+              @config[:quickbooks_auto_create_products].to_s == '1'
+    end
+
     def select_precedence_files(collection)
       first_precedence_types = %w(customers products adjustments inventories payments)
       second_precedence_types = %w(orders returns)
@@ -495,31 +501,40 @@ module Persistence
     def generate_inserts_for_two_phase(object)
       # TODO Create a better way to choose between types
       if payload_key.pluralize == 'orders'
-        customer = QBWC::Request::Orders.build_customer_from_order(object)
-        products = QBWC::Request::Orders.build_products_from_order(objects)
-        payments = QBWC::Request::Orders.build_payments_from_order(object)
 
+        customer = QBWC::Request::Orders.build_customer_from_order(object)
         save_pending_file(customer['id'], 'customers', customer)
 
-        products.flatten.each do |product|
-          save_pending_file(product['id'], 'products', product)
+        if auto_create_products
+          products = QBWC::Request::Orders.build_products_from_order(objects)
+          products.flatten.each do |product|
+            save_pending_file(product['id'], 'products', product)
+          end
         end
 
+        payments = QBWC::Request::Orders.build_payments_from_order(object)
         payments.flatten.each do |payment|
           save_pending_file(payment['id'], 'payments', payment)
         end
-      elsif payload_key.pluralize == 'shipments'
-        customer = QBWC::Request::Shipments.build_customer_from_shipments(object)
-        products = QBWC::Request::Shipments.build_products_from_shipments(objects)
-        order    = QBWC::Request::Shipments.build_order_from_shipments(object)
-        payment  = QBWC::Request::Shipments.build_payment_from_shipments(object)
 
+      elsif payload_key.pluralize == 'shipments'
+
+        customer = QBWC::Request::Shipments.build_customer_from_shipments(object)
         save_pending_file(customer['id'], 'customers', customer)
+
+        order    = QBWC::Request::Shipments.build_order_from_shipments(object)
         save_pending_file(order['id'], 'orders', order)
+
+        payment  = QBWC::Request::Shipments.build_payment_from_shipments(object)
         save_pending_file(payment['id'], 'payments', order)
-        products.each do |product|
-          save_pending_file(product['id'], 'products', product)
+
+        if auto_create_products
+          products = QBWC::Request::Shipments.build_products_from_shipments(objects)
+          products.each do |product|
+            save_pending_file(product['id'], 'products', product)
+          end
         end
+
       end
     end
 
