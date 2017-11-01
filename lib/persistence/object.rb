@@ -64,7 +64,7 @@ module Persistence
 
         # If an alternate customer email is specified in flow params (should be order flows only)
         # then update to that email and generic customer billing and shipping info
-        if !@config[:quickbooks_customer_email].nil? && !@config[:quickbooks_customer_email].empty?
+        if use_customer_email_param?
           object[:email] = @config[:quickbooks_customer_email]
         end
 
@@ -78,7 +78,7 @@ module Persistence
         if two_phase?
           file = "#{path.base_name}/#{path.two_phase_pending}/#{payload_key.pluralize}_#{id_of_object(object)}_.csv"
           amazon_s3.export file_name: file, objects: [object]
-          generate_inserts_for_two_phase(object)
+          generate_inserts_for_two_phase(object, use_customer_email_param?)
         else
           file = "#{path.base_name}/#{path.pending}/#{payload_key.pluralize}_#{id_of_object(object)}_.csv"
           amazon_s3.export file_name: file, objects: [object]
@@ -498,12 +498,14 @@ module Persistence
       end
     end
 
-    def generate_inserts_for_two_phase(object)
+    def generate_inserts_for_two_phase(object, use_customer_email_param)
       # TODO Create a better way to choose between types
       if payload_key.pluralize == 'orders'
 
-        customer = QBWC::Request::Orders.build_customer_from_order(object)
-        save_pending_file(customer['id'], 'customers', customer)
+        if !use_customer_email_param
+          customer = QBWC::Request::Orders.build_customer_from_order(object)
+          save_pending_file(customer['id'], 'customers', customer)
+        end
 
         if auto_create_products
           products = QBWC::Request::Orders.build_products_from_order(objects)
@@ -540,6 +542,10 @@ module Persistence
 
     def save_pending_file(object_ref, object_type, object)
       amazon_s3.export file_name: "#{path.base_name}/#{path.pending}/#{object_type}_#{object_ref}_.csv", objects: [object]
+    end
+
+    def use_customer_email_param?
+      !@config[:quickbooks_customer_email].nil? && !@config[:quickbooks_customer_email].empty?
     end
 
     def two_phase?
