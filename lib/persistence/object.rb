@@ -439,7 +439,7 @@ module Persistence
     end
 
     def create_notifications(objects_filename, status)
-      _, _, filename = objects_filename.split('/')
+      _, _, _, filename = objects_filename.split('/')
       s3_object = amazon_s3.bucket.object(objects_filename)
 
       new_filename = "#{path.base_name_w_bucket}/#{path.ready}/notification_#{status}_#{filename}"
