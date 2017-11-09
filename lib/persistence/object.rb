@@ -241,10 +241,12 @@ module Persistence
                 status_folder = path.send status_key
                 new_filename = "#{path.base_name_w_bucket}/#{status_folder}/#{object_type}_#{id_for_object(object, object_type)}_"
                 new_filename << "#{object[:list_id]}_#{object[:edit_sequence]}" unless object[:list_id].to_s.empty?
-
                 s3_object.move_to("#{new_filename}#{end_of_file}")
 
-                create_notifications("#{new_filename}#{end_of_file}", status_key) if status_key == 'processed'
+                new_filename_no_bucket = "#{path.base_name}/#{status_folder}/#{object_type}_#{id_for_object(object, object_type)}_"
+                new_filename_no_bucket << "#{object[:list_id]}_#{object[:edit_sequence]}" unless object[:list_id].to_s.empty?
+
+                create_notifications("#{new_filename_no_bucket}#{end_of_file}", status_key) if status_key == 'processed'
               end
             rescue Exception => e
               puts "Error in update_objects_files: #{statuses_objects} #{e.message} \n\n #{e.backtrace.join('\n')}"
@@ -439,7 +441,7 @@ module Persistence
     end
 
     def create_notifications(objects_filename, status)
-      _, _, filename = objects_filename.split('/')
+      _, _, _, filename = objects_filename.split('/')
       s3_object = amazon_s3.bucket.object(objects_filename)
 
       new_filename = "#{path.base_name_w_bucket}/#{path.ready}/notification_#{status}_#{filename}"
