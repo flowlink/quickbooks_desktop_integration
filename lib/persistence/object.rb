@@ -272,8 +272,11 @@ module Persistence
         object_ref = id_for_notifications(content, object_ref)
 
         if content.key?('message')
-          notifications[status][content['message']] ||= []
-          notifications[status][content['message']] << object_ref
+          notifications[status] ||= []
+          notifications[status] << {
+            message: "#{object_ref}: #{content['message']}",
+            request_id: content['request_id']
+          }
         else
           notifications[status][success_notification_message(object_type)] ||= []
           notifications[status][success_notification_message(object_type)] << object_ref
