@@ -272,14 +272,15 @@ module Persistence
         object_ref = id_for_notifications(content, object_ref)
 
         if content.key?('message')
-          notifications[status] ||= []
           notifications[status] << {
             message: "#{object_ref}: #{content['message']}",
             request_id: content['request_id']
           }
         else
-          notifications[status][success_notification_message(object_type)] ||= []
-          notifications[status][success_notification_message(object_type)] << object_ref
+          notifications[status] << {
+              message: "#{object_ref}: #{success_notification_message(object_type)}",
+              request_id: content['request_id']
+          }
         end
 
         s3_object.move_to("#{path.base_name_w_bucket}/#{path.processed}/#{filename}")
