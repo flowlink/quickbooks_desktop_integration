@@ -241,10 +241,12 @@ module Persistence
                 status_folder = path.send status_key
                 new_filename = "#{path.base_name_w_bucket}/#{status_folder}/#{object_type}_#{id_for_object(object, object_type)}_"
                 new_filename << "#{object[:list_id]}_#{object[:edit_sequence]}" unless object[:list_id].to_s.empty?
-
                 s3_object.move_to("#{new_filename}#{end_of_file}")
 
-                create_notifications("#{new_filename}#{end_of_file}", status_key) if status_key == 'processed'
+                new_filename_no_bucket = "#{path.base_name}/#{status_folder}/#{object_type}_#{id_for_object(object, object_type)}_"
+                new_filename_no_bucket << "#{object[:list_id]}_#{object[:edit_sequence]}" unless object[:list_id].to_s.empty?
+
+                create_notifications("#{new_filename_no_bucket}#{end_of_file}", status_key) if status_key == 'processed'
               end
             rescue Exception => e
               puts "Error in update_objects_files: #{statuses_objects} #{e.message} \n\n #{e.backtrace.join('\n')}"
@@ -262,7 +264,7 @@ module Persistence
         s3.key.match(payload_key) || (payload_key == 'orders' && s3.key.match('payments'))
       end
 
-      notification_files.inject('processed' => {}, 'failed' => {}) do |notifications, s3_object|
+      notification_files.inject('processed' => [], 'failed' => []) do |notifications, s3_object|
         _, _, filename  = s3_object.key.split('/')
         _, status, object_type, object_ref, _ = filename.split('_')
         content = amazon_s3.convert_download('csv', s3_object.get.body.read).first
@@ -270,8 +272,11 @@ module Persistence
         object_ref = id_for_notifications(content, object_ref)
 
         if content.key?('message')
-          notifications[status][content['message']] ||= []
-          notifications[status][content['message']] << object_ref
+          notifications[status] ||= []
+          notifications[status] << {
+            message: "#{object_ref}: #{content['message']}",
+            request_id: content['request_id']
+          }
         else
           notifications[status][success_notification_message(object_type)] ||= []
           notifications[status][success_notification_message(object_type)] << object_ref
@@ -439,7 +444,7 @@ module Persistence
     end
 
     def create_notifications(objects_filename, status)
-      _, _, filename = objects_filename.split('/')
+      _, _, _, filename = objects_filename.split('/')
       s3_object = amazon_s3.bucket.object(objects_filename)
 
       new_filename = "#{path.base_name_w_bucket}/#{path.ready}/notification_#{status}_#{filename}"
