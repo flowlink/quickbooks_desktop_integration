@@ -1,4 +1,4 @@
-FROM rlister/ruby:2.4.0
+FROM ruby:2.4.2-slim-stretch
 MAINTAINER NuRelm <development@nurelm.com>
 
 RUN apt-get update && \
@@ -21,6 +21,10 @@ COPY ./Gemfile.lock /tmp/
 
 RUN bundle install
 RUN rm -f /tmp/Gemfile /tmp/Gemfile.lock
+
+RUN apt-get remove -yq build-essential && \
+    apt-get autoremove -yq && \
+    apt-get clean
 
 WORKDIR /app
 COPY ./ /app

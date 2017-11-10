@@ -64,7 +64,7 @@ module Persistence
 
         # If an alternate customer email is specified in flow params (should be order flows only)
         # then update to that email and generic customer billing and shipping info
-        if !@config[:quickbooks_customer_email].nil? && !@config[:quickbooks_customer_email].empty?
+        if use_customer_email_param?
           object[:email] = @config[:quickbooks_customer_email]
         end
 
@@ -78,7 +78,7 @@ module Persistence
         if two_phase?
           file = "#{path.base_name}/#{path.two_phase_pending}/#{payload_key.pluralize}_#{id_of_object(object)}_.csv"
           amazon_s3.export file_name: file, objects: [object]
-          generate_inserts_for_two_phase(object)
+          generate_inserts_for_two_phase(object, use_customer_email_param?)
         else
           file = "#{path.base_name}/#{path.pending}/#{payload_key.pluralize}_#{id_of_object(object)}_.csv"
           amazon_s3.export file_name: file, objects: [object]
@@ -241,10 +241,12 @@ module Persistence
                 status_folder = path.send status_key
                 new_filename = "#{path.base_name_w_bucket}/#{status_folder}/#{object_type}_#{id_for_object(object, object_type)}_"
                 new_filename << "#{object[:list_id]}_#{object[:edit_sequence]}" unless object[:list_id].to_s.empty?
-
                 s3_object.move_to("#{new_filename}#{end_of_file}")
 
-                create_notifications("#{new_filename}#{end_of_file}", status_key) if status_key == 'processed'
+                new_filename_no_bucket = "#{path.base_name}/#{status_folder}/#{object_type}_#{id_for_object(object, object_type)}_"
+                new_filename_no_bucket << "#{object[:list_id]}_#{object[:edit_sequence]}" unless object[:list_id].to_s.empty?
+
+                create_notifications("#{new_filename_no_bucket}#{end_of_file}", status_key) if status_key == 'processed'
               end
             rescue Exception => e
               puts "Error in update_objects_files: #{statuses_objects} #{e.message} \n\n #{e.backtrace.join('\n')}"
@@ -262,7 +264,7 @@ module Persistence
         s3.key.match(payload_key) || (payload_key == 'orders' && s3.key.match('payments'))
       end
 
-      notification_files.inject('processed' => {}, 'failed' => {}) do |notifications, s3_object|
+      notification_files.inject('processed' => [], 'failed' => []) do |notifications, s3_object|
         _, _, filename  = s3_object.key.split('/')
         _, status, object_type, object_ref, _ = filename.split('_')
         content = amazon_s3.convert_download('csv', s3_object.get.body.read).first
@@ -270,11 +272,15 @@ module Persistence
         object_ref = id_for_notifications(content, object_ref)
 
         if content.key?('message')
-          notifications[status][content['message']] ||= []
-          notifications[status][content['message']] << object_ref
+          notifications[status] << {
+            message: "#{object_ref}: #{content['message']}",
+            request_id: content['request_id']
+          }
         else
-          notifications[status][success_notification_message(object_type)] ||= []
-          notifications[status][success_notification_message(object_type)] << object_ref
+          notifications[status] << {
+              message: "#{object_ref}: #{success_notification_message(object_type)}",
+              request_id: content['request_id']
+          }
         end
 
         s3_object.move_to("#{path.base_name_w_bucket}/#{path.processed}/#{filename}")
@@ -384,6 +390,12 @@ module Persistence
 
     private
 
+    def auto_create_products
+      return !@config[:quickbooks_auto_create_products].nil? &&
+             !@config[:quickbooks_auto_create_products].empty? &&
+              @config[:quickbooks_auto_create_products].to_s == '1'
+    end
+
     def select_precedence_files(collection)
       first_precedence_types = %w(customers products adjustments inventories payments)
       second_precedence_types = %w(orders returns)
@@ -433,7 +445,7 @@ module Persistence
     end
 
     def create_notifications(objects_filename, status)
-      _, _, filename = objects_filename.split('/')
+      _, _, _, filename = objects_filename.split('/')
       s3_object = amazon_s3.bucket.object(objects_filename)
 
       new_filename = "#{path.base_name_w_bucket}/#{path.ready}/notification_#{status}_#{filename}"
@@ -492,39 +504,54 @@ module Persistence
       end
     end
 
-    def generate_inserts_for_two_phase(object)
+    def generate_inserts_for_two_phase(object, use_customer_email_param)
       # TODO Create a better way to choose between types
       if payload_key.pluralize == 'orders'
-        customer = QBWC::Request::Orders.build_customer_from_order(object)
-        products = QBWC::Request::Orders.build_products_from_order(objects)
-        payments = QBWC::Request::Orders.build_payments_from_order(object)
 
-        save_pending_file(customer['id'], 'customers', customer)
-
-        products.flatten.each do |product|
-          save_pending_file(product['id'], 'products', product)
+        if !use_customer_email_param
+          customer = QBWC::Request::Orders.build_customer_from_order(object)
+          save_pending_file(customer['id'], 'customers', customer)
         end
 
+        if auto_create_products
+          products = QBWC::Request::Orders.build_products_from_order(objects)
+          products.flatten.each do |product|
+            save_pending_file(product['id'], 'products', product)
+          end
+        end
+
+        payments = QBWC::Request::Orders.build_payments_from_order(object)
         payments.flatten.each do |payment|
           save_pending_file(payment['id'], 'payments', payment)
         end
-      elsif payload_key.pluralize == 'shipments'
-        customer = QBWC::Request::Shipments.build_customer_from_shipments(object)
-        products = QBWC::Request::Shipments.build_products_from_shipments(objects)
-        order    = QBWC::Request::Shipments.build_order_from_shipments(object)
-        payment  = QBWC::Request::Shipments.build_payment_from_shipments(object)
 
+      elsif payload_key.pluralize == 'shipments'
+
+        customer = QBWC::Request::Shipments.build_customer_from_shipments(object)
         save_pending_file(customer['id'], 'customers', customer)
+
+        order    = QBWC::Request::Shipments.build_order_from_shipments(object)
         save_pending_file(order['id'], 'orders', order)
+
+        payment  = QBWC::Request::Shipments.build_payment_from_shipments(object)
         save_pending_file(payment['id'], 'payments', order)
-        products.each do |product|
-          save_pending_file(product['id'], 'products', product)
+
+        if auto_create_products
+          products = QBWC::Request::Shipments.build_products_from_shipments(objects)
+          products.each do |product|
+            save_pending_file(product['id'], 'products', product)
+          end
         end
+
       end
     end
 
     def save_pending_file(object_ref, object_type, object)
       amazon_s3.export file_name: "#{path.base_name}/#{path.pending}/#{object_type}_#{object_ref}_.csv", objects: [object]
+    end
+
+    def use_customer_email_param?
+      !@config[:quickbooks_customer_email].nil? && !@config[:quickbooks_customer_email].empty?
     end
 
     def two_phase?

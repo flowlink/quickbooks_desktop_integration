@@ -43,14 +43,15 @@ The following parameters are required when setting up a Flow with this webhook:
 
 | Name | Value |
 | :----| :-----|
-| quickbooks_income_account     | QB account to use for order income  |
-| quickbooks_cogs_account       | QB account to use for COGS |
-| quickbooks_inventory_account  | QB account use for inventory |
-| quickbooks_shipping_item      | QB item to use for shipping |
-| quickbooks_discount_item      | QB item to use for discounts |
-| quickbooks_tax_item           | QB item to use for taxes |
-| quickbooks_use_tax_line_items | If true, uses broken out taxes (if available) |
-| quickbooks_customer_email     | If present, uses given email and generic address for all customers |
+| quickbooks_income_account       | QB account to use for order income  |
+| quickbooks_cogs_account         | QB account to use for COGS |
+| quickbooks_inventory_account    | QB account use for inventory |
+| quickbooks_shipping_item        | QB item to use for shipping |
+| quickbooks_discount_item        | QB item to use for discounts |
+| quickbooks_tax_item             | QB item to use for taxes |
+| quickbooks_use_tax_line_items   | If true, uses broken out taxes (if available) |
+| quickbooks_customer_email       | If present, uses given email for all customers |
+| quickbooks_auto_create_products | If checked, automatically create products for orders and shipments |
 
 # About FlowLink
 
