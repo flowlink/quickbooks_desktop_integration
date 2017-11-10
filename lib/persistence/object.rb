@@ -264,7 +264,7 @@ module Persistence
         s3.key.match(payload_key) || (payload_key == 'orders' && s3.key.match('payments'))
       end
 
-      notification_files.inject('processed' => {}, 'failed' => {}) do |notifications, s3_object|
+      notification_files.inject('processed' => [], 'failed' => []) do |notifications, s3_object|
         _, _, filename  = s3_object.key.split('/')
         _, status, object_type, object_ref, _ = filename.split('_')
         content = amazon_s3.convert_download('csv', s3_object.get.body.read).first

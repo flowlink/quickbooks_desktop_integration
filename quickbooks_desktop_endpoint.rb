@@ -34,8 +34,8 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
 
       notifications = integration.get_notifications
 
-      add_value 'success', notifications['processed'] if notifications['processed'].keys.any?
-      add_value 'fail', notifications['failed'] if notifications['failed'].keys.any?
+      add_value 'success', notifications['processed'] if !notifications['processed'].empty?
+      add_value 'fail', notifications['failed'] if !notifications['failed'].empty?
 
       object_type = integration.payload_key.capitalize
       result 200, "#{object_type} waiting for Quickbooks Desktop scheduler"
