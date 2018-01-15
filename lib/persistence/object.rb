@@ -17,7 +17,6 @@ module Persistence
           .update_objects_files({ processed: processed, failed: failed }.with_indifferent_access)
       end
     end
-
     # +payload+ might have a collection of records when writing to s3
     #
     #   e.g. { orders: [{ id: "123" }, { id: "123" }] }

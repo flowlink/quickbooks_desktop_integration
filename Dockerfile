@@ -15,18 +15,16 @@ RUN dpkg-reconfigure locales && \
 ENV LC_ALL C.UTF-8
 
 ## help docker cache bundle
-WORKDIR /tmp
-COPY ./Gemfile /tmp/
-COPY ./Gemfile.lock /tmp/
+WORKDIR /app
+COPY ./Gemfile .
+COPY ./Gemfile.lock .
 
 RUN bundle install
-RUN rm -f /tmp/Gemfile /tmp/Gemfile.lock
 
 RUN apt-get remove -yq build-essential && \
     apt-get autoremove -yq && \
     apt-get clean
 
-WORKDIR /app
 COPY ./ /app
 
 EXPOSE 5000
