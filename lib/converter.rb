@@ -36,7 +36,7 @@ class Converter
         buff.push hash_to_csv(hash, header: header, skip_header: true)
       end
 
-      (header + body).to_csv
+      header.to_csv + body.join
     end
 
     def hash_to_csv(hash, header: csv_header(hash), skip_header: false)
@@ -47,7 +47,7 @@ class Converter
       if skip_header
         output.to_csv
       else
-        (header + output).to_csv
+        header.to_csv + output.to_csv
       end
     end
 
