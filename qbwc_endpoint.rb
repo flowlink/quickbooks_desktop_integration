@@ -122,7 +122,7 @@ class QBWCEndpoint < Sinatra::Base
 <?xml version="1.0" encoding="utf-8"?>
 <?qbxml version="11.0"?>
 <QBXML>
-   <QBXMLMsgsRq onError="stopOnError">
+   <QBXMLMsgsRq onError="continueOnError">
     #{QBWC::Producer.new(connection_id: connection_id).build_available_actions_to_request}
    </QBXMLMsgsRq>
 </QBXML>

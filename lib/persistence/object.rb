@@ -257,11 +257,11 @@ module Persistence
 
     def get_notifications
       prefix = "#{path.base_name}/#{path.ready}/notification_"
-      collection = amazon_s3.bucket.objects(prefix: prefix)
+      notification_files = amazon_s3.bucket.objects(prefix: prefix)
 
-      notification_files = collection.select do |s3|
-        s3.key.match(payload_key) || (payload_key == 'orders' && s3.key.match('payments'))
-      end
+      # notification_files = collection.select do |s3|
+      #   s3.key.match(payload_key) || (payload_key == 'orders' && s3.key.match('payments'))
+      # end
 
       notification_files.inject('processed' => [], 'failed' => []) do |notifications, s3_object|
         _, _, filename  = s3_object.key.split('/')
