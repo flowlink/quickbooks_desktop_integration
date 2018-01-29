@@ -1,3 +1,5 @@
+require 'csv'
+require 'active_support'
 class Converter
   class << self
     def csv_header(target, prefix = nil)
@@ -34,9 +36,7 @@ class Converter
         buff.push hash_to_csv(hash, header: header, skip_header: true)
       end
 
-      body = body.join("\n")
-
-      [header.join(','), body].join("\n")
+      header.to_csv + body.join
     end
 
     def hash_to_csv(hash, header: csv_header(hash), skip_header: false)
@@ -45,9 +45,9 @@ class Converter
       end
 
       if skip_header
-        output.join(',')
+        output.to_csv
       else
-        [header.join(','), output.join(',')].join("\n")
+        header.to_csv + output.to_csv
       end
     end
 

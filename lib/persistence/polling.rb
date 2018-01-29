@@ -3,21 +3,21 @@ module Persistence
   class Polling
     attr_reader :objects, :payload_key, :amazon_s3, :path
 
-    def initialize(config = {}, payload = {})
-      @payload_key = payload.keys.first
-      @objects     = if payload[payload_key].is_a?(Hash)
-                       [payload[payload_key]]
+    def initialize(config = {}, payload = {}, payload_key_override = nil)
+      @payload_key = payload_key_override || payload.keys.first
+      @objects     = if payload.with_indifferent_access[payload_key].is_a?(Hash)
+                       [payload.with_indifferent_access[payload_key]]
                      else
-                       Array(payload[payload_key])
+                       Array(payload.with_indifferent_access[payload_key])
                      end
-
       @config      = { origin: 'flowlink' }.merge(config).with_indifferent_access
       @amazon_s3   = S3Util.new
       @path        = Persistence::Path.new(@config)
     end
 
     def save_for_polling
-      file = "#{path.base_name}/#{path.pending}/#{payload_key}_#{current_time}.csv"
+      polling_path = @config[:origin] == 'quickbooks' ? path.qb_pending : path.pending
+      file = "#{path.base_name}/#{polling_path}/#{payload_key}_#{current_time}.csv"
       amazon_s3.export file_name: file, objects: objects
     end
 
