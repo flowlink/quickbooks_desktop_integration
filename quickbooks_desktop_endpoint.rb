@@ -77,9 +77,14 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
 
       add_parameter 'quickbooks_force_config', false
 
-      persistence = Persistence::Polling.new config, object_type => {}
+      persistence = Persistence::Polling.new config, @payload, object_type
       records = persistence.process_waiting_records
+      integration = Persistence::Object.new config, @payload
 
+      notifications = integration.get_notifications
+
+      add_value 'success', notifications['processed'] if !notifications['processed'].empty?
+      add_value 'fail', notifications['failed'] if !notifications['failed'].empty?
       if records.any?
         names = records.inject([]) do |names, collection|
           name = collection.keys.first

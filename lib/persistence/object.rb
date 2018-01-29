@@ -17,7 +17,6 @@ module Persistence
           .update_objects_files({ processed: processed, failed: failed }.with_indifferent_access)
       end
     end
-
     # +payload+ might have a collection of records when writing to s3
     #
     #   e.g. { orders: [{ id: "123" }, { id: "123" }] }
@@ -258,11 +257,11 @@ module Persistence
 
     def get_notifications
       prefix = "#{path.base_name}/#{path.ready}/notification_"
-      collection = amazon_s3.bucket.objects(prefix: prefix)
+      notification_files = amazon_s3.bucket.objects(prefix: prefix)
 
-      notification_files = collection.select do |s3|
-        s3.key.match(payload_key) || (payload_key == 'orders' && s3.key.match('payments'))
-      end
+      # notification_files = collection.select do |s3|
+      #   s3.key.match(payload_key) || (payload_key == 'orders' && s3.key.match('payments'))
+      # end
 
       notification_files.inject('processed' => [], 'failed' => []) do |notifications, s3_object|
         _, _, filename  = s3_object.key.split('/')
