@@ -268,7 +268,9 @@ module Persistence
         _, status, object_type, object_ref, _ = filename.split('_')
         content = amazon_s3.convert_download('csv', s3_object.get.body.read).first
 
-        object_ref = id_for_notifications(content, object_ref)
+        # id_for_notifications is marked as 'depricated'
+        #object_ref = id_for_notifications(content, object_ref, object_type)
+        object_ref = id_for_object(content, object_type)
 
         if content.key?('message')
           notifications[status] << {
@@ -561,17 +563,10 @@ module Persistence
       id_for_object(object, payload_key.pluralize)
     end
 
-    # deprecated
-    def id_for_notifications(object, object_ref)
-      id = id_for_object(object, payload_key.pluralize)
-      return id if id != object['id']
-
-      object_ref
-    end
-
     def id_for_object(object, object_type)
-      key = object_type.pluralize
+      return object['id'] if object_type.nil?
 
+      key = object_type.pluralize
       if key == 'customers'
         object['email']
       elsif key == 'shipments'
