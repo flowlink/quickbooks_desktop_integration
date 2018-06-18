@@ -299,6 +299,7 @@ module QBWC
               !record['tax_line_items'].empty?
 
           adjustments(record).each do |adjustment|
+            puts "adjustment is #{adjustment}"
             if !use_tax_line_items ||
                 !QBWC::Request::Adjustments.is_adjustment_tax?(adjustment['name'])
               final_adjustments << sales_order_line_mod_from_adjustment(adjustment, params)
