@@ -158,6 +158,7 @@ module QBWC
         end
 
         def sales_order_line_mod_from_adjustment(adjustment, params)
+          puts "IN sales order PARAMS = #{params}"
           line = {
             'product_id' => QBWC::Request::Adjustments.adjustment_product_from_qb(adjustment['name'], params),
             'quantity' => 0,
