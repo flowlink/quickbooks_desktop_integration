@@ -95,7 +95,7 @@ module QBWC
             #{item['customer'] ? fill_customer(item['customer']) : ''}
             #{item['class'] ? fill_class(item['class']) : ''}
             <!-- BillableStatus may have one of the following values: Billable, NotBillable, HasBeenBilled -->
-            <BillableStatus>'Billable'</BillableStatus>
+            <!-- <BillableStatus>'Billable'</BillableStatus> -->
           XML
         end
 
