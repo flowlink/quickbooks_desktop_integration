@@ -16,7 +16,7 @@ module QBWC
 
         # NOTE Wouldn't this take forever depending on how many objects are
         # waiting to be integrated? Verify if we should limit the s3 queries
-
+        
         # Get Objets are ready
         request_xml << process_insert_update(@integration.get_ready_objects_to_send)
 
@@ -25,7 +25,7 @@ module QBWC
 
         @integration.process_two_phase_pending_objects
       rescue  Exception => e
-        puts "Exception: build_available_actions_to_request: #{e.message} #{e.backtrace.inspect}"
+        puts "Exceptions: #{e}"
       end
       request_xml
     end
