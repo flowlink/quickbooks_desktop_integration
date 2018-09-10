@@ -58,7 +58,7 @@ module QBWC
 
         def journal_xml(journal, params)
           <<-XML
-              <TxnDate>#{journal['journal_date']}</TxnDate>
+              <TxnDate>#{Time.parse(journal['journal_date']).to_date}</TxnDate>
               <RefNumber>#{journal['id']}</RefNumber>
               <IsAdjustment>false</IsAdjustment>
               <IsHomeCurrencyAdjustment>true</IsHomeCurrencyAdjustment>
