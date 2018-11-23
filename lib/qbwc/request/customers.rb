@@ -75,7 +75,7 @@ module QBWC
       <ListID>#{object['list_id']}</ListID>
       <EditSequence>#{object['edit_sequence']}</EditSequence>
       <Name>#{object['name']}</Name>
-      <CompanyName>#{object['company_name']}</CompanyName>
+      <CompanyName>#{object['company']}</CompanyName>
       <FirstName>#{object['firstname']}</FirstName>
       <LastName>#{object['lastname']}</LastName>
       <BillAddress>
