@@ -465,6 +465,14 @@ module Persistence
                                         object: object }, payload_key.pluralize)
           return false
         end
+      elsif payload_key.pluralize == 'invoices'
+        if object['id'].size > 11
+          generate_error_notification({ context: 'Saving invoices',
+                                        code: '',
+                                        message: 'Could not import to qb the Invoice ID exceeded the limit of 11',
+                                        object: object }, payload_key.pluralize)
+          return false
+        end
       elsif payload_key.pluralize == 'returns'
         if object['id'].size > 11
           generate_error_notification({ context: 'Saving returns',
@@ -559,7 +567,7 @@ module Persistence
     end
 
     def two_phase?
-      %w(orders shipments).include?(payload_key.pluralize)
+      %w(orders shipments invoices).include?(payload_key.pluralize)
     end
 
     def id_of_object(object)
