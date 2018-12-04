@@ -2,7 +2,7 @@
 
 module QBWC
   module Request
-    class Orders
+    class Invoices
       class << self
         def generate_request_queries(objects, params)
           objects.inject('') do |request, object|
