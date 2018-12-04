@@ -193,7 +193,7 @@ module QBWC
       </ItemRef>
       <Desc>#{line['name']}</Desc>
       #{quantity(line)}
-      <Rate>#{line['price']}</Rate>
+      <Rate>#{'%.2f' % line['price'].to_f}</Rate>
       #{tax_code_line(line)}
           XML
         end
