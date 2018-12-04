@@ -15,7 +15,7 @@ module QBWC
 
             request << search_xml(object['id'], session_id)
           end
-        end
+        end 
 
         def generate_request_insert_update(objects, params = {})
           objects.inject('') do |request, object|
