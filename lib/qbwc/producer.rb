@@ -44,6 +44,7 @@ module QBWC
     private
 
     def process_insert_update(objects_hash)
+      puts "Processing insert/update for #{objects_hash}"
       objects_hash.inject('') do |result, object_hash|
         object_type = object_hash.keys.first
 

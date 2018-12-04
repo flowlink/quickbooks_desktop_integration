@@ -9,7 +9,7 @@ module QBWC
           objects.inject('') do |request, object|
             sanitize_invoice(object)
 
-            # Needed to keep shipment ID b/c and Order already has a invoice_id
+            # Needed to keep shipment ID b/c and Invoice already has a invoice_id
             extra = "shipment-#{object['invoice_id']}-" if object.key?('shipment_id')
             config = { connection_id: params['connection_id'] }.with_indifferent_access
             session_id = Persistence::Session.save(config, object, extra)
@@ -89,6 +89,7 @@ module QBWC
         # will be raised
         #
         def invoice(record, _params)
+          puts "Building invoice XML for #{record}"
           if record['placed_on'].nil? || record['placed_on'].empty?
             record['placed_on'] = Time.now.to_s
           end
