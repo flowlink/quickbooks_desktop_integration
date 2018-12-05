@@ -189,8 +189,7 @@ module QBWC
         end
 
         def invoice_line(line)
-          puts "Building invoice line XML..."
-          @invoice_line_xml=<<-XML
+          <<-XML
 
       <ItemRef>
         <FullName>#{line['product_id']}</FullName>
@@ -200,8 +199,6 @@ module QBWC
       <Rate>#{'%.2f' % line['price'].to_f}</Rate>
       #{tax_code_line(line)}
           XML
-          puts @invoice_line_xml.gsub("\n", '')
-          @invoice_line_xml
         end
 
         def quantity(line)
