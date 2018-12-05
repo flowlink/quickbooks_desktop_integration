@@ -45,7 +45,7 @@ module QBWC
 
         def add_xml_to_send(record, params = {}, session_id)
           puts "Adding invoice xml by #{record}"
-          <<~XML
+          @invoice_add_xml = <<~XML
 
 <InvoiceAddRq requestID="#{session_id}">
   <InvoiceAdd>
@@ -55,6 +55,8 @@ module QBWC
   </InvoiceAdd>
 </InvoiceAddRq>
           XML
+          puts @invoice_add_xml.gsub("\n", '')
+          @invoice_add_xml
         end
 
         def update_xml_to_send(record, params = {}, session_id)
@@ -191,7 +193,7 @@ module QBWC
 
         def invoice_line(line)
           "Building invoice line XML..."
-          @qbxml=<<-XML
+          @invoice_line_xml=<<-XML
 
       <ItemRef>
         <FullName>#{line['product_id']}</FullName>
@@ -201,8 +203,8 @@ module QBWC
       <Rate>#{'%.2f' % line['price'].to_f}</Rate>
       #{tax_code_line(line)}
           XML
-          puts @qbxml.gsub("\n", '')
-          @qbxml
+          puts @invoice_line_xml.gsub("\n", '')
+          @invoice_line_xml
         end
 
         def quantity(line)
