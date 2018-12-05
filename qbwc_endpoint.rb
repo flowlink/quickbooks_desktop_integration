@@ -34,10 +34,10 @@ class QBWCEndpoint < Sinatra::Base
     class String
       def underscore
         gsub(/::/, '/')
-        .gsub(/([A-Z]+)([A-Z][a-z])/, '\1_\2')
-        .gsub(/([a-z\d])([A-Z])/, '\1_\2')
-        .tr('-', '_')
-        .downcase
+          .gsub(/([A-Z]+)([A-Z][a-z])/, '\1_\2')
+          .gsub(/([a-z\d])([A-Z])/, '\1_\2')
+          .tr('-', '_')
+          .downcase
       end
     end
   end
@@ -120,13 +120,13 @@ class QBWCEndpoint < Sinatra::Base
 
   def send_request_xml(connection_id, _body)
     @qbxml = <<-XML
-    <?xml version="1.0" encoding="utf-8"?>
-    <?qbxml version="11.0"?>
-    <QBXML>
-    <QBXMLMsgsRq onError="continueOnError">
+<?xml version="1.0" encoding="utf-8"?>
+<?qbxml version="11.0"?>
+<QBXML>
+   <QBXMLMsgsRq onError="continueOnError">
     #{QBWC::Producer.new(connection_id: connection_id).build_available_actions_to_request}
-    </QBXMLMsgsRq>
-    </QBXML>
+   </QBXMLMsgsRq>
+</QBXML>
     XML
 
     puts @qbxml.gsub("\n", '')
