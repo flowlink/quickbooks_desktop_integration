@@ -41,9 +41,9 @@ module QBWC
 <CustomerAddRq requestID="#{session_id}">
    <CustomerAdd>
     <Name>#{object['name']}</Name>
-    #{"<CompanyName>#{object['company']}</CompanyName>" if object['company']}
-    <FirstName>#{object['firstname'] || object['name'].split.first}</FirstName>
-    <LastName>#{object['lastname'] || object['name'].split.last}</LastName>
+    #{"<CompanyName>#{object['company']}</CompanyName>" unless object['company'].empty?}
+    <FirstName>#{object['firstname'].empty? ? object['name'].split.first : object['firstname']}</FirstName>
+    #{"<LastName>#{object['lastname'] || object['name'].split.last}</LastName>" unless object['lastname'].empty?}
     <BillAddress>
       <Addr1>#{object['billing_address']['address1'] if object['billing_address']}</Addr1>
       #{"<Addr2>#{object['billing_address']['address2']}</Addr2>" if object['billing_address'] && object['billing_address']['address2']}
