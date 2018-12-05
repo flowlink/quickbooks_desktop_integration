@@ -14,7 +14,7 @@ module QBWC
       params = config.merge receive: receive_settings
 
       send_settings = s3_settings.settings('add_')
-      %w(orders shipments).each do |object_type|
+      %w(orders shipments invoices).each do |object_type|
         send_params = send_settings.find { |s| s[object_type] } || {}
         params = params.merge(send_params[object_type]) if send_params.key?(object_type)
       end
