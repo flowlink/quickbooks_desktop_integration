@@ -44,8 +44,7 @@ module QBWC
         end
 
         def add_xml_to_send(record, params = {}, session_id)
-          puts "Adding invoice xml by #{record}"
-          @invoice_add_xml = <<~XML
+          <<~XML
 
 <InvoiceAddRq requestID="#{session_id}">
   <InvoiceAdd>
@@ -55,8 +54,6 @@ module QBWC
   </InvoiceAdd>
 </InvoiceAddRq>
           XML
-          puts @invoice_add_xml.gsub("\n", '')
-          @invoice_add_xml
         end
 
         def update_xml_to_send(record, params = {}, session_id)
