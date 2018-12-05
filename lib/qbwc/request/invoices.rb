@@ -100,7 +100,7 @@ module QBWC
           <<-XML
 
     <CustomerRef>
-      <FullName>#{record['billing_address']['name']}</FullName>
+      <FullName>#{record['customer']['name']}</FullName>
     </CustomerRef>
     <TxnDate>#{Time.parse(record['placed_on']).to_date}</TxnDate>
     <RefNumber>#{record['id']}</RefNumber>

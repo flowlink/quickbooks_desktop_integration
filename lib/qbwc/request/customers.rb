@@ -42,8 +42,8 @@ module QBWC
    <CustomerAdd>
     <Name>#{object['name']}</Name>
     <CompanyName>#{object['company']}</CompanyName>
-    <FirstName>#{object['firstname']}</FirstName>
-    <LastName>#{object['lastname']}</LastName>
+    <FirstName>#{object['firstname'] || object['name'].split.first}</FirstName>
+    <LastName>#{object['lastname'] || object['name'].split.last}</LastName>
     <BillAddress>
       <Addr1>#{object['billing_address']['address1'] if object['billing_address']}</Addr1>
       <Addr2>#{object['billing_address']['address2'] if object['billing_address']}</Addr2>
