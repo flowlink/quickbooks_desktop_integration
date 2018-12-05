@@ -10,8 +10,8 @@ module QBWC
       def handle_error(errors, config)
         errors.each do |error|
           Persistence::Object.handle_error(config,
-                                           error.merge(context: 'Querying Shipments'),
-                                           'shipments',
+                                           error.merge(context: 'Querying invoices'),
+                                           'invoices',
                                            error[:request_id])
         end
       end
@@ -22,8 +22,15 @@ module QBWC
         puts records.inspect
 
         config  = config.merge(origin: 'flowlink', connection_id: config[:connection_id]).with_indifferent_access
+        objects_updated = objects_to_update(config)
 
-        Persistence::Object.new(config, {}).update_objects_with_query_results(objects_to_update(config))
+        if records.first['request_id'].start_with?('shipment')
+          _, shipment_id, _ = records.first['request_id'].split('-')
+          Persistence::Object.new(config, {}).update_shipments_with_qb_ids(shipment_id, objects_updated.first)
+        else
+          # We only need to update files when is not shipments invoice
+          Persistence::Object.new(config, {}).update_objects_with_query_results(objects_updated)
+        end
 
         nil
       end
@@ -31,10 +38,8 @@ module QBWC
       def objects_to_update(config)
         records.map do |record|
           {
-            object_type: 'shipment',
+            object_type: 'invoice',
             object_ref: record['RefNumber'],
-            order_id: record['RefNumber'],
-            id: record['RefNumber'],
             list_id: record['TxnID'],
             edit_sequence: record['EditSequence'],
             extra_data: build_extra_data(config, record)
@@ -46,7 +51,7 @@ module QBWC
         hash_items = build_hash_items(record)
         object_source = Persistence::Session.load(config, record['request_id'])
 
-        mapped_lines = object_source['items'].to_a.map do |item|
+        mapped_lines = object_source['line_items'].to_a.map do |item|
           item['txn_line_id'] = hash_items[item['product_id'].downcase]
           item['txn_id']      = record['TxnID']
           item
@@ -59,7 +64,7 @@ module QBWC
         end
 
         {
-          'items' => mapped_lines,
+          'line_items' => mapped_lines,
           'adjustments' => mapped_adjustments
         }
       end
