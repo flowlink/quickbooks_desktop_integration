@@ -46,7 +46,7 @@ module QBWC
     <LastName>#{object['lastname'] || object['name'].split.last}</LastName>
     <BillAddress>
       <Addr1>#{object['billing_address']['address1'] if object['billing_address']}</Addr1>
-      <Addr2>#{object['billing_address']['address2'] if object['billing_address']}</Addr2>
+      #{"<Addr2>#{object['billing_address']['address2']}</Addr2>" if object['billing_address']}
       <City>#{object['billing_address']['city'] if object['billing_address']}</City>
       <State>#{object['billing_address']['state'] if object['billing_address']}</State>
       <PostalCode>#{object['billing_address']['zipcode'] if object['billing_address']}</PostalCode>
@@ -54,7 +54,7 @@ module QBWC
     </BillAddress>
     <ShipAddress>
       <Addr1>#{object['shipping_address']['address1'] if object['shipping_address']}</Addr1>
-      <Addr2>#{object['shipping_address']['address2'] if object['shipping_address']}</Addr2>
+      #{"<Addr2>#{object['shipping_address']['address2']}</Addr2>" if object['shipping_address']}
       <City>#{object['shipping_address']['city'] if object['shipping_address']}</City>
       <State>#{object['shipping_address']['state'] if object['shipping_address']}</State>
       <PostalCode>#{object['shipping_address']['zipcode'] if object['shipping_address']}</PostalCode>
