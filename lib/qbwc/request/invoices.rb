@@ -36,23 +36,24 @@ module QBWC
 
         def search_xml(invoice_id, session_id)
           <<~XML
-            <InvoiceQueryRq requestID="#{session_id}">
-              <RefNumberCaseSensitive>#{invoice_id}</RefNumberCaseSensitive>
-              <IncludeLineItems>true</IncludeLineItems>
-            </InvoiceQueryRq>
+<InvoiceQueryRq requestID="#{session_id}">
+  <RefNumberCaseSensitive>#{invoice_id}</RefNumberCaseSensitive>
+  <IncludeLineItems>true</IncludeLineItems>
+</InvoiceQueryRq>
           XML
         end
 
         def add_xml_to_send(record, params = {}, session_id)
           puts "Adding invoice xml by #{record}"
           @qbxml = <<~XML
-            <InvoiceAddRq requestID="#{session_id}">
-              <InvoiceAdd>
-                #{invoice record, params}
-                #{items(record).map { |l| invoice_line_add l }.join('')}
-                #{adjustments_add_xml record, params}
-              </InvoiceAdd>
-            </InvoiceAddRq>
+
+<InvoiceAddRq requestID="#{session_id}">
+  <InvoiceAdd>
+    #{invoice record, params}
+    #{items(record).map { |l| invoice_line_add l }.join('')}
+    #{adjustments_add_xml record, params}
+  </InvoiceAdd>
+</InvoiceAddRq>
           XML
           puts @qbxml.gsub("\n", '')
           @qbxml
@@ -61,15 +62,15 @@ module QBWC
         def update_xml_to_send(record, params = {}, session_id)
           <<~XML
 
-            <InvoiceModRq requestID="#{session_id}">
-              <InvoiceMod>
-                <TxnID>#{record['list_id']}</TxnID>
-                <EditSequence>#{record['edit_sequence']}</EditSequence>
-                #{invoice record, params}
-                #{items(record).map { |l| invoice_line_mod l }.join('')}
-                #{adjustments_mod_xml record, params}
-              </InvoiceMod>
-            </InvoiceModRq>
+<InvoiceModRq requestID="#{session_id}">
+  <InvoiceMod>
+    <TxnID>#{record['list_id']}</TxnID>
+    <EditSequence>#{record['edit_sequence']}</EditSequence>
+    #{invoice record, params}
+    #{items(record).map { |l| invoice_line_mod l }.join('')}
+    #{adjustments_mod_xml record, params}
+  </InvoiceMod>
+</InvoiceModRq>
           XML
         end
 

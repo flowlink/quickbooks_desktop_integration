@@ -105,11 +105,11 @@ module QBWC
         private
 
         def sanitize_customer(customer)
-          customer['company'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['company']
+          # customer['company'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['company']
           customer['firstname'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['firstname']
-          customer['name'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['name']
+          # customer['name'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['name']
           customer['lastname'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['lastname']
-          customer['email'] = nil unless customer['email'] =~ /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i
+          # customer['email'] = nil unless customer['email'] =~ /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i
 
           customer['billing_address']['address1'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['billing_address'] && customer['billing_address']['address1']
           customer['billing_address']['address2'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['billing_address'] && customer['billing_address']['address2']
