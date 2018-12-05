@@ -284,6 +284,7 @@ module QBWC
             end
           end
 
+          puts "Final adjustments #{final_adjustments}"
           final_adjustments.join('')
         end
 
