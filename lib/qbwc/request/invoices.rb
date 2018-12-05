@@ -192,7 +192,7 @@ module QBWC
         end
 
         def invoice_line(line)
-          "Building invoice line XML..."
+          puts "Building invoice line XML..."
           @invoice_line_xml=<<-XML
 
       <ItemRef>
