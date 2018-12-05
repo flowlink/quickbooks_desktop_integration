@@ -107,6 +107,7 @@ module QBWC
         def sanitize_customer(customer)
           customer['company'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['company']
           customer['firstname'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['firstname']
+          customer['name'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['name']
           customer['lastname'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['lastname']
           customer['email'] = nil unless customer['email'] =~ /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i
 
