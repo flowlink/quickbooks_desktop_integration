@@ -26,12 +26,14 @@ module QBWC
             config = { connection_id: params['connection_id'] }.with_indifferent_access
             session_id = Persistence::Session.save(config, object)
 
-            request << if object[:list_id].to_s.empty?
+            new_string = request.dup
+            new_string << if object[:list_id].to_s.empty?
                          add_xml_to_send(object, params, session_id)
 
                        else
                          update_xml_to_send(object, params, session_id)
                       end
+            request = new_string
           end
         end
 
