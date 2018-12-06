@@ -31,6 +31,8 @@ module QBWC
                        else
                          update_xml_to_send(object, params, session_id)
                       end
+            puts request
+            request
           end
         end
 
@@ -74,7 +76,7 @@ module QBWC
         # NOTE Brave soul needed to find a lib or build one from scratch to
         # map this xml mess to proper ruby objects with a to_xml method
 
-        # The order of tags here matter. e.g. PONumber MUST be after
+        # The invoice of tags here matter. e.g. PONumber MUST be after
         # ship address or you end up getting:
         #
         #   QuickBooks found an error when parsing the provided XML text stream.
@@ -218,7 +220,7 @@ module QBWC
           XML
         end
 
-        def build_customer_from_order(object)
+        def build_customer_from_invoice(object)
           billing_address = object['billing_address']
 
           {
@@ -233,7 +235,7 @@ module QBWC
           }
         end
 
-        def build_products_from_order(object)
+        def build_products_from_invoice(object)
           object.first['line_items'].reject { |line| line['quantity'].to_f == 0.0 }.map do |item|
             {
               'id'          => item['product_id'],
@@ -244,7 +246,7 @@ module QBWC
           end
         end
 
-        def build_payments_from_order(object)
+        def build_payments_from_invoice(object)
           object['payments'].to_a.select { |pay| %w[completed paid ready].include?(pay['status']) && pay['amount'].to_f > 0.0 }.map do |item|
             item.merge('id'          => object['id'],
                        'object_ref'  => object['id'],
@@ -321,12 +323,12 @@ module QBWC
             .sort { |a, b| a['name'].downcase <=> b['name'].downcase }
         end
 
-        def sanitize_invoice(order)
+        def sanitize_invoice(invoice)
           %w[billing_address shipping_address].each do |address_type|
-            order[address_type] = {} if order[address_type].nil?
+            invoice[address_type] = {} if invoice[address_type].nil?
 
             %w[address1 address2 city state zipcode county].each do |field|
-              order[address_type][field]&.gsub!(/[^0-9A-Za-z\s]/, '')
+              invoice[address_type][field]&.gsub!(/[^0-9A-Za-z\s]/, '')
             end
           end
         end
