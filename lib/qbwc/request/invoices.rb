@@ -27,12 +27,12 @@ module QBWC
             session_id = Persistence::Session.save(config, object)
 
             request << if object[:list_id].to_s.empty?
-                         add_xml_to_send(object, params, session_id)
+                         xml = add_xml_to_send(object, params, session_id)
+                         puts xml
+                         xml
                        else
                          update_xml_to_send(object, params, session_id)
                       end
-            puts request
-            request
           end
         end
 
