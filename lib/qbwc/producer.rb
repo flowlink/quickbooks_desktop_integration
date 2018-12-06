@@ -14,7 +14,7 @@ module QBWC
       begin
         request_xml << build_polling_request
 
-        puts "Partial request with polling #{request_xml}"
+        puts "Partial request with polling #{request_xml}".gsub("\n", '')
 
         # NOTE Wouldn't this take forever depending on how many objects are
         # waiting to be integrated? Verify if we should limit the s3 queries
@@ -23,13 +23,13 @@ module QBWC
         request_xml << process_insert_update(@integration.get_ready_objects_to_send)
 
 
-        puts "Partial request with polling and insert/update #{request_xml}"
+        puts "Partial request with polling and insert/update #{request_xml}".gsub("\n", '')
 
         # Get Objects to query
         request_xml << process_queries(@integration.process_pending_objects)
 
 
-        puts "Partial request with polling, insert and query #{request_xml}"
+        puts "Partial request with polling, insert and query #{request_xml}".gsub("\n", '')
 
         @integration.process_two_phase_pending_objects
       rescue  Exception => e
