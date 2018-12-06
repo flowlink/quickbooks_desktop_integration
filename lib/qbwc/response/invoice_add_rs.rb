@@ -1,6 +1,6 @@
 module QBWC
   module Response
-    class InvoicesAddRs
+    class InvoiceAddRs
       attr_reader :records
 
       # Successfull persisted sales invoices are given here
