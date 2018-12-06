@@ -1,90 +1,100 @@
+# frozen_string_literal: true
+
 module QBWC
   module Request
-    class Orders
+    class Invoices
       class << self
         def generate_request_queries(objects, params)
+          puts "Generating request queries for objects: #{objects}, params: #{params}"
           objects.inject('') do |request, object|
-            sanitize_order(object)
+            sanitize_invoice(object)
 
-            # Needed to keep shipment ID b/c and Order already has a order_id
-            extra = "shipment-#{object['order_id']}-" if object.key?('shipment_id')
+            # Needed to keep shipment ID b/c and Invoice already has a invoice_id
+            extra = "shipment-#{object['invoice_id']}-" if object.key?('shipment_id')
             config = { connection_id: params['connection_id'] }.with_indifferent_access
             session_id = Persistence::Session.save(config, object, extra)
 
-            request << search_xml(object['id'], session_id)
+            new_string = request.dup
+            new_string << search_xml(object['id'], session_id)
+            request = new_string
           end
-        end
+        end 
 
         def generate_request_insert_update(objects, params = {})
+          puts "Generating insert/update for objects: #{objects}, params: #{params}"
           objects.inject('') do |request, object|
-            sanitize_order(object)
+            sanitize_invoice(object)
 
             config = { connection_id: params['connection_id'] }.with_indifferent_access
             session_id = Persistence::Session.save(config, object)
 
-            request << if object[:list_id].to_s.empty?
+            new_string = request.dup
+            new_string << if object[:list_id].to_s.empty?
                          add_xml_to_send(object, params, session_id)
+
                        else
                          update_xml_to_send(object, params, session_id)
                       end
+            request = new_string
           end
         end
 
-        def search_xml(order_id, session_id)
-          <<-XML
-<SalesOrderQueryRq requestID="#{session_id}">
-  <RefNumberCaseSensitive>#{order_id}</RefNumberCaseSensitive>
+        def search_xml(invoice_id, session_id)
+          <<~XML
+<InvoiceQueryRq requestID="#{session_id}">
+  <RefNumberCaseSensitive>#{invoice_id}</RefNumberCaseSensitive>
   <IncludeLineItems>true</IncludeLineItems>
-</SalesOrderQueryRq>
+</InvoiceQueryRq>
           XML
         end
 
-        def add_xml_to_send(record, params= {}, session_id)
-          <<-XML
+        def add_xml_to_send(record, params = {}, session_id)
+          <<~XML
 
-<SalesOrderAddRq requestID="#{session_id}">
-  <SalesOrderAdd>
-    #{sales_order record, params}
-    #{items(record).map { |l| sales_order_line_add l }.join('')}
+<InvoiceAddRq requestID="#{session_id}">
+  <InvoiceAdd>
+    #{invoice record, params}
+    #{items(record).map { |l| invoice_line_add l }.join('')}
     #{adjustments_add_xml record, params}
-  </SalesOrderAdd>
-</SalesOrderAddRq>
+  </InvoiceAdd>
+</InvoiceAddRq>
           XML
         end
 
-        def update_xml_to_send(record, params= {}, session_id)
-          <<-XML
+        def update_xml_to_send(record, params = {}, session_id)
+          <<~XML
 
-<SalesOrderModRq requestID="#{session_id}">
-  <SalesOrderMod>
+<InvoiceModRq requestID="#{session_id}">
+  <InvoiceMod>
     <TxnID>#{record['list_id']}</TxnID>
     <EditSequence>#{record['edit_sequence']}</EditSequence>
-    #{sales_order record, params}
-    #{items(record).map { |l| sales_order_line_mod l }.join('')}
+    #{invoice record, params}
+    #{items(record).map { |l| invoice_line_mod l }.join('')}
     #{adjustments_mod_xml record, params}
-  </SalesOrderMod>
-</SalesOrderModRq>
+  </InvoiceMod>
+</InvoiceModRq>
           XML
         end
 
         # NOTE Brave soul needed to find a lib or build one from scratch to
         # map this xml mess to proper ruby objects with a to_xml method
 
-        # The order of tags here matter. e.g. PONumber MUST be after
+        # The invoice of tags here matter. e.g. PONumber MUST be after
         # ship address or you end up getting:
         #
         #   QuickBooks found an error when parsing the provided XML text stream.
         #
-        # View sales_order_add_rq.xml in case you need to look into add more
+        # View invoice_add_rq.xml in case you need to look into add more
         # tags to this request
         #
-        # View sales_order_add_rs_invalid_record_ref.xml to see what'd you
+        # View invoice_add_rs_invalid_record_ref.xml to see what'd you
         # get by sending a invalid Customer Ref you'd get as a response.
         #
         # 'placed_on' needs to be a valid date string otherwise an exception
         # will be raised
         #
-        def sales_order(record, _params)
+        def invoice(record, _params)
+          puts "Building invoice XML for #{record}"
           if record['placed_on'].nil? || record['placed_on'].empty?
             record['placed_on'] = Time.now.to_s
           end
@@ -112,23 +122,22 @@ module QBWC
       <PostalCode>#{record['shipping_address']['zipcode']}</PostalCode>
       <Country>#{record['shipping_address']['country']}</Country>
     </ShipAddress>
-    #{cancel_order?(record)}
           XML
         end
 
-        def sales_order_line_add(line)
+        def invoice_line_add(line)
           <<-XML
 
-    <SalesOrderLineAdd>
-      #{sales_order_line(line)}
-    </SalesOrderLineAdd>
+    <InvoiceLineAdd>
+      #{invoice_line(line)}
+    </InvoiceLineAdd>
           XML
         end
 
-        def sales_order_line_add_from_adjustment(adjustment, params)
-          puts "IN sales order PARAMS = #{params}"
+        def invoice_line_add_from_adjustment(adjustment, params)
+          puts "IN sales invoice PARAMS = #{params}"
 
-          multiplier = QBWC::Request::Adjustments.is_adjustment_discount?(adjustment['name'])  ? -1 : 1
+          multiplier = QBWC::Request::Adjustments.is_adjustment_discount?(adjustment['name']) ? -1 : 1
           p_id = QBWC::Request::Adjustments.adjustment_product_from_qb(adjustment['name'], params)
           puts "FOUND product_id #{p_id}, NAME #{adjustment['name']}"
           line = {
@@ -137,31 +146,31 @@ module QBWC
             'price' => (adjustment['value'].to_f * multiplier).to_s
           }
 
-          sales_order_line_add line
+          invoice_line_add line
         end
 
-        def sales_order_line_add_from_tax_line_item(tax_line_item, params)
+        def invoice_line_add_from_tax_line_item(tax_line_item, params)
           line = {
-              'product_id' => QBWC::Request::Adjustments.adjustment_product_from_qb('tax', params),
-              'quantity' => 0,
-              'price' => tax_line_item['value'],
-              'name' => tax_line_item['name']
+            'product_id' => QBWC::Request::Adjustments.adjustment_product_from_qb('tax', params),
+            'quantity' => 0,
+            'price' => tax_line_item['value'],
+            'name' => tax_line_item['name']
           }
 
-          sales_order_line_add line
+          invoice_line_add line
         end
 
-        def sales_order_line_mod(line)
+        def invoice_line_mod(line)
           <<-XML
 
-    <SalesOrderLineMod>
+    <InvoiceLineMod>
       <TxnLineID>#{line['txn_line_id']}</TxnLineID>
-      #{sales_order_line(line)}
-    </SalesOrderLineMod>
+      #{invoice_line(line)}
+    </InvoiceLineMod>
           XML
         end
 
-        def sales_order_line_mod_from_adjustment(adjustment, params)
+        def invoice_line_mod_from_adjustment(adjustment, params)
           line = {
             'product_id' => QBWC::Request::Adjustments.adjustment_product_from_qb(adjustment['name'], params),
             'quantity' => 0,
@@ -169,10 +178,10 @@ module QBWC
             'txn_line_id' => adjustment['txn_line_id']
           }
 
-          sales_order_line_mod line
+          invoice_line_mod line
         end
 
-        def sales_order_line_mod_from_tax_line_item(tax_line_item, params)
+        def invoice_line_mod_from_tax_line_item(tax_line_item, params)
           line = {
             'product_id' => QBWC::Request::Adjustments.adjustment_product_from_qb('tax', params),
             'quantity' => 0,
@@ -181,10 +190,10 @@ module QBWC
             'name' => tax_line_item['name']
           }
 
-          sales_order_line_mod line
+          invoice_line_mod line
         end
 
-        def sales_order_line(line)
+        def invoice_line(line)
           <<-XML
 
       <ItemRef>
@@ -214,17 +223,7 @@ module QBWC
           XML
         end
 
-        def cancel_order?(object)
-          return '' unless object['status'].to_s == 'cancelled'
-
-          <<-XML
-
-          <IsManuallyClosed>true</IsManuallyClosed>
-
-          XML
-        end
-
-        def build_customer_from_order(object)
+        def build_customer_from_invoice(object)
           billing_address = object['billing_address']
 
           {
@@ -239,7 +238,7 @@ module QBWC
           }
         end
 
-        def build_products_from_order(object)
+        def build_products_from_invoice(object)
           object.first['line_items'].reject { |line| line['quantity'].to_f == 0.0 }.map do |item|
             {
               'id'          => item['product_id'],
@@ -250,8 +249,8 @@ module QBWC
           end
         end
 
-        def build_payments_from_order(object)
-          object['payments'].to_a.select { |pay| %w(completed paid ready).include?(pay['status']) && pay['amount'].to_f > 0.0 }.map do |item|
+        def build_payments_from_invoice(object)
+          object['payments'].to_a.select { |pay| %w[completed paid ready].include?(pay['status']) && pay['amount'].to_f > 0.0 }.map do |item|
             item.merge('id'          => object['id'],
                        'object_ref'  => object['id'],
                        'email'       => object['email'])
@@ -261,35 +260,36 @@ module QBWC
         private
 
         def items(record)
-          record['line_items'].to_a.sort { |a, b| a['product_id'] <=> b['product_id'] }
+          record['line_items'].to_a.sort_by { |a| a['product_id'] }
         end
 
         # Generate XML for adding adjustments.
         # If the quickbooks_use_tax_line_items is set, then don't include tax from the adjustments object, and instead
         # use tax_line_items if it exists.
         def adjustments_add_xml(record, params)
-        puts "record is #{record}"
+          puts "record is #{record}"
           final_adjustments = []
           use_tax_line_items = !params['quickbooks_use_tax_line_items'].nil? &&
-                                params['quickbooks_use_tax_line_items'] == "1" &&
+                               params['quickbooks_use_tax_line_items'] == '1' &&
                                !record['tax_line_items'].nil? &&
                                !record['tax_line_items'].empty?
 
           adjustments(record).each do |adjustment|
-                      puts "adjustment is #{adjustment}"
+            puts "adjustment is #{adjustment}"
 
             if !use_tax_line_items ||
                !QBWC::Request::Adjustments.is_adjustment_tax?(adjustment['name'])
-              final_adjustments << sales_order_line_add_from_adjustment(adjustment, params)
+              final_adjustments << invoice_line_add_from_adjustment(adjustment, params)
             end
           end
 
           if use_tax_line_items
             record['tax_line_items'].each do |tax_line_item|
-              final_adjustments << sales_order_line_add_from_tax_line_item(tax_line_item, params)
+              final_adjustments << invoice_line_add_from_tax_line_item(tax_line_item, params)
             end
           end
 
+          puts "Final adjustments #{final_adjustments.join('')}"
           final_adjustments.join('')
         end
 
@@ -299,20 +299,20 @@ module QBWC
         def adjustments_mod_xml(record, params)
           final_adjustments = []
           use_tax_line_items = !params['quickbooks_use_tax_line_items'].nil? &&
-              params['quickbooks_use_tax_line_items'] == "1" &&
-              !record['tax_line_items'].nil? &&
-              !record['tax_line_items'].empty?
+                               params['quickbooks_use_tax_line_items'] == '1' &&
+                               !record['tax_line_items'].nil? &&
+                               !record['tax_line_items'].empty?
 
           adjustments(record).each do |adjustment|
             if !use_tax_line_items ||
-                !QBWC::Request::Adjustments.is_adjustment_tax?(adjustment['name'])
-              final_adjustments << sales_order_line_mod_from_adjustment(adjustment, params)
+               !QBWC::Request::Adjustments.is_adjustment_tax?(adjustment['name'])
+              final_adjustments << invoice_line_mod_from_adjustment(adjustment, params)
             end
           end
 
           if use_tax_line_items
             record['tax_line_items'].each do |tax_line_item|
-              final_adjustments << sales_order_line_mod_from_tax_line_item(tax_line_item, params)
+              final_adjustments << invoice_line_mod_from_tax_line_item(tax_line_item, params)
             end
           end
 
@@ -326,20 +326,15 @@ module QBWC
             .sort { |a, b| a['name'].downcase <=> b['name'].downcase }
         end
 
-        def sanitize_order(order)
-          ['billing_address', 'shipping_address'].each do |address_type|
-            if order[address_type].nil?
-              order[address_type] = { }
-            end
+        def sanitize_invoice(invoice)
+          %w[billing_address shipping_address].each do |address_type|
+            invoice[address_type] = {} if invoice[address_type].nil?
 
-            ['address1', 'address2', 'city', 'state', 'zipcode', 'county'].each do |field|
-              if !order[address_type][field].nil?
-                order[address_type][field].gsub!(/[^0-9A-Za-z\s]/, '')
-              end
+            %w[address1 address2 city state zipcode county].each do |field|
+              invoice[address_type][field]&.gsub!(/[^0-9A-Za-z\s]/, '')
             end
           end
         end
-
       end
     end
   end

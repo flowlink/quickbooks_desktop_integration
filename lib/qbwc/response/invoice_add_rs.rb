@@ -3,38 +3,32 @@ module QBWC
     class InvoiceAddRs
       attr_reader :records
 
+      # Successfull persisted sales invoices are given here
       def initialize(records)
         @records = records
       end
 
       def handle_error(errors, config)
         errors.each do |error|
-          Persistence::Object.handle_error(
-            config,
-            error.merge(context: 'Adding Shipments'),
-            'shipments',
-            error[:request_id]
-          )
+          Persistence::Object.handle_error(config,
+                                           error.merge(context: 'Adding invoices'),
+                                           'invoices',
+                                           error[:request_id])
         end
       end
 
       def process(config = {})
-        return { statuses_objects: nil }.with_indifferent_access if records.empty?
-
-        objects = records.map do |object|
-          {
-            shipments: {
-              id: object['RefNumber'],
-              order_id: object['RefNumber'],
-              list_id: object['TxnID'],
-              edit_sequence: object['EditSequence']
+        invoices = records.inject([]) do |invoices, record|
+          invoices << {
+            invoices: {
+              id: record['RefNumber'],
+              list_id: record['TxnID'],
+              edit_sequence: record['EditSequence']
             }
           }
         end
 
-        Persistence::Object.new(config, {}).create_payments_updates_from_shipments(config, records.first['RefNumber'], records.first['TxnID'])
-
-        Persistence::Object.update_statuses(config, objects)
+        Persistence::Object.update_statuses(config, invoices)
       end
     end
   end

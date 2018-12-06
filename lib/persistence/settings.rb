@@ -23,7 +23,7 @@ module Persistence
       if !s3_object.exists? || force_save
         amazon_s3.export file_name: file, objects: [config], override: true
       end
-      generate_extra_flows if %w(add_orders add_shipments).include?(flow)
+      generate_extra_flows if %w(add_orders add_shipments add_invoices).include?(flow)
     end
 
     def generate_extra_flows
