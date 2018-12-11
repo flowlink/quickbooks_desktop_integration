@@ -60,7 +60,7 @@ module QBWC
 
         def product_only_touch_xml(product, _params)
           <<-XML
-                  <Name>#{product['id']}</Name>
+                  <Name>#{product['product_id']}</Name>
                   <IsActive>true</IsActive>
           XML
         end
@@ -68,13 +68,13 @@ module QBWC
         def product_xml(product, params)
           product = complement_inventory(product)
           <<-XML
-              <Name>#{product['id'].split(':').last}</Name>
+              <Name>#{product['product_id']}</Name>
               <SalesDesc>#{product['description']}</SalesDesc>
               <SalesPrice>#{product['price']}</SalesPrice>
               <IncomeAccountRef>
                  <FullName>#{params['quickbooks_income_account']}</FullName>
               </IncomeAccountRef>
-              <PurchaseCost>#{params['cost_price']}</PurchaseCost>
+              <PurchaseCost>#{params['cost']}</PurchaseCost>
               <COGSAccountRef>
                 <FullName>#{params['quickbooks_cogs_account']}</FullName>
               </COGSAccountRef>
