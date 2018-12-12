@@ -113,7 +113,7 @@ class QBWCEndpoint < Sinatra::Base
       @result = 'nvu' # invalid password - not valid user
     end
 
-    puts result
+    puts @result
 
     erb :'qbwc/authenticate'
   end
