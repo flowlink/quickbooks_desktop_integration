@@ -93,6 +93,8 @@ class QBWCEndpoint < Sinatra::Base
   def authenticate(_connection_id, body)
     body = CGI.unescapeHTML(body)
 
+    puts "Authentication for #{_connection_id}: #{body}"
+
     body.slice! '<?xml version="1.0" ?>'
     parser = Nori.new strip_namespaces: true
     envelope = parser.parse body
@@ -110,6 +112,8 @@ class QBWCEndpoint < Sinatra::Base
     else
       @result = 'nvu' # invalid password - not valid user
     end
+
+    puts result
 
     erb :'qbwc/authenticate'
   end
