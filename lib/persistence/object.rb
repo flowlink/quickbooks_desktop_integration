@@ -1,6 +1,6 @@
 module Persistence
   class Object
-    attr_reader :config, :objects, :payload_key, :amazon_s3, :path
+    attr_reader :config, :objects, :payload_key, :amazon_s3, :path, :request_id
 
     class << self
       def handle_error(config, error_context, object_type, request_id)
@@ -38,6 +38,7 @@ module Persistence
       @config      = { origin: 'flowlink' }.merge(config).with_indifferent_access
       @amazon_s3   = S3Util.new
       @path        = Persistence::Path.new(@config)
+      @request_id  = payload[:request_id]
     end
 
     # Doesn't check whether the record (s) is already in s3. Only save it.
@@ -77,11 +78,11 @@ module Persistence
         end
 
         if two_phase?
-          file = "#{path.base_name}/#{path.two_phase_pending}/#{payload_key.pluralize}_#{id_of_object(object)}_.csv"
+          file = "#{path.base_name}/#{path.two_phase_pending}/#{payload_key.pluralize}_#{id_of_object(object)}_#{request_id}_.csv"
           amazon_s3.export file_name: file, objects: [object]
           generate_inserts_for_two_phase(object, use_customer_email_param?)
         else
-          file = "#{path.base_name}/#{path.pending}/#{payload_key.pluralize}_#{id_of_object(object)}_.csv"
+          file = "#{path.base_name}/#{path.pending}/#{payload_key.pluralize}_#{id_of_object(object)}_#{request_id}_.csv"
           amazon_s3.export file_name: file, objects: [object]
         end
         generate_extra_objects(object)
@@ -101,7 +102,7 @@ module Persistence
 
       collection.map do |s3_object|
         _, _, filename    = s3_object.key.split('/')
-        object_type, _, _ = filename.split('_')
+        object_type, _, _, _ = filename.split('_')
 
         contents = s3_object.get.body.read
 
@@ -120,7 +121,7 @@ module Persistence
 
       collection.each do |s3_object|
         _, _, filename    = s3_object.key.split('/')
-        object_type, _, _ = filename.split('_')
+        object_type, _, _, _ = filename.split('_')
 
         contents = s3_object.get.body.read
 
@@ -143,7 +144,7 @@ module Persistence
       end
 
       objects_to_be_renamed.to_a.compact.each do |object|
-        filename     = "#{prefix}/#{object[:object_type].pluralize}_#{object[:object_ref]}_"
+        filename     = "#{prefix}/#{object[:object_type].pluralize}_#{object[:object_ref]}_#{request_id}_"
 
         # TODO what if the file is not there? we should probably at least
         # rescue / log the exception properly and move on with the others?
@@ -153,7 +154,7 @@ module Persistence
         #
         begin
           s3_object     = amazon_s3.bucket.object("#{filename}.csv")
-          new_file_name = "#{filename}#{object[:list_id]}_#{object[:edit_sequence]}.csv"
+          new_file_name = "#{filename}#{object[:list_id]}_#{object[:edit_sequence]}_#{request_id}_.csv"
           s3_object.move_to(new_file_name)
 
           unless object[:extra_data].to_s.empty?
@@ -188,7 +189,7 @@ module Persistence
 
       select_precedence_files(collection).reject { |s3| s3.key.match(/notification/) }.map do |s3_object|
         _, _, filename                         = s3_object.key.split('/')
-        object_type, _, list_id, edit_sequence = filename.split('_')
+        object_type, _, list_id, edit_sequence, request_id = filename.split('_')
 
         list_id.gsub!('.csv', '') unless list_id.nil?
         edit_sequence.gsub!('.csv', '') unless edit_sequence.nil?
@@ -230,22 +231,24 @@ module Persistence
             begin
               object = types[object_type].with_indifferent_access
 
-              filename = "#{path.base_name}/#{path.ready}/#{object_type}_#{id_for_object(object, object_type)}_"
+              filename = "#{path.base_name}/#{path.ready}/#{object_type}_#{id_for_object(object, object_type)}_#{request_id}_"
 
               collection = amazon_s3.bucket.objects(prefix: filename)
               collection.each do |s3_object|
                 # This is for files that end on (n)
                 _, _, ax_filename = s3_object.key.split('/')
-                _, _, end_of_file, ax_edit_sequence = ax_filename.split('_')
+                _, _, end_of_file, ax_edit_sequence, request_id = ax_filename.split('_')
                 end_of_file = '.csv' unless ax_edit_sequence.nil?
 
                 status_folder = path.send status_key
                 new_filename = "#{path.base_name_w_bucket}/#{status_folder}/#{object_type}_#{id_for_object(object, object_type)}_"
-                new_filename << "#{object[:list_id]}_#{object[:edit_sequence]}" unless object[:list_id].to_s.empty?
+                new_filename << "#{object[:list_id]}_#{object[:edit_sequence]}_" unless object[:list_id].to_s.empty?
+                new_filename << "#{request_id}_"
                 s3_object.move_to("#{new_filename}#{end_of_file}")
 
                 new_filename_no_bucket = "#{path.base_name}/#{status_folder}/#{object_type}_#{id_for_object(object, object_type)}_"
-                new_filename_no_bucket << "#{object[:list_id]}_#{object[:edit_sequence]}" unless object[:list_id].to_s.empty?
+                new_filename_no_bucket << "#{object[:list_id]}_#{object[:edit_sequence]}_" unless object[:list_id].to_s.empty?
+                new_filename_no_bucket << "#{request_id}_"
 
                 create_notifications("#{new_filename_no_bucket}#{end_of_file}", status_key) if status_key == 'processed'
               end
@@ -267,7 +270,7 @@ module Persistence
 
       notification_files.inject('processed' => [], 'failed' => []) do |notifications, s3_object|
         _, _, filename  = s3_object.key.split('/')
-        _, status, object_type, object_ref, _ = filename.split('_')
+        _, status, object_type, object_ref, request_id, _ = filename.split('_')
         content = amazon_s3.convert_download('csv', s3_object.get.body.read).first
 
         # id_for_notifications is marked as 'depricated'
@@ -277,12 +280,12 @@ module Persistence
         if content.key?('message')
           notifications[status] << {
             message: "#{object_ref}: #{content['message']}",
-            request_id: content['request_id']
+            request_id: request_id
           }
         else
           notifications[status] << {
               message: "#{object_ref}: #{success_notification_message(object_type)}",
-              request_id: content['request_id']
+              request_id: request_id
           }
         end
 
@@ -304,7 +307,7 @@ module Persistence
 
     # This link invoices and payments
     def update_shipments_with_payment_ids(shipment_id, object)
-      file_name = "#{path.base_name}/#{path.pending}/shipments_#{shipment_id}_.csv"
+      file_name = "#{path.base_name}/#{path.pending}/shipments_#{shipment_id}_#{request_id}_.csv"
 
       begin
         contents = amazon_s3.convert_download('csv', amazon_s3.bucket.object(file_name).get.body.read)
@@ -318,7 +321,7 @@ module Persistence
       amazon_s3.export file_name: file_name, objects: contents
 
       begin
-        order_file_name = "#{path.base_name}/#{path.ready}/payments_#{object[:object_ref]}_.csv"
+        order_file_name = "#{path.base_name}/#{path.ready}/payments_#{object[:object_ref]}_#{request_id}_.csv"
         amazon_s3.bucket.object(order_file_name).delete
       rescue Aws::S3::Errors::NoSuchKey => _e
         puts "File not found[delete payments]: #{file_name}"
@@ -327,7 +330,7 @@ module Persistence
 
     # This link Invoices with Sales Orders
     def update_shipments_with_qb_ids(shipment_id, object)
-      file_name = "#{path.base_name}/#{path.pending}/shipments_#{shipment_id}_.csv"
+      file_name = "#{path.base_name}/#{path.pending}/shipments_#{shipment_id}_#{request_id}_.csv"
 
       begin
         contents = amazon_s3.convert_download('csv', amazon_s3.bucket.object(file_name).get.body.read)
@@ -357,7 +360,7 @@ module Persistence
       amazon_s3.export file_name: file_name, objects: contents
 
       begin
-        order_file_name = "#{path.base_name}/#{path.ready}/orders_#{object[:object_ref]}_.csv"
+        order_file_name = "#{path.base_name}/#{path.ready}/orders_#{object[:object_ref]}_#{request_id}_.csv"
         amazon_s3.bucket.object(order_file_name).delete
       rescue Aws::S3::Errors::NoSuchKey => _e
         puts "File not found[delete orders]: #{file_name}"
@@ -367,7 +370,7 @@ module Persistence
     # Creates payments to updates Invoices IDs into Payments and link one to another,
     # needs to be separated, because we need QB IDs and it's only exists after processed
     def create_payments_updates_from_shipments(_config, shipment_id, invoice_txn_id)
-      file_name = "#{path.base_name}/#{path.ready}/shipments_#{shipment_id}_"
+      file_name = "#{path.base_name}/#{path.ready}/shipments_#{shipment_id}_#{request_id}_"
 
       begin
         file = amazon_s3.bucket.objects(prefix: file_name).first
@@ -387,7 +390,7 @@ module Persistence
         'edit_sequence'  => object['payment']['edit_sequence']
       }]
 
-      new_file_name = "#{path.base_name}/#{path.ready}/payments_#{object['order_id']}_.csv"
+      new_file_name = "#{path.base_name}/#{path.ready}/payments_#{object['order_id']}_#{request_id}_.csv"
       amazon_s3.export file_name: new_file_name, objects: save_object
     end
 
@@ -440,7 +443,7 @@ module Persistence
     def generate_error_notification(content, object_type)
       @payload_key = object_type
       if content[:object]
-        new_filename = "#{path.base_name}/#{path.ready}/notification_failed_#{object_type}_#{id_for_object(content[:object], object_type)}_.csv"
+        new_filename = "#{path.base_name}/#{path.ready}/notification_failed_#{object_type}_#{id_for_object(content[:object], object_type)}_#{request_id}_.csv"
         amazon_s3.export(file_name: new_filename, objects: [content])
       else
         puts "generate_error_notification: #{content.inspect}:#{object_type}"
@@ -578,7 +581,7 @@ module Persistence
     end
 
     def save_pending_file(object_ref, object_type, object)
-      amazon_s3.export file_name: "#{path.base_name}/#{path.pending}/#{object_type}_#{object_ref}_.csv", objects: [object]
+      amazon_s3.export file_name: "#{path.base_name}/#{path.pending}/#{object_type}_#{object_ref}_#{request_id}_.csv", objects: [object]
     end
 
     def use_customer_email_param?
