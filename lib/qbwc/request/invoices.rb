@@ -18,7 +18,7 @@ module QBWC
             new_string << search_xml(object['id'], session_id)
             request = new_string
           end
-        end 
+        end
 
         def generate_request_insert_update(objects, params = {})
           puts "Generating insert/update for objects: #{objects}, params: #{params}"
@@ -104,6 +104,7 @@ module QBWC
     <CustomerRef>
       <FullName>#{record['customer']['name']}</FullName>
     </CustomerRef>
+    #{class_ref_for_invoice(record)}
     <TxnDate>#{Time.parse(record['placed_on']).to_date}</TxnDate>
     <RefNumber>#{record['id']}</RefNumber>
     <BillAddress>
@@ -122,6 +123,28 @@ module QBWC
       <PostalCode>#{record['shipping_address']['zipcode']}</PostalCode>
       <Country>#{record['shipping_address']['country']}</Country>
     </ShipAddress>
+          XML
+        end
+
+        def class_ref_for_invoice(record)
+          return '' unless record['class_name']
+
+          <<-XML
+
+    <ClassRef>
+      <FullName>#{record['class_name']}</FullName>
+    </ClassRef>
+          XML
+        end
+
+        def class_ref_for_invoice_line(line)
+          return '' unless line['class_name']
+
+          <<-XML
+
+      <ClassRef>
+        <FullName>#{line['class_name']}</FullName>
+      </ClassRef>
           XML
         end
 
