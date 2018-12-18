@@ -231,7 +231,7 @@ module QBWC
             'id'               => object['email'],
             'firstname'        => billing_address['firstname'],
             'lastname'         => billing_address['lastname'],
-            'name'             => billing_address['name'],
+            'name'             => object['customer']['name'],
             'company'          => billing_address['company'],
             'email'            => object['email'],
             'billing_address'  => billing_address,
