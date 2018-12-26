@@ -300,7 +300,7 @@ module Persistence
       # if the error was this, then the object stay there to process next time
       if error_context[:message] != 'The request has not been processed.'
         session = Persistence::Session.load(config, request_id)
-        generate_error_notification(error_context.merge({object: session, request_id: request_id), object_type)
+        generate_error_notification(error_context.merge({object: session, request_id: request_id}), object_type)
         update_objects_files({ processed: [], failed: [{ object_type => session }] }.with_indifferent_access)
       end
     end
