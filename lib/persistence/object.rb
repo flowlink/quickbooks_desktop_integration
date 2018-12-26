@@ -300,7 +300,7 @@ module Persistence
       # if the error was this, then the object stay there to process next time
       if error_context[:message] != 'The request has not been processed.'
         session = Persistence::Session.load(config, request_id)
-        generate_error_notification(error_context.merge(object: session), object_type)
+        generate_error_notification(error_context.merge({object: session, request_id: request_id), object_type)
         update_objects_files({ processed: [], failed: [{ object_type => session }] }.with_indifferent_access)
       end
     end
@@ -443,7 +443,7 @@ module Persistence
     def generate_error_notification(content, object_type)
       @payload_key = object_type
       if content[:object]
-        new_filename = "#{path.base_name}/#{path.ready}/notification_failed_#{request_id}_#{object_type}_#{id_for_object(content[:object], object_type)}_.csv"
+        new_filename = "#{path.base_name}/#{path.ready}/notification_failed_#{content[:request_id]}_#{object_type}_#{id_for_object(content[:object], object_type)}_.csv"
         amazon_s3.export(file_name: new_filename, objects: [content])
       else
         puts "generate_error_notification: #{content.inspect}:#{object_type}"
