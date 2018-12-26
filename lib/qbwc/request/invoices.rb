@@ -169,6 +169,8 @@ module QBWC
             'price' => (adjustment['value'].to_f * multiplier).to_s
           }
 
+          line['tax_code_id'] = adjustment['tax_code_id'] if adjustment['tax_code_id']
+
           invoice_line_add line
         end
 
@@ -200,6 +202,8 @@ module QBWC
             'price' => adjustment['value'],
             'txn_line_id' => adjustment['txn_line_id']
           }
+
+          line['tax_code_id'] = adjustment['tax_code_id'] if adjustment['tax_code_id']
 
           invoice_line_mod line
         end
