@@ -20,8 +20,10 @@ module Persistence
     end
 
     def save_session(object, extra = nil)
+      request_id = object[:request_id]
       session_id = SecureRandom.uuid
       session_id = "#{extra}#{session_id}" if extra
+      session_id = "#{session_id}_#{request_id}"
       file = "#{@path.base_name}/#{@path.sessions}/#{session_id}.csv"
       amazon_s3.export file_name: file, objects: [object]
       session_id
