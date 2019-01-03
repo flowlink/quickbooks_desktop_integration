@@ -94,6 +94,7 @@ module QBWC
     <CustomerRef>
       <FullName>#{record['customer']['name']}</FullName>
     </CustomerRef>
+    #{class_ref_for_order(record)}
     <TxnDate>#{Time.parse(record['placed_on']).to_date}</TxnDate>
     <RefNumber>#{record['id']}</RefNumber>
     <BillAddress>
@@ -113,6 +114,28 @@ module QBWC
       <Country>#{record['shipping_address']['country']}</Country>
     </ShipAddress>
     #{cancel_order?(record)}
+          XML
+        end
+
+        def class_ref_for_order(record)
+          return '' unless record['class_name']
+
+          <<-XML
+
+    <ClassRef>
+      <FullName>#{record['class_name']}</FullName>
+    </ClassRef>
+          XML
+        end
+
+        def class_ref_for_order_line(line)
+          return '' unless line['class_name']
+
+          <<-XML
+
+      <ClassRef>
+        <FullName>#{line['class_name']}</FullName>
+      </ClassRef>
           XML
         end
 
@@ -136,6 +159,8 @@ module QBWC
             'quantity' => 0,
             'price' => (adjustment['value'].to_f * multiplier).to_s
           }
+
+          line['tax_code_id'] = adjustment['tax_code_id'] if adjustment['tax_code_id']
 
           sales_order_line_add line
         end
