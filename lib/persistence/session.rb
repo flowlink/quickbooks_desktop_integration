@@ -23,8 +23,8 @@ module Persistence
       request_id = object[:request_id]
       session_id = SecureRandom.uuid
       session_id = "#{extra}#{session_id}" if extra
-      all_session_id = "#{session_id}_#{request_id}"
-      file = "#{@path.base_name}/#{@path.sessions}/#{all_session_id}.csv"
+      session_id = "#{session_id}_#{request_id}"
+      file = "#{@path.base_name}/#{@path.sessions}/#{session_id}.csv"
       amazon_s3.export file_name: file, objects: [object]
       session_id
     end
