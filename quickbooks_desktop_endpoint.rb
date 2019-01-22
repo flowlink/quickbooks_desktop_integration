@@ -42,6 +42,24 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
     end
   end
 
+  post '/get_notifications' do
+    config = {
+      connection_id: request.env['HTTP_X_HUB_STORE'],
+      flow: "get_notifications",
+      quickbooks_force_config: true
+    }.merge(@config).with_indifferent_access
+
+    Persistence::Settings.new(config).setup
+
+    integration = Persistence::Object.new config, @payload
+    notifications = integration.get_notifications
+
+    add_value 'success', notifications['processed'] if !notifications['processed'].empty?
+    add_value 'fail', notifications['failed'] if !notifications['failed'].empty?
+
+    result 200, "Notifications retrieved"
+  end
+
   post '/set_inventory' do
     config = {
       connection_id: request.env['HTTP_X_HUB_STORE'],
