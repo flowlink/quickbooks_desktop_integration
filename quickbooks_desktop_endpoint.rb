@@ -49,8 +49,6 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
       quickbooks_force_config: true
     }.merge(@config).with_indifferent_access
 
-    Persistence::Settings.new(config).setup
-
     integration = Persistence::Object.new config, @payload
     notifications = integration.get_notifications
 
