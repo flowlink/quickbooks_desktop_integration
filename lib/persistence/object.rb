@@ -136,9 +136,12 @@ module Persistence
     #                             :edit_sequence => '12312312321'}
     #                             :extra_data => { ... }, ]
     def update_objects_with_query_results(objects_to_be_renamed)
-      prefix = "#{path.base_name_w_bucket}/#{path.ready}"
+      puts "Objects to be renamed: #{objects_to_be_renamed}"
 
-      unless amazon_s3.bucket.objects(prefix: prefix).first
+      prefix = "#{path.base_name_w_bucket}/#{path.ready}"
+      files = amazon_s3.bucket.objects(prefix: prefix)
+      
+      unless files.first
         puts " No Files to be updated at #{prefix}"
         return
       end
