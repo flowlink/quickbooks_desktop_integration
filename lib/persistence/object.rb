@@ -139,15 +139,15 @@ module Persistence
       puts "Objects to be renamed: #{objects_to_be_renamed}"
 
       prefix = "#{path.base_name_w_bucket}/#{path.ready}"
-      files = amazon_s3.bucket.objects(prefix: prefix)
-
-      puts "Files in bucket: #{files}"
-      puts "Files in bucket: #{files.first}"
-
-      unless files.first
-        puts " No Files to be updated at #{prefix}"
-        return
-      end
+      # files = amazon_s3.bucket.objects(prefix: prefix)
+      #
+      # puts "Files in bucket: #{files}"
+      # puts "Files in bucket: #{files.first}"
+      #
+      # unless files.first
+      #   puts " No Files to be updated at #{prefix}"
+      #   return
+      # end
 
       objects_to_be_renamed.to_a.compact.each do |object|
         filename     = "#{prefix}/#{request_id}_#{object[:object_type].pluralize}_#{object[:object_ref]}_"
