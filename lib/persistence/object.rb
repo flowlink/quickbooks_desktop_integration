@@ -612,6 +612,8 @@ module Persistence
         object['email']
       elsif key == 'shipments'
         object['order_id']
+      elsif key == 'products'
+        object['product_id']
       else
         object['id']
       end
