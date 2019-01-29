@@ -236,6 +236,7 @@ module Persistence
     #   ],
     #   :failed => [] }
     def update_objects_files(statuses_objects)
+      puts "Status objects to be processed: #{statuses_objects}"
       return if statuses_objects.nil?
 
       statuses_objects.keys.each do |status_key|
