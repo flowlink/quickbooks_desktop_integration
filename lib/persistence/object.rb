@@ -57,6 +57,8 @@ module Persistence
       objects.each do |object|
         object['request_id'] = request_id
 
+        puts "Processing object #{object}"
+
         if object['id'].size > 11
           object['id'] = object['id'].split(//).last(11).join
         end
