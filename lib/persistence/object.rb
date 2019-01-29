@@ -106,7 +106,7 @@ module Persistence
 
       collection.map do |s3_object|
         _, _, filename    = s3_object.key.split('/')
-        _, object_type, _, _ = filename.split('_')
+        object_type, _, _ = filename.split('_')
 
         contents = s3_object.get.body.read
 
@@ -125,7 +125,7 @@ module Persistence
 
       collection.each do |s3_object|
         _, _, filename    = s3_object.key.split('/')
-        _, object_type, _, _ = filename.split('_')
+        object_type, _, _ = filename.split('_')
 
         contents = s3_object.get.body.read
 
