@@ -616,7 +616,7 @@ module Persistence
 
       key = object_type.pluralize
       if key == 'customers'
-        object['email']
+        object['name']
       elsif key == 'shipments'
         object['order_id']
       elsif key == 'products'
