@@ -140,7 +140,9 @@ module Persistence
 
       prefix = "#{path.base_name_w_bucket}/#{path.ready}"
       files = amazon_s3.bucket.objects(prefix: prefix)
-      
+
+      puts "Files in bucket: #{files}"
+
       unless files.first
         puts " No Files to be updated at #{prefix}"
         return
