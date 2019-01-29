@@ -76,6 +76,8 @@ module QBWC
     end
 
     def process_queries(objects_hash)
+      puts "Building request queries for #{objects_hash}"
+
       objects_hash.inject('') do |result, objects|
         object_type = objects.keys.first
 
