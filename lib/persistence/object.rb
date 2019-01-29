@@ -142,6 +142,8 @@ module Persistence
       files = amazon_s3.bucket.objects(prefix: prefix)
 
       puts "Files in bucket: #{files}"
+      puts "Files in bucket: #{files.first}"
+      puts "Files in bucket: #{files.empty?}"
 
       unless files.first
         puts " No Files to be updated at #{prefix}"
