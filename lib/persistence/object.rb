@@ -142,7 +142,8 @@ module Persistence
     def update_objects_with_query_results(objects_to_be_renamed)
       puts "Objects to be renamed: #{objects_to_be_renamed}"
 
-      prefix = "#{path.base_name_w_bucket}/#{path.ready}"
+      prefix = "#{path.base_name}/#{path.ready}"
+      prefix_with_bucket = "#{path.base_name_w_bucket}/#{path.ready}"
       # files = amazon_s3.bucket.objects(prefix: prefix)
       #
       # puts "Files in bucket: #{files}"
@@ -155,6 +156,7 @@ module Persistence
 
       objects_to_be_renamed.to_a.compact.each do |object|
         filename     = "#{prefix}/#{object[:object_type].pluralize}_#{object[:object_ref]}_"
+        filename_with_bucket = "#{prefix_with_bucket}/#{object[:object_type].pluralize}_#{object[:object_ref]}_"
 
         # TODO what if the file is not there? we should probably at least
         # rescue / log the exception properly and move on with the others?
@@ -164,8 +166,9 @@ module Persistence
         #
         begin
           s3_object     = amazon_s3.bucket.object("#{filename}.csv")
+          new_file_name_with_bucket = "#{filename_with_bucket}#{object[:list_id]}_#{object[:edit_sequence]}.csv"
           new_file_name = "#{filename}#{object[:list_id]}_#{object[:edit_sequence]}.csv"
-          s3_object.move_to(new_file_name)
+          s3_object.move_to(new_file_name_with_bucket)
 
           unless object[:extra_data].to_s.empty?
             contents = amazon_s3.bucket.object(new_file_name).get.body.read
