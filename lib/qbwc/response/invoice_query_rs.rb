@@ -19,7 +19,16 @@ module QBWC
       def process(config = {})
         return if records.empty?
 
-        puts records.inspect
+        receive_configs = config[:receive] || []
+        invoice_params = receive_configs.find { |c| c['invoices'] }
+
+        if invoice_params
+          payload = { invoices: invoices_to_flowlink }
+          config = { origin: 'quickbooks' }.merge config.reject{|k,v| k == :origin || k == "origin"}
+
+          poll_persistence = Persistence::Polling.new(config, payload)
+          poll_persistence.save_for_polling
+        end
 
         config  = config.merge(origin: 'flowlink', connection_id: config[:connection_id]).with_indifferent_access
         objects_updated = objects_to_update(config)
@@ -79,6 +88,17 @@ module QBWC
           hash[item['ItemRef']['FullName'].downcase] = item['TxnLineID']
         end
         hash
+      end
+
+      def invoices_to_flowlink
+        records.map do |record|
+          {
+            id: record['ListID'],
+            list_id: record['ListID'],
+            is_pending: record['IsPending'],
+            is_paid: record['IsPaid']
+          }
+        end
       end
 
       def to_flowlink
