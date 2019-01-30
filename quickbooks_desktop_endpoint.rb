@@ -78,7 +78,7 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
     result 200, "#{object_type} waiting for Quickbooks Desktop scheduler"
   end
 
-  %w(get_inventory get_inventories get_products).each do |path|
+  %w(get_inventory get_inventories get_products get_invoices).each do |path|
     post "/#{path}" do
       object_type = path.split('_').last.pluralize
 
