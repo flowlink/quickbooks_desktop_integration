@@ -28,6 +28,14 @@ module QBWC
 
           poll_persistence = Persistence::Polling.new(config, payload)
           poll_persistence.save_for_polling
+
+          invoice_params['invoices']['quickbooks_since'] = last_time_modified
+          invoice_params['invoices']['quickbooks_force_config'] = true
+
+          # Override configs to update timestamp so it doesn't keep geting the
+          # same inventories
+          params = invoice_params['invoices']
+          Persistence::Settings.new(params.with_indifferent_access).setup
         end
 
         config  = config.merge(origin: 'flowlink', connection_id: config[:connection_id]).with_indifferent_access
@@ -42,6 +50,11 @@ module QBWC
         end
 
         nil
+      end
+
+      def last_time_modified
+        time = records.sort_by { |r| r['TimeModified'] }.last['TimeModified'].to_s
+        Time.parse(time).in_time_zone('Pacific Time (US & Canada)').iso8601
       end
 
       def objects_to_update(config)
@@ -93,7 +106,7 @@ module QBWC
       def invoices_to_flowlink
         records.map do |record|
           {
-            id: record['ListID'],
+            id: record['RefNumber'],
             list_id: record['ListID'],
             is_pending: record['IsPending'],
             is_paid: record['IsPaid']
