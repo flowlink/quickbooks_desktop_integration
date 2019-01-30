@@ -53,7 +53,10 @@ module QBWC
             <!-- polling invoices -->
             <InvoiceQueryRq requestID="#{session_id}">
             <MaxReturned>100</MaxReturned>
-              <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
+              <ModifiedDateRangeFilter>
+                <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
+              </ModifiedDateRangeFilter>  
+              <IncludeLineItems>true</IncludeLineItems>
               <!-- <IncludeRetElement>Name</IncludeRetElement> -->
             </InvoiceQueryRq>
           XML
