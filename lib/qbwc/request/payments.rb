@@ -73,7 +73,7 @@ module QBWC
         def payment_xml(payment, _params)
           <<-XML
               <CustomerRef>
-                <FullName>#{payment['email']}</FullName>
+                <FullName>#{payment['customer']['name']}</FullName>
               </CustomerRef>
               <RefNumber>#{payment['object_ref']}</RefNumber>
               <TotalAmount>#{'%.2f' % payment['amount'].to_f}</TotalAmount>

@@ -540,7 +540,7 @@ module Persistence
 
         if !use_customer_email_param
           customer = QBWC::Request::Orders.build_customer_from_order(object)
-          save_pending_file(customer['id'], 'customers', customer)
+          save_pending_file(customer['name'], 'customers', customer)
         end
 
         if auto_create_products
@@ -559,7 +559,7 @@ module Persistence
 
         if !use_customer_email_param
           customer = QBWC::Request::Orders.build_customer_from_order(object)
-          save_pending_file(customer['id'], 'customers', customer)
+          save_pending_file(customer['name'], 'customers', customer)
         end
 
         if auto_create_products
@@ -577,7 +577,7 @@ module Persistence
       elsif payload_key.pluralize == 'shipments'
 
         customer = QBWC::Request::Shipments.build_customer_from_shipments(object)
-        save_pending_file(customer['id'], 'customers', customer)
+        save_pending_file(customer['name'], 'customers', customer)
 
         order    = QBWC::Request::Shipments.build_order_from_shipments(object)
         save_pending_file(order['id'], 'orders', order)
