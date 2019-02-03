@@ -211,10 +211,9 @@ module Persistence
         contents = s3_object.get.body.read
 
         { object_type.pluralize =>
-            { list_id: list_id, edit_sequence: edit_sequence, object_type: object_type }
-              .merge(Converter.csv_to_hash(contents).first)
+              Converter.csv_to_hash(contents).first
+              .merge({ list_id: list_id, edit_sequence: edit_sequence, object_type: object_type })
               .with_indifferent_access
-
         }
       end.flatten
     end
