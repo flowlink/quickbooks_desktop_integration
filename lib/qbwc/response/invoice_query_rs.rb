@@ -99,7 +99,7 @@ module QBWC
 
         record['InvoiceLineRet'].to_a.each do |item|
           next unless item['ItemRef']
-          
+
           hash[item['ItemRef']['FullName'].downcase] = item['TxnLineID']
         end
         hash
@@ -109,7 +109,6 @@ module QBWC
         records.map do |record|
           {
             id: record['RefNumber'],
-            list_id: record['ListID'],
             is_pending: record['IsPending'],
             is_paid: record['IsPaid']
           }
