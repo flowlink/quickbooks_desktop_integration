@@ -11,7 +11,7 @@ module QBWC
         errors.each do |error|
           Persistence::Object.handle_error(config,
                                            error.merge(context: 'Querying Returns'),
-                                           'returns',
+                                           'salesreceipts',
                                            error[:request_id])
         end
       end
@@ -31,7 +31,7 @@ module QBWC
       def objects_to_update
         records.map do |record|
           {
-            object_type: 'return',
+            object_type: 'salesreceipt',
             object_ref: record['RefNumber'],
             list_id: record['TxnID'],
             edit_sequence: record['EditSequence']
