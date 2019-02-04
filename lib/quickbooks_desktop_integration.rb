@@ -20,6 +20,7 @@ require 'qbwc/request/adjustments'
 require 'qbwc/request/payments'
 require 'qbwc/request/journals'
 require 'qbwc/request/invoices'
+require 'qbwc/request/salesreceipts'
 
 require 'qbwc/consumer'
 require 'qbwc/producer'
