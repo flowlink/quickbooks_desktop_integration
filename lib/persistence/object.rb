@@ -630,7 +630,7 @@ module Persistence
     end
 
     def two_phase?
-      %w(orders shipments invoices).include?(payload_key.pluralize)
+      %w(orders shipments invoices sales_receipts).include?(payload_key.pluralize)
     end
 
     def id_of_object(object)
