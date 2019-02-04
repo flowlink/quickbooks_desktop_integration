@@ -33,7 +33,7 @@ module QBWC
 
         @integration.process_two_phase_pending_objects
       rescue  Exception => e
-        puts "Exceptions: #{e.backtrace}"
+        puts "Exceptions: #{e.message}, #{e.backtrace}"
       end
       request_xml
     end
