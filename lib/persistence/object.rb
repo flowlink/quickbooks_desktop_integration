@@ -33,7 +33,9 @@ module Persistence
     #   e.g. { origin: 'quickbooks', connection_id: '54372cb069702d1f59000000' }
     #
     def initialize(config = {}, payload = {})
-      @payload_key = payload[:parameters] ? payload[:parameters][:payload_type] : payload.keys.first
+      @payload_key = (
+        payload[:parameters] ? payload[:parameters][:payload_type] : payload.keys.first
+      ).gsub("_","")
       @objects     = payload[payload_key].is_a?(Hash) ? [payload[payload_key]] : Array(payload[payload_key])
       @config      = { origin: 'flowlink' }.merge(config).with_indifferent_access
       @amazon_s3   = S3Util.new
@@ -490,9 +492,9 @@ module Persistence
                                         object: object }, payload_key.pluralize)
           return false
         end
-      elsif payload_key.pluralize == 'sales_receipts'
+      elsif payload_key.pluralize == 'salesreceipts'
         if object['id'].size > 11
-          generate_error_notification({ context: 'Saving sales_receipts',
+          generate_error_notification({ context: 'Saving salesreceipts',
                                         code: '',
                                         message: 'Could not import to qb the Sales Receipt ID exceeded the limit of 11',
                                         object: object }, payload_key.pluralize)
@@ -581,7 +583,7 @@ module Persistence
           save_pending_file(payment['id'], 'payments', payment)
         end
 
-      elsif payload_key.pluralize == 'sales_receipts'
+      elsif payload_key.pluralize == 'salesreceipts'
 
         if !use_customer_email_param
           customer = QBWC::Request::Orders.build_customer_from_order(object)
@@ -630,7 +632,7 @@ module Persistence
     end
 
     def two_phase?
-      %w(orders shipments invoices sales_receipts).include?(payload_key.pluralize)
+      %w(orders shipments invoices salesreceipts).include?(payload_key.pluralize)
     end
 
     def id_of_object(object)
