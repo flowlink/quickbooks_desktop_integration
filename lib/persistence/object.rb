@@ -584,12 +584,12 @@ module Persistence
       elsif payload_key.pluralize == 'sales_receipts'
 
         if !use_customer_email_param
-          customer = QBWC::Request::Orders.build_customer_from_order(object)
+          customer = QBWC::Request::SalesReceipts.build_customer_from_sales_receipt(object)
           save_pending_file(customer['name'], 'customers', customer)
         end
 
         if auto_create_products
-          products = QBWC::Request::Orders.build_products_from_order(objects)
+          products = QBWC::Request::SalesReceipts.build_products_sales_receipte (objects)
           products.flatten.each do |product|
             save_pending_file(product['id'], 'products', product)
           end
