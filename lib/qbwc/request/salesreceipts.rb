@@ -2,7 +2,7 @@
 
 module QBWC
   module Request
-    class SalesReceipts
+    class Salesreceipts
       class << self
         def generate_request_queries(objects, params)
           puts "Generating request queries for objects: #{objects}, params: #{params}"
