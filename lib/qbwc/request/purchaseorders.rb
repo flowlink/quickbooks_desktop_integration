@@ -1,6 +1,6 @@
 module QBWC
   module Request
-    class PurchaseOrders
+    class Purchaseorders
       class << self
         def generate_request_queries(objects, params)
           objects.inject('') do |request, object|
