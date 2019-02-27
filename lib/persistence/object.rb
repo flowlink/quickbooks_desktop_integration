@@ -592,7 +592,7 @@ module Persistence
       elsif payload_key.pluralize == 'purchaseorders'
 
         if !use_customer_email_param
-          vendor = QBWC::Request::PurchaseOrders.build_vendor_from_purchaseorder(object)
+          vendor = QBWC::Request::Purchaseorders.build_vendor_from_purchaseorder(object)
           save_pending_file(vendor['name'], 'vendors', vendor)
         end
 
