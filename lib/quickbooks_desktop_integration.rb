@@ -21,6 +21,7 @@ require 'qbwc/request/payments'
 require 'qbwc/request/journals'
 require 'qbwc/request/invoices'
 require 'qbwc/request/salesreceipts'
+require 'qbwc/request/purchaseorders'
 
 require 'qbwc/consumer'
 require 'qbwc/producer'
