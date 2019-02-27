@@ -352,7 +352,7 @@ module QBWC
         end
 
         def sanitize_purchaseorder(order)
-          ['billing_address', 'shipping_address'].each do |address_type|
+          ['supplier_address', 'shipping_address'].each do |address_type|
             if order[address_type].nil?
               order[address_type] = { }
             end
