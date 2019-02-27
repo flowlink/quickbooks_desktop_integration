@@ -43,7 +43,7 @@ module QBWC
 
 <PurchaseOrderAddRq requestID="#{session_id}">
   <PurchaseOrderAdd>
-    #{sales_order record, params}
+    #{purchaseorder record, params}
     #{items(record).map { |l| purchaseorder_line_add l }.join('')}
     #{adjustments_add_xml record, params}
   </PurchaseOrderAdd>
@@ -148,7 +148,7 @@ module QBWC
         end
 
         def purchaseorder_line_add_from_adjustment(adjustment, params)
-          puts "IN sales order PARAMS = #{params}"
+          puts "IN purchase order PARAMS = #{params}"
 
           multiplier = QBWC::Request::Adjustments.is_adjustment_discount?(adjustment['name'])  ? -1 : 1
           p_id = QBWC::Request::Adjustments.adjustment_product_from_qb(adjustment['name'], params)
