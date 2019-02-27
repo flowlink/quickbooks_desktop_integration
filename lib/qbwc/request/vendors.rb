@@ -26,32 +26,32 @@ module QBWC
 
         def search_xml(object_id, session_id)
           <<-XML
-<CustomerQueryRq requestID="#{session_id}">
+<VendorQueryRq requestID="#{session_id}">
   <MaxReturned>50</MaxReturned>
   <NameRangeFilter>
     <FromName>#{object_id}</FromName>
     <ToName>#{object_id}</ToName>
   </NameRangeFilter>
-</CustomerQueryRq>
+</VendorQueryRq>
           XML
         end
 
         def add_xml_to_send(object, session_id)
           <<-XML
-<CustomerAddRq requestID="#{session_id}">
-   <CustomerAdd>
+<VendorAddRq requestID="#{session_id}">
+   <VendorAdd>
     <Name>#{object['name']}</Name>
     #{"<CompanyName>#{object['company']}</CompanyName>" unless object['company'].empty?}
     <FirstName>#{object['firstname'].empty? ? object['name'].split.first : object['firstname']}</FirstName>
     #{"<LastName>#{object['lastname'] || object['name'].split.last}</LastName>" unless object['lastname'].empty?}
-    <BillAddress>
-      <Addr1>#{object['billing_address']['address1'] if object['billing_address']}</Addr1>
-      #{"<Addr2>#{object['billing_address']['address2']}</Addr2>" if object['billing_address'] && object['billing_address']['address2']}
-      <City>#{object['billing_address']['city'] if object['billing_address']}</City>
-      <State>#{object['billing_address']['state'] if object['billing_address']}</State>
-      <PostalCode>#{object['billing_address']['zipcode'] if object['billing_address']}</PostalCode>
-      <Country>#{object['billing_address']['country'] if object['billing_address']}</Country>
-    </BillAddress>
+    <VendorAddress>
+      <Addr1>#{object['vendor_address']['address1'] if object['vendor_address']}</Addr1>
+      #{"<Addr2>#{object['vendor_address']['address2']}</Addr2>" if object['vendor_address'] && object['vendor_address']['address2']}
+      <City>#{object['vendor_address']['city'] if object['vendor_address']}</City>
+      <State>#{object['vendor_address']['state'] if object['vendor_address']}</State>
+      <PostalCode>#{object['vendor_address']['zipcode'] if object['vendor_address']}</PostalCode>
+      <Country>#{object['vendor_address']['country'] if object['vendor_address']}</Country>
+    </VendorAddress>
     <ShipAddress>
       <Addr1>#{object['shipping_address']['address1'] if object['shipping_address']}</Addr1>
       #{"<Addr2>#{object['shipping_address']['address2']}</Addr2>" if object['shipping_address'] && object['shipping_address']['address2']}
@@ -60,32 +60,32 @@ module QBWC
       <PostalCode>#{object['shipping_address']['zipcode'] if object['shipping_address']}</PostalCode>
       <Country>#{object['shipping_address']['country'] if object['shipping_address']}</Country>
     </ShipAddress>
-    <Phone>#{object['billing_address']['phone'] if object['billing_address']}</Phone>
+    <Phone>#{object['vendor_address']['phone'] if object['vendor_address']}</Phone>
     <AltPhone>#{object['shipping_address']['phone'] if object['shipping_address']}</AltPhone>
     <Email>#{object['email']}</Email>
-   </CustomerAdd>
-</CustomerAddRq>
+   </VendorAdd>
+</VendorAddRq>
           XML
         end
 
         def update_xml_to_send(object, session_id)
           <<-XML
-<CustomerModRq requestID="#{session_id}">
-   <CustomerMod>
+<VendorModRq requestID="#{session_id}">
+   <VendorMod>
       <ListID>#{object['list_id']}</ListID>
       <EditSequence>#{object['edit_sequence']}</EditSequence>
       <Name>#{object['name']}</Name>
       <CompanyName>#{object['company']}</CompanyName>
       <FirstName>#{object['firstname']}</FirstName>
       <LastName>#{object['lastname']}</LastName>
-      <BillAddress>
-        <Addr1>#{object['billing_address']['address1'] if object['billing_address']}</Addr1>
-        <Addr2>#{object['billing_address']['address2'] if object['billing_address']}</Addr2>
-        <City>#{object['billing_address']['city'] if object['billing_address']}</City>
-        <State>#{object['billing_address']['state'] if object['billing_address']}</State>
-        <PostalCode>#{object['billing_address']['zipcode'] if object['billing_address']}</PostalCode>
-        <Country>#{object['billing_address']['country'] if object['billing_address']}</Country>
-      </BillAddress>
+      <VendorAddress>
+        <Addr1>#{object['vendor_address']['address1'] if object['vendor_address']}</Addr1>
+        <Addr2>#{object['vendor_address']['address2'] if object['vendor_address']}</Addr2>
+        <City>#{object['vendor_address']['city'] if object['vendor_address']}</City>
+        <State>#{object['vendor_address']['state'] if object['vendor_address']}</State>
+        <PostalCode>#{object['vendor_address']['zipcode'] if object['vendor_address']}</PostalCode>
+        <Country>#{object['vendor_address']['country'] if object['vendor_address']}</Country>
+      </VendorAddress>
       <ShipAddress>
         <Addr1>#{object['shipping_address']['address1'] if object['shipping_address']}</Addr1>
         <Addr2>#{object['shipping_address']['address2'] if object['shipping_address']}</Addr2>
@@ -94,11 +94,11 @@ module QBWC
         <PostalCode>#{object['shipping_address']['zipcode'] if object['shipping_address']}</PostalCode>
         <Country>#{object['shipping_address']['country'] if object['shipping_address']}</Country>
       </ShipAddress>
-      <Phone>#{object['billing_address']['phone'] if object['billing_address']}</Phone>
+      <Phone>#{object['vendor_address']['phone'] if object['vendor_address']}</Phone>
       <AltPhone>#{object['shipping_address']['phone'] if object['shipping_address']}</AltPhone>
       <Email>#{object['email']}</Email>
-   </CustomerMod>
-</CustomerModRq>
+   </VendorMod>
+</VendorModRq>
           XML
         end
 
@@ -111,13 +111,13 @@ module QBWC
           customer['lastname'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['lastname']
           # customer['email'] = nil unless customer['email'] =~ /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i
 
-          customer['billing_address']['address1'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['billing_address'] && customer['billing_address']['address1']
-          customer['billing_address']['address2'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['billing_address'] && customer['billing_address']['address2']
-          customer['billing_address']['city'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['billing_address'] && customer['billing_address']['city']
-          customer['billing_address']['state'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['billing_address'] && customer['billing_address']['state']
-          customer['billing_address']['zipcode'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['billing_address'] && customer['billing_address']['zipcode']
-          customer['billing_address']['country'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['billing_address'] && customer['billing_address']['country']
-          customer['billing_address']['phone'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['billing_address'] && customer['billing_address']['phone']
+          customer['vendor_address']['address1'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['vendor_address'] && customer['vendor_address']['address1']
+          customer['vendor_address']['address2'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['vendor_address'] && customer['vendor_address']['address2']
+          customer['vendor_address']['city'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['vendor_address'] && customer['vendor_address']['city']
+          customer['vendor_address']['state'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['vendor_address'] && customer['vendor_address']['state']
+          customer['vendor_address']['zipcode'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['vendor_address'] && customer['vendor_address']['zipcode']
+          customer['vendor_address']['country'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['vendor_address'] && customer['vendor_address']['country']
+          customer['vendor_address']['phone'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['vendor_address'] && customer['vendor_address']['phone']
           customer['shipping_address']['address1'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['shipping_address'] && customer['shipping_address']['address1']
           customer['shipping_address']['address2'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['shipping_address'] && customer['shipping_address']['address2']
           customer['shipping_address']['city'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['shipping_address'] && customer['shipping_address']['city']

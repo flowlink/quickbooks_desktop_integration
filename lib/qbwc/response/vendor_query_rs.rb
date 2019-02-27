@@ -1,6 +1,6 @@
 module QBWC
   module Response
-    class CustomerQueryRs
+    class VendorQueryRs
       attr_reader :records
 
       def initialize(records)
@@ -10,8 +10,8 @@ module QBWC
       def handle_error(errors, config)
         errors.each do |error|
           Persistence::Object.handle_error(config,
-                                           error.merge(context: 'Querying Customers'),
-                                           'customers',
+                                           error.merge(context: 'Querying Vendors'),
+                                           'vendors',
                                            error[:request_id])
         end
       end
@@ -33,7 +33,7 @@ module QBWC
       def objects_to_update
         records.map do |record|
           {
-            object_type: 'customer',
+            object_type: 'vendor',
             email: record['Name'],
             object_ref: record['Name'],
             list_id: record['ListID'],

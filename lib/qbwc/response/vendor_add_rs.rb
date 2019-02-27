@@ -1,6 +1,6 @@
 module QBWC
   module Response
-    class CustomerAddRs
+    class VendorAddRs
       attr_reader :records
 
       def initialize(records)
@@ -8,11 +8,11 @@ module QBWC
       end
 
       def handle_error(errors, config)
-        puts "Handling customer add error #{errors}"
+        puts "Handling vendor add error #{errors}"
         errors.each do |error|
           Persistence::Object.handle_error(config,
-                                           error.merge(context: 'Adding Customers'),
-                                           'customers',
+                                           error.merge(context: 'Adding Vendors'),
+                                           'vendors',
                                            error[:request_id])
         end
       end
@@ -21,7 +21,7 @@ module QBWC
         return { statuses_objects: nil }.with_indifferent_access if records.empty?
 
         objects = records.map do |object|
-          { customers: {
+          { vendors: {
             email: object['Name'],
             id: object['Name'],
             list_id: object['ListID'],
