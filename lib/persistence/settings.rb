@@ -23,12 +23,12 @@ module Persistence
       if !s3_object.exists? || force_save
         amazon_s3.export file_name: file, objects: [config], override: true
       end
-      generate_extra_flows if %w(add_orders add_shipments add_invoices add_salesreceipts).include?(flow)
+      generate_extra_flows if %w(add_purchase_orders add_orders add_shipments add_invoices add_salesreceipts).include?(flow)
     end
 
     def generate_extra_flows
       config_aux = config.dup
-      %w(add_products add_customers).each do |extra_flow|
+      %w(add_products add_customers add_vendors).each do |extra_flow|
         config_aux['flow'] = extra_flow
         file = "#{base_name}/#{extra_flow}.csv"
         s3_object = amazon_s3.bucket.object(file)

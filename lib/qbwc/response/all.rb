@@ -11,6 +11,10 @@ require 'qbwc/response/customer_query_rs'
 require 'qbwc/response/customer_add_rs'
 require 'qbwc/response/customer_mod_rs'
 
+require 'qbwc/response/vendor_query_rs'
+require 'qbwc/response/vendor_add_rs'
+require 'qbwc/response/vendor_mod_rs'
+
 require 'qbwc/response/sales_order_query_rs'
 require 'qbwc/response/sales_order_add_rs'
 require 'qbwc/response/sales_order_mod_rs'
