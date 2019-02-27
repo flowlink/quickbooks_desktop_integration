@@ -16,7 +16,7 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
   # Changing the endpoint paths might break internal logic as they're expected
   # to be always in plural. e.g. products not product
 
-  %w(add_salesreceipts add_payments add_products add_orders add_invoices add_returns add_customers add_shipments cancel_order add_journals).each do |path|
+  %w(add_salesreceipts add_payments add_products add_purchase_orders add_orders add_invoices add_returns add_customers add_shipments cancel_order add_journals).each do |path|
     post "/#{path}" do
       config = {
         connection_id: request.env['HTTP_X_HUB_STORE'],
@@ -78,7 +78,7 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
     result 200, "#{object_type} waiting for Quickbooks Desktop scheduler"
   end
 
-  %w(get_inventory get_inventories get_products get_invoices).each do |path|
+  %w(get_inventory get_inventories get_products get_invoices get_purchase_orders).each do |path|
     post "/#{path}" do
       object_type = path.split('_').last.pluralize
 

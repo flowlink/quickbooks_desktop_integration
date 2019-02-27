@@ -35,6 +35,8 @@ require 'qbwc/response/inventory_adjustment_query_rs'
 require 'qbwc/response/item_receipt_query_rs'
 
 require 'qbwc/response/purchase_order_query_rs'
+require 'qbwc/response/purchase_order_add_rs'
+require 'qbwc/response/purchase_order_mod_rs'
 
 require 'qbwc/response/journal_entry_add_rs'
 
