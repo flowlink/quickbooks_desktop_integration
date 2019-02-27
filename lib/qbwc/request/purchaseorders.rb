@@ -7,6 +7,7 @@ module QBWC
             sanitize_purchaseorder(object)
 
             # Needed to keep shipment ID b/c and Order already has a order_id
+            extra = "shipment-#{object['purchaseorder_id']}-" if object.key?('shipment_id')
             config = { connection_id: params['connection_id'] }.with_indifferent_access
             session_id = Persistence::Session.save(config, object, extra)
 
