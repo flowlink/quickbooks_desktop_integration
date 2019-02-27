@@ -490,6 +490,14 @@ module Persistence
                                         object: object }, payload_key.pluralize)
           return false
         end
+      elsif payload_key.pluralize == 'purchaseorders'
+        if object['id'].size > 11
+          generate_error_notification({ context: 'Saving purchase orders',
+                                        code: '',
+                                        message: 'Could not import to qb the Purchase Order ID exceeded the limit of 11',
+                                        object: object }, payload_key.pluralize)
+          return false
+        end
       elsif payload_key.pluralize == 'salesreceipts'
         if object['id'].size > 11
           generate_error_notification({ context: 'Saving salesreceipts',
@@ -581,6 +589,25 @@ module Persistence
           save_pending_file(payment['id'], 'payments', payment)
         end
 
+      elsif payload_key.pluralize == 'purchaseorders'
+
+        if !use_customer_email_param
+          vendor = QBWC::Request::Orders.build_vendor_from_purchaseorder(object)
+          save_pending_file(vendor['name'], 'vendors', vendor)
+        end
+
+        if auto_create_products
+          products = QBWC::Request::Orders.build_products_from_order(objects)
+          products.flatten.each do |product|
+            save_pending_file(product['id'], 'products', product)
+          end
+        end
+
+        payments = QBWC::Request::Orders.build_payments_from_order(object)
+        payments.flatten.each do |payment|
+          save_pending_file(payment['id'], 'payments', payment)
+        end
+
       elsif payload_key.pluralize == 'salesreceipts'
 
         if !use_customer_email_param
@@ -630,7 +657,7 @@ module Persistence
     end
 
     def two_phase?
-      %w(orders shipments invoices salesreceipts).include?(payload_key.pluralize)
+      %w(orders shipments invoices salesreceipts purchaseorders).include?(payload_key.pluralize)
     end
 
     def id_of_object(object)
@@ -644,7 +671,9 @@ module Persistence
       if key == 'customers'
         object['name']
       elsif key == 'shipments'
-        object['order_id']
+        object['name']
+      elsif key == 'vendors'
+        object['name']
       elsif key == 'products'
         object['product_id']
       else

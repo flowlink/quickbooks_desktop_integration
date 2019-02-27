@@ -4,7 +4,7 @@ module QBWC
       class << self
         def generate_request_queries(objects, params)
           objects.inject('') do |request, object|
-            sanitize_purchase_order(object)
+            sanitize_purchaseorder(object)
 
             # Needed to keep shipment ID b/c and Order already has a order_id
             config = { connection_id: params['connection_id'] }.with_indifferent_access
@@ -16,7 +16,7 @@ module QBWC
 
         def generate_request_insert_update(objects, params = {})
           objects.inject('') do |request, object|
-            sanitize_purchase_order(object)
+            sanitize_purchaseorder(object)
 
             config = { connection_id: params['connection_id'] }.with_indifferent_access
             session_id = Persistence::Session.save(config, object)
@@ -44,7 +44,7 @@ module QBWC
 <PurchaseOrderAddRq requestID="#{session_id}">
   <PurchaseOrderAdd>
     #{sales_order record, params}
-    #{items(record).map { |l| purchase_order_line_add l }.join('')}
+    #{items(record).map { |l| purchaseorder_line_add l }.join('')}
     #{adjustments_add_xml record, params}
   </PurchaseOrderAdd>
 </PurchaseOrderAddRq>
@@ -58,8 +58,8 @@ module QBWC
   <PurchaseOrderMod>
     <TxnID>#{record['list_id']}</TxnID>
     <EditSequence>#{record['edit_sequence']}</EditSequence>
-    #{purchase_order record, params}
-    #{items(record).map { |l| purchase_order_line_mod l }.join('')}
+    #{purchaseorder record, params}
+    #{items(record).map { |l| purchaseorder_line_mod l }.join('')}
     #{adjustments_mod_xml record, params}
   </PurchaseOrderMod>
 </PurchaseOrderModRq>
@@ -74,16 +74,16 @@ module QBWC
         #
         #   QuickBooks found an error when parsing the provided XML text stream.
         #
-        # View purchase_order_add_rq.xml in case you need to look into add more
+        # View purchaseorder_add_rq.xml in case you need to look into add more
         # tags to this request
         #
-        # View purchase_order_add_rs_invalid_record_ref.xml to see what'd you
+        # View purchaseorder_add_rs_invalid_record_ref.xml to see what'd you
         # get by sending a invalid Customer Ref you'd get as a response.
         #
         # 'placed_on' needs to be a valid date string otherwise an exception
         # will be raised
         #
-        def purchase_order(record, _params)
+        def purchaseorder(record, _params)
           if record['placed_on'].nil? || record['placed_on'].empty?
             record['placed_on'] = Time.now.to_s
           end
@@ -138,16 +138,16 @@ module QBWC
           XML
         end
 
-        def purchase_order_line_add(line)
+        def purchaseorder_line_add(line)
           <<-XML
 
     <PurchaseOrderLineAdd>
-      #{purchase_order_line(line)}
+      #{purchaseorder_line(line)}
     </PurchaseOrderLineAdd>
           XML
         end
 
-        def purchase_order_line_add_from_adjustment(adjustment, params)
+        def purchaseorder_line_add_from_adjustment(adjustment, params)
           puts "IN sales order PARAMS = #{params}"
 
           multiplier = QBWC::Request::Adjustments.is_adjustment_discount?(adjustment['name'])  ? -1 : 1
@@ -161,10 +161,10 @@ module QBWC
 
           line['tax_code_id'] = adjustment['tax_code_id'] if adjustment['tax_code_id']
 
-          purchase_order_line_add line
+          purchaseorder_line_add line
         end
 
-        def purchase_order_line_add_from_tax_line_item(tax_line_item, params)
+        def purchaseorder_line_add_from_tax_line_item(tax_line_item, params)
           line = {
               'product_id' => QBWC::Request::Adjustments.adjustment_product_from_qb('tax', params),
               'quantity' => 0,
@@ -172,20 +172,20 @@ module QBWC
               'name' => tax_line_item['name']
           }
 
-          purchase_order_line_add line
+          purchaseorder_line_add line
         end
 
-        def purchase_order_line_mod(line)
+        def purchaseorder_line_mod(line)
           <<-XML
 
     <PurchaseOrderLineMod>
       <TxnLineID>#{line['txn_line_id']}</TxnLineID>
-      #{purchase_order_line(line)}
+      #{purchaseorder_line(line)}
     </PurchaseOrderLineMod>
           XML
         end
 
-        def purchase_order_line_mod_from_adjustment(adjustment, params)
+        def purchaseorder_line_mod_from_adjustment(adjustment, params)
           line = {
             'product_id' => QBWC::Request::Adjustments.adjustment_product_from_qb(adjustment['name'], params),
             'quantity' => 0,
@@ -193,10 +193,10 @@ module QBWC
             'txn_line_id' => adjustment['txn_line_id']
           }
 
-          purchase_order_line_mod line
+          purchaseorder_line_mod line
         end
 
-        def purchase_order_line_mod_from_tax_line_item(tax_line_item, params)
+        def purchaseorder_line_mod_from_tax_line_item(tax_line_item, params)
           line = {
             'product_id' => QBWC::Request::Adjustments.adjustment_product_from_qb('tax', params),
             'quantity' => 0,
@@ -205,10 +205,10 @@ module QBWC
             'name' => tax_line_item['name']
           }
 
-          purchase_order_line_mod line
+          purchaseorder_line_mod line
         end
 
-        def purchase_order_line(line)
+        def purchaseorder_line(line)
           <<-XML
 
       <ItemRef>
@@ -248,17 +248,17 @@ module QBWC
           XML
         end
 
-        def build_customer_from_order(object)
-          billing_address = object['billing_address']
+        def build_vendor_from_purchaseorder(object)
+          supplier_address = object['supplier_address']
 
           {
             'id'               => object['email'],
-            'firstname'        => billing_address['firstname'],
-            'lastname'         => billing_address['lastname'],
+            'firstname'        => supplier_address['firstname'],
+            'lastname'         => supplier_address['lastname'],
             'name'             => object['customer']['name'],
-            'company'          => billing_address['company'],
+            'company'          => supplier_address['company'],
             'email'            => object['email'],
-            'billing_address'  => billing_address,
+            'supplier_address'  => supplier_address,
             'shipping_address' => object['shipping_address']
           }
         end
@@ -304,13 +304,13 @@ module QBWC
 
             if !use_tax_line_items ||
                !QBWC::Request::Adjustments.is_adjustment_tax?(adjustment['name'])
-              final_adjustments << purchase_order_line_add_from_adjustment(adjustment, params)
+              final_adjustments << purchaseorder_line_add_from_adjustment(adjustment, params)
             end
           end
 
           if use_tax_line_items
             record['tax_line_items'].each do |tax_line_item|
-              final_adjustments << purchase_order_line_add_from_tax_line_item(tax_line_item, params)
+              final_adjustments << purchaseorder_line_add_from_tax_line_item(tax_line_item, params)
             end
           end
 
@@ -330,13 +330,13 @@ module QBWC
           adjustments(record).each do |adjustment|
             if !use_tax_line_items ||
                 !QBWC::Request::Adjustments.is_adjustment_tax?(adjustment['name'])
-              final_adjustments << purchase_order_line_mod_from_adjustment(adjustment, params)
+              final_adjustments << purchaseorder_line_mod_from_adjustment(adjustment, params)
             end
           end
 
           if use_tax_line_items
             record['tax_line_items'].each do |tax_line_item|
-              final_adjustments << purchase_order_line_mod_from_tax_line_item(tax_line_item, params)
+              final_adjustments << purchaseorder_line_mod_from_tax_line_item(tax_line_item, params)
             end
           end
 
@@ -350,7 +350,7 @@ module QBWC
             .sort { |a, b| a['name'].downcase <=> b['name'].downcase }
         end
 
-        def sanitize_purchase_order(order)
+        def sanitize_purchaseorder(order)
           ['billing_address', 'shipping_address'].each do |address_type|
             if order[address_type].nil?
               order[address_type] = { }
