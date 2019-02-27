@@ -255,7 +255,7 @@ module QBWC
             'id'               => object['email'],
             'firstname'        => supplier_address['firstname'],
             'lastname'         => supplier_address['lastname'],
-            'name'             => object['customer']['name'],
+            'name'             => object['supplier']['name'],
             'company'          => supplier_address['company'],
             'email'            => object['email'],
             'supplier_address'  => supplier_address,
