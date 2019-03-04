@@ -97,14 +97,14 @@ module QBWC
     #{class_ref_for_order(record)}
     <TxnDate>#{Time.parse(record['placed_on']).to_date}</TxnDate>
     <RefNumber>#{record['id']}</RefNumber>
-    <VendorAdress>
+    <VendorAddress>
       <Addr1>#{record['billing_address']['address1']}</Addr1>
       <Addr2>#{record['billing_address']['address2']}</Addr2>
       <City>#{record['billing_address']['city']}</City>
       <State>#{record['billing_address']['state']}</State>
       <PostalCode>#{record['billing_address']['zipcode']}</PostalCode>
       <Country>#{record['billing_address']['country']}</Country>
-    </VendorAdress>
+    </VendorAddress>
     <ShipAddress>
       <Addr1>#{record['shipping_address']['address1']}</Addr1>
       <Addr2>#{record['shipping_address']['address2']}</Addr2>
