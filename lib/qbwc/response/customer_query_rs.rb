@@ -75,6 +75,7 @@ module QBWC
             id: record['ListID'],
             list_id: record['ListID'],
             qbe_id: record['ListID'],
+            external_id: record['ListID'],
             name: record['Name'],
             first_name: record['FirstName'],
             last_name: record['LastName'],
