@@ -91,9 +91,7 @@ module QBWC
 
           <<-XML
 
-    <CustomerRef>
-      <FullName>#{record['customer']['name']}</FullName>
-    </CustomerRef>
+    #{customer_ref_for_order(record)}
     #{class_ref_for_order(record)}
     <TxnDate>#{Time.parse(record['placed_on']).to_date}</TxnDate>
     <RefNumber>#{record['id']}</RefNumber>
@@ -114,6 +112,26 @@ module QBWC
       <Country>#{record['shipping_address']['country']}</Country>
     </ShipAddress>
     #{cancel_order?(record)}
+          XML
+        end
+
+        def customer_ref_for_order(record)
+          return customer_by_id(record) if record['customer']['list_id']
+
+          <<-XML
+
+          <CustomerRef>
+            <FullName>#{record['customer']['name']}</FullName>
+          </CustomerRef>
+          XML
+        end
+
+        def customer_by_id(record)
+          <<-XML
+
+          <CustomerRef>
+            <ListID>#{record['customer']['list_id']}</ListID>
+          </CustomerRef>
           XML
         end
 

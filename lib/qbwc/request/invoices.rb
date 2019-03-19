@@ -55,7 +55,7 @@ module QBWC
             <MaxReturned>100</MaxReturned>
               <ModifiedDateRangeFilter>
                 <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
-              </ModifiedDateRangeFilter>  
+              </ModifiedDateRangeFilter>
               <IncludeLineItems>true</IncludeLineItems>
               <!-- <IncludeRetElement>Name</IncludeRetElement> -->
             </InvoiceQueryRq>
@@ -124,9 +124,7 @@ module QBWC
 
           <<-XML
 
-    <CustomerRef>
-      <FullName>#{record['customer']['name']}</FullName>
-    </CustomerRef>
+    #{customer_ref_for_invoice(record)}
     #{class_ref_for_invoice(record)}
     <TxnDate>#{Time.parse(record['placed_on']).to_date}</TxnDate>
     <RefNumber>#{record['id']}</RefNumber>
@@ -146,6 +144,26 @@ module QBWC
       <PostalCode>#{record['shipping_address']['zipcode']}</PostalCode>
       <Country>#{record['shipping_address']['country']}</Country>
     </ShipAddress>
+          XML
+        end
+
+        def customer_ref_for_invoice(record)
+          return customer_by_id(record) if record['customer']['list_id']
+
+          <<-XML
+
+          <CustomerRef>
+            <FullName>#{record['customer']['name']}</FullName>
+          </CustomerRef>
+          XML
+        end
+
+        def customer_by_id(record)
+          <<-XML
+
+          <CustomerRef>
+            <ListID>#{record['customer']['list_id']}</ListID>
+          </CustomerRef>
           XML
         end
 

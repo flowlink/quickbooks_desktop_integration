@@ -42,11 +42,24 @@ module QBWC
             config = { connection_id: params['connection_id'] }.with_indifferent_access
             session_id = Persistence::Session.save(config, object)
 
-            request << search_xml(object['name'], session_id)
+            request << object['list_id'].present? ? search_xml_by_id(object['list_id']) :
+                                                    search_xml_by_name(object['name'], session_id)
+
           end
         end
 
-        def search_xml(object_id, session_id)
+        def search_xml_by_id(object_id, session_id)
+          <<-XML
+<CustomerQueryRq requestID="#{session_id}">
+  <MaxReturned>50</MaxReturned>
+  <ListIDList>
+    #{object_id}
+  </ListIDList>
+</CustomerQueryRq>
+          XML
+        end
+
+        def search_xml_by_name(object_id, session_id)
           <<-XML
 <CustomerQueryRq requestID="#{session_id}">
   <MaxReturned>50</MaxReturned>
