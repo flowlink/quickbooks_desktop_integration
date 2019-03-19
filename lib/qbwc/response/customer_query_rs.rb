@@ -17,7 +17,7 @@ module QBWC
       end
 
       def process(config)
-        return if records.empty
+        return if records.empty?
 
         receive_configs = config[:receive] || []
         customer_params = receive_configs.find { |c| c['customers'] }
