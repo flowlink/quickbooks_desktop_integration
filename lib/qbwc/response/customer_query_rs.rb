@@ -60,18 +60,6 @@ module QBWC
         end
       end
 
-      def objects_to_update(config)
-        records.map do |record|
-          {
-            object_type: 'invoice',
-            object_ref: record['RefNumber'],
-            list_id: record['TxnID'],
-            edit_sequence: record['EditSequence'],
-            extra_data: build_extra_data(config, record)
-          }.with_indifferent_access
-        end
-      end
-
       def last_time_modified
         time = records.sort_by { |r| r['TimeModified'] }.last['TimeModified'].to_s
         Time.parse(time).in_time_zone('Pacific Time (US & Canada)').iso8601
