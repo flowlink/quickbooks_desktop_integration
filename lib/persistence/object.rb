@@ -669,7 +669,7 @@ module Persistence
 
       key = object_type.pluralize
       if key == 'customers'
-        object['list_id']
+        object['name']
       elsif key == 'shipments'
         object['name']
       elsif key == 'vendors'
