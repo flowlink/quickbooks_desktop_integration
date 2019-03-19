@@ -27,10 +27,10 @@ module QBWC
             <!-- polling customers -->
             <CustomerQueryRq requestID="#{session_id}">
             <MaxReturned>100</MaxReturned>
-              <ModifiedDateRangeFilter>
-                <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
-              </ModifiedDateRangeFilter>
-              <!-- <IncludeRetElement>Name</IncludeRetElement> -->
+            <FromModifiedDate>
+              #{time.iso8601}
+            </FromModifiedDate>
+            <!-- <IncludeRetElement>Name</IncludeRetElement> -->
             </CustomerQueryRq>
           XML
         end
