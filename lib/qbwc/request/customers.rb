@@ -24,7 +24,7 @@ module QBWC
           time = Time.parse(timestamp).in_time_zone 'Pacific Time (US & Canada)'
 
           <<-XML
-            <!-- polling invoices -->
+            <!-- polling customers -->
             <CustomerQueryRq requestID="#{session_id}">
             <MaxReturned>100</MaxReturned>
               <ModifiedDateRangeFilter>
