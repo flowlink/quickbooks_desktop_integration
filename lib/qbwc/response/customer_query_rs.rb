@@ -71,11 +71,15 @@ module QBWC
 
       def to_flowlink
         records.map do |record|
-          object = {
+          {
             id: record['ListID'],
-            name: record['Name']
+            list_id: record['ListID'],
+            qbe_id: record['ListID'],
+            name: record['Name'],
+            first_name: record['FirstName'],
+            last_name: record['LastName'],
+            email: record['Email']
           }
-          object
         end
       end
     end
