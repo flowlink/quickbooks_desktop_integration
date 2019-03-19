@@ -17,14 +17,32 @@ module QBWC
       end
 
       def process(config)
-        return if records.empty?
+        return if records.empty
 
-        puts records.inspect
+        receive_configs = config[:receive] || []
+        customer_params = receive_configs.find { |c| c['customers'] }
 
-        config  = { origin: 'flowlink', connection_id: config[:connection_id]  }
+        if customer_params
+          payload = { customers: to_flowlink }
+          config = { origin: 'quickbooks' }.merge config.reject{|k,v| k == :origin || k == "origin"}
 
-        Persistence::Object.new(config, {}).update_objects_with_query_results(objects_to_update)
+          poll_persistence = Persistence::Polling.new(config, payload)
+          poll_persistence.save_for_polling
 
+          customer_params['customers']['quickbooks_since'] = last_time_modified
+          customer_params['customers']['quickbooks_force_config'] = true
+
+          # Override configs to update timestamp so it doesn't keep geting the
+          # same inventories
+          params = customer_params['customers']
+          Persistence::Settings.new(params.with_indifferent_access).setup
+        else
+
+          config  = config.merge(origin: 'flowlink', connection_id: config[:connection_id]).with_indifferent_access
+          objects_updated = objects_to_update
+
+          Persistence::Object.new(config, {}).update_objects_with_query_results(objects_updated)
+        end
         nil
       end
 
@@ -42,13 +60,23 @@ module QBWC
         end
       end
 
+      def objects_to_update(config)
+        records.map do |record|
+          {
+            object_type: 'invoice',
+            object_ref: record['RefNumber'],
+            list_id: record['TxnID'],
+            edit_sequence: record['EditSequence'],
+            extra_data: build_extra_data(config, record)
+          }.with_indifferent_access
+        end
+      end
+
       def to_flowlink
         records.map do |record|
           object = {
             id: record['ListID'],
-            name: record['Name'],
-            description: record['FullName'],
-            sku: record['Name']
+            name: record['Name']
           }
           object
         end
