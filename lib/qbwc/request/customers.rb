@@ -42,8 +42,8 @@ module QBWC
             config = { connection_id: params['connection_id'] }.with_indifferent_access
             session_id = Persistence::Session.save(config, object)
 
-            request << object['list_id'].present? ? search_xml_by_id(object['list_id']) :
-                                                    search_xml_by_name(object['name'], session_id)
+            request << object['list_id'] ? search_xml_by_id(object['list_id'], session_id) :
+                                           search_xml_by_name(object['name'], session_id)
 
           end
         end
@@ -76,9 +76,9 @@ module QBWC
 <CustomerAddRq requestID="#{session_id}">
    <CustomerAdd>
     <Name>#{object['name']}</Name>
-    #{"<CompanyName>#{object['company']}</CompanyName>" unless object['company'].empty?}
-    <FirstName>#{object['firstname'].empty? ? object['name'].split.first : object['firstname']}</FirstName>
-    #{"<LastName>#{object['lastname'] || object['name'].split.last}</LastName>" unless object['lastname'].empty?}
+    #{"<CompanyName>#{object['company']}</CompanyName>" if object['company']}
+    <FirstName>#{object['firstname'] ? object['name'].split.first : object['firstname']}</FirstName>
+    #{"<LastName>#{object['lastname'] || object['name'].split.last}</LastName>" if object['lastname']}
     <BillAddress>
       <Addr1>#{object['billing_address']['address1'] if object['billing_address']}</Addr1>
       #{"<Addr2>#{object['billing_address']['address2']}</Addr2>" if object['billing_address'] && object['billing_address']['address2']}
