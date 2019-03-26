@@ -249,11 +249,8 @@ module Persistence
             begin
               object = types[object_type].with_indifferent_access
 
-
-
               filename = "#{path.base_name}/#{path.ready}/#{object_type}_#{id_for_object(object, object_type)}_"
-              filename << "#{object[:list_id]}_#{object[:edit_sequence]}" unless object[:list_id].to_s.empty?
-
+              
               puts "Looking for file: #{filename}"
 
               collection = amazon_s3.bucket.objects(prefix: filename)
