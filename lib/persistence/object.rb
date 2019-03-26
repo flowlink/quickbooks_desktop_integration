@@ -239,8 +239,11 @@ module Persistence
       return if statuses_objects.nil?
 
       statuses_objects.keys.each do |status_key|
+        puts status_key
         statuses_objects[status_key].each do |types|
+          puts types
           types.keys.each do |object_type|
+            puts object_type
             # NOTE seeing an nil `object` var here sometimes, investigate it
             # happens when you have both add_orders and get_products flows enabled
             begin
