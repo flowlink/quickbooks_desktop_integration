@@ -249,15 +249,17 @@ module Persistence
             begin
               object = types[object_type].with_indifferent_access
 
+
+
               filename = "#{path.base_name}/#{path.ready}/#{object_type}_#{id_for_object(object, object_type)}_"
               filename << "#{object[:list_id]}_#{object[:edit_sequence]}" unless object[:list_id].to_s.empty?
 
-              "Looking for file: #{filename}"
+              puts "Looking for file: #{filename}"
 
               collection = amazon_s3.bucket.objects(prefix: filename)
               collection.each do |s3_object|
                 # This is for files that end on (n)
-                "Working with #{s3_object.inspect}"
+                puts "Working with #{s3_object.inspect}"
                 _, _, ax_filename = s3_object.key.split('/')
                 _, _, end_of_file, ax_edit_sequence = ax_filename.split('_')
                 end_of_file = '.csv' unless ax_edit_sequence.nil?
