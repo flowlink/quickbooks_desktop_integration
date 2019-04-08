@@ -108,10 +108,12 @@ module Persistence
         _, _, filename    = s3_object.key.split('/')
         object_type, _, _ = filename.split('_')
 
+
+        content = amazon_s3.convert_download('json', s3_object.get.body.read).first
         s3_object.move_to("#{path.base_name_w_bucket}/#{path.ready}/#{filename}")
 
         # return the content of file to create the requests
-        { object_type => amazon_s3.convert_download('json', s3_object.get.body.read).first }
+        { object_type => content }
       end.flatten
     end
 

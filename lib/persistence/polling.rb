@@ -34,10 +34,12 @@ module Persistence
           _, _, filename = s3_object.key.split('/')
           object_type    = filename.split('_').first
 
+          content = amazon_s3.convert_download('json', s3_object.get.body.read).first
+
           s3_object.move_to("#{path.base_name_w_bucket}/#{path.processed}/#{filename}")
 
           # return the content of file to create the requests
-          { object_type => amazon_s3.convert_download('json', s3_object.get.body.read).first }
+          { object_type => content }
         end
       rescue Aws::S3::Errors::NoSuchKey
         puts " File not found(process_waiting_records): #{prefix}"
@@ -52,10 +54,12 @@ module Persistence
         _, _, filename = s3_object.key.split('/')
         object_type    = filename.split('_').second
 
+        content = amazon_s3.convert_download('json', s3_object.get.body.read).first
+
         s3_object.move_to("#{path.base_name_w_bucket}/#{path.processed}/#{filename}")
 
         # return the content of file to create the requests
-        { object_type => amazon_s3.convert_download('json', s3_object.get.body.read).first }
+        { object_type => content }
       end
     end
 
