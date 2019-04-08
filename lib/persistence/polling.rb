@@ -34,7 +34,7 @@ module Persistence
           _, _, filename = s3_object.key.split('/')
           object_type    = filename.split('_').first
 
-          content = amazon_s3.convert_download('json', s3_object.get.body.read).first
+          content = amazon_s3.convert_download('json', s3_object.get.body.read)
 
           s3_object.move_to("#{path.base_name_w_bucket}/#{path.processed}/#{filename}")
 
@@ -54,7 +54,7 @@ module Persistence
         _, _, filename = s3_object.key.split('/')
         object_type    = filename.split('_').second
 
-        content = amazon_s3.convert_download('json', s3_object.get.body.read).first
+        content = amazon_s3.convert_download('json', s3_object.get.body.read)
 
         s3_object.move_to("#{path.base_name_w_bucket}/#{path.processed}/#{filename}")
 
