@@ -70,11 +70,11 @@ module QBWC
           <<-XML
               <Name>#{product['product_id']}</Name>
               <SalesDesc>#{product['description']}</SalesDesc>
-              <SalesPrice>#{product['price']}</SalesPrice>
+              <SalesPrice>#{'%.2f' % product['price'].to_f}</SalesPrice>
               <IncomeAccountRef>
                  <FullName>#{params['quickbooks_income_account']}</FullName>
               </IncomeAccountRef>
-              <PurchaseCost>#{params['cost']}</PurchaseCost>
+              <PurchaseCost>#{'%.2f' % product['cost'].to_f}</PurchaseCost>
               <COGSAccountRef>
                 <FullName>#{params['quickbooks_cogs_account']}</FullName>
               </COGSAccountRef>
