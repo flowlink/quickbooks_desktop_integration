@@ -66,7 +66,6 @@ module QBWC
         end
 
         def product_xml(product, params)
-          product = complement_inventory(product)
           <<-XML
               <Name>#{product['product_id']}</Name>
               <SalesDesc>#{product['description']}</SalesDesc>
@@ -102,19 +101,6 @@ module QBWC
               <!-- <IncludeRetElement>Name</IncludeRetElement> -->
             </ItemInventoryQueryRq>
           XML
-        end
-
-        def complement_inventory(product)
-          if product.key?('product_id')
-            product['id']          = product['product_id']
-            product['description'] = product['product_id']
-            product['price']       = 0
-            product['cost_price']  = 0
-          else
-            product['quantity'] = 0
-          end
-
-          product
         end
       end
     end
