@@ -72,14 +72,14 @@ module QBWC
               <SalesDesc>#{product['description']}</SalesDesc>
               <SalesPrice>#{'%.2f' % product['price'].to_f}</SalesPrice>
               <IncomeAccountRef>
-                 <FullName>#{params['quickbooks_income_account']}</FullName>
+                 <FullName>#{product['income_account'] || params['quickbooks_income_account']}</FullName>
               </IncomeAccountRef>
               <PurchaseCost>#{'%.2f' % product['cost'].to_f}</PurchaseCost>
               <COGSAccountRef>
-                <FullName>#{params['quickbooks_cogs_account']}</FullName>
+                <FullName>#{product['cogs_account'] || params['quickbooks_cogs_account']}</FullName>
               </COGSAccountRef>
               <AssetAccountRef>
-                 <FullName>#{params['quickbooks_inventory_account']}</FullName>
+                 <FullName>#{product['inventory_account'] || params['quickbooks_inventory_account']}</FullName>
               </AssetAccountRef>
           XML
         end
