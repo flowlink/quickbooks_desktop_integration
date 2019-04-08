@@ -12,12 +12,12 @@ module Persistence
                     config[:quickbooks_force_config].to_s == 'true'
     end
 
-    # Files MUST be named like this /connectionid/settings/flow.csv
+    # Files MUST be named like this /connectionid/settings/flow.json
     #
-    #   e.g. 54372cb069702d1f59000000/settings/receive_product.csv
+    #   e.g. 54372cb069702d1f59000000/settings/receive_product.json
     #
     def setup
-      file = "#{base_name}/#{flow}.csv"
+      file = "#{base_name}/#{flow}.json"
       s3_object = amazon_s3.bucket.object(file)
 
       if !s3_object.exists? || force_save
@@ -30,7 +30,7 @@ module Persistence
       config_aux = config.dup
       %w(add_products add_customers add_vendors).each do |extra_flow|
         config_aux['flow'] = extra_flow
-        file = "#{base_name}/#{extra_flow}.csv"
+        file = "#{base_name}/#{extra_flow}.json"
         s3_object = amazon_s3.bucket.object(file)
 
         if !s3_object.exists? || force_save
@@ -59,7 +59,7 @@ module Persistence
         #     "quickbooks_force_config"=>"0"
         #   }
         # ]
-        data = Converter.csv_to_hash(contents)
+        data = Converter.json_to_hash(contents)
         configs = data.first
 
         { object_type => configs }

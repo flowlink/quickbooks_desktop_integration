@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: head
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/settings/get_products.csv
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/settings/get_products.json
     body:
       encoding: US-ASCII
       string: ''
@@ -87,12 +87,12 @@ http_interactions:
       encoding: UTF-8
       string: |-
         <?xml version="1.0" encoding="UTF-8"?>
-        <ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>quickbooks-desktop-integration</Name><Prefix>54591b3a5869632afc090000/quickbooks_pending/products_</Prefix><Marker></Marker><MaxKeys>1000</MaxKeys><IsTruncated>false</IsTruncated><Contents><Key>54591b3a5869632afc090000/quickbooks_pending/products_1415815266.csv</Key><LastModified>2014-11-12T19:52:33.000Z</LastModified><ETag>&quot;de11bc52fc7754a381df96fcaabbe98a&quot;</ETag><Size>98</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>aws</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>54591b3a5869632afc090000/quickbooks_pending/products_1415821482.csv</Key><LastModified>2014-11-12T19:44:43.000Z</LastModified><ETag>&quot;6750ef79edf9cc4cb211c3976a8f3e20&quot;</ETag><Size>2090</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>aws</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>54591b3a5869632afc090000/quickbooks_pending/products_1415821593.csv</Key><LastModified>2014-11-12T19:46:33.000Z</LastModified><ETag>&quot;6750ef79edf9cc4cb211c3976a8f3e20&quot;</ETag><Size>2090</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>aws</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>54591b3a5869632afc090000/quickbooks_pending/products_1415821680.csv</Key><LastModified>2014-11-12T19:48:01.000Z</LastModified><ETag>&quot;6750ef79edf9cc4cb211c3976a8f3e20&quot;</ETag><Size>2090</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>aws</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents></ListBucketResult>
+        <ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>quickbooks-desktop-integration</Name><Prefix>54591b3a5869632afc090000/quickbooks_pending/products_</Prefix><Marker></Marker><MaxKeys>1000</MaxKeys><IsTruncated>false</IsTruncated><Contents><Key>54591b3a5869632afc090000/quickbooks_pending/products_1415815266.json</Key><LastModified>2014-11-12T19:52:33.000Z</LastModified><ETag>&quot;de11bc52fc7754a381df96fcaabbe98a&quot;</ETag><Size>98</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>aws</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>54591b3a5869632afc090000/quickbooks_pending/products_1415821482.json</Key><LastModified>2014-11-12T19:44:43.000Z</LastModified><ETag>&quot;6750ef79edf9cc4cb211c3976a8f3e20&quot;</ETag><Size>2090</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>aws</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>54591b3a5869632afc090000/quickbooks_pending/products_1415821593.json</Key><LastModified>2014-11-12T19:46:33.000Z</LastModified><ETag>&quot;6750ef79edf9cc4cb211c3976a8f3e20&quot;</ETag><Size>2090</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>aws</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>54591b3a5869632afc090000/quickbooks_pending/products_1415821680.json</Key><LastModified>2014-11-12T19:48:01.000Z</LastModified><ETag>&quot;6750ef79edf9cc4cb211c3976a8f3e20&quot;</ETag><Size>2090</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>aws</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents></ListBucketResult>
     http_version: 
   recorded_at: Wed, 12 Nov 2014 19:55:24 GMT
 - request:
     method: get
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/quickbooks_pending/products_1415815266.csv
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/quickbooks_pending/products_1415815266.json
     body:
       encoding: US-ASCII
       string: ''
@@ -141,7 +141,7 @@ http_interactions:
   recorded_at: Wed, 12 Nov 2014 19:55:24 GMT
 - request:
     method: put
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/quickbooks_processed/products_1415815266.csv
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/quickbooks_processed/products_1415815266.json
     body:
       encoding: UTF-8
       string: ''
@@ -151,7 +151,7 @@ http_interactions:
       Accept-Encoding:
       - ''
       X-Amz-Copy-Source:
-      - "/quickbooks-desktop-integration/54591b3a5869632afc090000/quickbooks_pending/products_1415815266.csv"
+      - "/quickbooks-desktop-integration/54591b3a5869632afc090000/quickbooks_pending/products_1415815266.json"
       X-Amz-Metadata-Directive:
       - COPY
       X-Amz-Storage-Class:
@@ -190,7 +190,7 @@ http_interactions:
   recorded_at: Wed, 12 Nov 2014 19:55:25 GMT
 - request:
     method: delete
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/quickbooks_pending/products_1415815266.csv
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/quickbooks_pending/products_1415815266.json
     body:
       encoding: US-ASCII
       string: ''
@@ -227,7 +227,7 @@ http_interactions:
   recorded_at: Wed, 12 Nov 2014 19:55:26 GMT
 - request:
     method: get
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/quickbooks_pending/products_1415821482.csv
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/quickbooks_pending/products_1415821482.json
     body:
       encoding: US-ASCII
       string: ''
@@ -305,7 +305,7 @@ http_interactions:
   recorded_at: Wed, 12 Nov 2014 19:55:27 GMT
 - request:
     method: put
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/quickbooks_processed/products_1415821482.csv
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/quickbooks_processed/products_1415821482.json
     body:
       encoding: UTF-8
       string: ''
@@ -315,7 +315,7 @@ http_interactions:
       Accept-Encoding:
       - ''
       X-Amz-Copy-Source:
-      - "/quickbooks-desktop-integration/54591b3a5869632afc090000/quickbooks_pending/products_1415821482.csv"
+      - "/quickbooks-desktop-integration/54591b3a5869632afc090000/quickbooks_pending/products_1415821482.json"
       X-Amz-Metadata-Directive:
       - COPY
       X-Amz-Storage-Class:
@@ -354,7 +354,7 @@ http_interactions:
   recorded_at: Wed, 12 Nov 2014 19:55:27 GMT
 - request:
     method: delete
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/quickbooks_pending/products_1415821482.csv
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/quickbooks_pending/products_1415821482.json
     body:
       encoding: US-ASCII
       string: ''
@@ -391,7 +391,7 @@ http_interactions:
   recorded_at: Wed, 12 Nov 2014 19:55:28 GMT
 - request:
     method: get
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/quickbooks_pending/products_1415821593.csv
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/quickbooks_pending/products_1415821593.json
     body:
       encoding: US-ASCII
       string: ''
@@ -469,7 +469,7 @@ http_interactions:
   recorded_at: Wed, 12 Nov 2014 19:55:29 GMT
 - request:
     method: put
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/quickbooks_processed/products_1415821593.csv
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/quickbooks_processed/products_1415821593.json
     body:
       encoding: UTF-8
       string: ''
@@ -479,7 +479,7 @@ http_interactions:
       Accept-Encoding:
       - ''
       X-Amz-Copy-Source:
-      - "/quickbooks-desktop-integration/54591b3a5869632afc090000/quickbooks_pending/products_1415821593.csv"
+      - "/quickbooks-desktop-integration/54591b3a5869632afc090000/quickbooks_pending/products_1415821593.json"
       X-Amz-Metadata-Directive:
       - COPY
       X-Amz-Storage-Class:
@@ -518,7 +518,7 @@ http_interactions:
   recorded_at: Wed, 12 Nov 2014 19:55:30 GMT
 - request:
     method: delete
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/quickbooks_pending/products_1415821593.csv
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/quickbooks_pending/products_1415821593.json
     body:
       encoding: US-ASCII
       string: ''
@@ -555,7 +555,7 @@ http_interactions:
   recorded_at: Wed, 12 Nov 2014 19:55:30 GMT
 - request:
     method: get
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/quickbooks_pending/products_1415821680.csv
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/quickbooks_pending/products_1415821680.json
     body:
       encoding: US-ASCII
       string: ''
@@ -633,7 +633,7 @@ http_interactions:
   recorded_at: Wed, 12 Nov 2014 19:55:31 GMT
 - request:
     method: put
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/quickbooks_processed/products_1415821680.csv
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/quickbooks_processed/products_1415821680.json
     body:
       encoding: UTF-8
       string: ''
@@ -643,7 +643,7 @@ http_interactions:
       Accept-Encoding:
       - ''
       X-Amz-Copy-Source:
-      - "/quickbooks-desktop-integration/54591b3a5869632afc090000/quickbooks_pending/products_1415821680.csv"
+      - "/quickbooks-desktop-integration/54591b3a5869632afc090000/quickbooks_pending/products_1415821680.json"
       X-Amz-Metadata-Directive:
       - COPY
       X-Amz-Storage-Class:
@@ -682,7 +682,7 @@ http_interactions:
   recorded_at: Wed, 12 Nov 2014 19:55:32 GMT
 - request:
     method: delete
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/quickbooks_pending/products_1415821680.csv
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/quickbooks_pending/products_1415821680.json
     body:
       encoding: US-ASCII
       string: ''
@@ -757,12 +757,12 @@ http_interactions:
       encoding: UTF-8
       string: |-
         <?xml version="1.0" encoding="UTF-8"?>
-        <ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>quickbooks-desktop-integration</Name><Prefix>54591b3a5869632afc090000/settings/get_products</Prefix><Marker></Marker><MaxKeys>1000</MaxKeys><IsTruncated>false</IsTruncated><Contents><Key>54591b3a5869632afc090000/settings/get_products.csv</Key><LastModified>2014-11-12T19:48:01.000Z</LastModified><ETag>&quot;3c4e31997794a34651b01c239bbd010a&quot;</ETag><Size>146</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>aws</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents></ListBucketResult>
+        <ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>quickbooks-desktop-integration</Name><Prefix>54591b3a5869632afc090000/settings/get_products</Prefix><Marker></Marker><MaxKeys>1000</MaxKeys><IsTruncated>false</IsTruncated><Contents><Key>54591b3a5869632afc090000/settings/get_products.json</Key><LastModified>2014-11-12T19:48:01.000Z</LastModified><ETag>&quot;3c4e31997794a34651b01c239bbd010a&quot;</ETag><Size>146</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>aws</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents></ListBucketResult>
     http_version: 
   recorded_at: Wed, 12 Nov 2014 19:55:34 GMT
 - request:
     method: get
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/settings/get_products.csv
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/settings/get_products.json
     body:
       encoding: US-ASCII
       string: ''

@@ -17,12 +17,12 @@ module Persistence
 
     def save_for_polling
       polling_path = @config[:origin] == 'quickbooks' ? path.qb_pending : path.pending
-      file = "#{path.base_name}/#{polling_path}/#{payload_key}_#{current_time}.csv"
+      file = "#{path.base_name}/#{polling_path}/#{payload_key}_#{current_time}.json"
       amazon_s3.export file_name: file, objects: objects
     end
 
     def save_for_query_later
-      file = "#{path.base_name}/#{path.pending}/query_#{payload_key}_#{current_time}.csv"
+      file = "#{path.base_name}/#{path.pending}/query_#{payload_key}_#{current_time}.json"
       amazon_s3.export file_name: file, objects: objects
     end
 
@@ -39,7 +39,7 @@ module Persistence
           s3_object.move_to("#{path.base_name_w_bucket}/#{path.processed}/#{filename}")
 
           # return the content of file to create the requests
-          { object_type => Converter.csv_to_hash(contents) }
+          { object_type => Converter.json_to_hash(contents) }
         end
       rescue Aws::S3::Errors::NoSuchKey
         puts " File not found(process_waiting_records): #{prefix}"
@@ -59,7 +59,7 @@ module Persistence
         s3_object.move_to("#{path.base_name_w_bucket}/#{path.processed}/#{filename}")
 
         # return the content of file to create the requests
-        { object_type => Converter.csv_to_hash(contents) }
+        { object_type => Converter.json_to_hash(contents) }
       end
     end
 

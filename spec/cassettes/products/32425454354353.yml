@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: head
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/settings/add_products.csv
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/settings/add_products.json
     body:
       encoding: US-ASCII
       string: ''
@@ -90,7 +90,7 @@ http_interactions:
   recorded_at: Tue, 18 Nov 2014 17:27:32 GMT
 - request:
     method: put
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/settings/add_products.csv
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/settings/add_products.json
     body:
       encoding: ASCII-8BIT
       string: |-
@@ -176,7 +176,7 @@ http_interactions:
   recorded_at: Tue, 18 Nov 2014 17:27:34 GMT
 - request:
     method: head
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/flowlink_pending/products_the%20internets_.csv
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/flowlink_pending/products_the%20internets_.json
     body:
       encoding: US-ASCII
       string: ''
@@ -217,7 +217,7 @@ http_interactions:
   recorded_at: Tue, 18 Nov 2014 17:27:34 GMT
 - request:
     method: put
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/flowlink_pending/products_the%20internets_.csv
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/flowlink_pending/products_the%20internets_.json
     body:
       encoding: ASCII-8BIT
       string: |-

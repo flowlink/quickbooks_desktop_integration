@@ -43,7 +43,7 @@ http_interactions:
   recorded_at: Tue, 04 Nov 2014 21:02:44 GMT
 - request:
     method: head
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/quickbooks_to_be_integrated/x123_inventories_1415134964.csv
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/quickbooks_to_be_integrated/x123_inventories_1415134964.json
     body:
       encoding: US-ASCII
       string: ''
@@ -84,7 +84,7 @@ http_interactions:
   recorded_at: Tue, 04 Nov 2014 21:02:45 GMT
 - request:
     method: put
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/quickbooks_to_be_integrated/x123_inventories_1415134964.csv
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/quickbooks_to_be_integrated/x123_inventories_1415134964.json
     body:
       encoding: ASCII-8BIT
       string: |-

@@ -43,7 +43,7 @@ http_interactions:
   recorded_at: Tue, 04 Nov 2014 21:02:36 GMT
 - request:
     method: head
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/flowlink_to_be_integrated/_notification_orders_1415134955.csv
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/flowlink_to_be_integrated/_notification_orders_1415134955.json
     body:
       encoding: US-ASCII
       string: ''
@@ -84,7 +84,7 @@ http_interactions:
   recorded_at: Tue, 04 Nov 2014 21:02:37 GMT
 - request:
     method: put
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/flowlink_to_be_integrated/_notification_orders_1415134955.csv
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/flowlink_to_be_integrated/_notification_orders_1415134955.json
     body:
       encoding: ASCII-8BIT
       string: |-

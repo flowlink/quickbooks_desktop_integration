@@ -43,7 +43,7 @@ http_interactions:
   recorded_at: Tue, 23 Dec 2014 18:49:05 GMT
 - request:
     method: head
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54372cb069702d1f59000000/flowlink_ready/notification_failed_orders_R154085346708777_.csv
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54372cb069702d1f59000000/flowlink_ready/notification_failed_orders_R154085346708777_.json
     body:
       encoding: US-ASCII
       string: ''
@@ -128,12 +128,12 @@ http_interactions:
       encoding: UTF-8
       string: |-
         <?xml version="1.0" encoding="UTF-8"?>
-        <ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>quickbooks-desktop-integration</Name><Prefix>54372cb069702d1f59000000/flowlink_ready/notification_failed_orders_R154085346708777_(</Prefix><Marker></Marker><MaxKeys>1000</MaxKeys><IsTruncated>false</IsTruncated><Contents><Key>54372cb069702d1f59000000/flowlink_ready/notification_failed_orders_R154085346708777_(1).csv</Key><LastModified>2014-12-15T13:14:27.000Z</LastModified><ETag>&quot;b89e1a9635db3070554b2c301b47da19&quot;</ETag><Size>1456</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>aws</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents></ListBucketResult>
+        <ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>quickbooks-desktop-integration</Name><Prefix>54372cb069702d1f59000000/flowlink_ready/notification_failed_orders_R154085346708777_(</Prefix><Marker></Marker><MaxKeys>1000</MaxKeys><IsTruncated>false</IsTruncated><Contents><Key>54372cb069702d1f59000000/flowlink_ready/notification_failed_orders_R154085346708777_(1).json</Key><LastModified>2014-12-15T13:14:27.000Z</LastModified><ETag>&quot;b89e1a9635db3070554b2c301b47da19&quot;</ETag><Size>1456</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>aws</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents></ListBucketResult>
     http_version: 
   recorded_at: Tue, 23 Dec 2014 18:49:07 GMT
 - request:
     method: put
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54372cb069702d1f59000000/flowlink_ready/notification_failed_orders_R154085346708777_(2).csv
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54372cb069702d1f59000000/flowlink_ready/notification_failed_orders_R154085346708777_(2).json
     body:
       encoding: ASCII-8BIT
       string: |-
@@ -219,7 +219,7 @@ http_interactions:
   recorded_at: Tue, 23 Dec 2014 18:49:08 GMT
 - request:
     method: head
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54372cb069702d1f59000000/flowlink_two_phase_pending/shipments_R154085346_.csv
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54372cb069702d1f59000000/flowlink_two_phase_pending/shipments_R154085346_.json
     body:
       encoding: US-ASCII
       string: ''
@@ -260,7 +260,7 @@ http_interactions:
   recorded_at: Tue, 23 Dec 2014 18:49:09 GMT
 - request:
     method: put
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54372cb069702d1f59000000/flowlink_two_phase_pending/shipments_R154085346_.csv
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54372cb069702d1f59000000/flowlink_two_phase_pending/shipments_R154085346_.json
     body:
       encoding: ASCII-8BIT
       string: |-
@@ -346,7 +346,7 @@ http_interactions:
   recorded_at: Tue, 23 Dec 2014 18:49:10 GMT
 - request:
     method: head
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54372cb069702d1f59000000/flowlink_pending/customers_spree@example.com_.csv
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54372cb069702d1f59000000/flowlink_pending/customers_spree@example.com_.json
     body:
       encoding: US-ASCII
       string: ''
@@ -436,7 +436,7 @@ http_interactions:
   recorded_at: Tue, 23 Dec 2014 18:49:11 GMT
 - request:
     method: put
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54372cb069702d1f59000000/flowlink_pending/customers_spree@example.com_(1).csv
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54372cb069702d1f59000000/flowlink_pending/customers_spree@example.com_(1).json
     body:
       encoding: ASCII-8BIT
       string: |-
@@ -522,7 +522,7 @@ http_interactions:
   recorded_at: Tue, 23 Dec 2014 18:49:13 GMT
 - request:
     method: head
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54372cb069702d1f59000000/flowlink_pending/orders_R154085346_.csv
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54372cb069702d1f59000000/flowlink_pending/orders_R154085346_.json
     body:
       encoding: US-ASCII
       string: ''
@@ -612,7 +612,7 @@ http_interactions:
   recorded_at: Tue, 23 Dec 2014 18:49:14 GMT
 - request:
     method: put
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54372cb069702d1f59000000/flowlink_pending/orders_R154085346_(1).csv
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54372cb069702d1f59000000/flowlink_pending/orders_R154085346_(1).json
     body:
       encoding: ASCII-8BIT
       string: |-
@@ -698,7 +698,7 @@ http_interactions:
   recorded_at: Tue, 23 Dec 2014 18:49:15 GMT
 - request:
     method: head
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54372cb069702d1f59000000/flowlink_pending/payments_R154085346_.csv
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54372cb069702d1f59000000/flowlink_pending/payments_R154085346_.json
     body:
       encoding: US-ASCII
       string: ''
@@ -788,7 +788,7 @@ http_interactions:
   recorded_at: Tue, 23 Dec 2014 18:49:17 GMT
 - request:
     method: put
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54372cb069702d1f59000000/flowlink_pending/payments_R154085346_(1).csv
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54372cb069702d1f59000000/flowlink_pending/payments_R154085346_(1).json
     body:
       encoding: ASCII-8BIT
       string: |-
@@ -874,7 +874,7 @@ http_interactions:
   recorded_at: Tue, 23 Dec 2014 18:49:18 GMT
 - request:
     method: head
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54372cb069702d1f59000000/flowlink_pending/products_SPREE-T-SHIRT_.csv
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54372cb069702d1f59000000/flowlink_pending/products_SPREE-T-SHIRT_.json
     body:
       encoding: US-ASCII
       string: ''
@@ -964,7 +964,7 @@ http_interactions:
   recorded_at: Tue, 23 Dec 2014 18:49:19 GMT
 - request:
     method: put
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54372cb069702d1f59000000/flowlink_pending/products_SPREE-T-SHIRT_(1).csv
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54372cb069702d1f59000000/flowlink_pending/products_SPREE-T-SHIRT_(1).json
     body:
       encoding: ASCII-8BIT
       string: |-

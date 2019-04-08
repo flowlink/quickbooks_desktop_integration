@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: head
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/settings/get_inventories.csv
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/settings/get_inventories.json
     body:
       encoding: US-ASCII
       string: ''

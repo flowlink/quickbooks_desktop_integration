@@ -40,12 +40,12 @@ http_interactions:
       encoding: UTF-8
       string: |-
         <?xml version="1.0" encoding="UTF-8"?>
-        <ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>quickbooks-desktop-integration</Name><Prefix>54616145436f6e2fda030000/settings/get_</Prefix><Marker></Marker><MaxKeys>1000</MaxKeys><IsTruncated>false</IsTruncated><Contents><Key>54616145436f6e2fda030000/settings/get_inventory.csv</Key><LastModified>2015-01-07T12:48:37.000Z</LastModified><ETag>&quot;28bdf47eaae43a8380e258fa165723e7&quot;</ETag><Size>147</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>aws</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>54616145436f6e2fda030000/settings/get_products.csv</Key><LastModified>2015-01-07T12:48:45.000Z</LastModified><ETag>&quot;9d9ea32fb2e7f2c9ea5485de80de5a6b&quot;</ETag><Size>146</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>aws</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents></ListBucketResult>
+        <ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>quickbooks-desktop-integration</Name><Prefix>54616145436f6e2fda030000/settings/get_</Prefix><Marker></Marker><MaxKeys>1000</MaxKeys><IsTruncated>false</IsTruncated><Contents><Key>54616145436f6e2fda030000/settings/get_inventory.json</Key><LastModified>2015-01-07T12:48:37.000Z</LastModified><ETag>&quot;28bdf47eaae43a8380e258fa165723e7&quot;</ETag><Size>147</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>aws</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>54616145436f6e2fda030000/settings/get_products.json</Key><LastModified>2015-01-07T12:48:45.000Z</LastModified><ETag>&quot;9d9ea32fb2e7f2c9ea5485de80de5a6b&quot;</ETag><Size>146</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>aws</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents></ListBucketResult>
     http_version: 
   recorded_at: Wed, 07 Jan 2015 12:57:21 GMT
 - request:
     method: get
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54616145436f6e2fda030000/settings/get_inventory.csv
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54616145436f6e2fda030000/settings/get_inventory.json
     body:
       encoding: US-ASCII
       string: ''
@@ -94,7 +94,7 @@ http_interactions:
   recorded_at: Wed, 07 Jan 2015 12:57:22 GMT
 - request:
     method: get
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54616145436f6e2fda030000/settings/get_products.csv
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54616145436f6e2fda030000/settings/get_products.json
     body:
       encoding: US-ASCII
       string: ''
@@ -181,12 +181,12 @@ http_interactions:
       encoding: UTF-8
       string: |-
         <?xml version="1.0" encoding="UTF-8"?>
-        <ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>quickbooks-desktop-integration</Name><Prefix>54616145436f6e2fda030000/settings/get_</Prefix><Marker></Marker><MaxKeys>1000</MaxKeys><IsTruncated>false</IsTruncated><Contents><Key>54616145436f6e2fda030000/settings/get_inventory.csv</Key><LastModified>2015-01-07T12:48:37.000Z</LastModified><ETag>&quot;28bdf47eaae43a8380e258fa165723e7&quot;</ETag><Size>147</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>aws</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>54616145436f6e2fda030000/settings/get_products.csv</Key><LastModified>2015-01-07T12:48:45.000Z</LastModified><ETag>&quot;9d9ea32fb2e7f2c9ea5485de80de5a6b&quot;</ETag><Size>146</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>aws</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents></ListBucketResult>
+        <ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>quickbooks-desktop-integration</Name><Prefix>54616145436f6e2fda030000/settings/get_</Prefix><Marker></Marker><MaxKeys>1000</MaxKeys><IsTruncated>false</IsTruncated><Contents><Key>54616145436f6e2fda030000/settings/get_inventory.json</Key><LastModified>2015-01-07T12:48:37.000Z</LastModified><ETag>&quot;28bdf47eaae43a8380e258fa165723e7&quot;</ETag><Size>147</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>aws</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>54616145436f6e2fda030000/settings/get_products.json</Key><LastModified>2015-01-07T12:48:45.000Z</LastModified><ETag>&quot;9d9ea32fb2e7f2c9ea5485de80de5a6b&quot;</ETag><Size>146</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>aws</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents></ListBucketResult>
     http_version: 
   recorded_at: Wed, 07 Jan 2015 12:57:23 GMT
 - request:
     method: get
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54616145436f6e2fda030000/settings/get_inventory.csv
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54616145436f6e2fda030000/settings/get_inventory.json
     body:
       encoding: US-ASCII
       string: ''
@@ -235,7 +235,7 @@ http_interactions:
   recorded_at: Wed, 07 Jan 2015 12:57:24 GMT
 - request:
     method: get
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54616145436f6e2fda030000/settings/get_products.csv
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54616145436f6e2fda030000/settings/get_products.json
     body:
       encoding: US-ASCII
       string: ''
@@ -284,7 +284,7 @@ http_interactions:
   recorded_at: Wed, 07 Jan 2015 12:57:25 GMT
 - request:
     method: head
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54616145436f6e2fda030000/settings/get_inventory.csv
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54616145436f6e2fda030000/settings/get_inventory.json
     body:
       encoding: US-ASCII
       string: ''
@@ -372,7 +372,7 @@ http_interactions:
   recorded_at: Wed, 07 Jan 2015 12:57:26 GMT
 - request:
     method: put
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54616145436f6e2fda030000/settings/get_inventory.csv
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54616145436f6e2fda030000/settings/get_inventory.json
     body:
       encoding: ASCII-8BIT
       string: |-

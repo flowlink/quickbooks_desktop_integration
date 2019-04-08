@@ -43,7 +43,7 @@ http_interactions:
   recorded_at: Thu, 30 Oct 2014 20:46:10 GMT
 - request:
     method: head
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/to_be_integrated/x123_notifications.csv
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/to_be_integrated/x123_notifications.json
     body:
       encoding: US-ASCII
       string: ''
@@ -128,12 +128,12 @@ http_interactions:
       encoding: UTF-8
       string: |-
         <?xml version="1.0" encoding="UTF-8"?>
-        <ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>quickbooks-desktop-integration</Name><Prefix>to_be_integrated/x123_notifications(</Prefix><Marker></Marker><MaxKeys>1000</MaxKeys><IsTruncated>false</IsTruncated><Contents><Key>to_be_integrated/x123_notifications(1).csv</Key><LastModified>2014-10-30T20:31:19.000Z</LastModified><ETag>&quot;7af0cfecd726913b0ee259d97e3931c3&quot;</ETag><Size>96</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>aws</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents></ListBucketResult>
+        <ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>quickbooks-desktop-integration</Name><Prefix>to_be_integrated/x123_notifications(</Prefix><Marker></Marker><MaxKeys>1000</MaxKeys><IsTruncated>false</IsTruncated><Contents><Key>to_be_integrated/x123_notifications(1).json</Key><LastModified>2014-10-30T20:31:19.000Z</LastModified><ETag>&quot;7af0cfecd726913b0ee259d97e3931c3&quot;</ETag><Size>96</Size><Owner><ID>633a0512f4d370ad97916a11baa863fa62705e09dadcd817eb6cd34989056d9d</ID><DisplayName>aws</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents></ListBucketResult>
     http_version: 
   recorded_at: Thu, 30 Oct 2014 20:46:12 GMT
 - request:
     method: put
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/to_be_integrated/x123_notifications(2).csv
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/to_be_integrated/x123_notifications(2).json
     body:
       encoding: ASCII-8BIT
       string: |-

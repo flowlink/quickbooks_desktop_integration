@@ -25,13 +25,13 @@ module Persistence
       session_id = SecureRandom.uuid
       session_id = "#{extra}#{session_id}" if extra
       session_id = "#{session_id}_#{request_id}"
-      file = "#{@path.base_name}/#{@path.sessions}/#{session_id}.csv"
+      file = "#{@path.base_name}/#{@path.sessions}/#{session_id}.json"
       amazon_s3.export file_name: file, objects: [object]
       session_id
     end
 
     def load_session(session_id)
-      file = "#{path.base_name}/#{path.sessions}/#{session_id}.csv"
+      file = "#{path.base_name}/#{path.sessions}/#{session_id}.json"
       contents = ''
       begin
         contents = amazon_s3.convert_download('csv', amazon_s3.bucket.object(file).get.body.read)

@@ -38,15 +38,15 @@ module Persistence
       s3_object = bucket.object(file_name)
       extension = extension(file_name)
 
-      # file.csv exists?
-      # save it to file(1).csv or file(next_id).csv
+      # file.json exists?
+      # save it to file(1).json or file(next_id).json
       #
       # NOTE if you got a long list this will probably take a while to fetch all
       # files with the prefix?
       if s3_object.exists?
         prefix = file_name.gsub(".#{extension}", '(')
         copies = bucket.objects(prefix: prefix).map do |s3_object|
-          # extracts the id: already_exists/shipments(2).csv -> 2
+          # extracts the id: already_exists/shipments(2).json -> 2
           s3_object.key.match(/\A.*\((\d+)\)\.#{extension}\z/)[1].to_i
         end
 
@@ -73,7 +73,7 @@ module Persistence
     def convert_download(file_type, content)
       case file_type.to_s.downcase
       when 'csv'
-        Converter.csv_to_hash(content)
+        Converter.json_to_hash(content)
       when 'json'
         JSON.parse(content)
       else
