@@ -104,7 +104,7 @@ module QBWC
         <FullName>#{params['quickbooks_income_account']}</FullName>
       </AccountRef>
       <RefNumber>#{inventory['id']}</RefNumber>
-      <Memo>test adjustment</Memo>
+      <Memo>Inventory Adjustment</Memo>
       <InventoryAdjustmentLineAdd>
         <ItemRef>
           <FullName>#{inventory['product_id']}</FullName>
