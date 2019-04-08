@@ -20,6 +20,7 @@ module Persistence
     end
 
     def save_session(object, extra = nil)
+      puts "Object request_id: #{object[:request_id]}, for object: #{object}"
       request_id = object[:request_id]
       session_id = SecureRandom.uuid
       session_id = "#{extra}#{session_id}" if extra
