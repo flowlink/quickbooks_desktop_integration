@@ -34,7 +34,7 @@ module Persistence
       file = "#{path.base_name}/#{path.sessions}/#{session_id}.json"
       contents = ''
       begin
-        contents = amazon_s3.convert_download('csv', amazon_s3.bucket.object(file).get.body.read)
+        contents = amazon_s3.convert_download('json', amazon_s3.bucket.object(file).get.body.read)
       rescue Aws::S3::Errors::NoSuchKey => _e
         puts "File not found[load_session]: #{file}"
       end

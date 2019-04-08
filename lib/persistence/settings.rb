@@ -48,8 +48,6 @@ module Persistence
         flow, extension = filename.split('.')
         object_type = flow.split('_').last.pluralize
 
-        contents = s3_object.get.body.read
-
         # [
         #   {
         #     "connection_id"=>"54591b3a5869632afc090000",
@@ -59,8 +57,7 @@ module Persistence
         #     "quickbooks_force_config"=>"0"
         #   }
         # ]
-        data = Converter.json_to_hash(contents)
-        configs = data.first
+        configs = amazon_s3.convert_download('json', s3_object.get.body.read).first
 
         { object_type => configs }
       end.flatten

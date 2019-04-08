@@ -73,7 +73,7 @@ module Persistence
     def convert_download(file_type, content)
       case file_type.to_s.downcase
       when 'csv'
-        Converter.json_to_hash(content)
+        Converter.csv_to_hash(content)
       when 'json'
         JSON.parse(content)
       else

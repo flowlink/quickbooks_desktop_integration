@@ -108,12 +108,10 @@ module Persistence
         _, _, filename    = s3_object.key.split('/')
         object_type, _, _ = filename.split('_')
 
-        contents = s3_object.get.body.read
-
         s3_object.move_to("#{path.base_name_w_bucket}/#{path.ready}/#{filename}")
 
         # return the content of file to create the requests
-        { object_type => Converter.csv_to_hash(contents) }
+        { object_type => amazon_s3.convert_download('json', s3_object.get.body.read).first }
       end.flatten
     end
 
@@ -174,7 +172,7 @@ module Persistence
             contents = amazon_s3.bucket.object(new_file_name).get.body.read
             amazon_s3.bucket.object(new_file_name).delete
 
-            with_extra_data = Converter.csv_to_hash(contents).first.merge(object[:extra_data])
+            with_extra_data = amazon_s3.convert_download('json', contents).first.merge(object[:extra_data])
             amazon_s3.export file_name: new_file_name, objects: [with_extra_data]
           end
         rescue Aws::S3::Errors::NoSuchKey => e
@@ -208,10 +206,8 @@ module Persistence
         edit_sequence.gsub!('.json', '') unless edit_sequence.nil?
         list_id = nil if edit_sequence.nil? # To fix a problem with multiple files with (n) on it
 
-        contents = s3_object.get.body.read
-
         { object_type.pluralize =>
-              Converter.csv_to_hash(contents).first
+              amazon_s3.convert_download('json', s3_object.get.body.read).first
               .merge({ list_id: list_id, edit_sequence: edit_sequence, object_type: object_type })
               .with_indifferent_access
         }
@@ -250,7 +246,7 @@ module Persistence
               object = types[object_type].with_indifferent_access
 
               filename = "#{path.base_name}/#{path.ready}/#{object_type}_#{id_for_object(object, object_type)}_"
-              
+
               puts "Looking for file: #{filename}"
 
               collection = amazon_s3.bucket.objects(prefix: filename)
@@ -290,7 +286,7 @@ module Persistence
       notification_files.inject('processed' => [], 'failed' => []) do |notifications, s3_object|
         _, _, filename  = s3_object.key.split('/')
         _, status, object_type, object_ref, _ = filename.split('_')
-        content = amazon_s3.convert_download('csv', s3_object.get.body.read).first
+        content = amazon_s3.convert_download('json', s3_object.get.body.read).first
 
         # id_for_notifications is marked as 'depricated'
         #object_ref = id_for_notifications(content, object_ref, object_type)
@@ -329,7 +325,7 @@ module Persistence
       file_name = "#{path.base_name}/#{path.pending}/shipments_#{shipment_id}_.json"
 
       begin
-        contents = amazon_s3.convert_download('csv', amazon_s3.bucket.object(file_name).get.body.read)
+        contents = amazon_s3.convert_download('json', amazon_s3.bucket.object(file_name).get.body.read)
         amazon_s3.bucket.object(file_name).delete
       rescue Aws::S3::Errors::NoSuchKey => _e
         puts "File not found[update_shipments_with_payment_ids]: #{file_name}"
@@ -352,7 +348,7 @@ module Persistence
       file_name = "#{path.base_name}/#{path.pending}/shipments_#{shipment_id}_.json"
 
       begin
-        contents = amazon_s3.convert_download('csv', amazon_s3.bucket.object(file_name).get.body.read)
+        contents = amazon_s3.convert_download('json', amazon_s3.bucket.object(file_name).get.body.read)
         amazon_s3.bucket.object(file_name).delete
       rescue Aws::S3::Errors::NoSuchKey => _e
         puts "File not found[update_shipments_with_qb_ids]: #{file_name}"
@@ -394,7 +390,7 @@ module Persistence
       begin
         file = amazon_s3.bucket.objects(prefix: file_name).first
 
-        contents = amazon_s3.convert_download('csv', file.get.body.read)
+        contents = amazon_s3.convert_download('json', file.get.body.read)
       rescue Aws::S3::Errors::NoSuchKey => _e
         puts "File not found[create_payments_updates_from_shipments]: #{file_name}"
       end
