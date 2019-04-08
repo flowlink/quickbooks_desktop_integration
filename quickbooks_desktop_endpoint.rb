@@ -104,6 +104,9 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
       if records.any?
         names = records.inject([]) do |names, collection|
           name = collection.keys.first
+          puts name
+          puts collection.values.first.inspect
+          
           add_or_merge_value name, collection.values.first
 
           names.push name
