@@ -98,12 +98,12 @@ module QBWC
     <TxnDate>#{Time.parse(record['placed_on']).to_date}</TxnDate>
     <RefNumber>#{record['id']}</RefNumber>
     <VendorAddress>
-      <Addr1>#{record['billing_address']['address1']}</Addr1>
-      <Addr2>#{record['billing_address']['address2']}</Addr2>
-      <City>#{record['billing_address']['city']}</City>
-      <State>#{record['billing_address']['state']}</State>
-      <PostalCode>#{record['billing_address']['zipcode']}</PostalCode>
-      <Country>#{record['billing_address']['country']}</Country>
+      <Addr1>#{record['vendor_address']['address1'] if record['vendor_address']}</Addr1>
+      <Addr2>#{record['vendor_address']['address2'] if record['vendor_address']}</Addr2>
+      <City>#{record['vendor_address']['city'] if record['vendor_address']}</City>
+      <State>#{record['vendor_address']['state'] if record['vendor_address']}</State>
+      <PostalCode>#{record['vendor_address']['zipcode'] if record['vendor_address']}</PostalCode>
+      <Country>#{record['vendor_address']['country'] if record['vendor_address']}</Country>
     </VendorAddress>
     <ShipAddress>
       <Addr1>#{record['shipping_address']['address1']}</Addr1>
