@@ -250,16 +250,16 @@ module QBWC
         end
 
         def build_vendor_from_purchaseorder(object)
-          supplier_address = object['supplier_address']
+          vendor_address = object['vendor_address']
 
           {
-            'id'               => object['email'],
-            'firstname'        => supplier_address['firstname'],
-            'lastname'         => supplier_address['lastname'],
+            'id'               => object['supplier']['name'],
+            'firstname'        => vendor_address['firstname'],
+            'lastname'         => vendor_address['lastname'],
             'name'             => object['supplier']['name'],
-            'company'          => supplier_address['company'],
-            'email'            => object['email'],
-            'supplier_address'  => supplier_address,
+            'company'          => vendor_address['company'],
+            'email'            => object['supplier']['email'],
+            'vendor_address'  => vendor_address,
             'shipping_address' => object['shipping_address']
           }
         end
@@ -352,7 +352,7 @@ module QBWC
         end
 
         def sanitize_purchaseorder(order)
-          ['supplier_address', 'shipping_address'].each do |address_type|
+          ['vendor_address', 'shipping_address'].each do |address_type|
             if order[address_type].nil?
               order[address_type] = { }
             end
