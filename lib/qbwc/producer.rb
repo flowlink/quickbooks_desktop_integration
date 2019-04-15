@@ -78,12 +78,12 @@ module QBWC
     def process_queries(objects_hash)
       puts "Building request queries for #{objects_hash}"
 
-      objects_hash.inject('') do |result, objects|
-        object_type = objects.keys.first
+      objects_hash.inject('') do |result, object_hash|
+        object_type = object_hash.keys.first
 
         class_name = "QBWC::Request::#{object_type.capitalize}".constantize
-
-        result << class_name.generate_request_queries(objects[object_type], @config)
+        records = object_hash.values.flatten
+        result << class_name.generate_request_queries(records, @config)
       end
     end
   end
