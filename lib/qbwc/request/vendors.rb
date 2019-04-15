@@ -4,7 +4,7 @@ module QBWC
       class << self
         def generate_request_insert_update(objects, params = {})
           objects.inject('') do |request, object|
-            sanitize_customer(object)
+            sanitize_vendor(object)
 
             config = { connection_id: params['connection_id'] }.with_indifferent_access
             session_id = Persistence::Session.save(config, object)
@@ -15,7 +15,7 @@ module QBWC
 
         def generate_request_queries(objects, params)
           objects.inject('') do |request, object|
-            sanitize_customer(object)
+            sanitize_vendor(object)
 
             config = { connection_id: params['connection_id'] }.with_indifferent_access
             session_id = Persistence::Session.save(config, object)
@@ -104,27 +104,28 @@ module QBWC
 
         private
 
-        def sanitize_customer(customer)
-          # customer['company'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['company']
-          customer['firstname'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['firstname']
-          # customer['name'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['name']
-          customer['lastname'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['lastname']
-          # customer['email'] = nil unless customer['email'] =~ /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i
+        def sanitize_vendor(vendor)
+          puts "Sanitizing: #{vendor}"
+          # vendor['company'].gsub!(/[^0-9A-Za-z\s]/, '') if vendor['company']
+          vendor['firstname'].gsub!(/[^0-9A-Za-z\s]/, '') if vendor['firstname']
+          # vendor['name'].gsub!(/[^0-9A-Za-z\s]/, '') if vendor['name']
+          vendor['lastname'].gsub!(/[^0-9A-Za-z\s]/, '') if vendor['lastname']
+          # vendor['email'] = nil unless vendor['email'] =~ /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i
 
-          customer['vendor_address']['address1'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['vendor_address'] && customer['vendor_address']['address1']
-          customer['vendor_address']['address2'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['vendor_address'] && customer['vendor_address']['address2']
-          customer['vendor_address']['city'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['vendor_address'] && customer['vendor_address']['city']
-          customer['vendor_address']['state'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['vendor_address'] && customer['vendor_address']['state']
-          customer['vendor_address']['zipcode'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['vendor_address'] && customer['vendor_address']['zipcode']
-          customer['vendor_address']['country'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['vendor_address'] && customer['vendor_address']['country']
-          customer['vendor_address']['phone'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['vendor_address'] && customer['vendor_address']['phone']
-          customer['shipping_address']['address1'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['shipping_address'] && customer['shipping_address']['address1']
-          customer['shipping_address']['address2'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['shipping_address'] && customer['shipping_address']['address2']
-          customer['shipping_address']['city'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['shipping_address'] && customer['shipping_address']['city']
-          customer['shipping_address']['state'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['shipping_address'] && customer['shipping_address']['state']
-          customer['shipping_address']['zipcode'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['shipping_address'] && customer['shipping_address']['zipcode']
-          customer['shipping_address']['phone'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['shipping_address'] && customer['shipping_address']['phone']
-          customer['shipping_address']['country'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['shipping_address'] && customer['shipping_address']['country']
+          vendor['vendor_address']['address1'].gsub!(/[^0-9A-Za-z\s]/, '') if vendor['vendor_address'] && vendor['vendor_address']['address1']
+          vendor['vendor_address']['address2'].gsub!(/[^0-9A-Za-z\s]/, '') if vendor['vendor_address'] && vendor['vendor_address']['address2']
+          vendor['vendor_address']['city'].gsub!(/[^0-9A-Za-z\s]/, '') if vendor['vendor_address'] && vendor['vendor_address']['city']
+          vendor['vendor_address']['state'].gsub!(/[^0-9A-Za-z\s]/, '') if vendor['vendor_address'] && vendor['vendor_address']['state']
+          vendor['vendor_address']['zipcode'].gsub!(/[^0-9A-Za-z\s]/, '') if vendor['vendor_address'] && vendor['vendor_address']['zipcode']
+          vendor['vendor_address']['country'].gsub!(/[^0-9A-Za-z\s]/, '') if vendor['vendor_address'] && vendor['vendor_address']['country']
+          vendor['vendor_address']['phone'].gsub!(/[^0-9A-Za-z\s]/, '') if vendor['vendor_address'] && vendor['vendor_address']['phone']
+          vendor['shipping_address']['address1'].gsub!(/[^0-9A-Za-z\s]/, '') if vendor['shipping_address'] && vendor['shipping_address']['address1']
+          vendor['shipping_address']['address2'].gsub!(/[^0-9A-Za-z\s]/, '') if vendor['shipping_address'] && vendor['shipping_address']['address2']
+          vendor['shipping_address']['city'].gsub!(/[^0-9A-Za-z\s]/, '') if vendor['shipping_address'] && vendor['shipping_address']['city']
+          vendor['shipping_address']['state'].gsub!(/[^0-9A-Za-z\s]/, '') if vendor['shipping_address'] && vendor['shipping_address']['state']
+          vendor['shipping_address']['zipcode'].gsub!(/[^0-9A-Za-z\s]/, '') if vendor['shipping_address'] && vendor['shipping_address']['zipcode']
+          vendor['shipping_address']['phone'].gsub!(/[^0-9A-Za-z\s]/, '') if vendor['shipping_address'] && vendor['shipping_address']['phone']
+          vendor['shipping_address']['country'].gsub!(/[^0-9A-Za-z\s]/, '') if vendor['shipping_address'] && vendor['shipping_address']['country']
         end
       end
     end
