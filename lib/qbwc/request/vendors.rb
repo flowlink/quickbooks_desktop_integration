@@ -14,13 +14,16 @@ module QBWC
         end
 
         def generate_request_queries(objects, params)
+          puts "Vendor request query for #{objects}, #{params}"
+
           objects.inject('') do |request, object|
+            puts "Inject process #{request}, #{object}"
             sanitize_vendor(object)
 
             config = { connection_id: params['connection_id'] }.with_indifferent_access
             session_id = Persistence::Session.save(config, object)
 
-            request << search_xml(object['name'], session_id)
+            request << search_xml(object['id'], session_id)
           end
         end
 
