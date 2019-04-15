@@ -42,7 +42,7 @@ module QBWC
    <VendorAdd>
     <Name>#{object['name']}</Name>
     #{"<CompanyName>#{object['company']}</CompanyName>" if object['company']}
-    <FirstName>#{object['firstname'].empty? ? object['name'].split.first : object['firstname']}</FirstName>
+    <FirstName>#{object['firstname'] || object['name'].split.first}</FirstName>
     #{"<LastName>#{object['lastname'] || object['name'].split.last}</LastName>" if object['lastname']}
     <VendorAddress>
       <Addr1>#{object['vendor_address']['address1'] if object['vendor_address']}</Addr1>
