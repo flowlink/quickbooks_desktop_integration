@@ -677,7 +677,7 @@ module Persistence
       elsif key == 'shipments'
         object['name']
       elsif key == 'vendors'
-        object['name']
+        object['name'] || object['id']
       elsif key == 'products'
         object['product_id']
       else
