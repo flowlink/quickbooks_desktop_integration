@@ -41,9 +41,9 @@ module QBWC
 <VendorAddRq requestID="#{session_id}">
    <VendorAdd>
     <Name>#{object['name']}</Name>
-    #{"<CompanyName>#{object['company']}</CompanyName>" unless object['company'].empty?}
+    #{"<CompanyName>#{object['company']}</CompanyName>" if object['company']}
     <FirstName>#{object['firstname'].empty? ? object['name'].split.first : object['firstname']}</FirstName>
-    #{"<LastName>#{object['lastname'] || object['name'].split.last}</LastName>" unless object['lastname'].empty?}
+    #{"<LastName>#{object['lastname'] || object['name'].split.last}</LastName>" if object['lastname']}
     <VendorAddress>
       <Addr1>#{object['vendor_address']['address1'] if object['vendor_address']}</Addr1>
       #{"<Addr2>#{object['vendor_address']['address2']}</Addr2>" if object['vendor_address'] && object['vendor_address']['address2']}
