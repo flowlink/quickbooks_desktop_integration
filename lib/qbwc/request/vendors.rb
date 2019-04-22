@@ -56,15 +56,15 @@ module QBWC
       <Country>#{object['vendor_address']['country'] if object['vendor_address']}</Country>
     </VendorAddress>
     <ShipAddress>
-      <Addr1>#{object['shipping_address']['address1'] if object['shipping_address']}</Addr1>
-      #{"<Addr2>#{object['shipping_address']['address2']}</Addr2>" if object['shipping_address'] && object['shipping_address']['address2']}
-      <City>#{object['shipping_address']['city'] if object['shipping_address']}</City>
-      <State>#{object['shipping_address']['state'] if object['shipping_address']}</State>
-      <PostalCode>#{object['shipping_address']['zipcode'] if object['shipping_address']}</PostalCode>
-      <Country>#{object['shipping_address']['country'] if object['shipping_address']}</Country>
+      <Addr1>#{object['ship_from_address']['address1'] if object['ship_from_address']}</Addr1>
+      #{"<Addr2>#{object['ship_from_address']['address2']}</Addr2>" if object['ship_from_address'] && object['ship_from_address']['address2']}
+      <City>#{object['ship_from_address']['city'] if object['ship_from_address']}</City>
+      <State>#{object['ship_from_address']['state'] if object['ship_from_address']}</State>
+      <PostalCode>#{object['ship_from_address']['zipcode'] if object['ship_from_address']}</PostalCode>
+      <Country>#{object['ship_from_address']['country'] if object['ship_from_address']}</Country>
     </ShipAddress>
     <Phone>#{object['vendor_address']['phone'] if object['vendor_address']}</Phone>
-    <AltPhone>#{object['shipping_address']['phone'] if object['shipping_address']}</AltPhone>
+    <AltPhone>#{object['ship_from_address']['phone'] if object['ship_from_address']}</AltPhone>
     <Email>#{object['email']}</Email>
    </VendorAdd>
 </VendorAddRq>
@@ -90,15 +90,15 @@ module QBWC
         <Country>#{object['vendor_address']['country'] if object['vendor_address']}</Country>
       </VendorAddress>
       <ShipAddress>
-        <Addr1>#{object['shipping_address']['address1'] if object['shipping_address']}</Addr1>
-        <Addr2>#{object['shipping_address']['address2'] if object['shipping_address']}</Addr2>
-        <City>#{object['shipping_address']['city'] if object['shipping_address']}</City>
-        <State>#{object['shipping_address']['state'] if object['shipping_address']}</State>
-        <PostalCode>#{object['shipping_address']['zipcode'] if object['shipping_address']}</PostalCode>
-        <Country>#{object['shipping_address']['country'] if object['shipping_address']}</Country>
+        <Addr1>#{object['ship_from_address']['address1'] if object['ship_from_address']}</Addr1>
+        <Addr2>#{object['ship_from_address']['address2'] if object['ship_from_address']}</Addr2>
+        <City>#{object['ship_from_address']['city'] if object['ship_from_address']}</City>
+        <State>#{object['ship_from_address']['state'] if object['ship_from_address']}</State>
+        <PostalCode>#{object['ship_from_address']['zipcode'] if object['ship_from_address']}</PostalCode>
+        <Country>#{object['ship_from_address']['country'] if object['ship_from_address']}</Country>
       </ShipAddress>
       <Phone>#{object['vendor_address']['phone'] if object['vendor_address']}</Phone>
-      <AltPhone>#{object['shipping_address']['phone'] if object['shipping_address']}</AltPhone>
+      <AltPhone>#{object['ship_from_address']['phone'] if object['ship_from_address']}</AltPhone>
       <Email>#{object['email']}</Email>
    </VendorMod>
 </VendorModRq>
@@ -122,13 +122,13 @@ module QBWC
           vendor['vendor_address']['zipcode'].gsub!(/[^0-9A-Za-z\s]/, '') if vendor['vendor_address'] && vendor['vendor_address']['zipcode']
           vendor['vendor_address']['country'].gsub!(/[^0-9A-Za-z\s]/, '') if vendor['vendor_address'] && vendor['vendor_address']['country']
           vendor['vendor_address']['phone'].gsub!(/[^0-9A-Za-z\s]/, '') if vendor['vendor_address'] && vendor['vendor_address']['phone']
-          vendor['shipping_address']['address1'].gsub!(/[^0-9A-Za-z\s]/, '') if vendor['shipping_address'] && vendor['shipping_address']['address1']
-          vendor['shipping_address']['address2'].gsub!(/[^0-9A-Za-z\s]/, '') if vendor['shipping_address'] && vendor['shipping_address']['address2']
-          vendor['shipping_address']['city'].gsub!(/[^0-9A-Za-z\s]/, '') if vendor['shipping_address'] && vendor['shipping_address']['city']
-          vendor['shipping_address']['state'].gsub!(/[^0-9A-Za-z\s]/, '') if vendor['shipping_address'] && vendor['shipping_address']['state']
-          vendor['shipping_address']['zipcode'].gsub!(/[^0-9A-Za-z\s]/, '') if vendor['shipping_address'] && vendor['shipping_address']['zipcode']
-          vendor['shipping_address']['phone'].gsub!(/[^0-9A-Za-z\s]/, '') if vendor['shipping_address'] && vendor['shipping_address']['phone']
-          vendor['shipping_address']['country'].gsub!(/[^0-9A-Za-z\s]/, '') if vendor['shipping_address'] && vendor['shipping_address']['country']
+          vendor['ship_from_address']['address1'].gsub!(/[^0-9A-Za-z\s]/, '') if vendor['ship_from_address'] && vendor['ship_from_address']['address1']
+          vendor['ship_from_address']['address2'].gsub!(/[^0-9A-Za-z\s]/, '') if vendor['ship_from_address'] && vendor['ship_from_address']['address2']
+          vendor['ship_from_address']['city'].gsub!(/[^0-9A-Za-z\s]/, '') if vendor['ship_from_address'] && vendor['ship_from_address']['city']
+          vendor['ship_from_address']['state'].gsub!(/[^0-9A-Za-z\s]/, '') if vendor['ship_from_address'] && vendor['ship_from_address']['state']
+          vendor['ship_from_address']['zipcode'].gsub!(/[^0-9A-Za-z\s]/, '') if vendor['ship_from_address'] && vendor['ship_from_address']['zipcode']
+          vendor['ship_from_address']['phone'].gsub!(/[^0-9A-Za-z\s]/, '') if vendor['ship_from_address'] && vendor['ship_from_address']['phone']
+          vendor['ship_from_address']['country'].gsub!(/[^0-9A-Za-z\s]/, '') if vendor['ship_from_address'] && vendor['ship_from_address']['country']
         end
       end
     end

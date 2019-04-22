@@ -260,7 +260,7 @@ module QBWC
             'company'          => vendor_address['company'],
             'email'            => object['supplier']['email'],
             'vendor_address'  => vendor_address,
-            'shipping_address' => object['shipping_address']
+            'ship_from_address' => object['ship_from_address']
           }
         end
 
