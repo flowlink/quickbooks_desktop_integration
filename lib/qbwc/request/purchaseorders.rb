@@ -30,6 +30,29 @@ module QBWC
           end
         end
 
+        def polling_others_items_xml(_timestamp, _config)
+          # nothing on this class
+          ''
+        end
+
+        def polling_current_items_xml(timestamp, config)
+          session_id = Persistence::Session.save(config, 'polling' => timestamp)
+
+          time = Time.parse(timestamp).in_time_zone 'Pacific Time (US & Canada)'
+
+          <<-XML
+            <!-- polling invoices -->
+            <PurchaseOrderQueryRq requestID="#{session_id}">
+            <MaxReturned>100</MaxReturned>
+              <ModifiedDateRangeFilter>
+                <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
+              </ModifiedDateRangeFilter>
+              <IncludeLineItems>true</IncludeLineItems>
+              <!-- <IncludeRetElement>Name</IncludeRetElement> -->
+            </PurchaseOrderQueryRq>
+          XML
+        end
+
         def search_xml(order_id, session_id)
           <<-XML
 <PurchaseOrderQueryRq requestID="#{session_id}">
