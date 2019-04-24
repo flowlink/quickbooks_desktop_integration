@@ -45,8 +45,11 @@ module QBWC
             puts "Customer object: #{object}"
             puts "Customer object list id: #{object['list_id']}"
 
-            request << object['list_id'].to_s.empty? ? search_xml_by_name(object['name'], session_id) :
-                                                      search_xml_by_id(object['list_id'], session_id)
+            if object['list_id'].to_s.empty?
+              request << search_xml_by_name(object['name'], session_id)
+            else
+              request << search_xml_by_id(object['list_id'], session_id)
+            end
 
 
           end
