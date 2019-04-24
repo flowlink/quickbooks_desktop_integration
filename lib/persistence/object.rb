@@ -675,7 +675,7 @@ module Persistence
       if key == 'customers'
         object['name']
       elsif key == 'payments'
-        object['list_id']
+        object['ref_number']
       elsif key == 'shipments'
         object['name']
       elsif key == 'vendors'
