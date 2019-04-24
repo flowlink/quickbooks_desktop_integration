@@ -44,7 +44,7 @@ module QBWC
 
             puts "Customer object: #{object}"
             puts "Customer object list id: #{object['list_id']}"
-            
+
             request << object['list_id'] ? search_xml_by_id(object['list_id'], session_id) :
                                            search_xml_by_name(object['name'], session_id)
 
@@ -52,6 +52,7 @@ module QBWC
         end
 
         def search_xml_by_id(object_id, session_id)
+          puts "Building customer xml by list_id #{object_id}, #{session_id}"
           <<-XML
 <CustomerQueryRq requestID="#{session_id}">
   <MaxReturned>50</MaxReturned>
@@ -63,6 +64,7 @@ module QBWC
         end
 
         def search_xml_by_name(object_id, session_id)
+          puts "Building customer xml by name #{object_id}, #{session_id}"
           <<-XML
 <CustomerQueryRq requestID="#{session_id}">
   <MaxReturned>50</MaxReturned>
