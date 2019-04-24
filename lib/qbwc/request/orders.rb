@@ -272,7 +272,7 @@ module QBWC
 
           {
             'list_id'          => object['list_id'],
-            'id'               => object['email'],
+            'id'               => object['customer']['name'],
             'firstname'        => billing_address['firstname'],
             'lastname'         => billing_address['lastname'],
             'name'             => object['customer']['name'],
