@@ -77,7 +77,8 @@ module QBWC
             id: record['Name'],
             sku: record['Name'],
             product_id: record['Name'],
-            quantity: record['QuantityOnHand']
+            quantity: record['QuantityOnHand'],
+            grabbed_at: Time.now.to_s
           }
         end
       end
