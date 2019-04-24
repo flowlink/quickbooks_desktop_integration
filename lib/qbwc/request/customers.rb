@@ -43,7 +43,8 @@ module QBWC
             session_id = Persistence::Session.save(config, object)
 
             puts "Customer object: #{object}"
-
+            puts "Customer object list id: #{object['list_id']}"
+            
             request << object['list_id'] ? search_xml_by_id(object['list_id'], session_id) :
                                            search_xml_by_name(object['name'], session_id)
 
