@@ -3,6 +3,9 @@ module QBWC
     class Payments
       class << self
         def generate_request_insert_update(objects, params = {})
+          "Generating request or insert/update for: #{}"
+
+
           objects.inject('') do |request, object|
             config = { connection_id: params['connection_id'] }.with_indifferent_access
             session_id = Persistence::Session.save(config, object)
@@ -22,7 +25,7 @@ module QBWC
             config = { connection_id: params['connection_id'] }.with_indifferent_access
             session_id = Persistence::Session.save(config, object, extra)
 
-            request << search_xml(object['id'], session_id)
+            request << search_xml(object['ref_number'], session_id)
           end
         end
 
@@ -61,7 +64,7 @@ module QBWC
 
         def payment_apply_invoice_xml(payment, _params)
           <<-XML
-              <RefNumber>#{payment['object_ref']}</RefNumber>
+              <RefNumber>#{payment['ref_number']}</RefNumber>
               <TotalAmount>#{'%.2f' % payment['amount'].to_f}</TotalAmount>
               <AppliedToTxnMod>
                 <TxnID>#{payment['invoice_txn_id']}</TxnID>
@@ -75,7 +78,7 @@ module QBWC
               <CustomerRef>
                 <FullName>#{payment['customer']['name']}</FullName>
               </CustomerRef>
-              <RefNumber>#{payment['object_ref']}</RefNumber>
+              <RefNumber>#{payment['ref_number']}</RefNumber>
               <TotalAmount>#{'%.2f' % payment['amount'].to_f}</TotalAmount>
               <PaymentMethodRef>
                 <FullName>#{payment['payment_method']}</FullName>
