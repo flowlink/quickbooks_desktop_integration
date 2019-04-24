@@ -10,8 +10,8 @@ module QBWC
       def handle_error(errors, config)
         errors.each do |error|
           Persistence::Object.handle_error(config,
-                                           error.merge(context: 'Querying inventory adjustments'),
-                                           'inventories',
+                                           error.merge(context: 'Querying purchase orders'),
+                                           'purchaseorders',
                                            error[:request_id])
         end
       end
@@ -20,9 +20,9 @@ module QBWC
         return if records.empty?
 
         receive_configs = config[:receive] || []
-        inventory_params = receive_configs.find { |c| c['inventories'] }
+        inventory_params = receive_configs.find { |c| c['purchaseorders'] }
 
-        payload = { inventories: inventories_to_flowlink }
+        payload = { purchaseorders: purchaseorders_to_flowlink }
         config = { origin: 'quickbooks' }.merge config
 
         poll_persistence = Persistence::Polling.new(config, payload)
@@ -33,7 +33,7 @@ module QBWC
 
       private
 
-      def inventories_to_flowlink
+      def purchaseorders_to_flowlink
         records.reject { |item| item.nil? || item['PurchaseOrderLineRet'].nil? }.map do |record|
           object ||= [] << (record['PurchaseOrderLineRet'].is_a?(Array) ?
                             record['PurchaseOrderLineRet'] :
