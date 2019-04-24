@@ -279,7 +279,8 @@ module QBWC
             'company'          => billing_address['company'],
             'email'            => object['email'],
             'billing_address'  => billing_address,
-            'shipping_address' => object['shipping_address']
+            'shipping_address' => object['shipping_address'],
+            'request_id' => object['request_id']
           }.compact
         end
 
