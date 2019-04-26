@@ -19,6 +19,8 @@ module QBWC
       def process(config = {})
         return if records.empty?
 
+        puts "Processing purchase orders: #{records}"
+
         receive_configs = config[:receive] || []
         inventory_params = receive_configs.find { |c| c['purchaseorders'] }
 
@@ -34,11 +36,13 @@ module QBWC
       private
 
       def purchaseorders_to_flowlink
-        records.reject { |item| item.nil? || item['PurchaseOrderLineRet'].nil? }.map do |record|
-          object ||= [] << (record['PurchaseOrderLineRet'].is_a?(Array) ?
-                            record['PurchaseOrderLineRet'] :
-                            [record['PurchaseOrderLineRet']]).select { |line| line.key?('ItemRef') }.map { |item| { id: item['ItemRef']['FullName'] } }
-        end.flatten
+        records.map do |record|
+          puts "Purchase Order from QBE: #{record}"
+          {
+            id: record['RefNumber'],
+
+          }.compact
+        end
       end
     end
   end
