@@ -664,6 +664,7 @@ module Persistence
       %w(orders shipments invoices salesreceipts purchaseorders).include?(payload_key.pluralize)
     end
 
+
     def id_of_object(object)
       id_for_object(object, payload_key.pluralize)
     end
