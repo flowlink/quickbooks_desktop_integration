@@ -56,6 +56,11 @@ module QBWC
           }.compact
         end
       end
+
+      def last_time_modified
+        time = records.sort_by { |r| r['TimeModified'] }.last['TimeModified'].to_s
+        Time.parse(time).in_time_zone('Pacific Time (US & Canada)').iso8601
+      end
     end
   end
 end
