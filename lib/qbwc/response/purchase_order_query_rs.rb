@@ -47,6 +47,17 @@ module QBWC
 
       private
 
+      def objects_to_update(config)
+        records.map do |record|
+          {
+            object_type: 'purchaseorder',
+            object_ref: record['RefNumber'],
+            list_id: record['TxnID'],
+            edit_sequence: record['EditSequence']
+          }.with_indifferent_access
+        end
+      end
+
       def purchaseorders_to_flowlink
         records.map do |record|
           puts "Purchase Order from QBE: #{record}"
