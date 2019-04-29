@@ -175,7 +175,7 @@ module QBWC
           line = {
             'product_id' => p_id,
             'quantity' => 0,
-            'price' => (adjustment['value'].to_f * multiplier).to_s
+            'price' => sprintf('%.2f', (adjustment['value'].to_f * multiplier))
           }
 
           line['tax_code_id'] = adjustment['tax_code_id'] if adjustment['tax_code_id']
@@ -187,7 +187,7 @@ module QBWC
           line = {
               'product_id' => QBWC::Request::Adjustments.adjustment_product_from_qb('tax', params),
               'quantity' => 0,
-              'price' => tax_line_item['value'],
+              'price' => sprintf('%.2f', tax_line_item['value']),
               'name' => tax_line_item['name']
           }
 
