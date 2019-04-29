@@ -179,6 +179,7 @@ module QBWC
           }
 
           line['tax_code_id'] = adjustment['tax_code_id'] if adjustment['tax_code_id']
+          line['amount'] = adjustment['amount'] if adjustment['amount']
 
           sales_order_line_add line
         end
@@ -237,6 +238,7 @@ module QBWC
       #{quantity(line)}
       <Rate>#{'%.2f' % line['price'].to_f}</Rate>
       #{tax_code_line(line)}
+      #{amount_line(line)}
           XML
         end
 
@@ -256,6 +258,16 @@ module QBWC
       </SalesTaxCodeRef>
           XML
         end
+
+        def amount_line(line)
+          return '' if line['amount'].to_s.empty?
+
+          <<-XML
+
+      <Amount>#{'%.2f' % line['amount'].to_f}</Amount>
+          XML
+        end
+
 
         def cancel_order?(object)
           return '' unless object['status'].to_s == 'cancelled'
