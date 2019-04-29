@@ -33,6 +33,7 @@ module Persistence
         collection.map do |s3_object|
           _, _, filename = s3_object.key.split('/')
           object_type    = filename.split('_').first
+          object_type    = "purchase_orders" if object_type == "purchaseorders"
 
           content = amazon_s3.convert_download('json', s3_object.get.body.read)
 
