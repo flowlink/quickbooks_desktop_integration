@@ -63,7 +63,22 @@ module QBWC
           puts "Purchase Order from QBE: #{record}"
           {
             id: record['RefNumber'],
-
+            transaction_id: record['TxnId'],
+            is_fully_received: record['IsFullyReceived'],
+            vendor: {
+              name: record['VendorRef']['FullName'],
+              external_id: record['VendorRef']['ListID']
+            },
+            date: record['Txndate'].to_s,
+            total: record['TotalAmount'],
+            line_items: record['PurchaseOrderLineRet'].map do |item|
+              {
+                product_id: item['ItemRef']['FullName'],
+                description: item['Desc'],
+                quantity: item['Quantity'],
+                value: item['Amount']
+              }
+            end
           }.compact
         end
       end
