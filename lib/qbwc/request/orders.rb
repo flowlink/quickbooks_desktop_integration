@@ -300,7 +300,7 @@ module QBWC
           object.first['line_items'].reject { |line| line['quantity'].to_f == 0.0 }.map do |item|
             {
               'id'          => item['product_id'],
-              'product_id'  => item['product_id']
+              'product_id'  => item['product_id'],
               'description' => item['description'],
               'price'       => item['price'],
               'cost_price'  => item['price']
