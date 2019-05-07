@@ -100,6 +100,12 @@ module QBWC
               <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
               <!-- <IncludeRetElement>Name</IncludeRetElement> -->
             </ItemInventoryQueryRq>
+            <!-- polling assembled products -->
+            <ItemInventoryAssemblyQueryRq requestID="#{session_id}">
+            <MaxReturned>100</MaxReturned>
+              <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
+              <!-- <IncludeRetElement>Name</IncludeRetElement> -->
+            </ItemInventoryAssemblyQueryRq>
           XML
         end
       end
