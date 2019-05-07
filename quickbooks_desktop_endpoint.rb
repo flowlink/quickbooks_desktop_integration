@@ -24,7 +24,7 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
         # NOTE could save us some time and http calls by not persisting configs
         # on every call. Use same approach on polling instead by always setting
         # this flag back to false on return?
-        quickbooks_force_config: true
+        quickbooks_force_config: 'true'
       }.merge(@config).with_indifferent_access
 
       Persistence::Settings.new(config).setup
@@ -46,7 +46,7 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
     config = {
       connection_id: request.env['HTTP_X_HUB_STORE'],
       flow: "get_notifications",
-      quickbooks_force_config: true
+      quickbooks_force_config: 'true'
     }.merge(@config).with_indifferent_access
 
     integration = Persistence::Object.new config, @payload

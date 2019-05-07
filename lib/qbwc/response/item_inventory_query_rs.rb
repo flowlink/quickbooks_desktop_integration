@@ -38,7 +38,7 @@ module QBWC
           poll_persistence.save_for_polling
 
           product_params['products']['quickbooks_since'] = last_time_modified
-          product_params['products']['quickbooks_force_config'] = true
+          product_params['products']['quickbooks_force_config'] = 'true'
 
           # Override configs to update timestamp so it doesn't keep geting the
           # same inventories

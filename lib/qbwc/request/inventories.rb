@@ -46,7 +46,7 @@ module QBWC
                              .settings('get_').find { |setting| setting.keys.first == 'inventories' }
 
           inventory_params['inventories']['quickbooks_since'] = Time.now.in_time_zone('Pacific Time (US & Canada)').iso8601
-          inventory_params['inventories']['quickbooks_force_config'] = true
+          inventory_params['inventories']['quickbooks_force_config'] = 'true'
           Persistence::Settings.new(inventory_params['inventories'].with_indifferent_access).setup
 
           time = Time.parse(timestamp).in_time_zone 'Pacific Time (US & Canada)'

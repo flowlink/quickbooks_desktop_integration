@@ -30,7 +30,7 @@ module QBWC
           poll_persistence.save_for_polling
 
           invoice_params['invoices']['quickbooks_since'] = last_time_modified
-          invoice_params['invoices']['quickbooks_force_config'] = true
+          invoice_params['invoices']['quickbooks_force_config'] = 'true'
 
           # Override configs to update timestamp so it doesn't keep geting the
           # same inventories
