@@ -90,20 +90,18 @@ module QBWC
             id: record['Name'],
             sku: record['Name'],
             product_id: record['Name'],
-            quantity: record['QuantityOnHand']
+            fullname: record['FullName']
+            quantity: record['QuantityOnHand'],
+            is_active: record['IsActive'],
+            unit_measure: record.dig('UnitOfMeasureSetRef', 'FullName'),
+            sales_price: record['SalesPrice'],
+            purchase_description: record['PurchaseDesc'],
+            purchase_cost: record['PurchaseCost'],
+            vendor_name: record.dig('PrefVendorRef', 'FullName'),
+            average_cost: record['AverageCost'],
+            quantity_on_order: record['QuantityOnOrder'],
+            quantity_on_sales_order: record['QuantityOnSalesOrder']
           }
-
-          # The price can be in many places :/
-          if sales = record['SalesAndPurchase']
-            object[:price]      = sales['SalesPrice']
-            object[:cost_price] = sales['PurchaseCost']
-          elsif sales = record['SalesOrPurchase']
-            object[:price]      = sales['Price']
-            object[:cost_price] = sales['Cost']
-          else
-            object[:price]      = record['SalesPrice']
-            object[:cost_price] = record['PurchaseCost']
-          end
 
           object
         end
