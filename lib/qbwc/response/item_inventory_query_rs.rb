@@ -78,7 +78,8 @@ module QBWC
             sku: record['Name'],
             product_id: record['Name'],
             quantity: record['QuantityOnHand'],
-            grabbed_at: Time.now.to_s
+            grabbed_at: Time.now.to_s,
+            fullname: record['FullName']
           }
         end
       end
@@ -90,6 +91,7 @@ module QBWC
             id: record['Name'],
             sku: record['Name'],
             product_id: record['Name'],
+            name: record['Name'],
             fullname: record['FullName'],
             quantity: record['QuantityOnHand'],
             is_active: record['IsActive'],
