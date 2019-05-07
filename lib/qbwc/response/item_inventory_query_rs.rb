@@ -97,7 +97,10 @@ module QBWC
             sales_price: record['SalesPrice'],
             purchase_description: record['PurchaseDesc'],
             purchase_cost: record['PurchaseCost'],
-            vendor_name: record.dig('PrefVendorRef', 'FullName'),
+            vendor: {
+              name: record.dig('PrefVendorRef', 'FullName'),
+              external_id: record.dig('PrefVendorRef', 'ListID')
+            },
             average_cost: record['AverageCost'],
             quantity_on_order: record['QuantityOnOrder'],
             quantity_on_sales_order: record['QuantityOnSalesOrder']
