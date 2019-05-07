@@ -90,7 +90,7 @@ module QBWC
             id: record['Name'],
             sku: record['Name'],
             product_id: record['Name'],
-            fullname: record['FullName']
+            fullname: record['FullName'],
             quantity: record['QuantityOnHand'],
             is_active: record['IsActive'],
             unit_measure: record.dig('UnitOfMeasureSetRef', 'FullName'),
