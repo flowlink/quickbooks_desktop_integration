@@ -61,6 +61,9 @@ module QBWC
       def purchaseorders_to_flowlink
         records.map do |record|
           puts "Purchase Order from QBE: #{record}"
+          if record['PurchaseOrderLineRet'].is_a?(Hash)
+            record['PurchaseOrderLineRet'] = [record['PurchaseOrderLineRet']]
+          end
           {
             id: record['RefNumber'],
             transaction_id: record['TxnId'],
@@ -71,7 +74,7 @@ module QBWC
             },
             date: record['Txndate'].to_s,
             total: record['TotalAmount'],
-            line_items: record['PurchaseOrderLineRet'].to_a.map do |item|
+            line_items: record['PurchaseOrderLineRet'].map do |item|
               puts "purchase order item: #{item}"
               {
                 product_id: item.dig('ItemRef','FullName'),
