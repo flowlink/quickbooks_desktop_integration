@@ -66,14 +66,14 @@ module QBWC
             transaction_id: record['TxnId'],
             is_fully_received: record['IsFullyReceived'],
             vendor: {
-              name: record['VendorRef']['FullName'],
-              external_id: record['VendorRef']['ListID']
+              name: record.dig('VendorRef','FullName'),
+              external_id: record.dig('VendorRef','ListID')
             },
             date: record['Txndate'].to_s,
             total: record['TotalAmount'],
             line_items: record['PurchaseOrderLineRet'].map do |item|
               {
-                product_id: item['ItemRef']['FullName'],
+                product_id: item.dig('ItemRef','FullName'),
                 description: item['Desc'],
                 quantity: item['Quantity'],
                 value: item['Amount']
