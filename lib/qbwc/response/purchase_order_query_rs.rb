@@ -71,7 +71,7 @@ module QBWC
             },
             date: record['Txndate'].to_s,
             total: record['TotalAmount'],
-            line_items: record['PurchaseOrderLineRet'].map do |item|
+            line_items: record['PurchaseOrderLineRet'].to_a.map do |item|
               puts "purchase order item: #{item}"
               {
                 product_id: item.dig('ItemRef','FullName'),
