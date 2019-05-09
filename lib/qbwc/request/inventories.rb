@@ -59,6 +59,11 @@ module QBWC
        <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
       </ItemInventoryQueryRq>
 
+      <ItemInventoryAssemblyQueryRq requestID="#{session_id}">
+        <MaxReturned>100</MaxReturned>
+        <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
+      </ItemInventoryAssemblyQueryRq>
+
       <PurchaseOrderQueryRq requestID="#{session_id}">
         <MaxReturned>100</MaxReturned>
         <ModifiedDateRangeFilter>
