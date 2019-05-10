@@ -126,6 +126,9 @@ module QBWC
 
     #{customer_ref_for_invoice(record)}
     #{class_ref_for_invoice(record)}
+    #{po_number(record)}
+    #{sales_rep(record)}
+    #{shipping_method(record)}
     <TxnDate>#{Time.parse(record['placed_on']).to_date}</TxnDate>
     <RefNumber>#{record['id']}</RefNumber>
     <BillAddress>
@@ -144,6 +147,37 @@ module QBWC
       <PostalCode>#{record['shipping_address']['zipcode']}</PostalCode>
       <Country>#{record['shipping_address']['country']}</Country>
     </ShipAddress>
+          XML
+        end
+
+        def shipping_method(record)
+          return '' unless record.dig('shipping_method','name')
+
+          <<-XML
+
+          <ShippingMethodRef>
+            <FullName>#{record['shipping_method']['name']}</FullName>
+          </ShippingMethodRef>
+          XML
+        end
+
+        def sales_rep(record)
+          return '' unless record.dig('sales_rep','name')
+
+          <<-XML
+
+          <SalesRepRef>
+            <FullName>#{record['sales_rep']['name']}</FullName>
+          </SalesRepRef>
+          XML
+        end
+
+        def po_number(record)
+          return '' unless record['po_number']
+
+          <<-XML
+
+          <PONumber>#{record['po_number']}</PONumber>
           XML
         end
 
