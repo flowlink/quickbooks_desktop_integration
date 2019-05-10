@@ -74,13 +74,41 @@ module QBWC
                  <FullName>#{product['income_account'] || params['quickbooks_income_account']}</FullName>
               </IncomeAccountRef>
               <PurchaseCost>#{'%.2f' % product['cost'].to_f}</PurchaseCost>
-              <QuantityOnHand>#{product['quantity']}</QuantityOnHand>
+              #{quantity(product)}
+              #{manufacturer_part_number(product)}
+              #{unit_of_measure(product)}
               <COGSAccountRef>
                 <FullName>#{product['cogs_account'] || params['quickbooks_cogs_account']}</FullName>
               </COGSAccountRef>
               <AssetAccountRef>
                  <FullName>#{product['inventory_account'] || params['quickbooks_inventory_account']}</FullName>
               </AssetAccountRef>
+          XML
+        end
+
+        def quantity(product)
+          return '' unless product['quantity']
+
+          <<-XML
+              <QuantityOnHand>#{product['quantity']}</QuantityOnHand>
+          XML
+        end
+
+        def manufacturer_part_number(product)
+          return '' unless product['manufacturer_part_number']
+
+          <<-XML
+              <ManufacturerPartNumber>#{product['manufacturer_part_number']}</ManufacturerPartNumber>
+          XML
+        end
+
+        def unit_of_measure(product)
+          return '' unless product['unit_of_measure']
+
+          <<-XML
+              <UnitOfMeasureSetRef>
+                <FullName>#{product['unit_of_measure']}</FullName>
+              </UnitOfMeasureSetRef>
           XML
         end
 
