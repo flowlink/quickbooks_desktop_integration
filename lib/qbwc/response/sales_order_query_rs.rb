@@ -21,6 +21,25 @@ module QBWC
 
         puts records.inspect
 
+        receive_configs = config[:receive] || []
+        order_params = receive_configs.find { |c| c['orders'] }
+
+        if order_params
+          payload = { orders: orders_to_flowlink }
+          config = { origin: 'quickbooks' }.merge config.reject{|k,v| k == :origin || k == "origin"}
+
+          poll_persistence = Persistence::Polling.new(config, payload)
+          poll_persistence.save_for_polling
+
+          order_params['orders']['quickbooks_since'] = last_time_modified
+          order_params['orders']['quickbooks_force_config'] = 'true'
+
+          # Override configs to update timestamp so it doesn't keep geting the
+          # same inventories
+          params = order_params['orders']
+          Persistence::Settings.new(params.with_indifferent_access).setup
+        end
+
         config  = config.merge(origin: 'flowlink', connection_id: config[:connection_id]).with_indifferent_access
         objects_updated = objects_to_update(config)
 
@@ -45,6 +64,11 @@ module QBWC
             extra_data: build_extra_data(config, record)
           }.with_indifferent_access
         end
+      end
+
+      def last_time_modified
+        time = records.sort_by { |r| r['TimeModified'] }.last['TimeModified'].to_s
+        Time.parse(time).in_time_zone('Pacific Time (US & Canada)').iso8601
       end
 
       def build_extra_data(config, record)
@@ -81,14 +105,11 @@ module QBWC
         hash
       end
 
-      def to_flowlink
-        # TODO finish the map
+      def orders_to_flowlink
         records.map do |record|
-          object = {
+          {
             id: record['RefNumber']
           }
-
-          object
         end
       end
     end
