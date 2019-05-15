@@ -107,6 +107,9 @@ module QBWC
 
       def invoices_to_flowlink
         records.map do |record|
+          puts "invoice from qbe: #{record}"
+          
+
           {
             id: record['RefNumber'],
             is_pending: record['IsPending'],

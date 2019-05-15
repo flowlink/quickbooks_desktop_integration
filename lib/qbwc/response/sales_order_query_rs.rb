@@ -107,6 +107,8 @@ module QBWC
 
       def orders_to_flowlink
         records.map do |record|
+          puts "sales order from qbe: #{record}"
+          
           {
             id: record['RefNumber']
           }
