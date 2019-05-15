@@ -122,7 +122,7 @@ module QBWC
             transaction_number: record["TxnNumber"],
             customer: {
               name: record.dig("CustomerRef", "FullName"),
-              external_id: record.dog("CustomerRef", "ListID")
+              external_id: record.dig("CustomerRef", "ListID")
             },
             class_ref: record.dig("ClassRef", "FullName"),
             transaction_date: record["TxnDate"],
