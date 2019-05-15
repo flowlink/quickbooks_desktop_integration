@@ -158,6 +158,8 @@ module QBWC
             line_items: record["SalesOrderLineRet"] && record["SalesOrderLineRet"].map do |item|
               {
                 product_id: item.dig("ItemRef", "FullName"),
+                name: item.dig("ItemRef", "FullName"),
+                sku: item.dig("ItemRef", "FullName"),
                 line_id: item["TxnLineID"],
                 description: item["Desc"],
                 quantity: item["Quantity"],
