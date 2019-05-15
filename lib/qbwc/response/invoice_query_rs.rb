@@ -108,15 +108,86 @@ module QBWC
       def invoices_to_flowlink
         records.map do |record|
           puts "invoice from qbe: #{record}"
+          if record['InvoiceLineRet'].is_a?(Hash)
+            record['InvoiceLineRet'] = [record['InvoiceLineRet']]
+          end
           
 
           {
             id: record['RefNumber'],
             is_pending: record['IsPending'],
-            is_paid: record['IsPaid']
+            is_finance_charge: record['IsFinanceCharge'],
+            is_paid: record['IsPaid'],
+            transaction_id: record['TxnId'],
+            created_at: record["TimeCreated"].to_s,
+            modified_at: record["TimeModified"].to_s,
+            transaction_number: record["TxnNumber"],
+            customer: {
+              name: record.dig("CustomerRef", "FullName"),
+              external_id: record.dog("CustomerRef", "ListID")
+            },
+            class_ref: record.dig("ClassRef", "FullName"),
+            transaction_date: record["TxnDate"],
+            ara_account: record.dig("ARAccountRef", "FullName"),
+
+            billing_address: {
+              address1: record.dig("BillAddress", "Addr1"),
+              address2: record.dig("BillAddress", "Addr2"),
+              city: record.dig("BillAddress", "City"),
+              state: record.dig("BillAddress", "State"),
+              country: record.dig("BillAddress", "Country"),
+              zip_code: record.dig("BillAddress", "PostalCode")
+            },
+            shipping_address: {
+              address1: record.dig("ShipAddress", "Addr1"),
+              address2: record.dig("ShipAddress", "Addr2"),
+              city: record.dig("ShipAddress", "City"),
+              state: record.dig("ShipAddress", "State"),
+              country: record.dig("ShipAddress", "Country"),
+              zip_code: record.dig("ShipAddress", "PostalCode")
+            },
+            po_number: record["PONumber"],
+            due_date: record["DueDate"].to_s,
+            sales_rep: {
+              name: record.dig("SalesRepRef", "FullName")
+            },
+            shipping_date: record["ShipDate"].to_s,
+            sub_total: record["Subtotal"],
+            sales_tax_percentage: record["SalesTaxPercentage"],
+            sales_tax_total: record["SalesTaxTotal"],
+            total: record["TotalAmount"],
+            is_manually_closed: record["IsManuallyClosed"],
+            is_fully_invoiced: record["IsFullyInvoiced"],
+            customer_tax_code: record.dig("CustomerSalesTaxCodeRef", "FullName"),
+            line_items: record["InvoiceLineRet"].map do |item|
+              {
+                product_id: item.dig("ItemRef", "FullName"),
+                line_id: item["TxnLineID"],
+                description: item["Desc"],
+                quantity: item["Quantity"],
+                unit_of_measure: item["UnitOfMeasure"],
+                rate: item["Rate"],
+                class_ref: item.dig("ClassRef", "FullName"),
+                amount: item["Amount"],
+                warehouse: item.dig("InventorySiteRef", "FullName"),
+                sales_tax_code: item.dig("SalesTaxCodeRef", "FullName"),
+                invoiced: item["Invoiced"],
+                is_manually_closed: item["IsManuallyClosed"]
+              }
+            end,
+            terms: record.dig("TermsRef", "FullName"),
+            fob: record["fob"],
+            shipping_method: record.dig("ShipMethodRef", "FullName"),
+            tax_ref: record.dig("ItemSalesTaxRef", "FullName"),
+            applied_amount: record["AppliedAmount"],
+            balance_remaining: record["BalanceRemaining"],
+            memo: record["Memo"]
           }
         end
       end
+
+
+
 
       def to_flowlink
         # TODO finish the map
