@@ -159,7 +159,7 @@ module QBWC
             is_manually_closed: record["IsManuallyClosed"],
             is_fully_invoiced: record["IsFullyInvoiced"],
             customer_tax_code: record.dig("CustomerSalesTaxCodeRef", "FullName"),
-            line_items: record["InvoiceLineRet"].map do |item|
+            line_items: record["InvoiceLineRet"] && record["InvoiceLineRet"].map do |item|
               {
                 product_id: item.dig("ItemRef", "FullName"),
                 line_id: item["TxnLineID"],
