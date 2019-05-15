@@ -98,7 +98,7 @@ module QBWC
         record['InvoiceLineRet'] = [record['InvoiceLineRet']] unless record['InvoiceLineRet'].is_a? Array
 
         record['InvoiceLineRet'].to_a.each do |item|
-          next unless item['ItemRef']
+          next unless item && item['ItemRef']
 
           hash[item['ItemRef']['FullName'].downcase] = item['TxnLineID']
         end
