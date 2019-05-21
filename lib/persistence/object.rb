@@ -569,10 +569,10 @@ module Persistence
           end
         end
 
-        payments = QBWC::Request::Orders.build_payments_from_order(object)
-        payments.flatten.each do |payment|
-          save_pending_file(payment['id'], 'payments', payment)
-        end
+        # payments = QBWC::Request::Orders.build_payments_from_order(object)
+        # payments.flatten.each do |payment|
+        #   save_pending_file(payment['id'], 'payments', payment)
+        # end
 
       elsif payload_key.pluralize == 'invoices'
 
@@ -588,9 +588,16 @@ module Persistence
           end
         end
 
-        payments = QBWC::Request::Orders.build_payments_from_order(object)
-        payments.flatten.each do |payment|
-          save_pending_file(payment['id'], 'payments', payment)
+        # payments = QBWC::Request::Orders.build_payments_from_order(object)
+        # payments.flatten.each do |payment|
+        #   save_pending_file(payment['id'], 'payments', payment)
+        # end
+
+      elsif payload_key.pluralize == 'payments'
+
+        if !use_customer_email_param
+          customer = QBWC::Request::Orders.build_customer_from_order(object)
+          save_pending_file(customer['name'], 'customers', customer)
         end
 
       elsif payload_key.pluralize == 'purchaseorders'
@@ -607,10 +614,10 @@ module Persistence
           end
         end
 
-        payments = QBWC::Request::Orders.build_payments_from_order(object)
-        payments.flatten.each do |payment|
-          save_pending_file(payment['id'], 'payments', payment)
-        end
+        # payments = QBWC::Request::Orders.build_payments_from_order(object)
+        # payments.flatten.each do |payment|
+        #   save_pending_file(payment['id'], 'payments', payment)
+        # end
 
       elsif payload_key.pluralize == 'salesreceipts'
 
@@ -626,10 +633,10 @@ module Persistence
           end
         end
 
-        payments = QBWC::Request::Orders.build_payments_from_order(object)
-        payments.flatten.each do |payment|
-          save_pending_file(payment['id'], 'payments', payment)
-        end
+        # payments = QBWC::Request::Orders.build_payments_from_order(object)
+        # payments.flatten.each do |payment|
+        #   save_pending_file(payment['id'], 'payments', payment)
+        # end
 
       elsif payload_key.pluralize == 'shipments'
 
@@ -639,8 +646,8 @@ module Persistence
         order    = QBWC::Request::Shipments.build_order_from_shipments(object)
         save_pending_file(order['id'], 'orders', order)
 
-        payment  = QBWC::Request::Shipments.build_payment_from_shipments(object)
-        save_pending_file(payment['id'], 'payments', order)
+        # payment  = QBWC::Request::Shipments.build_payment_from_shipments(object)
+        # save_pending_file(payment['id'], 'payments', order)
 
         if auto_create_products
           products = QBWC::Request::Shipments.build_products_from_shipments(objects)
@@ -676,7 +683,7 @@ module Persistence
       if key == 'customers'
         object['name']
       elsif key == 'payments'
-        object['ref_number']
+        object['id']
       elsif key == 'shipments'
         object['name']
       elsif key == 'vendors'
