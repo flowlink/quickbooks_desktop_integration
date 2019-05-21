@@ -668,7 +668,7 @@ module Persistence
     end
 
     def two_phase?
-      %w(orders shipments invoices salesreceipts purchaseorders).include?(payload_key.pluralize)
+      %w(orders shipments invoices salesreceipts purchaseorders payments).include?(payload_key.pluralize)
     end
 
 
