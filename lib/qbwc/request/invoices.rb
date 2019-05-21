@@ -306,6 +306,17 @@ module QBWC
       #{quantity(line)}
       <Rate>#{'%.2f' % line['price'].to_f}</Rate>
       #{tax_code_line(line)}
+      #{inventory_site(line)}
+          XML
+        end
+
+        def inventory_site(line)
+          return '' unless line['inventory_site_name']
+
+          <<-XML
+      <InventorySiteRef>
+        <FullName>#{line['inventory_site_name']}</FullName>
+      </InventorySiteRef>
           XML
         end
 
