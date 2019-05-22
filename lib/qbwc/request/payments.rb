@@ -83,6 +83,7 @@ module QBWC
               <PaymentMethodRef>
                 <FullName>#{payment['payment_method']}</FullName>
               </PaymentMethodRef>
+              <Memo>SystumID=#{payment['id']};</Memo>
           XML
         end
       end
