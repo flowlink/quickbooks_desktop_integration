@@ -77,7 +77,33 @@ module QBWC
             list_id: record['ListID'],
             qbe_id: record['ListID'],
             external_id: record['ListID'],
+            created_at: record['TimeCreated'].to_s,
+            modified_at: record['TimeModified'].to_s,
             name: record['Name'],
+            full_name: record['FullName'],
+            email: record['Email'],
+            billing_address: {
+              address1: record.dig("BillAddress", "Addr1"),
+              address2: record.dig("BillAddress", "Addr2"),
+              city: record.dig("BillAddress", "City"),
+              state: record.dig("BillAddress", "State"),
+              country: record.dig("BillAddress", "Country"),
+              zip_code: record.dig("BillAddress", "PostalCode")
+            },
+            balance: record['Balance'],
+            total_balance: record['TotalBalance'],
+            job_status: record['JobStatus'],
+            shipping_address: {
+              address1: record.dig("ShipAddress", "Addr1"),
+              address2: record.dig("ShipAddress", "Addr2"),
+              city: record.dig("ShipAddress", "City"),
+              state: record.dig("ShipAddress", "State"),
+              country: record.dig("ShipAddress", "Country"),
+              zip_code: record.dig("ShipAddress", "PostalCode")
+            },
+            class_name: record.dig("ClassRef", "FullName"),
+            is_active: record['IsActive'],
+            sub_level: record['Sublevel'],
             first_name: record['FirstName'],
             last_name: record['LastName'],
             email: record['Email']
@@ -87,3 +113,6 @@ module QBWC
     end
   end
 end
+
+
+     
