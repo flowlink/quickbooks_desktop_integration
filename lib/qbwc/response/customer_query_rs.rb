@@ -71,6 +71,7 @@ module QBWC
 
       def to_flowlink
         records.map do |record|
+          puts "Customer QBE object: #{record}"
           {
             id: record['ListID'],
             list_id: record['ListID'],
