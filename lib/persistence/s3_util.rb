@@ -12,11 +12,13 @@ module Persistence
     def export(file_name: nil, objects: nil, override: false)
       verify_bucket!
 
-      if override
-        s3_object = bucket.object(file_name)
-      else
-        s3_object = find_next_s3_object(file_name)
-      end
+      # if override
+      #   s3_object = bucket.object(file_name)
+      # else
+      #   s3_object = find_next_s3_object(file_name)
+      # end
+
+      s3_object = bucket.object(file_name)
 
       s3_object.put(body: convert_upload(extension(file_name), objects))
       s3_object
