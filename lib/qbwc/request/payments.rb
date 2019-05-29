@@ -64,7 +64,7 @@ module QBWC
 
         def payment_apply_invoice_xml(payment, _params)
           <<-XML
-              <RefNumber>#{payment['ref_number']}</RefNumber>
+              <RefNumber>#{payment['id']}</RefNumber>
               <TotalAmount>#{'%.2f' % payment['amount'].to_f}</TotalAmount>
               <AppliedToTxnMod>
                 <TxnID>#{payment['invoice_txn_id']}</TxnID>
@@ -78,7 +78,7 @@ module QBWC
               <CustomerRef>
                 <FullName>#{payment['customer']['name']}</FullName>
               </CustomerRef>
-              <RefNumber>#{payment['ref_number']}</RefNumber>
+              <RefNumber>#{payment['id']}</RefNumber>
               <TotalAmount>#{'%.2f' % payment['amount'].to_f}</TotalAmount>
               <PaymentMethodRef>
                 <FullName>#{payment['payment_method']}</FullName>
