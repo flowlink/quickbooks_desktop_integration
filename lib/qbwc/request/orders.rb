@@ -335,7 +335,7 @@ module QBWC
           object['payments'].to_a.map do |payment|
             {
               id: payment['id'],
-              customer: payment['customer'],
+              customer: object['customer'],
               invoice_txn_id: object['transaction_id'],
               amount: payment['amount'],
               payment_method: payment['payment_method']
