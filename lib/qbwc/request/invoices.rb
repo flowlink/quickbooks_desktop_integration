@@ -174,11 +174,11 @@ module QBWC
         end
 
         def po_number(record)
-          return '' unless record['po_number']
+          return '' unless record['purchase_order_number']
 
           <<-XML
 
-          <PONumber>#{record['po_number']}</PONumber>
+          <PONumber>#{record['purchase_order_number']}</PONumber>
           XML
         end
 
