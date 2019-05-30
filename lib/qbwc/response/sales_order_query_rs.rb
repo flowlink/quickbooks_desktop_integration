@@ -116,7 +116,7 @@ module QBWC
           
           {
             id: record['RefNumber'],
-            transaction_id: record['TxnId'],
+            transaction_id: record['TxnID'],
             created_at: record["TimeCreated"].to_s,
             modified_at: record["TimeModified"].to_s,
             transaction_number: record["TxnNumber"],

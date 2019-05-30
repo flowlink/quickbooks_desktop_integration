@@ -118,7 +118,7 @@ module QBWC
             is_pending: record['IsPending'],
             is_finance_charge: record['IsFinanceCharge'],
             is_paid: record['IsPaid'],
-            transaction_id: record['TxnId'],
+            transaction_id: record['TxnID'],
             created_at: record["TimeCreated"].to_s,
             modified_at: record["TimeModified"].to_s,
             transaction_number: record["TxnNumber"],
@@ -129,7 +129,6 @@ module QBWC
             class_ref: record.dig("ClassRef", "FullName"),
             transaction_date: record["TxnDate"],
             ara_account: record.dig("ARAccountRef", "FullName"),
-
             billing_address: {
               address1: record.dig("BillAddress", "Addr1"),
               address2: record.dig("BillAddress", "Addr2"),

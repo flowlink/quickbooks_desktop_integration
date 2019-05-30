@@ -44,9 +44,28 @@ module QBWC
             <ReceivePaymentAddRq requestID="#{session_id}">
               <ReceivePaymentAdd>
                 #{payment_xml(payment, params)}
-                <IsAutoApply>true</IsAutoApply>
+                #{payment.key?('invoice_txn_id') ? payment_apply_transaction_xml(payment) : auto_apply }
               </ReceivePaymentAdd>
             </ReceivePaymentAddRq>
+          XML
+        end
+
+        def payment_apply_transaction_xml(payment)
+          <<-XML
+
+         <AppliedToTxnAdd>
+            <TxnID>#{payment['invoice_txn_id']}</TxnID>
+            <PaymentAmount>#{'%.2f' % payment['amount'].to_f}</PaymentAmount>
+         </AppliedToTxnAdd>
+
+          XML
+        end
+
+        def auto_apply
+          <<-XML
+
+         <IsAutoApply>true</IsAutoApply>
+
           XML
         end
 

@@ -419,6 +419,10 @@ module Persistence
               @config[:quickbooks_auto_create_products].to_s == '1'
     end
 
+    def auto_create_payments
+      @config[:quickbooks_auto_create_payments]
+    end
+
     def select_precedence_files(collection)
       first_precedence_types = %w(customers products adjustments inventories payments)
       second_precedence_types = %w(orders returns journals)
@@ -588,10 +592,13 @@ module Persistence
           end
         end
 
-        # payments = QBWC::Request::Orders.build_payments_from_order(object)
-        # payments.flatten.each do |payment|
-        #   save_pending_file(payment['id'], 'payments', payment)
-        # end
+        if auto_create_payments
+          payments = QBWC::Request::Orders.build_payments_from_order(object)
+          payments.each do |payment|
+            next unless (payment['id'] && payment['customer'] && payment['amount'] && payment['payment_method'])  
+            save_pending_file(payment['id'], 'payments', payment)
+          end
+        end
 
       elsif payload_key.pluralize == 'payments'
 

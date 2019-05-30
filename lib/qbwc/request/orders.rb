@@ -332,10 +332,14 @@ module QBWC
         end
 
         def build_payments_from_order(object)
-          object['payments'].to_a.select { |pay| %w(completed paid ready).include?(pay['status']) && pay['amount'].to_f > 0.0 }.map do |item|
-            item.merge('id'          => object['id'],
-                       'object_ref'  => object['id'],
-                       'email'       => object['email'])
+          object['payments'].to_a.map do |payment|
+            {
+              id: payment['id'],
+              customer: payment['customer'],
+              invoice_txn_id: object['transaction_id'],
+              amount: payment['amount'],
+              payment_method: payment['payment_method']
+            }
           end
         end
 
