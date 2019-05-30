@@ -293,7 +293,7 @@ module QBWC
 
 
         def cancel_order?(object)
-          return '' unless object['status'].to_s == 'cancelled'
+          return '' unless object['status'].to_s == 'cancelled' || object['status'].to_s == 'closed'
 
           <<-XML
 
