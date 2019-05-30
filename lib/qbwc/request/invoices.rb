@@ -174,7 +174,7 @@ module QBWC
         end
 
         def po_number(record)
-          return '' unless record['purchase_order_number']
+          return '' unless record['purchase_order_number'] && record['purchase_order_number'] != ""
 
           <<-XML
 
