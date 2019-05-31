@@ -599,7 +599,6 @@ module Persistence
           payments = QBWC::Request::Orders.build_payments_from_order(object)
           payments.each do |payment|
             next unless (payment['id'] && payment['customer'] && payment['amount'] && payment['payment_method'])  
-            save_pending_file(payment['id'], 'payments', payment)
             file = "#{path.base_name}/#{path.two_phase_pending}/payments_#{id_of_object(object)}_.json"
             amazon_s3.export file_name: file, objects: [payment]
           end
