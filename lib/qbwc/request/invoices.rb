@@ -380,7 +380,7 @@ module QBWC
         # Generate XML for adding adjustments.
         # If the quickbooks_use_tax_line_items is set, then don't include tax from the adjustments object, and instead
         # use tax_line_items if it exists.
-        def adjustments_add_xml(record, params, record)
+        def adjustments_add_xml(record, params)
           puts "record is #{record}"
           final_adjustments = []
           use_tax_line_items = !params['quickbooks_use_tax_line_items'].nil? &&
@@ -410,7 +410,7 @@ module QBWC
         # Generate XML for modifying adjustments.
         # If the quickbooks_use_tax_line_items is set, then don't include tax from the adjustments object, and instead
         # use tax_line_items if it exists.
-        def adjustments_mod_xml(record, params, record)
+        def adjustments_mod_xml(record, params)
           final_adjustments = []
           use_tax_line_items = !params['quickbooks_use_tax_line_items'].nil? &&
                                params['quickbooks_use_tax_line_items'] == '1' &&
