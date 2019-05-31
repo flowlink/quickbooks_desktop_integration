@@ -595,6 +595,7 @@ module Persistence
         end
 
         if auto_create_payments
+          "BUILDING PAYMENTS FOR INVOICES"
           payments = QBWC::Request::Orders.build_payments_from_order(object)
           payments.each do |payment|
             next unless (payment['id'] && payment['customer'] && payment['amount'] && payment['payment_method'])  
