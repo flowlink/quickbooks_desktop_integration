@@ -246,7 +246,8 @@ module QBWC
           }
 
           line['tax_code_id'] = adjustment['tax_code_id'] if adjustment['tax_code_id']
-
+          line['amount'] = adjustment['amount'] if adjustment['amount']
+          
           invoice_line_add line
         end
 
@@ -257,6 +258,8 @@ module QBWC
             'price' => tax_line_item['value'],
             'name' => tax_line_item['name']
           }
+
+
 
           invoice_line_add line
         end
@@ -280,6 +283,7 @@ module QBWC
           }
 
           line['tax_code_id'] = adjustment['tax_code_id'] if adjustment['tax_code_id']
+          line['amount'] = adjustment['amount'] if adjustment['amount']
 
           invoice_line_mod line
         end
@@ -304,7 +308,7 @@ module QBWC
       </ItemRef>
       <Desc>#{line['name']}</Desc>
       #{quantity(line)}
-      <Rate>#{'%.2f' % line['price'].to_f}</Rate>
+      #{rate_line(line)}
       #{tax_code_line(line)}
       #{inventory_site(line)}
           XML
@@ -336,6 +340,25 @@ module QBWC
       </SalesTaxCodeRef>
           XML
         end
+
+        def rate_line(line)
+          return '' if !line['amount'].to_s.empty?
+
+          <<-XML
+
+      <Rate>#{'%.2f' % line['price'].to_f}</Rate>
+          XML
+        end
+
+        def amount_line(line)
+          return '' if line['amount'].to_s.empty?
+
+          <<-XML
+
+      <Amount>#{'%.2f' % line['amount'].to_f}</Amount>
+          XML
+        end
+
 
         def build_customer_from_invoice(object)
           billing_address = object['billing_address']
