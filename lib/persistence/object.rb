@@ -420,7 +420,9 @@ module Persistence
     end
 
     def auto_create_payments
-      @config[:quickbooks_auto_create_payments]
+      return !@config[:quickbooks_auto_create_payments].nil? &&
+             !@config[:quickbooks_auto_create_payments].empty? &&
+              @config[:quickbooks_auto_create_payments].to_s == '1'
     end
 
     def select_precedence_files(collection)
