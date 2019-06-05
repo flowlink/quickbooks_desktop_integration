@@ -52,13 +52,21 @@ module QBWC
           <<-XML
             <!-- polling invoices -->
             <InvoiceQueryRq requestID="#{session_id}">
-            <MaxReturned>100</MaxReturned>
-              <ModifiedDateRangeFilter>
-                <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
-              </ModifiedDateRangeFilter>
+              #{query_by_date(config)}
               <IncludeLineItems>true</IncludeLineItems>
               <!-- <IncludeRetElement>Name</IncludeRetElement> -->
             </InvoiceQueryRq>
+          XML
+        end
+
+        def query_by_date(config)
+          return '' if config['return_all_invoices']
+
+          <<~XML
+          <MaxReturned>100</MaxReturned>
+            <ModifiedDateRangeFilter>
+              <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
+            </ModifiedDateRangeFilter>
           XML
         end
 
