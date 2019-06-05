@@ -102,6 +102,7 @@ module QBWC
               zip_code: record.dig("ShipAddress", "PostalCode")
             },
             class_name: record.dig("ClassRef", "FullName"),
+            sales_rep: record.dig("SalesRepRef", "FullName"),
             is_active: record['IsActive'],
             sub_level: record['Sublevel'],
             first_name: record['FirstName'],
