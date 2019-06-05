@@ -60,6 +60,7 @@ module QBWC
         end
 
         def query_by_date(config, time)
+          puts "Invoices config for polling: #{config}"
           return '' if config['return_all_invoices']
 
           <<~XML
