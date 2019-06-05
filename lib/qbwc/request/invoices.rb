@@ -77,7 +77,7 @@ module QBWC
         def query_by_txn_date(config, time)
           <<~XML
             <TxnDateRangeFilter>
-              <FromTxnDate>#{time.date.iso8601}</FromTxnDate>
+              <FromTxnDate>#{time.to_date.iso8601}</FromTxnDate>
             </TxnDateRangeFilter>
           XML
         end
