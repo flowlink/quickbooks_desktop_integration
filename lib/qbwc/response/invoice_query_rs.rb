@@ -53,8 +53,10 @@ module QBWC
       end
 
       def last_time_modified
-        time = records.sort_by { |r| r['TxnDate'] }.last['TxnDate'].to_s
-        Time.parse(time).in_time_zone('Pacific Time (US & Canada)').iso8601
+        puts "SETTING A NEW SINCE DATE FOR INVOICES"
+        date = records.sort_by { |r| r['TxnDate'] }.last['TxnDate'].to_s
+        puts Date.parse(date).to_time.in_time_zone('Pacific Time (US & Canada)').iso8601
+        Date.parse(date).to_time.in_time_zone('Pacific Time (US & Canada)').iso8601
       end
 
       def objects_to_update(config)
