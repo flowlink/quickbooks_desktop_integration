@@ -55,6 +55,7 @@ module QBWC
           <<-XML
             <!-- polling invoices -->
             <InvoiceQueryRq requestID="#{session_id}">
+              <MaxReturned>100</MaxReturned>
               #{query_by_date(params, time)}
               <IncludeLineItems>true</IncludeLineItems>
               <!-- <IncludeRetElement>Name</IncludeRetElement> -->
@@ -67,7 +68,6 @@ module QBWC
           return '' if config['return_all']
 
           <<~XML
-          <MaxReturned>100</MaxReturned>
             <ModifiedDateRangeFilter>
               <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
             </ModifiedDateRangeFilter>
