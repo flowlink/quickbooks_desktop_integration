@@ -65,12 +65,20 @@ module QBWC
 
         def query_by_date(config, time)
           puts "Invoices config for polling: #{config}"
-          return '' if config['return_all']
+          return query_by_txn_date(config, time) if config['return_all']
 
           <<~XML
             <ModifiedDateRangeFilter>
               <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
             </ModifiedDateRangeFilter>
+          XML
+        end
+
+        def query_by_txn_date(config, time)
+          <<~XML
+            <TxnDateRangeFilter>
+              <FromTxnDate>#{time.iso8601}</FromTxnDate>
+            </TxnDateRangeFilter>
           XML
         end
 
