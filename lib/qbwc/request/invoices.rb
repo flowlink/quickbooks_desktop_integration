@@ -52,14 +52,14 @@ module QBWC
           <<-XML
             <!-- polling invoices -->
             <InvoiceQueryRq requestID="#{session_id}">
-              #{query_by_date(config)}
+              #{query_by_date(config, time)}
               <IncludeLineItems>true</IncludeLineItems>
               <!-- <IncludeRetElement>Name</IncludeRetElement> -->
             </InvoiceQueryRq>
           XML
         end
 
-        def query_by_date(config)
+        def query_by_date(config, time)
           return '' if config['return_all_invoices']
 
           <<~XML
