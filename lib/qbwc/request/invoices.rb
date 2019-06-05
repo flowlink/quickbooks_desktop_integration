@@ -55,7 +55,7 @@ module QBWC
           <<-XML
             <!-- polling invoices -->
             <InvoiceQueryRq requestID="#{session_id}">
-              #{query_by_date(config, time)}
+              #{query_by_date(params, time)}
               <IncludeLineItems>true</IncludeLineItems>
               <!-- <IncludeRetElement>Name</IncludeRetElement> -->
             </InvoiceQueryRq>
