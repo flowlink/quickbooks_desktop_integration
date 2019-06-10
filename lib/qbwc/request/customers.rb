@@ -39,8 +39,9 @@ module QBWC
             <IncludeRetElement>TotalBalance</IncludeRetElement>
             <IncludeRetElement>JobStatus</IncludeRetElement>
             <IncludeRetElement>ShipAddress</IncludeRetElement>
-            <IncludeRetElement>Class</IncludeRetElement>
-            <IncludeRetElement>SalesRep</IncludeRetElement>
+            <IncludeRetElement>ClassRef</IncludeRetElement>
+            <IncludeRetElement>SalesRepRef</IncludeRetElement>
+            <IncludeRetElement>CustomerTypeRef</IncludeRetElement>
             <IncludeRetElement>IsActive</IncludeRetElement>
             <IncludeRetElement>Sublevel</IncludeRetElement>
             <IncludeRetElement>FirstName</IncludeRetElement>
