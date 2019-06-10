@@ -28,23 +28,23 @@ module QBWC
             <CustomerQueryRq requestID="#{session_id}">
             <MaxReturned>100</MaxReturned>
             <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
-            <IncludeRetElement>Name</IncludeRetElement>
-            <IncludeRetElement>ListID</IncludeRetElement>
-            <IncludeRetElement>TimeCreated</IncludeRetElement>
-            <IncludeRetElement>TimeModified</IncludeRetElement>
-            <IncludeRetElement>FullName</IncludeRetElement>
-            <IncludeRetElement>Email</IncludeRetElement>
-            <IncludeRetElement>BillAddress</IncludeRetElement>
-            <IncludeRetElement>Balance</IncludeRetElement>
-            <IncludeRetElement>TotalBalance</IncludeRetElement>
-            <IncludeRetElement>JobStatus</IncludeRetElement>
-            <IncludeRetElement>ShipAddress</IncludeRetElement>
-            <IncludeRetElement>ClassRef</IncludeRetElement>
-            <IncludeRetElement>SalesRepRef</IncludeRetElement>
-            <IncludeRetElement>IsActive</IncludeRetElement>
-            <IncludeRetElement>Sublevel</IncludeRetElement>
-            <IncludeRetElement>FirstName</IncludeRetElement>
-            <IncludeRetElement>LastName</IncludeRetElement>
+            <IncludeRetElementList>Name</IncludeRetElementList>
+            <IncludeRetElementList>ListID</IncludeRetElementList>
+            <IncludeRetElementList>TimeCreated</IncludeRetElementList>
+            <IncludeRetElementList>TimeModified</IncludeRetElementList>
+            <IncludeRetElementList>FullName</IncludeRetElementList>
+            <IncludeRetElementList>Email</IncludeRetElementList>
+            <IncludeRetElementList>BillAddress</IncludeRetElementList>
+            <IncludeRetElementList>Balance</IncludeRetElementList>
+            <IncludeRetElementList>TotalBalance</IncludeRetElementList>
+            <IncludeRetElementList>JobStatus</IncludeRetElementList>
+            <IncludeRetElementList>ShipAddress</IncludeRetElementList>
+            <IncludeRetElementList>ClassRef</IncludeRetElementList>
+            <IncludeRetElementList>SalesRepRef</IncludeRetElementList>
+            <IncludeRetElementList>IsActive</IncludeRetElementList>
+            <IncludeRetElementList>Sublevel</IncludeRetElementList>
+            <IncludeRetElementList>FirstName</IncludeRetElementList>
+            <IncludeRetElementList>LastName</IncludeRetElementList>
             </CustomerQueryRq>
           XML
         end
