@@ -28,24 +28,6 @@ module QBWC
             <CustomerQueryRq requestID="#{session_id}">
             <MaxReturned>100</MaxReturned>
             <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
-            <IncludeRetElement>Name</IncludeRetElement>
-            <IncludeRetElement>ListID</IncludeRetElement>
-            <IncludeRetElement>TimeCreated</IncludeRetElement>
-            <IncludeRetElement>TimeModified</IncludeRetElement>
-            <IncludeRetElement>FullName</IncludeRetElement>
-            <IncludeRetElement>Email</IncludeRetElement>
-            <IncludeRetElement>BillAddress</IncludeRetElement>
-            <IncludeRetElement>Balance</IncludeRetElement>
-            <IncludeRetElement>TotalBalance</IncludeRetElement>
-            <IncludeRetElement>JobStatus</IncludeRetElement>
-            <IncludeRetElement>ShipAddress</IncludeRetElement>
-            <IncludeRetElement>ClassRef</IncludeRetElement>
-            <IncludeRetElement>SalesRepRef</IncludeRetElement>
-            <IncludeRetElement>CustomerTypeRef</IncludeRetElement>
-            <IncludeRetElement>IsActive</IncludeRetElement>
-            <IncludeRetElement>Sublevel</IncludeRetElement>
-            <IncludeRetElement>FirstName</IncludeRetElement>
-            <IncludeRetElement>LastName</IncludeRetElement>
             </CustomerQueryRq>
           XML
         end
