@@ -1,4 +1,4 @@
-module QBWC
+  module QBWC
   module Response
     class CustomerQueryRs
       attr_reader :records
@@ -106,8 +106,7 @@ module QBWC
             is_active: record['IsActive'],
             sub_level: record['Sublevel'],
             first_name: record['FirstName'],
-            last_name: record['LastName'],
-            email: record['Email']
+            last_name: record['LastName']
           }
         end
       end
