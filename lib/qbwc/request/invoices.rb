@@ -146,9 +146,6 @@ module QBWC
 
     #{customer_ref_for_invoice(record)}
     #{class_ref_for_invoice(record)}
-    #{po_number(record)}
-    #{sales_rep(record)}
-    #{shipping_method(record)}
     <TxnDate>#{Time.parse(record['placed_on']).to_date}</TxnDate>
     <RefNumber>#{record['id']}</RefNumber>
     <BillAddress>
@@ -167,6 +164,9 @@ module QBWC
       <PostalCode>#{record['shipping_address']['zipcode']}</PostalCode>
       <Country>#{record['shipping_address']['country']}</Country>
     </ShipAddress>
+    #{po_number(record)}
+    #{sales_rep(record)}
+    #{shipping_method(record)}
           XML
         end
 

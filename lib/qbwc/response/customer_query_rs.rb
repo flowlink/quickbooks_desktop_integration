@@ -89,7 +89,7 @@
               state: record.dig("BillAddress", "State"),
               country: record.dig("BillAddress", "Country"),
               zip_code: record.dig("BillAddress", "PostalCode")
-            },
+            }.compact,
             balance: record['Balance'],
             total_balance: record['TotalBalance'],
             job_status: record['JobStatus'],
@@ -100,14 +100,14 @@
               state: record.dig("ShipAddress", "State"),
               country: record.dig("ShipAddress", "Country"),
               zip_code: record.dig("ShipAddress", "PostalCode")
-            },
+            }.compact,
             class_name: record.dig("ClassRef", "FullName"),
             sales_rep: record.dig("SalesRepRef", "FullName"),
             is_active: record['IsActive'],
             sub_level: record['Sublevel'],
             first_name: record['FirstName'],
             last_name: record['LastName']
-          }
+          }.compact
         end
       end
     end
