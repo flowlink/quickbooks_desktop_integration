@@ -26,7 +26,7 @@ module QBWC
           <<-XML
             <!-- polling customers -->
             <CustomerQueryRq requestID="#{session_id}">
-            <MaxReturned>10000</MaxReturned>
+            <MaxReturned>100000</MaxReturned>
             <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
             </CustomerQueryRq>
           XML

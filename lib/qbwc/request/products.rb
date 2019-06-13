@@ -27,7 +27,7 @@ module QBWC
         def search_xml(product_id, session_id)
           <<-XML
             <ItemInventoryQueryRq requestID="#{session_id}">
-              <MaxReturned>1000</MaxReturned>
+              <MaxReturned>10000</MaxReturned>
               <NameRangeFilter>
                 <FromName>#{product_id}</FromName>
                 <ToName>#{product_id}</ToName>
