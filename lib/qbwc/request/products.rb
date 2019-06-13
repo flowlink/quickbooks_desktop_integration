@@ -27,7 +27,7 @@ module QBWC
         def search_xml(product_id, session_id)
           <<-XML
             <ItemInventoryQueryRq requestID="#{session_id}">
-              <MaxReturned>100</MaxReturned>
+              <MaxReturned>1000</MaxReturned>
               <NameRangeFilter>
                 <FromName>#{product_id}</FromName>
                 <ToName>#{product_id}</ToName>
@@ -125,13 +125,13 @@ module QBWC
           <<-XML
             <!-- polling products -->
             <ItemInventoryQueryRq requestID="#{session_id}">
-            <MaxReturned>100</MaxReturned>
+            <MaxReturned>1000</MaxReturned>
               <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
               <!-- <IncludeRetElement>Name</IncludeRetElement> -->
             </ItemInventoryQueryRq>
             <!-- polling assembled products -->
             <ItemInventoryAssemblyQueryRq requestID="#{session_id}">
-            <MaxReturned>100</MaxReturned>
+            <MaxReturned>1000</MaxReturned>
               <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
               <!-- <IncludeRetElement>Name</IncludeRetElement> -->
             </ItemInventoryAssemblyQueryRq>

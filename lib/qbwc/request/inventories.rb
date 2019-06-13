@@ -55,15 +55,15 @@ module QBWC
 
       <!-- begin polling inventories -->
       <ItemInventoryQueryRq requestID="#{session_id}">
-       <MaxReturned>100</MaxReturned>
+       <MaxReturned>10000</MaxReturned>
       </ItemInventoryQueryRq>
 
       <ItemInventoryAssemblyQueryRq requestID="#{session_id}">
-        <MaxReturned>100</MaxReturned>
+        <MaxReturned>10000</MaxReturned>
       </ItemInventoryAssemblyQueryRq>
 
       <PurchaseOrderQueryRq requestID="#{session_id}">
-        <MaxReturned>100</MaxReturned>
+        <MaxReturned>10000</MaxReturned>
         <ModifiedDateRangeFilter>
           <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
         </ModifiedDateRangeFilter>
@@ -71,7 +71,7 @@ module QBWC
       </PurchaseOrderQueryRq>
 
       <InventoryAdjustmentQueryRq requestID="#{session_id}">
-        <MaxReturned>100</MaxReturned>
+        <MaxReturned>10000</MaxReturned>
         <ModifiedDateRangeFilter>
           <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
         </ModifiedDateRangeFilter>
@@ -79,7 +79,7 @@ module QBWC
       </InventoryAdjustmentQueryRq>
 
       <ItemReceiptQueryRq requestID="#{session_id}">
-        <MaxReturned>100</MaxReturned>
+        <MaxReturned>10000</MaxReturned>
         <ModifiedDateRangeFilter>
           <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
         </ModifiedDateRangeFilter>
