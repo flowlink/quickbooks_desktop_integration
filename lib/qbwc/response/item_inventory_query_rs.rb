@@ -105,7 +105,9 @@ module QBWC
             },
             average_cost: record['AverageCost'],
             quantity_on_order: record['QuantityOnOrder'],
-            quantity_on_sales_order: record['QuantityOnSalesOrder']
+            quantity_on_sales_order: record['QuantityOnSalesOrder'],
+            created_at: record['TimeCreated'],
+            modified_at: record['TimeModified']
           }
 
           object
