@@ -171,7 +171,6 @@ module QBWC
         end
 
         def shipping_method(record)
-          return if record['shipping_method']
           return '' unless record.dig('shipping_method','name')
 
           <<-XML
