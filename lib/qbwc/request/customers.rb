@@ -18,8 +18,11 @@ module QBWC
           ''
         end
 
-        def polling_current_items_xml(timestamp, config)
-          session_id = Persistence::Session.save(config, 'polling' => timestamp)
+        def polling_current_items_xml(params, config)
+          timestamp = params
+          timestamp = params['quickbooks_since'] if params['return_all']
+
+          session_id = Persistence::Session.save(config, 'polling' => timestamp) 
 
           time = Time.parse(timestamp).in_time_zone 'Pacific Time (US & Canada)'
 
@@ -27,8 +30,17 @@ module QBWC
             <!-- polling customers -->
             <CustomerQueryRq requestID="#{session_id}">
             <MaxReturned>100000</MaxReturned>
-            <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
+            #{query_by_date(params, time)}
             </CustomerQueryRq>
+          XML
+        end
+
+        def query_by_date(config, time)
+          puts "Customer config for polling: #{config}"
+          return '' if config['return_all']
+
+          <<~XML
+            <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
           XML
         end
 
