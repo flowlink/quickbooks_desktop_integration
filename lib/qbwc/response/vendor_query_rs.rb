@@ -44,11 +44,10 @@ module QBWC
 
       def to_flowlink
         records.map do |record|
+          puts "Vendor QBE object: #{record}"
           object = {
             id: record['ListID'],
-            name: record['Name'],
-            description: record['FullName'],
-            sku: record['Name']
+            name: record['Name']
           }
           object
         end
