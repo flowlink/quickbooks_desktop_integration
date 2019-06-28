@@ -31,12 +31,12 @@ module QBWC
           poll_persistence = Persistence::Polling.new(config, payload)
           poll_persistence.save_for_polling
 
-          customer_params['customers']['quickbooks_since'] = last_time_modified
-          customer_params['customers']['quickbooks_force_config'] = 'true'
+          vendor_params['vendors']['quickbooks_since'] = last_time_modified
+          vendor_params['vendors']['quickbooks_force_config'] = 'true'
 
           # Override configs to update timestamp so it doesn't keep geting the
           # same inventories
-          params = customer_params['customers']
+          params = vendor_params['vendors']
           Persistence::Settings.new(params.with_indifferent_access).setup
         end
         config  = { origin: 'flowlink', connection_id: config[:connection_id]  }
