@@ -140,7 +140,7 @@ module Persistence
     #                             :edit_sequence => '12312312321'}
     #                             :extra_data => { ... }, ]
     def update_objects_with_query_results(objects_to_be_renamed)
-      puts "Objects to be renamed: #{objects_to_be_renamed}"
+      # puts "Objects to be renamed: #{objects_to_be_renamed}"
 
       prefix = "#{path.base_name}/#{path.ready}"
       prefix_with_bucket = "#{path.base_name_w_bucket}/#{path.ready}"
@@ -234,15 +234,15 @@ module Persistence
     #   ],
     #   :failed => [] }
     def update_objects_files(statuses_objects)
-      puts "Status objects to be processed: #{statuses_objects}"
+      # puts "Status objects to be processed: #{statuses_objects}"
       return if statuses_objects.nil?
 
       statuses_objects.keys.each do |status_key|
-        puts status_key
+        # puts status_key
         statuses_objects[status_key].each do |types|
-          puts types
+          # puts types
           types.keys.each do |object_type|
-            puts object_type
+            # puts object_type
             # NOTE seeing an nil `object` var here sometimes, investigate it
             # happens when you have both add_orders and get_products flows enabled
             begin
@@ -250,12 +250,12 @@ module Persistence
 
               filename = "#{path.base_name}/#{path.ready}/#{object_type}_#{id_for_object(object, object_type)}_"
 
-              puts "Looking for file: #{filename}"
+              # puts "Looking for file: #{filename}"
 
               collection = amazon_s3.bucket.objects(prefix: filename)
               collection.each do |s3_object|
                 # This is for files that end on (n)
-                puts "Working with #{s3_object.inspect}"
+                # puts "Working with #{s3_object.inspect}"
                 _, _, ax_filename = s3_object.key.split('/')
                 _, _, end_of_file, ax_edit_sequence = ax_filename.split('_')
                 end_of_file = '.json' unless ax_edit_sequence.nil?
@@ -596,10 +596,10 @@ module Persistence
         end
 
         if auto_create_payments
-          puts "BUILDING PAYMENTS FOR INVOICES"
+          # puts "BUILDING PAYMENTS FOR INVOICES"
           payments = QBWC::Request::Orders.build_payments_from_order(object)
           payments.each do |payment|
-            puts payment
+            # puts payment
             next unless (payment[:id] && payment[:customer] && payment[:amount] && payment[:payment_method])
             file = "#{path.base_name}/#{path.two_phase_pending}/payments_#{payment[:id]}_.json"
             amazon_s3.export file_name: file, objects: [payment]
