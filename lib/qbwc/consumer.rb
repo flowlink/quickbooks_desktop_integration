@@ -20,7 +20,7 @@ module QBWC
       end
       Response::All.new(response_xml).process(params)
     rescue  Exception => e
-      puts "Exception: digest_response_into_actions: response_xml:#{response_xml.gsub("\n", '')} message:#{e.message} backtrace:#{e.backtrace.inspect}"
+      puts "Exception: digest_response_into_actions: message:#{e.message} backtrace:#{e.backtrace.inspect}"
     end
   end
 end
