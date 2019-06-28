@@ -48,7 +48,7 @@ module QBWC
           timestamp = params
           timestamp = params['quickbooks_since'] if params['return_all']
 
-          session_id = Persistence::Session.save(config, 'polling' => timestamp) 
+          session_id = Persistence::Session.save(config, 'polling' => timestamp)
 
           time = Time.parse(timestamp).in_time_zone 'Pacific Time (US & Canada)'
 
@@ -175,9 +175,9 @@ module QBWC
 
           <<-XML
 
-          <ShippingMethodRef>
+          <ShipMethodRef>
             <FullName>#{record['shipping_method']['name']}</FullName>
-          </ShippingMethodRef>
+          </ShipMethodRef>
           XML
         end
 
@@ -266,7 +266,7 @@ module QBWC
 
           line['tax_code_id'] = adjustment['tax_code_id'] if adjustment['tax_code_id']
           line['amount'] = adjustment['amount'] if adjustment['amount']
-          
+
           invoice_line_add line
         end
 
