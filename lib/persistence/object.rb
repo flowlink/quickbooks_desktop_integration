@@ -178,7 +178,8 @@ module Persistence
             amazon_s3.export file_name: new_file_name, objects: [with_extra_data]
           end
         rescue Aws::S3::Errors::NoSuchKey => e
-          puts " File not found: #{filename}.json"
+          return
+          # puts "File not found: #{filename}.json"
         end
       end
     end
@@ -599,7 +600,7 @@ module Persistence
           payments = QBWC::Request::Orders.build_payments_from_order(object)
           payments.each do |payment|
             puts payment
-            next unless (payment[:id] && payment[:customer] && payment[:amount] && payment[:payment_method])  
+            next unless (payment[:id] && payment[:customer] && payment[:amount] && payment[:payment_method])
             file = "#{path.base_name}/#{path.two_phase_pending}/payments_#{payment[:id]}_.json"
             amazon_s3.export file_name: file, objects: [payment]
           end
