@@ -51,7 +51,7 @@
       private
 
       def objects_to_update
-        puts "Objects to update: #{records}"
+        # puts "Objects to update: #{records}"
         records.map do |record|
           {
             object_type: 'customer',
@@ -113,6 +113,3 @@
     end
   end
 end
-
-
-     

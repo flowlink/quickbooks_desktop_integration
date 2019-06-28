@@ -109,11 +109,11 @@ module QBWC
 
       def invoices_to_flowlink
         records.map do |record|
-          puts "invoice from qbe: #{record}"
+          # puts "invoice from qbe: #{record}"
           if record['InvoiceLineRet'].is_a?(Hash)
             record['InvoiceLineRet'] = [record['InvoiceLineRet']]
           end
-          
+
 
           {
             id: record['RefNumber'],

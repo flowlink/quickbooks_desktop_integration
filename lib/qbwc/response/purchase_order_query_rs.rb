@@ -19,7 +19,7 @@ module QBWC
       def process(config = {})
         return if records.empty?
 
-        puts "Processing purchase orders: #{records}"
+        # puts "Processing purchase orders: #{records}"
         receive_configs = config[:receive] || []
         purchaseorder_params = receive_configs.find { |c| c['purchaseorders'] }
 
@@ -60,7 +60,7 @@ module QBWC
 
       def purchaseorders_to_flowlink
         records.map do |record|
-          puts "Purchase Order from QBE: #{record}"
+          # puts "Purchase Order from QBE: #{record}"
           if record['PurchaseOrderLineRet'].is_a?(Hash)
             record['PurchaseOrderLineRet'] = [record['PurchaseOrderLineRet']]
           end
