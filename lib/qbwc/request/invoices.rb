@@ -167,6 +167,8 @@ module QBWC
     #{po_number(record)}
     #{sales_rep(record)}
     #{shipping_method(record)}
+    #{is_to_be_printed(record)}
+    #{is_to_be_emailed(record)}
           XML
         end
 
@@ -178,6 +180,24 @@ module QBWC
           <ShipMethodRef>
             <FullName>#{record['shipping_method']['name']}</FullName>
           </ShipMethodRef>
+          XML
+        end
+
+        def is_to_be_printed(record)
+          return '' unless record.dig('is_to_be_printed')
+
+          <<-XML
+
+          <IsToBePrinted>>#{record['is_to_be_printed']}</IsToBePrinted>
+          XML
+        end
+
+        def is_to_be_emailed(record)
+          return '' unless record.dig('is_to_be_emailed')
+
+          <<-XML
+
+          <IsToBeEmailed>>#{record['is_to_be_emailed']}</IsToBeEmailed>
           XML
         end
 
