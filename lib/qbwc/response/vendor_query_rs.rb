@@ -70,7 +70,24 @@ module QBWC
           puts "Vendor QBE object: #{record}"
           object = {
             id: record['ListID'],
-            name: record['Name']
+            name: record['Name'],
+            created_at: record['TimeCreated'].to_s,
+            modified_at: record['TimeModified'].to_s,
+            is_active: record["IsActive"],
+            vendor_address: {
+              address1: record.dig("VendorAddress", "Addr1"),
+              address2: record.dig("VendorAddress", "Addr2"),
+              city: record.dig("VendorAddress", "City"),
+              state: record.dig("VendorAddress", "State"),
+              country: record.dig("VendorAddress", "Country"),
+              zip_code: record.dig("VendorAddress", "PostalCode")
+            },
+            name_on_check: record["NameOnCheck"],
+            terms: record.dig("TermsRef", "FullName"),
+            vendor_tax_ident: record["VendorTaxIdent"],
+            is_vendor_eligible_for_1099: record["IsVendorEligibleFor1099"],
+            balance: record["Balance"],
+            prefill_accounts: record.dig("PrefillAccountRef")&.map { |account|  account["FullName"] }
           }
           object
         end
