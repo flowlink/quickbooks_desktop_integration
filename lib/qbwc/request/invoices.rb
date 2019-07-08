@@ -188,7 +188,7 @@ module QBWC
 
           <<-XML
 
-          <IsToBePrinted>>#{record['is_to_be_printed']}</IsToBePrinted>
+          <IsToBePrinted>#{record['is_to_be_printed']}</IsToBePrinted>
           XML
         end
 
@@ -197,7 +197,7 @@ module QBWC
 
           <<-XML
 
-          <IsToBeEmailed>>#{record['is_to_be_emailed']}</IsToBeEmailed>
+          <IsToBeEmailed>#{record['is_to_be_emailed']}</IsToBeEmailed>
           XML
         end
 
