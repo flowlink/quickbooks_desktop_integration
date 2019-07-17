@@ -45,6 +45,8 @@ require 'qbwc/response/purchase_order_add_rs'
 require 'qbwc/response/purchase_order_mod_rs'
 
 require 'qbwc/response/journal_entry_add_rs'
+require 'qbwc/response/journal_entry_add_rs'
+require 'qbwc/response/journal_entry_mod_rs'
 
 module QBWC
   module Response
