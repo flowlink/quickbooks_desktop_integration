@@ -21,7 +21,7 @@ module QBWC
         def build_request_by_action(object, params, session_id)
           puts "*" *20
           puts "Checking Action"
-          if object['list_id'].to_s.empty?
+          if object['list_id'].to_s.empty? && object['action'] != "DELETE"
             puts "ADD"
             add_xml_to_send(object, params, session_id)
           elsif object['action'] == "DELETE"
@@ -31,7 +31,7 @@ module QBWC
             puts "UPDATE"
             update_xml_to_send(object, params, session_id)
           else
-            raise "Valid Action not given: please use ADD, UPDATE, or DELETE action"
+            raise "Valid Action not given: please use ADD, UPDATE, or DELETE action. If using DELETE, journal must exist already."
           end
         end
 
