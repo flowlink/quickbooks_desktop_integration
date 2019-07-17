@@ -22,6 +22,7 @@ module QBWC
         objects = records.map do |object|
           { journals: {
             id: object['TxnID'],
+            list_id: object['ListID'],
             edit_sequence: object['EditSequence'] } }
         end
 
