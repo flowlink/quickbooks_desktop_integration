@@ -6,27 +6,30 @@ module QBWC
           objects.inject('') do |request, object|
             config = { connection_id: params['connection_id'] }.with_indifferent_access
             session_id = Persistence::Session.save(config, object)
-            request << decide_action_and_build_request(object)
+            request << decide_action_and_build_request(object, params, session_id)
           end
         end
 
-        def decide_action_and_build_request(object)
-          return build_request_by_action(object) if object['action']
+        def decide_action_and_build_request(object, params, session_id)
+          return build_request_by_action(object, params, session_id) if object['action']
 
           return add_xml_to_send(object, params, session_id) if object[:list_id].to_s.empty?
 
           update_xml_to_send(object, params, session_id)
         end
 
-        def build_request_by_action(object)
+        def build_request_by_action(object, params, session_id)
           puts "*" *20
           puts "Checking Action"
           if object['list_id'].to_s.empty?
             puts "ADD"
+            add_xml_to_send(object, params, session_id)
           elsif object['action'] == "DELETE"
             puts "DELETE"
+            delete_xml_to_send(object, session_id)
           elsif object['action'] == "UPDATE"
             puts "UPDATE"
+            update_xml_to_send(object, params, session_id)
           else
             raise "Valid Action not given: please use ADD, UPDATE, or DELETE action"
           end
@@ -70,6 +73,15 @@ module QBWC
                   #{journal_xml(journal, params)}
                </JournalEntryMod>
             </JournalEntryModRq>
+          XML
+        end
+
+        def delete_xml_to_send(journal, session_id)
+          <<-XML
+          <TxnDelRq requestID="#{session_id}">
+            <TxnDelType >JournalEntry</TxnDelType>
+            <TxnID>#{journal['list_id']}</TxnID>
+          </TxnDelRq>
           XML
         end
 
