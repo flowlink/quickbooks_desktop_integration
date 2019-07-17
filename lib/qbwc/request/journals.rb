@@ -25,7 +25,7 @@ module QBWC
             puts "ADD"
           elsif object['action'] == "DELETE"
             puts "DELETE"
-          elsif if object['action'] == "UPDATE"
+          elsif object['action'] == "UPDATE"
             puts "UPDATE"
           else
             raise "Valid Action not given: please use ADD, UPDATE, or DELETE action"
