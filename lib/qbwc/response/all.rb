@@ -48,6 +48,8 @@ require 'qbwc/response/journal_entry_add_rs'
 require 'qbwc/response/journal_entry_query_rs'
 require 'qbwc/response/journal_entry_mod_rs'
 
+require 'qbwc/response/txn_del_rs'
+
 module QBWC
   module Response
     class All
