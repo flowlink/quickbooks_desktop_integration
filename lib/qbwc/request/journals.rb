@@ -19,8 +19,6 @@ module QBWC
         end
 
         def build_request_by_action(object, params, session_id)
-          puts "*" *20
-          puts "Checking Action"
           if object['list_id'].to_s.empty? && object['action'] != "DELETE"
             puts "ADD"
             add_xml_to_send(object, params, session_id)
