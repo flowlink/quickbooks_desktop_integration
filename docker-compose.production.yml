@@ -1,12 +1,9 @@
 version: "2"
-
 services:
   quickbooks-desktop-integration:
     container_name: quickbooks-desktop-integration-container
-    build: .
     environment:
       - VIRTUAL_HOST=quickbooks_desktop_integration.flowlink.io
-      - RAILS_ENV=development
     volumes:
       - .:/app
     stdin_open: true

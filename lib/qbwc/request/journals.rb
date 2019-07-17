@@ -6,17 +6,30 @@ module QBWC
           objects.inject('') do |request, object|
             config = { connection_id: params['connection_id'] }.with_indifferent_access
             session_id = Persistence::Session.save(config, object)
-
             request << decide_action_and_build_request(object)
           end
         end
 
         def decide_action_and_build_request(object)
-          return build_request_by_action(object) if object[:action]
+          return build_request_by_action(object) if object['action']
 
           return add_xml_to_send(object, params, session_id) if object[:list_id].to_s.empty?
 
           update_xml_to_send(object, params, session_id)
+        end
+
+        def build_request_by_action(object)
+          puts "*" *20
+          puts "Checking Action"
+          if object['list_id'].to_s.empty?
+            puts "ADD"
+          elsif object['action'] == "DELETE"
+            puts "DELETE"
+          elsif if object['action'] == "UPDATE"
+            puts "UPDATE"
+          else
+            raise "Valid Action not given: please use ADD, UPDATE, or DELETE action"
+          end
         end
 
         def generate_request_queries(objects, params)

@@ -26,6 +26,8 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
         # this flag back to false on return?
         quickbooks_force_config: 'true'
       }.merge(@config).with_indifferent_access
+      puts "Hitting the endpoint, here's the pauload"
+      puts @payload
 
       Persistence::Settings.new(config).setup
 

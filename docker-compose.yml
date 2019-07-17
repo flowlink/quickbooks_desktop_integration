@@ -1,0 +1,7 @@
+version: "2"
+services:
+  quickbooks-desktop-integration:
+    build: .
+    environment:
+      - RAILS_ENV=development
+    restart: always
