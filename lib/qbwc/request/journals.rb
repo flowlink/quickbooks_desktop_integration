@@ -123,7 +123,7 @@ module QBWC
             <AccountRef>
                 <FullName>#{item['account_description']}</FullName>
             </AccountRef>
-            <Amount>#{amount}</Amount>
+            <Amount>#{amount.to_f}</Amount>
             <Memo>#{item['description']}</Memo>
             #{item['customer'] ? fill_customer(item['customer']) : ''}
             #{item['class'] ? fill_class(item['class']) : ''}
