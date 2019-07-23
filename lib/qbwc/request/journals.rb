@@ -109,7 +109,7 @@ module QBWC
           XML
         end
 
-        def build_credit_line
+        def build_credit_line(item)
           <<-XML
             <JournalCreditLine>
               #{fill_line_item(item, item['credit'])}
