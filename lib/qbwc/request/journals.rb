@@ -24,9 +24,10 @@ module QBWC
             testing = add_xml_to_send(object, params, session_id)
             puts "-journal-" * 6
             puts ""
-            puts testing
+            puts "#{testing}"
             puts ""
             puts "-journal-" * 6
+            testing
           elsif object['action'] == "DELETE"
             puts "DELETE"
             delete_xml_to_send(object, session_id)
