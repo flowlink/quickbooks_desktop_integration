@@ -21,13 +21,7 @@ module QBWC
         def build_request_by_action(object, params, session_id)
           if object['list_id'].to_s.empty? && object['action'] != "DELETE"
             puts "ADD"
-            testing = add_xml_to_send(object, params, session_id)
-            puts "-journal-" * 6
-            puts ""
-            puts "#{testing}"
-            puts ""
-            puts "-journal-" * 6
-            testing
+            add_xml_to_send(object, params, session_id)
           elsif object['action'] == "DELETE"
             puts "DELETE"
             delete_xml_to_send(object, session_id)
@@ -90,28 +84,37 @@ module QBWC
         end
 
         def journal_xml(journal, params, isAdjustment)
+          credit_lines, debit_lines = split_lines(journal['line_items'])
           <<-XML
               <TxnDate>#{Time.parse(journal['journal_date']).to_date}</TxnDate>
               <RefNumber>#{journal['id']}</RefNumber>
               <IsAdjustment>#{isAdjustment}</IsAdjustment>
-              #{journal['line_items'].map { |j| journal_line_items j }.join('')}
+              #{debit_lines.map { |debit| build_debit_line(debit) }.join('')}
+              #{credit_lines.map { |credit| build_credit_line(credit) }.join('')}
           XML
         end
 
-        def journal_line_items(item)
-          if item['credit'].to_f == 0.0
-            <<-XML
-              <JournalDebitLine>
-                #{fill_line_item(item, item['debit'])}
-              </JournalDebitLine>
-            XML
-          else
-            <<-XML
-              <JournalCreditLine>
-                #{fill_line_item(item, item['credit'])}
-              </JournalCreditLine>
-            XML
-          end
+        def split_lines(items)
+          credit_items = items.select { |item| item['debit'].to_f == 0.0 }
+          debit_items = items.select { |item| item['credit'].to_f == 0.0 }
+
+          [credit_items, debit_items]
+        end
+
+        def build_debit_line(item)
+          <<-XML
+            <JournalDebitLine>
+              #{fill_line_item(item, item['debit'])}
+            </JournalDebitLine>
+          XML
+        end
+
+        def build_credit_line
+          <<-XML
+            <JournalCreditLine>
+              #{fill_line_item(item, item['credit'])}
+            </JournalCreditLine>
+          XML
         end
 
         def fill_line_item(item, amount)
