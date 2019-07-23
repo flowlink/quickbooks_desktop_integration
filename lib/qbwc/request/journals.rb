@@ -19,6 +19,10 @@ module QBWC
         end
 
         def build_request_by_action(object, params, session_id)
+          puts "BUILDING JOURNAL ENTRY BASED ON ACTION"
+          puts "-" * 10
+          puts object
+          puts "-" * 10
           if object['list_id'].to_s.empty? && object['action'] != "DELETE"
             puts "ADD"
             add_xml_to_send(object, params, session_id)
