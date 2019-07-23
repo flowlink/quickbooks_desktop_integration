@@ -24,7 +24,9 @@ module QBWC
           if object['list_id'].to_s.empty?
             return add_xml_to_send(object, params, session_id) if add_or_update
           else
-            return update_xml_to_send(object, params, session_id) if add_or_update 
+            if add_or_update
+              return "#{delete_xml_to_send(object, session_id)}#{add_xml_to_send(object, params, session_id)}"
+            end
             return delete_xml_to_send(object, session_id) if object['action'] == "DELETE"
           end
           
