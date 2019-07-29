@@ -298,12 +298,12 @@ module Persistence
         if content.key?('message')
           notifications[status] << {
             message: "#{object_ref}: #{content['message']}",
-            request_id: request_id || content['request_id']
+            request_id: content['request_id'] || request_id
           }
         else
           notifications[status] << {
-              message: "#{object_ref}: #{success_notification_message(object_type)}",
-              request_id: request_id || content['request_id']
+            message: "#{object_ref}: #{success_notification_message(object_type)}",
+            request_id: content['request_id'] || request_id
           }
         end
 
