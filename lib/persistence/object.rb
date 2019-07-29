@@ -255,7 +255,7 @@ module Persistence
               collection = amazon_s3.bucket.objects(prefix: filename)
               collection.each do |s3_object|
                 # This is for files that end on (n)
-                # puts "Working with #{s3_object.inspect}"
+                puts "Working with #{s3_object.inspect}"
                 _, _, ax_filename = s3_object.key.split('/')
                 _, _, end_of_file, ax_edit_sequence = ax_filename.split('_')
                 end_of_file = '.json' unless ax_edit_sequence.nil?
@@ -465,7 +465,6 @@ module Persistence
     end
 
     def generate_error_notification(content, object_type)
-      puts "GENERATE ERROR: #{content.inspect}:#{object_type}"
       @payload_key = object_type
       if content[:object]
         request_id = content[:request_id].split('_').last
@@ -479,6 +478,7 @@ module Persistence
 
     def create_notifications(objects_filename, status)
       _, _, filename2, filename = objects_filename.split('/')
+      puts "GENERATE NOTIFICATION: #{filename2}:#{filename}"
       filename ||= filename2
       s3_object = amazon_s3.bucket.object(objects_filename)
 
