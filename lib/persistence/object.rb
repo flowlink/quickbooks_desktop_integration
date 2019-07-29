@@ -468,6 +468,7 @@ module Persistence
       @payload_key = object_type
       if content[:object]
         request_id = content[:request_id].split('_').last
+        content[:request_id] = request_id
         new_filename = "#{path.base_name}/#{path.ready}/notification_failed_#{request_id}_#{object_type}_#{id_for_object(content[:object], object_type)}_.json"
         amazon_s3.export(file_name: new_filename, objects: [content])
       else
