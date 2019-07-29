@@ -465,6 +465,7 @@ module Persistence
     end
 
     def generate_error_notification(content, object_type)
+      puts "GENERATE ERROR: #{content.inspect}:#{object_type}"
       @payload_key = object_type
       if content[:object]
         request_id = content[:request_id].split('_').last
