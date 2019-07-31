@@ -77,6 +77,9 @@ module QBWC
             vendor_address: {
               address1: record.dig("VendorAddress", "Addr1"),
               address2: record.dig("VendorAddress", "Addr2"),
+              address3: record.dig("VendorAddress", "Addr3"),
+              address4: record.dig("VendorAddress", "Addr4"),
+              address5: record.dig("VendorAddress", "Addr5"),
               city: record.dig("VendorAddress", "City"),
               state: record.dig("VendorAddress", "State"),
               country: record.dig("VendorAddress", "Country"),

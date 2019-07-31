@@ -85,6 +85,9 @@
             billing_address: {
               address1: record.dig("BillAddress", "Addr1"),
               address2: record.dig("BillAddress", "Addr2"),
+              address3: record.dig("BillAddress", "Addr3"),
+              address4: record.dig("BillAddress", "Addr4"),
+              address5: record.dig("BillAddress", "Addr5"),
               city: record.dig("BillAddress", "City"),
               state: record.dig("BillAddress", "State"),
               country: record.dig("BillAddress", "Country"),
@@ -96,6 +99,9 @@
             shipping_address: {
               address1: record.dig("ShipAddress", "Addr1"),
               address2: record.dig("ShipAddress", "Addr2"),
+              address3: record.dig("ShipAddress", "Addr3"),
+              address4: record.dig("ShipAddress", "Addr4"),
+              address5: record.dig("ShipAddress", "Addr5"),
               city: record.dig("ShipAddress", "City"),
               state: record.dig("ShipAddress", "State"),
               country: record.dig("ShipAddress", "Country"),
