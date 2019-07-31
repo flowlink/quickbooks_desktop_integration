@@ -90,7 +90,7 @@ module QBWC
             vendor_tax_ident: record["VendorTaxIdent"],
             is_vendor_eligible_for_1099: record["IsVendorEligibleFor1099"],
             balance: record["Balance"],
-            prefill_accounts: record.dig("PrefillAccountRef")&.map { |account|  account["FullName"] }
+            prefill_accounts: record.dig("PrefillAccountRef")&.map { |account|  account && account["FullName"] }
           }
           object
         end
