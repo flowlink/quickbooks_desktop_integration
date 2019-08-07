@@ -287,7 +287,7 @@ module QBWC
 
           <<-XML
 
-      <Rate>#{'%.2f' % line['price'].to_f}</Rate>
+      <Rate>#{'%.2f' % price(line).to_f}</Rate>
           XML
         end
 
@@ -353,6 +353,11 @@ module QBWC
         end
 
         private
+
+        def price(line)
+          line['line_item_price'] || line['price']
+        end
+
 
         def items(record)
           record['line_items'].to_a.sort { |a, b| a['product_id'] <=> b['product_id'] }
