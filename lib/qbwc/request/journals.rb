@@ -29,8 +29,8 @@ module QBWC
             end
             return delete_xml_to_send(object, session_id) if object['action'] == "DELETE"
           end
-          
-          raise "Valid Action not given: please use ADD, UPDATE, or DELETE action. If using DELETE, journal must exist already."
+
+          raise "Valid Action not given for object #{object}: please use ADD, UPDATE, or DELETE action. If using DELETE, journal must exist already."
         end
 
         def generate_request_queries(objects, params)
