@@ -21,16 +21,23 @@ module QBWC
         def build_request_by_action(object, params, session_id)
           add_or_update = object['action'] == "ADD" || object['action'] == "UPDATE"
 
-          if object['list_id'].to_s.empty?
-            return add_xml_to_send(object, params, session_id) if add_or_update
+          if add_or_update
+            return add_xml_to_send(object, params, session_id) if object['list_id'].to_s.empty?
+            return "#{delete_xml_to_send(object, session_id)}#{add_xml_to_send(object, params, session_id)}"
           else
-            if add_or_update
-              return "#{delete_xml_to_send(object, session_id)}#{add_xml_to_send(object, params, session_id)}"
-            end
             return delete_xml_to_send(object, session_id) if object['action'] == "DELETE"
           end
 
-          raise "Valid Action not given for object #{object}: please use ADD, UPDATE, or DELETE action. If using DELETE, journal must exist already."
+          # if object['list_id'].to_s.empty?
+          #   return add_xml_to_send(object, params, session_id) if add_or_update
+          # else
+          #   if add_or_update
+          #     return "#{delete_xml_to_send(object, session_id)}#{add_xml_to_send(object, params, session_id)}"
+          #   end
+          #   return delete_xml_to_send(object, session_id) if object['action'] == "DELETE"
+          # end
+
+          # raise "Valid Action not given for object #{object}: please use ADD, UPDATE, or DELETE action. If using DELETE, journal must exist already."
         end
 
         def generate_request_queries(objects, params)

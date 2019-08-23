@@ -255,7 +255,7 @@ module Persistence
               collection = amazon_s3.bucket.objects(prefix: filename)
               collection.each do |s3_object|
                 # This is for files that end on (n)
-                puts "Working with #{s3_object.inspect}"
+                # puts "Working with #{s3_object.inspect}"
                 _, _, ax_filename = s3_object.key.split('/')
                 _, _, end_of_file, ax_edit_sequence = ax_filename.split('_')
                 end_of_file = '.json' unless ax_edit_sequence.nil?
