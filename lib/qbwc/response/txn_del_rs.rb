@@ -9,6 +9,9 @@ module QBWC
 
       def handle_error(errors, config)
         errors.each do |error|
+          puts "ERROR - ERROR"
+          puts error
+          puts error.inspect
           Persistence::Object.handle_error(config,
                                            error.merge(context: 'Deleting Journal'),
                                            'journals',
