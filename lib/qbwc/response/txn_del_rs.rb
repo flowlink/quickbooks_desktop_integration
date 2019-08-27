@@ -9,7 +9,7 @@ module QBWC
 
       def handle_error(errors, config)
         errors.each do |error|
-          error[:message] = "Attempted to delete Journal Entry, but it was not found" if error[:message] == "There is a missing element: \"TxnID\"."
+          error[:message] = "Attempted to delete Journal Entry, but it was not found" if error[:message].include? "TxnID"
           Persistence::Object.handle_error(config,
                                            error.merge(context: 'Deleting Journal'),
                                            'journals',
