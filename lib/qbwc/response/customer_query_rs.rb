@@ -110,6 +110,11 @@
             class_name: record.dig("ClassRef", "FullName"),
             sales_rep: record.dig("SalesRepRef", "FullName"),
             is_active: record['IsActive'],
+            phone: record['Phone'],
+            alternative_phone: record['AltPhone'],
+            fax: record['Fax'],
+            email: record['Email'],
+            contact: record['Contact'],
             sub_level: record['Sublevel'],
             first_name: record['FirstName'],
             last_name: record['LastName']
