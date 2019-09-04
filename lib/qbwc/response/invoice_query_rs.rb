@@ -121,12 +121,15 @@ module QBWC
             is_finance_charge: record['IsFinanceCharge'],
             is_paid: record['IsPaid'],
             transaction_id: record['TxnID'],
+            qbe_transaction_id: record['TxnID'],
+            key: 'qbe_transaction_id',
             created_at: record["TimeCreated"].to_s,
             modified_at: record["TimeModified"].to_s,
             transaction_number: record["TxnNumber"],
             customer: {
               name: record.dig("CustomerRef", "FullName"),
-              external_id: record.dig("CustomerRef", "ListID")
+              external_id: record.dig("CustomerRef", "ListID"),
+              qbe_id: record.dig("CustomerRef", "ListID")
             },
             class_ref: record.dig("ClassRef", "FullName"),
             transaction_date: record["TxnDate"],
@@ -163,6 +166,7 @@ module QBWC
             line_items: record["InvoiceLineRet"] && record["InvoiceLineRet"].map do |item|
               {
                 product_id: item.dig("ItemRef", "FullName"),
+                qbe_id: item.dig("ItemRef", "ListID"),
                 name: item.dig("ItemRef", "FullName"),
                 sku: item.dig("ItemRef", "FullName"),
                 line_id: item["TxnLineID"],
@@ -184,7 +188,11 @@ module QBWC
             tax_ref: record.dig("ItemSalesTaxRef", "FullName"),
             applied_amount: record["AppliedAmount"],
             balance_remaining: record["BalanceRemaining"],
-            memo: record["Memo"]
+            memo: record["Memo"],
+            relationships: [
+              { object: 'customer', key: 'qbe_id' },
+              { object: 'product', key: 'qbe_id', location: 'line_items' }
+            ]
           }
         end
       end

@@ -91,6 +91,8 @@ module QBWC
             id: record['Name'],
             sku: record['Name'],
             product_id: record['Name'],
+            qbe_id: record['ListID'],
+            key: 'qbe_id',
             name: record['Name'],
             fullname: record['FullName'],
             quantity: record['QuantityOnHand'],
@@ -101,13 +103,17 @@ module QBWC
             purchase_cost: record['PurchaseCost'],
             vendor: {
               name: record.dig('PrefVendorRef', 'FullName'),
-              external_id: record.dig('PrefVendorRef', 'ListID')
+              external_id: record.dig('PrefVendorRef', 'ListID'),
+              qbe_id: record.dig('PrefVendorRef', 'ListID')
             },
             average_cost: record['AverageCost'],
             quantity_on_order: record['QuantityOnOrder'],
             quantity_on_sales_order: record['QuantityOnSalesOrder'],
             created_at: record['TimeCreated'],
-            modified_at: record['TimeModified']
+            modified_at: record['TimeModified'],
+            relationships: [
+              { object: "vendor", key: "qbe_id" }
+            ]
           }
 
           object

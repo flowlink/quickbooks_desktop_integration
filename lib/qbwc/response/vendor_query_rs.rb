@@ -70,6 +70,8 @@ module QBWC
           puts "Vendor QBE object: #{record}"
           object = {
             id: record['ListID'],
+            qbe_id: record['ListID'],
+            key: 'qbe_id',
             name: record['Name'],
             created_at: record['TimeCreated'].to_s,
             modified_at: record['TimeModified'].to_s,

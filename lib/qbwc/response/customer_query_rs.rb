@@ -76,6 +76,7 @@
             id: record['ListID'],
             list_id: record['ListID'],
             qbe_id: record['ListID'],
+            key: 'qbe_id',
             external_id: record['ListID'],
             created_at: record['TimeCreated'].to_s,
             modified_at: record['TimeModified'].to_s,
