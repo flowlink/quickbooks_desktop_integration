@@ -116,8 +116,11 @@ module QBWC
           # nothing on this class
           ''
         end
-        # TODO Migrating to inventories.rb
-        def polling_current_items_xml(timestamp, config)
+
+        def polling_current_items_xml(params, config)
+          timestamp = params
+          timestamp = params['quickbooks_since'] if params['return_all']
+
           session_id = Persistence::Session.save(config, 'polling' => timestamp)
 
           time = Time.parse(timestamp).in_time_zone 'Pacific Time (US & Canada)'
@@ -126,15 +129,24 @@ module QBWC
             <!-- polling products -->
             <ItemInventoryQueryRq requestID="#{session_id}">
             <MaxReturned>1000</MaxReturned>
-              <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
+              #{query_by_date(params, time)}
               <!-- <IncludeRetElement>Name</IncludeRetElement> -->
             </ItemInventoryQueryRq>
             <!-- polling assembled products -->
             <ItemInventoryAssemblyQueryRq requestID="#{session_id}">
             <MaxReturned>1000</MaxReturned>
-              <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
+              #{query_by_date(params, time)}
               <!-- <IncludeRetElement>Name</IncludeRetElement> -->
             </ItemInventoryAssemblyQueryRq>
+          XML
+        end
+
+        def query_by_date(config, time)
+          puts "Product config for polling: #{config}"
+          return '' if config['return_all']
+
+          <<~XML
+            <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
           XML
         end
       end
