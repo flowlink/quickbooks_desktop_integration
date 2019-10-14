@@ -138,7 +138,8 @@ class QBWCEndpoint < Sinatra::Base
   end
 
   def receive_response_xml(connection_id, body)
-    # puts body.gsub("\n", '')
+    puts "RECEIVING"
+    puts body.gsub("\n", '')
     QBWC::Consumer.new(connection_id: connection_id).digest_response_into_actions(body)
 
     erb :'qbwc/receive_response_xml'
