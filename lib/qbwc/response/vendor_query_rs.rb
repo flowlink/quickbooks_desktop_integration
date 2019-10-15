@@ -91,7 +91,25 @@ module QBWC
             terms: record.dig("TermsRef", "FullName"),
             vendor_tax_ident: record["VendorTaxIdent"],
             is_vendor_eligible_for_1099: record["IsVendorEligibleFor1099"],
-            balance: record["Balance"]
+            balance: record["Balance"],
+            phone: record["Phone"],
+            alt_phone: record["AltPhone"],
+            fax: record["Fax"],
+            email: record["Email"],
+            cc: record["Cc"],
+            contact: record["Contact"],
+            alt_contact: record["AltContact"],
+            account_number: record["AccountNumber"],
+            notes: record["Notes"],
+            credit_limit: record["CreditLimit"],
+            sales_tax_country: record["SalesTaxCountry"],
+            is_sales_tax_agency: record["IsSalesTaxAgency"],
+            tax_registration_number: record["TaxRegistrationNumber"],
+            reporting_period: record["ReportingPeriod"],
+            is_tax_tracked_on_purchases: record["IsTaxTrackedOnPurchases"],
+            is_tax_tracked_on_sales: record["IsTaxTrackedOnSales"],
+            is_tax_on_tax: record["IsTaxOnTax"],
+            qbe_external_guid: record["ExternalGUID"]
           }
           object
         end
@@ -99,3 +117,70 @@ module QBWC
     end
   end
 end
+
+# TODO: Still need these fields when getting vendors
+# <AdditionalContactRef> <!-- must occur 0 - 8 times -->
+#         <ContactName >STRTYPE</ContactName> <!-- required -->
+#         <ContactValue >STRTYPE</ContactValue> <!-- required -->
+# </AdditionalContactRef>
+# <ContactsRet> <!-- optional, may repeat -->
+#         <ListID >IDTYPE</ListID> <!-- required -->
+#         <TimeCreated >DATETIMETYPE</TimeCreated> <!-- required -->
+#         <TimeModified >DATETIMETYPE</TimeModified> <!-- required -->
+#         <EditSequence >STRTYPE</EditSequence> <!-- required -->
+#         <Contact >STRTYPE</Contact> <!-- optional -->
+#         <Salutation >STRTYPE</Salutation> <!-- optional -->
+#         <FirstName >STRTYPE</FirstName> <!-- required -->
+#         <MiddleName >STRTYPE</MiddleName> <!-- optional -->
+#         <LastName >STRTYPE</LastName> <!-- optional -->
+#         <JobTitle >STRTYPE</JobTitle> <!-- optional -->
+#         <AdditionalContactRef> <!-- must occur 0 - 5 times -->
+#                 <ContactName >STRTYPE</ContactName> <!-- required -->
+#                 <ContactValue >STRTYPE</ContactValue> <!-- required -->
+#         </AdditionalContactRef>
+# </ContactsRet>
+# <AdditionalNotesRet> <!-- optional, may repeat -->
+#         <NoteID >INTTYPE</NoteID> <!-- required -->
+#         <Date >DATETYPE</Date> <!-- required -->
+#         <Note >STRTYPE</Note> <!-- required -->
+# </AdditionalNotesRet>
+# <VendorTypeRef> <!-- optional -->
+#         <ListID >IDTYPE</ListID> <!-- optional -->
+#         <FullName >STRTYPE</FullName> <!-- optional -->
+# </VendorTypeRef>
+# <BillingRateRef> <!-- optional -->
+#         <ListID >IDTYPE</ListID> <!-- optional -->
+#         <FullName >STRTYPE</FullName> <!-- optional -->
+# </BillingRateRef>
+# <ExternalGUID >GUIDTYPE</ExternalGUID> <!-- optional -->
+# <SalesTaxCodeRef> <!-- optional -->
+#         <ListID >IDTYPE</ListID> <!-- optional -->
+#         <FullName >STRTYPE</FullName> <!-- optional -->
+# </SalesTaxCodeRef>
+# <SalesTaxReturnRef> <!-- optional -->
+#         <ListID >IDTYPE</ListID> <!-- optional -->
+#         <FullName >STRTYPE</FullName> <!-- optional -->
+# </SalesTaxReturnRef>
+# <TaxOnPurchasesAccountRef> <!-- optional -->
+#         <ListID >IDTYPE</ListID> <!-- optional -->
+#         <FullName >STRTYPE</FullName> <!-- optional -->
+# </TaxOnPurchasesAccountRef>
+# <TaxOnSalesAccountRef> <!-- optional -->
+#         <ListID >IDTYPE</ListID> <!-- optional -->
+#         <FullName >STRTYPE</FullName> <!-- optional -->
+# </TaxOnSalesAccountRef>
+# <PrefillAccountRef> <!-- must occur 0 - 3 times -->
+#         <ListID >IDTYPE</ListID> <!-- optional -->
+#         <FullName >STRTYPE</FullName> <!-- optional -->
+# </PrefillAccountRef>
+# <CurrencyRef> <!-- optional -->
+#         <ListID >IDTYPE</ListID> <!-- optional -->
+#         <FullName >STRTYPE</FullName> <!-- optional -->
+# </CurrencyRef>
+# <DataExtRet> <!-- optional, may repeat -->
+#         <OwnerID >GUIDTYPE</OwnerID> <!-- optional -->
+#         <DataExtName >STRTYPE</DataExtName> <!-- required -->
+#         <!-- DataExtType may have one of the following values: AMTTYPE, DATETIMETYPE, INTTYPE, PERCENTTYPE, PRICETYPE, QUANTYPE, STR1024TYPE, STR255TYPE -->
+#         <DataExtType >ENUMTYPE</DataExtType> <!-- required -->
+#         <DataExtValue >STRTYPE</DataExtValue> <!-- required -->
+# </DataExtRet>
