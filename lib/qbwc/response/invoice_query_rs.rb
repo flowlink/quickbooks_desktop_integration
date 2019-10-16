@@ -195,7 +195,7 @@ module QBWC
                 service_date: item['ServiceDate'].to_s,
                 other_one: item['Other1'],
                 other_two: item['Other2']
-              }.compact
+              }
             end,
             terms: record.dig('TermsRef', 'FullName'),
             shipping_method: record.dig('ShipMethodRef', 'FullName'),
