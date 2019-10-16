@@ -96,7 +96,6 @@ module QBWC
             fullname: record['FullName'],
             quantity: record['QuantityOnHand'],
             is_active: record['IsActive'],
-            unit_measure: record.dig('UnitOfMeasureSetRef', 'FullName'),
             sales_price: record['SalesPrice'],
             purchase_description: record['PurchaseDesc'],
             purchase_cost: record['PurchaseCost'],
@@ -104,11 +103,28 @@ module QBWC
               name: record.dig('PrefVendorRef', 'FullName'),
               external_id: record.dig('PrefVendorRef', 'ListID')
             },
+            unit_measure: record.dig('UnitOfMeasureSetRef', 'FullName'),
+            sales_tax_code_name: record.dig('SalesTaxCodeRef', 'FullName'),
+            income_account_name: record.dig('IncomeAccountRef', 'FullName'),
+            purchase_tax_code_name: record.dig('PurchaseTaxCodeRef', 'FullName'),
+            cogs_account_name: record.dig('COGSAccountRef', 'FullName'),
+            asset_account_name: record.dig('AssetAccountRef', 'FullName'),
+            class_name: record.dig('ClassRef', 'FullName'),
+            parent_name: record.dig('ParentRef', 'FullName'),
             average_cost: record['AverageCost'],
             quantity_on_order: record['QuantityOnOrder'],
             quantity_on_sales_order: record['QuantityOnSalesOrder'],
             created_at: record['TimeCreated'],
-            modified_at: record['TimeModified']
+            modified_at: record['TimeModified'],
+            list_id: record['ListID'],
+            barcode_value: record['BarCodeValue'],
+            sublevel: record['Sublevel'],
+            manufacturer_part_number: record['ManufacturerPartNumber'],
+            is_tax_included: record['IsTaxIncluded'],
+            sales_description: record['SalesDesc'],
+            build_point: record['BuildPoint'],
+            max: record['Max'],
+            external_guid: record['ExternalGUID']
           }
 
           object
@@ -117,3 +133,19 @@ module QBWC
     end
   end
 end
+
+# TODO: Still need these fields when getting inventory assembly items
+# <ItemInventoryAssemblyLine> <!-- optional, may repeat -->
+#         <ItemInventoryRef> <!-- required -->
+#                 <ListID >IDTYPE</ListID> <!-- optional -->
+#                 <FullName >STRTYPE</FullName> <!-- optional -->
+#         </ItemInventoryRef>
+#         <Quantity >QUANTYPE</Quantity> <!-- optional -->
+# </ItemInventoryAssemblyLine>
+# <DataExtRet> <!-- optional, may repeat -->
+#         <OwnerID >GUIDTYPE</OwnerID> <!-- optional -->
+#         <DataExtName >STRTYPE</DataExtName> <!-- required -->
+#         <!-- DataExtType may have one of the following values: AMTTYPE, DATETIMETYPE, INTTYPE, PERCENTTYPE, PRICETYPE, QUANTYPE, STR1024TYPE, STR255TYPE -->
+#         <DataExtType >ENUMTYPE</DataExtType> <!-- required -->
+#         <DataExtValue >STRTYPE</DataExtValue> <!-- required -->
+# </DataExtRet>

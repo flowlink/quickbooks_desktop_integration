@@ -120,33 +120,48 @@ module QBWC
             created_at: record["TimeCreated"].to_s,
             modified_at: record["TimeModified"].to_s,
             transaction_number: record["TxnNumber"],
+            transaction_date: record["TxnDate"],
+            po_number: record["PONumber"],
+            due_date: record["DueDate"].to_s,
             customer: {
               name: record.dig("CustomerRef", "FullName"),
               external_id: record.dig("CustomerRef", "ListID")
             },
-            class_ref: record.dig("ClassRef", "FullName"),
-            transaction_date: record["TxnDate"],
             billing_address: {
               address1: record.dig("BillAddress", "Addr1"),
               address2: record.dig("BillAddress", "Addr2"),
+              address3: record.dig("BillAddress", "Addr3"),
+              address4: record.dig("BillAddress", "Addr4"),
+              address5: record.dig("BillAddress", "Addr5"),
               city: record.dig("BillAddress", "City"),
               state: record.dig("BillAddress", "State"),
               country: record.dig("BillAddress", "Country"),
-              zip_code: record.dig("BillAddress", "PostalCode")
+              zip_code: record.dig("BillAddress", "PostalCode"),
+              note: record.dig("BillAddress", "Note")
             },
             shipping_address: {
               address1: record.dig("ShipAddress", "Addr1"),
               address2: record.dig("ShipAddress", "Addr2"),
+              address3: record.dig("ShipAddress", "Addr3"),
+              address4: record.dig("ShipAddress", "Addr4"),
+              address5: record.dig("ShipAddress", "Addr5"),
               city: record.dig("ShipAddress", "City"),
               state: record.dig("ShipAddress", "State"),
               country: record.dig("ShipAddress", "Country"),
-              zip_code: record.dig("ShipAddress", "PostalCode")
+              zip_code: record.dig("ShipAddress", "PostalCode"),
+              note: record.dig("ShipAddress", "Note")
             },
-            po_number: record["PONumber"],
-            due_date: record["DueDate"].to_s,
             sales_rep: {
               name: record.dig("SalesRepRef", "FullName")
             },
+            customer_message_name: item.dig("CustomerMsgRef", "FullName"),
+            template_name: item.dig("TemplateRef", "FullName"),
+            terms: item.dig("TermsRef", "FullName"),
+            currency_name: item.dig("CurrencyRef", "FullName"),
+            tax_ref: item.dig("ItemSalesTaxRef", "FullName"),
+            shipping_method: item.dig("ShipMethodRef", "FullName"),
+            customer_tax_code: record.dig("CustomerSalesTaxCodeRef", "FullName"),
+            class_ref: record.dig("ClassRef", "FullName"),
             shipping_date: record["ShipDate"].to_s,
             sub_total: record["Subtotal"],
             sales_tax_percentage: record["SalesTaxPercentage"],
@@ -154,29 +169,141 @@ module QBWC
             total: record["TotalAmount"],
             is_manually_closed: record["IsManuallyClosed"],
             is_fully_invoiced: record["IsFullyInvoiced"],
-            customer_tax_code: record.dig("CustomerSalesTaxCodeRef", "FullName"),
             line_items: record["SalesOrderLineRet"] && record["SalesOrderLineRet"].map do |item|
               {
                 product_id: item.dig("ItemRef", "FullName"),
                 name: item.dig("ItemRef", "FullName"),
                 sku: item.dig("ItemRef", "FullName"),
+                qbe_id: item.dig('ItemRef', 'ListID'),
+                class_ref: item.dig("ClassRef", "FullName"),
+                warehouse: item.dig("InventorySiteRef", "FullName"),
+                sales_tax_code: item.dig("SalesTaxCodeRef", "FullName"),
+                override_uom_set_name: item.dig("OverrideUOMSetRef", "FullName"),
+                inventory_site_location_name: item.dig("InventorySiteLocationRef", "FullName"),
                 line_id: item["TxnLineID"],
                 description: item["Desc"],
                 quantity: item["Quantity"],
                 unit_of_measure: item["UnitOfMeasure"],
                 rate: item["Rate"],
-                class_ref: item.dig("ClassRef", "FullName"),
                 amount: item["Amount"],
-                warehouse: item.dig("InventorySiteRef", "FullName"),
-                sales_tax_code: item.dig("SalesTaxCodeRef", "FullName"),
                 invoiced: item["Invoiced"],
-                is_manually_closed: item["IsManuallyClosed"]
+                is_manually_closed: item["IsManuallyClosed"],
+                service_date: item['ServiceDate'].to_s,
+                other_one: item['Other1'],
+                other_two: item['Other2']
               }
-            end
-
+            end,
+            fob: record['FOB'],
+            exchange_rate: record['ExchangeRate'],
+            total_amount_in_home_currency: record['TotalAmountInHomeCurrency'],
+            memo: record['Memo'],
+            is_to_be_printed: record['IsToBePrinted'],
+            is_to_be_emailed: record['IsToBeEmailed'],
+            is_tax_included: record['IsTaxIncluded'],
+            other: record['Other'],
+            external_guid: record['ExternalGUID']
           }
         end
       end
     end
   end
 end
+
+
+# TODO: Still need these fields when getting order
+# <LinkedTxn> <!-- optional, may repeat -->
+#         <TxnID >IDTYPE</TxnID> <!-- required -->
+#         <!-- TxnType may have one of the following values: ARRefundCreditCard, Bill, BillPaymentCheck, BillPaymentCreditCard, BuildAssembly, Charge, Check, CreditCardCharge, CreditCardCredit, CreditMemo, Deposit, Estimate, InventoryAdjustment, Invoice, ItemReceipt, JournalEntry, LiabilityAdjustment, Paycheck, PayrollLiabilityCheck, PurchaseOrder, ReceivePayment, SalesOrder, SalesReceipt, SalesTaxPaymentCheck, Transfer, VendorCredit, YTDAdjustment -->
+#         <TxnType >ENUMTYPE</TxnType> <!-- required -->
+#         <TxnDate >DATETYPE</TxnDate> <!-- required -->
+#         <RefNumber >STRTYPE</RefNumber> <!-- optional -->
+#         <!-- LinkType may have one of the following values: AMTTYPE, QUANTYPE -->
+#         <LinkType >ENUMTYPE</LinkType> <!-- optional -->
+#         <Amount >AMTTYPE</Amount> <!-- required -->
+# </LinkedTxn>
+# <!-- BEGIN OR -->
+#         <SalesOrderLineRet> THIS IS DONE - I left this here to show the OR that could get returned
+# <!-- OR -->
+#         <SalesOrderLineGroupRet> <!-- optional -->
+#                 <TxnLineID >IDTYPE</TxnLineID> <!-- required -->
+#                 <ItemGroupRef> <!-- required -->
+#                         <ListID >IDTYPE</ListID> <!-- optional -->
+#                         <FullName >STRTYPE</FullName> <!-- optional -->
+#                 </ItemGroupRef>
+#                 <Desc >STRTYPE</Desc> <!-- optional -->
+#                 <Quantity >QUANTYPE</Quantity> <!-- optional -->
+#                 <UnitOfMeasure >STRTYPE</UnitOfMeasure> <!-- optional -->
+#                 <OverrideUOMSetRef> <!-- optional -->
+#                         <ListID >IDTYPE</ListID> <!-- optional -->
+#                         <FullName >STRTYPE</FullName> <!-- optional -->
+#                 </OverrideUOMSetRef>
+#                 <IsPrintItemsInGroup >BOOLTYPE</IsPrintItemsInGroup> <!-- required -->
+#                 <TotalAmount >AMTTYPE</TotalAmount> <!-- required -->
+#                 <SalesOrderLineRet> <!-- optional, may repeat -->
+#                         <TxnLineID >IDTYPE</TxnLineID> <!-- required -->
+#                         <ItemRef> <!-- optional -->
+#                                 <ListID >IDTYPE</ListID> <!-- optional -->
+#                                 <FullName >STRTYPE</FullName> <!-- optional -->
+#                         </ItemRef>
+#                         <Desc >STRTYPE</Desc> <!-- optional -->
+#                         <Quantity >QUANTYPE</Quantity> <!-- optional -->
+#                         <UnitOfMeasure >STRTYPE</UnitOfMeasure> <!-- optional -->
+#                         <OverrideUOMSetRef> <!-- optional -->
+#                                 <ListID >IDTYPE</ListID> <!-- optional -->
+#                                 <FullName >STRTYPE</FullName> <!-- optional -->
+#                         </OverrideUOMSetRef>
+#                         <!-- BEGIN OR -->
+#                                 <Rate >PRICETYPE</Rate> <!-- optional -->
+#                         <!-- OR -->
+#                                 <RatePercent >PERCENTTYPE</RatePercent> <!-- optional -->
+#                         <!-- END OR -->
+#                         <ClassRef> <!-- optional -->
+#                                 <ListID >IDTYPE</ListID> <!-- optional -->
+#                                 <FullName >STRTYPE</FullName> <!-- optional -->
+#                         </ClassRef>
+#                         <Amount >AMTTYPE</Amount> <!-- optional -->
+#                         <InventorySiteRef> <!-- optional -->
+#                                 <ListID >IDTYPE</ListID> <!-- optional -->
+#                                 <FullName >STRTYPE</FullName> <!-- optional -->
+#                         </InventorySiteRef>
+#                         <InventorySiteLocationRef> <!-- optional -->
+#                                 <ListID >IDTYPE</ListID> <!-- optional -->
+#                                 <FullName >STRTYPE</FullName> <!-- optional -->
+#                         </InventorySiteLocationRef>
+#                         <!-- BEGIN OR -->
+#                                 <SerialNumber >STRTYPE</SerialNumber> <!-- optional -->
+#                         <!-- OR -->
+#                                 <LotNumber >STRTYPE</LotNumber> <!-- optional -->
+#                         <!-- END OR -->
+#                         <SalesTaxCodeRef> <!-- optional -->
+#                                 <ListID >IDTYPE</ListID> <!-- optional -->
+#                                 <FullName >STRTYPE</FullName> <!-- optional -->
+#                         </SalesTaxCodeRef>
+#                         <Invoiced >QUANTYPE</Invoiced> <!-- optional -->
+#                         <IsManuallyClosed >BOOLTYPE</IsManuallyClosed> <!-- optional -->
+#                         <Other1 >STRTYPE</Other1> <!-- optional -->
+#                         <Other2 >STRTYPE</Other2> <!-- optional -->
+#                         <DataExtRet> <!-- optional, may repeat -->
+#                                 <OwnerID >GUIDTYPE</OwnerID> <!-- optional -->
+#                                 <DataExtName >STRTYPE</DataExtName> <!-- required -->
+#                                 <!-- DataExtType may have one of the following values: AMTTYPE, DATETIMETYPE, INTTYPE, PERCENTTYPE, PRICETYPE, QUANTYPE, STR1024TYPE, STR255TYPE -->
+#                                 <DataExtType >ENUMTYPE</DataExtType> <!-- required -->
+#                                 <DataExtValue >STRTYPE</DataExtValue> <!-- required -->
+#                         </DataExtRet>
+#                 </SalesOrderLineRet>
+#                 <DataExtRet> <!-- optional, may repeat -->
+#                         <OwnerID >GUIDTYPE</OwnerID> <!-- optional -->
+#                         <DataExtName >STRTYPE</DataExtName> <!-- required -->
+#                         <!-- DataExtType may have one of the following values: AMTTYPE, DATETIMETYPE, INTTYPE, PERCENTTYPE, PRICETYPE, QUANTYPE, STR1024TYPE, STR255TYPE -->
+#                         <DataExtType >ENUMTYPE</DataExtType> <!-- required -->
+#                         <DataExtValue >STRTYPE</DataExtValue> <!-- required -->
+#                 </DataExtRet>
+#         </SalesOrderLineGroupRet>
+# <!-- END OR -->
+# <DataExtRet> <!-- optional, may repeat -->
+#         <OwnerID >GUIDTYPE</OwnerID> <!-- optional -->
+#         <DataExtName >STRTYPE</DataExtName> <!-- required -->
+#         <!-- DataExtType may have one of the following values: AMTTYPE, DATETIMETYPE, INTTYPE, PERCENTTYPE, PRICETYPE, QUANTYPE, STR1024TYPE, STR255TYPE -->
+#         <DataExtType >ENUMTYPE</DataExtType> <!-- required -->
+#         <DataExtValue >STRTYPE</DataExtValue> <!-- required -->
+# </DataExtRet>

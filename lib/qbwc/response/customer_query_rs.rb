@@ -26,7 +26,7 @@
 
         if customer_params
           payload = { customers: to_flowlink }
-          config = { origin: 'quickbooks' }.merge config.reject{|k,v| k == :origin || k == "origin"}
+          config = { origin: 'quickbooks' }.merge config.reject{|k,v| k == :origin || k == 'origin'}
 
           poll_persistence = Persistence::Polling.new(config, payload)
           poll_persistence.save_for_polling
@@ -84,44 +84,127 @@
             full_name: record['FullName'],
             email: record['Email'],
             billing_address: {
-              address1: record.dig("BillAddress", "Addr1"),
-              address2: record.dig("BillAddress", "Addr2"),
-              address3: record.dig("BillAddress", "Addr3"),
-              address4: record.dig("BillAddress", "Addr4"),
-              address5: record.dig("BillAddress", "Addr5"),
-              city: record.dig("BillAddress", "City"),
-              state: record.dig("BillAddress", "State"),
-              country: record.dig("BillAddress", "Country"),
-              zip_code: record.dig("BillAddress", "PostalCode")
+              address1: record.dig('BillAddress', 'Addr1'),
+              address2: record.dig('BillAddress', 'Addr2'),
+              address3: record.dig('BillAddress', 'Addr3'),
+              address4: record.dig('BillAddress', 'Addr4'),
+              address5: record.dig('BillAddress', 'Addr5'),
+              city: record.dig('BillAddress', 'City'),
+              state: record.dig('BillAddress', 'State'),
+              country: record.dig('BillAddress', 'Country'),
+              zip_code: record.dig('BillAddress', 'PostalCode'),
+              note: record.dig('ShipAddress', 'Note')
             }.compact,
             balance: record['Balance'],
             total_balance: record['TotalBalance'],
             job_status: record['JobStatus'],
             shipping_address: {
-              address1: record.dig("ShipAddress", "Addr1"),
-              address2: record.dig("ShipAddress", "Addr2"),
-              address3: record.dig("ShipAddress", "Addr3"),
-              address4: record.dig("ShipAddress", "Addr4"),
-              address5: record.dig("ShipAddress", "Addr5"),
-              city: record.dig("ShipAddress", "City"),
-              state: record.dig("ShipAddress", "State"),
-              country: record.dig("ShipAddress", "Country"),
-              zip_code: record.dig("ShipAddress", "PostalCode")
+              address1: record.dig('ShipAddress', 'Addr1'),
+              address2: record.dig('ShipAddress', 'Addr2'),
+              address3: record.dig('ShipAddress', 'Addr3'),
+              address4: record.dig('ShipAddress', 'Addr4'),
+              address5: record.dig('ShipAddress', 'Addr5'),
+              city: record.dig('ShipAddress', 'City'),
+              state: record.dig('ShipAddress', 'State'),
+              country: record.dig('ShipAddress', 'Country'),
+              zip_code: record.dig('ShipAddress', 'PostalCode'),
+              note: record.dig('ShipAddress', 'Note')
             }.compact,
-            class_name: record.dig("ClassRef", "FullName"),
-            sales_rep: record.dig("SalesRepRef", "FullName"),
+            ship_to_address: {
+              address1: record.dig('ShipAddress', 'Addr1'),
+              address2: record.dig('ShipAddress', 'Addr2'),
+              address3: record.dig('ShipAddress', 'Addr3'),
+              address4: record.dig('ShipAddress', 'Addr4'),
+              address5: record.dig('ShipAddress', 'Addr5'),
+              city: record.dig('ShipAddress', 'City'),
+              state: record.dig('ShipAddress', 'State'),
+              country: record.dig('ShipAddress', 'Country'),
+              zip_code: record.dig('ShipAddress', 'PostalCode'),
+              note: record.dig('ShipAddress', 'Note'),
+              default_ship_to: record.dig('ShipAddress', 'DefaultShipTo')
+            }.compact,
+            class_name: record.dig('ClassRef', 'FullName'),
+            sales_rep: record.dig('SalesRepRef', 'FullName'),
             is_active: record['IsActive'],
             phone: record['Phone'],
             alternative_phone: record['AltPhone'],
             fax: record['Fax'],
-            email: record['Email'],
             contact: record['Contact'],
+            alternative_contact: record['AltContact'],
             sub_level: record['Sublevel'],
             first_name: record['FirstName'],
-            last_name: record['LastName']
+            middle_name: record['MiddleName'],
+            last_name: record['LastName'],            
+            company: record['CompanyName'],
+            salutation: record['Salutation'],
+            job_title: record['JobTitle'],
+            cc: record['Cc'],
+            sales_tax_country: record['SalesTaxCountry'],
+            resale_number: record['ResaleNumber'],
+            account_number: record['AccountNumber'],
+            credit_limit: record['CreditLimit'],
+            job_start_date: record['JobStartDate'].to_s,
+            job_predicted_end_date: record['JobProjectedEndDate'].to_s,
+            job_end_date: record['JobEndDate'].to_s,
+            job_description: record['JobDesc'],
+            notes: record['Notes'],
+            preferred_delivery_method: record['PreferredDeliveryMethod'],
+            external_guid: record['ExternalGUID'],
+            tax_registration_number: record['TaxRegistrationNumber'],
+            currency_name: record.dig('CurrencyRef', 'FullName'),
+            parent_name: record.dig('ParentRef', 'FullName'),
+            customer_type_name: record.dig('CustomerTypeRef', 'FullName'),
+            terms: record.dig('TermsRef', 'FullName'),
+            sales_tax_code: record.dig('SalesTaxCodeRef', 'FullName'),
+            tax_ref: record.dig('ItemSalesTaxRef', 'FullName'),
+            preferred_payment_method_name: record.dig('PreferredPaymentMethodRef', 'FullName'),
+            job_type_name: record.dig('JobTypeRef', 'FullName'),
+            price_level_name: record.dig('PriceLevelRef', 'FullName'),
           }.compact
         end
       end
     end
   end
 end
+
+# TODO: Still need these fields when getting customers
+# <AdditionalNotesRet> <!-- optional, may repeat -->
+#         <NoteID >INTTYPE</NoteID> <!-- required -->
+#         <Date >DATETYPE</Date> <!-- required -->
+#         <Note >STRTYPE</Note> <!-- required -->
+# </AdditionalNotesRet>
+# <DataExtRet> <!-- optional, may repeat -->
+#         <OwnerID >GUIDTYPE</OwnerID> <!-- optional -->
+#         <DataExtName >STRTYPE</DataExtName> <!-- required -->
+#         <!-- DataExtType may have one of the following values: AMTTYPE, DATETIMETYPE, INTTYPE, PERCENTTYPE, PRICETYPE, QUANTYPE, STR1024TYPE, STR255TYPE -->
+#         <DataExtType >ENUMTYPE</DataExtType> <!-- required -->
+#         <DataExtValue >STRTYPE</DataExtValue> <!-- required -->
+# </DataExtRet>
+# <AdditionalContactRef> <!-- must occur 0 - 8 times -->
+#         <ContactName >STRTYPE</ContactName> <!-- required -->
+#         <ContactValue >STRTYPE</ContactValue> <!-- required -->
+# </AdditionalContactRef>
+# <ContactsRet> <!-- optional, may repeat -->
+#         <ListID >IDTYPE</ListID> <!-- required -->
+#         <TimeCreated >DATETIMETYPE</TimeCreated> <!-- required -->
+#         <TimeModified >DATETIMETYPE</TimeModified> <!-- required -->
+#         <EditSequence >STRTYPE</EditSequence> <!-- required -->
+#         <Contact >STRTYPE</Contact> <!-- optional -->
+#         <Salutation >STRTYPE</Salutation> <!-- optional -->
+#         <FirstName >STRTYPE</FirstName> <!-- required -->
+#         <MiddleName >STRTYPE</MiddleName> <!-- optional -->
+#         <LastName >STRTYPE</LastName> <!-- optional -->
+#         <JobTitle >STRTYPE</JobTitle> <!-- optional -->
+#         <AdditionalContactRef> <!-- must occur 0 - 5 times -->
+#                 <ContactName >STRTYPE</ContactName> <!-- required -->
+#                 <ContactValue >STRTYPE</ContactValue> <!-- required -->
+#         </AdditionalContactRef>
+# </ContactsRet>
+# <CreditCardInfo> <!-- optional -->
+#         <CreditCardNumber >STRTYPE</CreditCardNumber> <!-- optional -->
+#         <ExpirationMonth >INTTYPE</ExpirationMonth> <!-- optional -->
+#         <ExpirationYear >INTTYPE</ExpirationYear> <!-- optional -->
+#         <NameOnCard >STRTYPE</NameOnCard> <!-- optional -->
+#         <CreditCardAddress >STRTYPE</CreditCardAddress> <!-- optional -->
+#         <CreditCardPostalCode >STRTYPE</CreditCardPostalCode> <!-- optional -->
+# </CreditCardInfo>

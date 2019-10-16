@@ -39,11 +39,110 @@ module QBWC
         end
       end
 
-      def to_flowlink
-        # TODO finish the map
+      def sales_receipts_to_flowlink
         records.map do |record|
+
+          if record['SalesReceiptLineRet'].is_a?(Hash)
+            record['SalesReceiptLineRet'] = [record['SalesReceiptLineRet']]
+          end
+
           object = {
-            id: record['RefNumber']
+            id: record['RefNumber'],
+            is_pending: record['IsPending'],
+            transaction_id: record['TxnID'],
+            qbe_transaction_id: record['TxnID'],
+            key: 'qbe_transaction_id',
+            created_at: record['TimeCreated'].to_s,
+            modified_at: record['TimeModified'].to_s,
+            transaction_number: record['TxnNumber'],
+            transaction_date: record['TxnDate'],
+            due_date: record['DueDate'].to_s,
+            shipping_date: record['ShipDate'].to_s,
+            sub_total: record['Subtotal'],
+            sales_tax_total: record['SalesTaxTotal'],
+            total: record['TotalAmount'],
+            is_manually_closed: record['IsManuallyClosed'],
+            fob: record['fob'],
+            memo: record['Memo'],
+            check_number: record['CheckNumber'],
+            total_amount_in_home_currency: record['TotalAmountInHomeCurrency'],
+            exchange_rate: record['ExchangeRate'],
+            is_to_be_printed: record['IsToBePrinted'],
+            is_to_be_emailed: record['IsToBeEmailed'],
+            is_tax_included: record['IsTaxIncluded'],
+            other: record['Other'],
+            external_guid: record['ExternalGUID'],
+            billing_address: {
+              address1: record.dig('BillAddress', 'Addr1'),
+              address2: record.dig('BillAddress', 'Addr2'),
+              address3: record.dig('BillAddress', 'Addr3'),
+              address4: record.dig('BillAddress', 'Addr4'),
+              address5: record.dig('BillAddress', 'Addr5'),
+              city: record.dig('BillAddress', 'City'),
+              state: record.dig('BillAddress', 'State'),
+              country: record.dig('BillAddress', 'Country'),
+              zip_code: record.dig('BillAddress', 'PostalCode'),
+              note: record.dig('BillAddress', 'Note')
+            },
+            shipping_address: {
+              address1: record.dig('ShipAddress', 'Addr1'),
+              address2: record.dig('ShipAddress', 'Addr2'),
+              address3: record.dig('ShipAddress', 'Addr3'),
+              address4: record.dig('ShipAddress', 'Addr4'),
+              address5: record.dig('ShipAddress', 'Addr5'),
+              city: record.dig('ShipAddress', 'City'),
+              state: record.dig('ShipAddress', 'State'),
+              country: record.dig('ShipAddress', 'Country'),
+              zip_code: record.dig('ShipAddress', 'PostalCode'),
+              note: record.dig('ShipAddress', 'Note')
+            },
+            customer: {
+              name: record.dig('CustomerRef', 'FullName'),
+              external_id: record.dig('CustomerRef', 'ListID'),
+              qbe_id: record.dig('CustomerRef', 'ListID')
+            },
+            sales_rep: {
+              name: record.dig('SalesRepRef', 'FullName')
+            },
+            class_ref: record.dig('ClassRef', 'FullName'),
+            class_name: record.dig('ClassRef', 'FullName'),
+            customer_tax_code: record.dig('CustomerSalesTaxCodeRef', 'FullName'),
+            shipping_method: record.dig('ShipMethodRef', 'FullName'),
+            tax_ref: record.dig('ItemSalesTaxRef', 'FullName'),
+            template_name: record.dig('TemplateRef', 'FullName'),
+            currency_name: record.dig('CurrencyRef', 'FullName'),
+            customer_msg_name: record.dig('CustomerMsgRef', 'FullName'),
+            payment_method: record.dig('PaymentMethodRef', 'FullName'),
+            deposit_to_account_name: record.dig('DepositToAccountRef', 'FullName'),
+            line_items: record["SalesReceiptLineRet"] && record["SalesReceiptLineRet"].map do |item|
+              {
+                product_id: item.dig("ItemRef", "FullName"),
+                name: item.dig("ItemRef", "FullName"),
+                sku: item.dig("ItemRef", "FullName"),
+                qbe_id: item.dig('ItemRef', 'ListID'),
+                warehouse: item.dig("InventorySiteRef", "FullName"),
+                sales_tax_code: item.dig("SalesTaxCodeRef", "FullName"),
+                class_ref: item.dig("ClassRef", "FullName"),
+                override_uom_set_name: item.dig("OverrideUOMSetRef", "FullName"),
+                inventory_site_location_name: item.dig("InventorySiteLocationRef", "FullName"),
+                line_id: item["TxnLineID"],
+                description: item["Desc"],
+                quantity: item["Quantity"],
+                unit_of_measure: item["UnitOfMeasure"],
+                rate: item["Rate"] || item["RatePercent"],
+                serial_or_lot_num: item["SerialNumber"] || item["LotNumber"],
+                amount: item["Amount"],
+                invoiced: item["Invoiced"],
+                is_manually_closed: item["IsManuallyClosed"],
+                service_date: item['ServiceDate'].to_s,
+                other_one: item['Other1'],
+                other_two: item['Other2']
+              }
+            end,
+            relationships: [
+              { object: 'customer', key: 'qbe_id' },
+              { object: 'product', key: 'qbe_id', location: 'line_items' }
+            ]
           }
 
           object
