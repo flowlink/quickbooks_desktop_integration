@@ -97,7 +97,6 @@ module QBWC
             fullname: record['FullName'],
             quantity: record['QuantityOnHand'],
             is_active: record['IsActive'],
-            unit_measure: record.dig('UnitOfMeasureSetRef', 'FullName'),
             sales_price: record['SalesPrice'],
             purchase_description: record['PurchaseDesc'],
             purchase_cost: record['PurchaseCost'],
@@ -106,6 +105,14 @@ module QBWC
               external_id: record.dig('PrefVendorRef', 'ListID'),
               qbe_id: record.dig('PrefVendorRef', 'ListID')
             },
+            unit_measure: record.dig('UnitOfMeasureSetRef', 'FullName'),
+            class_name: record.dig('ClassRef', 'FullName'),
+            parent_name: record.dig('ParentRef', 'FullName'),
+            sales_tax_code_name: record.dig('SalesTaxCodeRef', 'FullName'),
+            income_account_name: record.dig('IncomeAccountRef', 'FullName'),
+            purchase_tax_code_name: record.dig('PurchaseTaxCodeRef', 'FullName'),
+            cogs_account_name: record.dig('COGSAccountRef', 'FullName'),
+            asset_account_name: record.dig('AssetAccountRef', 'FullName'),
             average_cost: record['AverageCost'],
             quantity_on_order: record['QuantityOnOrder'],
             quantity_on_sales_order: record['QuantityOnSalesOrder'],
@@ -113,8 +120,16 @@ module QBWC
             modified_at: record['TimeModified'],
             relationships: [
               { object: "vendor", key: "qbe_id" }
-            ]
-          }
+            ],
+            barcode_value: record['BarCodeValue'],
+            sublevel: record['Sublevel'],
+            manufacturer_part_number: record['ManufacturerPartNumber'],
+            is_tax_included: record['IsTaxIncluded'],
+            sales_description: record['SalesDesc'],
+            reorder_point: record['ReorderPoint'],
+            max: record['Max'],
+            external_guid: record['ExternalGUID']
+          }.compact
 
           object
         end
@@ -122,3 +137,12 @@ module QBWC
     end
   end
 end
+
+# TODO: Still need these fields when getting inventory items
+# <DataExtRet> <!-- optional, may repeat -->
+#         <OwnerID >GUIDTYPE</OwnerID> <!-- optional -->
+#         <DataExtName >STRTYPE</DataExtName> <!-- required -->
+#         <!-- DataExtType may have one of the following values: AMTTYPE, DATETIMETYPE, INTTYPE, PERCENTTYPE, PRICETYPE, QUANTYPE, STR1024TYPE, STR255TYPE -->
+#         <DataExtType >ENUMTYPE</DataExtType> <!-- required -->
+#         <DataExtValue >STRTYPE</DataExtValue> <!-- required -->
+# </DataExtRet>
