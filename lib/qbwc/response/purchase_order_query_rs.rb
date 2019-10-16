@@ -100,7 +100,7 @@ module QBWC
               country: record.dig('VendorAddress', 'Country'),
               zip_code: record.dig('VendorAddress', 'PostalCode'),
               note: record.dig('VendorAddress', 'Note')
-            },
+            }.compact,
             shipping_address: {
               address1: record.dig('ShipAddress', 'Addr1'),
               address2: record.dig('ShipAddress', 'Addr2'),
@@ -112,7 +112,7 @@ module QBWC
               country: record.dig('ShipAddress', 'Country'),
               zip_code: record.dig('ShipAddress', 'PostalCode'),
               note: record.dig('ShipAddress', 'Note')
-            },
+            }.compact,
             vendor: {
               name: record.dig('VendorRef','FullName'),
               external_id: record.dig('VendorRef','ListID')

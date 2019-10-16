@@ -68,7 +68,7 @@ module QBWC
       def to_flowlink
         records.map do |record|
           puts "Vendor QBE object: #{record}"
-          object = {
+          {
             id: record['ListID'],
             qbe_id: record['ListID'],
             key: 'qbe_id',
@@ -87,7 +87,19 @@ module QBWC
               country: record.dig('VendorAddress', 'Country'),
               zip_code: record.dig('VendorAddress', 'PostalCode'),
               note: record.dig("VendorAddress", "Note")
-            },
+            }.compact,
+            shipping_address: {
+              address1: record.dig('ShipAddress', 'Addr1'),
+              address2: record.dig('ShipAddress', 'Addr2'),
+              address3: record.dig('ShipAddress', 'Addr3'),
+              address4: record.dig('ShipAddress', 'Addr4'),
+              address5: record.dig('ShipAddress', 'Addr5'),
+              city: record.dig('ShipAddress', 'City'),
+              state: record.dig('ShipAddress', 'State'),
+              country: record.dig('ShipAddress', 'Country'),
+              zip_code: record.dig('ShipAddress', 'PostalCode'),
+              note: record.dig("ShipAddress", "Note")
+            }.compact,
             vendor_type_name: record.dig('VendorTypeRef', 'FullName'),
             billing_rate_name: record.dig('BillingRateRef', 'FullName'),
             sales_tax_code_name: record.dig('SalesTaxCodeRef', 'FullName'),
@@ -119,7 +131,6 @@ module QBWC
             is_tax_on_tax: record['IsTaxOnTax'],
             qbe_external_guid: record['ExternalGUID']
           }
-          object
         end
       end
     end

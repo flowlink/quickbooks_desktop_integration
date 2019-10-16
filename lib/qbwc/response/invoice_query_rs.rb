@@ -146,7 +146,7 @@ module QBWC
               country: record.dig('BillAddress', 'Country'),
               zip_code: record.dig('BillAddress', 'PostalCode'),
               note: record.dig('BillAddress', 'Note')
-            },
+            }.compact,
             shipping_address: {
               address1: record.dig('ShipAddress', 'Addr1'),
               address2: record.dig('ShipAddress', 'Addr2'),
@@ -158,7 +158,7 @@ module QBWC
               country: record.dig('ShipAddress', 'Country'),
               zip_code: record.dig('ShipAddress', 'PostalCode'),
               note: record.dig('ShipAddress', 'Note')
-            },
+            }.compact,
             po_number: record['PONumber'],
             due_date: record['DueDate'].to_s,
             sales_rep: {
@@ -195,7 +195,7 @@ module QBWC
                 service_date: item['ServiceDate'].to_s,
                 other_one: item['Other1'],
                 other_two: item['Other2']
-              }
+              }.compact
             end,
             terms: record.dig('TermsRef', 'FullName'),
             shipping_method: record.dig('ShipMethodRef', 'FullName'),

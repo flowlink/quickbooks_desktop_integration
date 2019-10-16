@@ -45,8 +45,8 @@ module QBWC
           if record['SalesReceiptLineRet'].is_a?(Hash)
             record['SalesReceiptLineRet'] = [record['SalesReceiptLineRet']]
           end
-
-          object = {
+          
+          {
             id: record['RefNumber'],
             is_pending: record['IsPending'],
             transaction_id: record['TxnID'],
@@ -83,7 +83,7 @@ module QBWC
               country: record.dig('BillAddress', 'Country'),
               zip_code: record.dig('BillAddress', 'PostalCode'),
               note: record.dig('BillAddress', 'Note')
-            },
+            }.compact,
             shipping_address: {
               address1: record.dig('ShipAddress', 'Addr1'),
               address2: record.dig('ShipAddress', 'Addr2'),
@@ -95,7 +95,7 @@ module QBWC
               country: record.dig('ShipAddress', 'Country'),
               zip_code: record.dig('ShipAddress', 'PostalCode'),
               note: record.dig('ShipAddress', 'Note')
-            },
+            }.compact,
             customer: {
               name: record.dig('CustomerRef', 'FullName'),
               external_id: record.dig('CustomerRef', 'ListID'),
@@ -144,8 +144,6 @@ module QBWC
               { object: 'product', key: 'qbe_id', location: 'line_items' }
             ]
           }
-
-          object
         end
       end
     end
