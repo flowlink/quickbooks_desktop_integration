@@ -125,7 +125,7 @@ module QBWC
             build_point: record['BuildPoint'],
             max: record['Max'],
             external_guid: record['ExternalGUID']
-          }
+          }.compact
 
           object
         end

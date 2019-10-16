@@ -143,7 +143,7 @@ module QBWC
               { object: 'customer', key: 'qbe_id' },
               { object: 'product', key: 'qbe_id', location: 'line_items' }
             ]
-          }
+          }.compact
         end
       end
     end

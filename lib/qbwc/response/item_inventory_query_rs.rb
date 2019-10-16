@@ -129,7 +129,7 @@ module QBWC
             reorder_point: record['ReorderPoint'],
             max: record['Max'],
             external_guid: record['ExternalGUID']
-          }
+          }.compact
 
           object
         end

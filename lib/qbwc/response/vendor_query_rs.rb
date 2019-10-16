@@ -130,7 +130,7 @@ module QBWC
             is_tax_tracked_on_sales: record['IsTaxTrackedOnSales'],
             is_tax_on_tax: record['IsTaxOnTax'],
             qbe_external_guid: record['ExternalGUID']
-          }
+          }.compact
         end
       end
     end

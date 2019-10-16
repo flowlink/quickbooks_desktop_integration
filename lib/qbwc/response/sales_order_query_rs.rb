@@ -202,7 +202,7 @@ module QBWC
             is_tax_included: record['IsTaxIncluded'],
             other: record['Other'],
             external_guid: record['ExternalGUID']
-          }
+          }.compact
         end
       end
     end
