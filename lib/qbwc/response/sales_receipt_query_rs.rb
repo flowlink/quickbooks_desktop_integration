@@ -114,36 +114,65 @@ module QBWC
             customer_msg_name: record.dig('CustomerMsgRef', 'FullName'),
             payment_method: record.dig('PaymentMethodRef', 'FullName'),
             deposit_to_account_name: record.dig('DepositToAccountRef', 'FullName'),
-            line_items: record["SalesReceiptLineRet"] && record["SalesReceiptLineRet"].map do |item|
-              {
-                product_id: item.dig("ItemRef", "FullName"),
-                name: item.dig("ItemRef", "FullName"),
-                sku: item.dig("ItemRef", "FullName"),
-                qbe_id: item.dig('ItemRef', 'ListID'),
-                warehouse: item.dig("InventorySiteRef", "FullName"),
-                sales_tax_code: item.dig("SalesTaxCodeRef", "FullName"),
-                class_ref: item.dig("ClassRef", "FullName"),
-                override_uom_set_name: item.dig("OverrideUOMSetRef", "FullName"),
-                inventory_site_location_name: item.dig("InventorySiteLocationRef", "FullName"),
-                line_id: item["TxnLineID"],
-                description: item["Desc"],
-                quantity: item["Quantity"],
-                unit_of_measure: item["UnitOfMeasure"],
-                rate: item["Rate"] || item["RatePercent"],
-                serial_or_lot_num: item["SerialNumber"] || item["LotNumber"],
-                amount: item["Amount"],
-                invoiced: item["Invoiced"],
-                is_manually_closed: item["IsManuallyClosed"],
-                service_date: item['ServiceDate'].to_s,
-                other_one: item['Other1'],
-                other_two: item['Other2']
-              }
-            end,
+            line_items: line_items(record),
+            grouped_line_items: grouped_line_items(record),
             relationships: [
               { object: 'customer', key: 'qbe_id' },
               { object: 'product', key: 'qbe_id', location: 'line_items' }
             ]
           }.compact
+        end
+      end
+
+      def line_items(record)
+        return unless record["SalesReceiptLineRet"]
+        record['SalesReceiptLineRet'] = [record['SalesReceiptLineRet']] if record['SalesReceiptLineRet'].is_a?(Hash)
+        
+        record["SalesReceiptLineRet"].map do |item|
+          {
+            product_id: item.dig("ItemRef", "FullName"),
+            name: item.dig("ItemRef", "FullName"),
+            sku: item.dig("ItemRef", "FullName"),
+            qbe_id: item.dig('ItemRef', 'ListID'),
+            warehouse: item.dig("InventorySiteRef", "FullName"),
+            sales_tax_code: item.dig("SalesTaxCodeRef", "FullName"),
+            class_ref: item.dig("ClassRef", "FullName"),
+            override_uom_set_name: item.dig("OverrideUOMSetRef", "FullName"),
+            inventory_site_location_name: item.dig("InventorySiteLocationRef", "FullName"),
+            line_id: item["TxnLineID"],
+            description: item["Desc"],
+            quantity: item["Quantity"],
+            unit_of_measure: item["UnitOfMeasure"],
+            rate: item["Rate"],
+            rate_percent: item["RatePercent"],
+            serial_number: item["SerialNumber"],
+            lot_number: item["LotNumber"],
+            amount: item["Amount"],
+            invoiced: item["Invoiced"],
+            is_manually_closed: item["IsManuallyClosed"],
+            service_date: item['ServiceDate'].to_s,
+            other_one: item['Other1'],
+            other_two: item['Other2']
+          }
+      end
+    end
+
+      def grouped_line_items(record)
+        return unless record['SalesReceiptLineGroupRet']
+        record['SalesReceiptLineGroupRet'] = [record['SalesReceiptLineGroupRet']] if record['SalesReceiptLineGroupRet'].is_a?(Hash)
+        
+        record['SalesReceiptLineGroupRet'].map do |group_item|
+          {
+            line_id: group_item['TxnLineID'],
+            description: group_item['Desc'],
+            quantity: group_item['Quantity'],
+            unit_of_measure: group_item['UnitOfMeasure'],
+            is_print_items_in_group: group_item['IsPrintItemsInGroup'],
+            total_amount: group_item['TotalAmount'],
+            override_uom_set_name: group_item.dig("OverrideUOMSetRef", "FullName"),
+            item_group_name: group_item.dig("ItemGroupRef", "FullName"),
+            line_items: line_items(group_item)
+            }.compact
         end
       end
     end

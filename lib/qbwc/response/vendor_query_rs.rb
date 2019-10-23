@@ -129,8 +129,59 @@ module QBWC
             is_tax_tracked_on_purchases: record['IsTaxTrackedOnPurchases'],
             is_tax_tracked_on_sales: record['IsTaxTrackedOnSales'],
             is_tax_on_tax: record['IsTaxOnTax'],
-            qbe_external_guid: record['ExternalGUID']
+            qbe_external_guid: record['ExternalGUID'],
+            additional_notes: additional_notes(record),
+            additional_contacts: additional_contacts(record),
+            contacts: contacts(record)
           }.compact
+        end
+      end
+
+      def additional_notes(record)
+        return unless record['AdditionalNotesRet']
+        record['AdditionalNotesRet'] = [record['AdditionalNotesRet']] if record['AdditionalNotesRet'].is_a?(Hash)
+
+        record['AdditionalNotesRet'].to_a.map do |note|
+          {
+            date: note['Date'],
+            note: note['Note']
+          }
+        end
+      end
+
+      def additional_contacts(record)
+        return unless record['AdditionalContactRef']
+        record['AdditionalContactRef'] = [record['AdditionalContactRef']] if record['AdditionalContactRef'].is_a?(Hash)
+
+        record['AdditionalContactRef'].to_a.map do |contact|
+          {
+            contact_name: contact['ContactName'],
+            contact_value: contact['ContactValue']
+          }
+        end
+      end
+
+      def contacts(record)
+        return unless record['ContactsRet']
+        record['ContactsRet'] = [record['ContactsRet']] if record['ContactsRet'].is_a?(Hash)
+
+        record['ContactsRet'].to_a.map do |contact|
+          {
+            id: contact['ListID'],
+            list_id: contact['ListID'],
+            qbe_id: contact['ListID'],
+            key: 'qbe_id',
+            external_id: contact['ListID'],
+            created_at: contact['TimeCreated'].to_s,
+            modified_at: contact['TimeModified'].to_s,
+            first_name: contact['FirstName'],
+            middle_name: contact['MiddleName'],
+            last_name: contact['LastName'],
+            salutation: contact['Salutation'],
+            contact: contact['Contact'],
+            job_title: contact['JobTitle'],
+            additional_contacts: additional_contacts(contact)
+          }
         end
       end
     end

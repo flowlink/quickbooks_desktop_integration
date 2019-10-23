@@ -125,37 +125,9 @@ module QBWC
             shipping_method: record.dig('ShipMethodRef','FullName'),
             currency_name: record.dig('CurrencyRef','FullName'),
             sales_tax_code_name: record.dig('SalesTaxCodeRef','FullName'),
-            line_items: record['PurchaseOrderLineRet'].map do |item|
-              puts "purchase order item: #{item}"
-              {
-                product_id: item.dig('ItemRef', 'FullName'),
-                name: item.dig('ItemRef', 'FullName'),
-                sku: item.dig('ItemRef', 'FullName'),
-                qbe_id: item.dig('ItemRef', 'ListID'),
-                class_ref: item.dig('ClassRef', 'FullName'),
-                sales_tax_code: item.dig('SalesTaxCodeRef', 'FullName'),
-                override_uom_set_name: item.dig('OverrideUOMSetRef', 'FullName'),
-                inventory_site_location_name: item.dig('InventorySiteLocationRef', 'FullName'),
-                customer: {
-                  name: record.dig("CustomerRef", "FullName"),
-                  external_id: record.dig("CustomerRef", "ListID")
-                },
-                description: item['Desc'],
-                quantity: item['Quantity'],
-                value: item['Amount'],
-                transaction_line_id: record['TxnLineID'],
-                line_item_manufacturer_part_number: record['ManufacturerPartNumber'],
-                line_item_unit_of_measure: record['UnitOfMeasure'],
-                line_item_rate: record['Rate'],
-                line_item_service_date: record['ServiceDate'],
-                line_item_received_quantity: record['ReceivedQuantity'],
-                line_item_unbilled_quantity: record['UnbilledQuantity'],
-                line_item_is_billed: record['IsBilled'],
-                line_item_is_manually_closed: record['IsManuallyClosed'],
-                line_item_other_one: record['Other1'],
-                line_item_other_two: record['Other2']
-              }
-            end
+            line_items: line_items(record),
+            grouped_line_items: grouped_line_items(record),
+            linked_qbe_transactions: linked_qbe_transactions(record)
           }.compact
         end
       end
@@ -164,6 +136,79 @@ module QBWC
         time = records.sort_by { |r| r['TimeModified'] }.last['TimeModified'].to_s
         Time.parse(time).in_time_zone('Pacific Time (US & Canada)').iso8601
       end
+
+      def linked_qbe_transactions(record)
+        return unless record['LinkedTxn']
+        record['LinkedTxn'] = [record['LinkedTxn']] if record['LinkedTxn'].is_a?(Hash)
+
+        record['LinkedTxn'].map do |txn|
+          {
+            qbe_transaction_id: txn['TxnID'],
+            qbe_reference_number: txn['RefNumber'],
+            transaction_type: txn['TxnType'],
+            transaction_date: txn['TxnDate'].to_s,
+            link_type: txn['LinkType'],
+            amount: txn['Amount'],
+          }
+        end
+      end
+
+      def grouped_line_items(record)
+        return unless record['PurchaseOrderLineGroupRet']
+        record['PurchaseOrderLineGroupRet'] = [record['PurchaseOrderLineGroupRet']] if record['PurchaseOrderLineGroupRet'].is_a?(Hash)
+        
+        record['PurchaseOrderLineGroupRet'].map do |group_item|
+          {
+            line_id: group_item['TxnLineID'],
+            description: group_item['Desc'],
+            quantity: group_item['Quantity'],
+            unit_of_measure: group_item['UnitOfMeasure'],
+            is_print_items_in_group: group_item['IsPrintItemsInGroup'],
+            total_amount: group_item['TotalAmount'],
+            override_uom_set_name: group_item.dig("OverrideUOMSetRef", "FullName"),
+            item_group_name: group_item.dig("ItemGroupRef", "FullName"),
+            line_items: line_items(group_item)
+            }.compact
+        end
+      end
+
+      def line_items(record)
+        return unless record['PurchaseOrderLineRet']
+        record['PurchaseOrderLineRet'] = [record['PurchaseOrderLineRet']] if record['PurchaseOrderLineRet'].is_a?(Hash)
+
+        record['PurchaseOrderLineRet'].map do |item|
+          puts "purchase order item: #{item}"
+          {
+            product_id: item.dig('ItemRef', 'FullName'),
+            name: item.dig('ItemRef', 'FullName'),
+            sku: item.dig('ItemRef', 'FullName'),
+            qbe_id: item.dig('ItemRef', 'ListID'),
+            class_ref: item.dig('ClassRef', 'FullName'),
+            sales_tax_code: item.dig('SalesTaxCodeRef', 'FullName'),
+            override_uom_set_name: item.dig('OverrideUOMSetRef', 'FullName'),
+            inventory_site_location_name: item.dig('InventorySiteLocationRef', 'FullName'),
+            customer: {
+              name: record.dig("CustomerRef", "FullName"),
+              external_id: record.dig("CustomerRef", "ListID")
+            },
+            description: item['Desc'],
+            quantity: item['Quantity'],
+            value: item['Amount'],
+            transaction_line_id: record['TxnLineID'],
+            line_item_manufacturer_part_number: record['ManufacturerPartNumber'],
+            line_item_unit_of_measure: record['UnitOfMeasure'],
+            line_item_rate: record['Rate'],
+            line_item_service_date: record['ServiceDate'],
+            line_item_received_quantity: record['ReceivedQuantity'],
+            line_item_unbilled_quantity: record['UnbilledQuantity'],
+            line_item_is_billed: record['IsBilled'],
+            line_item_is_manually_closed: record['IsManuallyClosed'],
+            line_item_other_one: record['Other1'],
+            line_item_other_two: record['Other2']
+          }.compact
+        end
+      end
+
     end
   end
 end

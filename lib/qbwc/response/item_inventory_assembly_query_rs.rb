@@ -124,28 +124,27 @@ module QBWC
             sales_description: record['SalesDesc'],
             build_point: record['BuildPoint'],
             max: record['Max'],
-            external_guid: record['ExternalGUID']
+            external_guid: record['ExternalGUID'],
+            assembly_line_items: assembly_line_items(record),
+            qbe_item_type: 'inventory_assembly'
           }.compact
 
           object
         end
       end
+
+      def assembly_line_items(record)
+        return unless record['ItemInventoryAssemblyLine']
+        record['ItemInventoryAssemblyLine'] = [record['ItemInventoryAssemblyLine']] if record['ItemInventoryAssemblyLine'].is_a?(Hash)
+
+        record['ItemInventoryAssemblyLine'].map do |line|
+          {
+            quantity: line['Quantity'],
+            item_inventory_name: record.dig('ItemInventoryRef', 'FullName')
+          }
+        end
+      end
+
     end
   end
 end
-
-# TODO: Still need these fields when getting inventory assembly items
-# <ItemInventoryAssemblyLine> <!-- optional, may repeat -->
-#         <ItemInventoryRef> <!-- required -->
-#                 <ListID >IDTYPE</ListID> <!-- optional -->
-#                 <FullName >STRTYPE</FullName> <!-- optional -->
-#         </ItemInventoryRef>
-#         <Quantity >QUANTYPE</Quantity> <!-- optional -->
-# </ItemInventoryAssemblyLine>
-# <DataExtRet> <!-- optional, may repeat -->
-#         <OwnerID >GUIDTYPE</OwnerID> <!-- optional -->
-#         <DataExtName >STRTYPE</DataExtName> <!-- required -->
-#         <!-- DataExtType may have one of the following values: AMTTYPE, DATETIMETYPE, INTTYPE, PERCENTTYPE, PRICETYPE, QUANTYPE, STR1024TYPE, STR255TYPE -->
-#         <DataExtType >ENUMTYPE</DataExtType> <!-- required -->
-#         <DataExtValue >STRTYPE</DataExtValue> <!-- required -->
-# </DataExtRet>
