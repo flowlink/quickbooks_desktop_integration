@@ -135,12 +135,13 @@ module QBWC
 
       def assembly_line_items(record)
         return unless record['ItemInventoryAssemblyLine']
+        puts "ASSEMBLY LINE ITEM: #{record}"
         record['ItemInventoryAssemblyLine'] = [record['ItemInventoryAssemblyLine']] if record['ItemInventoryAssemblyLine'].is_a?(Hash)
 
         record['ItemInventoryAssemblyLine'].map do |line|
           {
             quantity: line['Quantity'],
-            item_inventory_name: record.dig('ItemInventoryRef', 'FullName')
+            item_inventory_name: line.dig('ItemInventoryRef', 'FullName')
           }
         end
       end

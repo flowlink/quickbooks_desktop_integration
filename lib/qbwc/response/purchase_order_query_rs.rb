@@ -188,23 +188,23 @@ module QBWC
             override_uom_set_name: item.dig('OverrideUOMSetRef', 'FullName'),
             inventory_site_location_name: item.dig('InventorySiteLocationRef', 'FullName'),
             customer: {
-              name: record.dig("CustomerRef", "FullName"),
-              external_id: record.dig("CustomerRef", "ListID")
+              name: item.dig("CustomerRef", "FullName"),
+              external_id: item.dig("CustomerRef", "ListID")
             },
             description: item['Desc'],
             quantity: item['Quantity'],
             value: item['Amount'],
-            transaction_line_id: record['TxnLineID'],
-            line_item_manufacturer_part_number: record['ManufacturerPartNumber'],
-            line_item_unit_of_measure: record['UnitOfMeasure'],
-            line_item_rate: record['Rate'],
-            line_item_service_date: record['ServiceDate'],
-            line_item_received_quantity: record['ReceivedQuantity'],
-            line_item_unbilled_quantity: record['UnbilledQuantity'],
-            line_item_is_billed: record['IsBilled'],
-            line_item_is_manually_closed: record['IsManuallyClosed'],
-            line_item_other_one: record['Other1'],
-            line_item_other_two: record['Other2']
+            transaction_line_id: item['TxnLineID'],
+            line_item_manufacturer_part_number: item['ManufacturerPartNumber'],
+            line_item_unit_of_measure: item['UnitOfMeasure'],
+            line_item_rate: item['Rate'],
+            line_item_service_date: item['ServiceDate'],
+            line_item_received_quantity: item['ReceivedQuantity'],
+            line_item_unbilled_quantity: item['UnbilledQuantity'],
+            line_item_is_billed: item['IsBilled'],
+            line_item_is_manually_closed: item['IsManuallyClosed'],
+            line_item_other_one: item['Other1'],
+            line_item_other_two: item['Other2']
           }.compact
         end
       end
