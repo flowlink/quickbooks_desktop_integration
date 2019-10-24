@@ -150,12 +150,12 @@ module QBWC
             sales_rep: {
               name: record.dig("SalesRepRef", "FullName")
             },
-            customer_message_name: item.dig("CustomerMsgRef", "FullName"),
-            template_name: item.dig("TemplateRef", "FullName"),
-            terms: item.dig("TermsRef", "FullName"),
-            currency_name: item.dig("CurrencyRef", "FullName"),
-            tax_ref: item.dig("ItemSalesTaxRef", "FullName"),
-            shipping_method: item.dig("ShipMethodRef", "FullName"),
+            customer_message_name: record.dig("CustomerMsgRef", "FullName"),
+            template_name: record.dig("TemplateRef", "FullName"),
+            terms: record.dig("TermsRef", "FullName"),
+            currency_name: record.dig("CurrencyRef", "FullName"),
+            tax_ref: record.dig("ItemSalesTaxRef", "FullName"),
+            shipping_method: record.dig("ShipMethodRef", "FullName"),
             customer_tax_code: record.dig("CustomerSalesTaxCodeRef", "FullName"),
             class_ref: record.dig("ClassRef", "FullName"),
             shipping_date: record["ShipDate"].to_s,
