@@ -1,4 +1,4 @@
-  module QBWC
+module QBWC
   module Response
     class CustomerQueryRs
       attr_reader :records
@@ -160,7 +160,58 @@
             preferred_payment_method_name: record.dig('PreferredPaymentMethodRef', 'FullName'),
             job_type_name: record.dig('JobTypeRef', 'FullName'),
             price_level_name: record.dig('PriceLevelRef', 'FullName'),
+            additional_notes: additional_notes(record),
+            additional_contacts: additional_contacts(record),
+            contacts: contacts(record)
           }.compact
+        end
+      end
+
+      def additional_notes(record)
+        return unless record['AdditionalNotesRet']
+        record['AdditionalNotesRet'] = [record['AdditionalNotesRet']] if record['AdditionalNotesRet'].is_a?(Hash)
+
+        record['AdditionalNotesRet'].to_a.map do |note|
+          {
+            date: note['Date'],
+            note: note['Note']
+          }
+        end
+      end
+
+      def additional_contacts(record)
+        return unless record['AdditionalContactRef']
+        record['AdditionalContactRef'] = [record['AdditionalContactRef']] if record['AdditionalContactRef'].is_a?(Hash)
+
+        record['AdditionalContactRef'].to_a.map do |contact|
+          {
+            contact_name: contact['ContactName'],
+            contact_value: contact['ContactValue']
+          }
+        end
+      end
+
+      def contacts(record)
+        return unless record['ContactsRet']
+        record['ContactsRet'] = [record['ContactsRet']] if record['ContactsRet'].is_a?(Hash)
+
+        record['ContactsRet'].to_a.map do |contact|
+          {
+            id: contact['ListID'],
+            list_id: contact['ListID'],
+            qbe_id: contact['ListID'],
+            key: 'qbe_id',
+            external_id: contact['ListID'],
+            created_at: contact['TimeCreated'].to_s,
+            modified_at: contact['TimeModified'].to_s,
+            first_name: contact['FirstName'],
+            middle_name: contact['MiddleName'],
+            last_name: contact['LastName'],
+            salutation: contact['Salutation'],
+            contact: contact['Contact'],
+            job_title: contact['JobTitle'],
+            additional_contacts: additional_contacts(contact)
+          }
         end
       end
     end
@@ -168,38 +219,6 @@
 end
 
 # TODO: Still need these fields when getting customers
-# <AdditionalNotesRet> <!-- optional, may repeat -->
-#         <NoteID >INTTYPE</NoteID> <!-- required -->
-#         <Date >DATETYPE</Date> <!-- required -->
-#         <Note >STRTYPE</Note> <!-- required -->
-# </AdditionalNotesRet>
-# <DataExtRet> <!-- optional, may repeat -->
-#         <OwnerID >GUIDTYPE</OwnerID> <!-- optional -->
-#         <DataExtName >STRTYPE</DataExtName> <!-- required -->
-#         <!-- DataExtType may have one of the following values: AMTTYPE, DATETIMETYPE, INTTYPE, PERCENTTYPE, PRICETYPE, QUANTYPE, STR1024TYPE, STR255TYPE -->
-#         <DataExtType >ENUMTYPE</DataExtType> <!-- required -->
-#         <DataExtValue >STRTYPE</DataExtValue> <!-- required -->
-# </DataExtRet>
-# <AdditionalContactRef> <!-- must occur 0 - 8 times -->
-#         <ContactName >STRTYPE</ContactName> <!-- required -->
-#         <ContactValue >STRTYPE</ContactValue> <!-- required -->
-# </AdditionalContactRef>
-# <ContactsRet> <!-- optional, may repeat -->
-#         <ListID >IDTYPE</ListID> <!-- required -->
-#         <TimeCreated >DATETIMETYPE</TimeCreated> <!-- required -->
-#         <TimeModified >DATETIMETYPE</TimeModified> <!-- required -->
-#         <EditSequence >STRTYPE</EditSequence> <!-- required -->
-#         <Contact >STRTYPE</Contact> <!-- optional -->
-#         <Salutation >STRTYPE</Salutation> <!-- optional -->
-#         <FirstName >STRTYPE</FirstName> <!-- required -->
-#         <MiddleName >STRTYPE</MiddleName> <!-- optional -->
-#         <LastName >STRTYPE</LastName> <!-- optional -->
-#         <JobTitle >STRTYPE</JobTitle> <!-- optional -->
-#         <AdditionalContactRef> <!-- must occur 0 - 5 times -->
-#                 <ContactName >STRTYPE</ContactName> <!-- required -->
-#                 <ContactValue >STRTYPE</ContactValue> <!-- required -->
-#         </AdditionalContactRef>
-# </ContactsRet>
 # <CreditCardInfo> <!-- optional -->
 #         <CreditCardNumber >STRTYPE</CreditCardNumber> <!-- optional -->
 #         <ExpirationMonth >INTTYPE</ExpirationMonth> <!-- optional -->

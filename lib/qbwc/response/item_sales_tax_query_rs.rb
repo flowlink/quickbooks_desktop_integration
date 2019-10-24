@@ -1,6 +1,6 @@
 module QBWC
   module Response
-    class ItemInventoryQueryRs
+    class ItemSalesTaxQueryRs
       attr_reader :records
 
       def initialize(records)
@@ -10,7 +10,7 @@ module QBWC
       def handle_error(errors, config)
         errors.each do |error|
           Persistence::Object.handle_error(config,
-                                           error.merge(context: 'Querying products'),
+                                           error.merge(context: 'Querying sales tax products'),
                                            'products',
                                            error[:request_id])
         end
@@ -20,16 +20,7 @@ module QBWC
         return if records.empty?
 
         receive_configs = config[:receive] || []
-        inventory_params = receive_configs.find { |c| c['inventories'] }
         product_params = receive_configs.find { |c| c['products'] }
-
-        if inventory_params
-          payload = { inventories: inventories_to_flowlink }
-          config = { origin: 'quickbooks' }.merge config.reject{|k,v| k == :origin || k == "origin"}
-
-          poll_persistence = Persistence::Polling.new(config, payload)
-          poll_persistence.save_for_polling
-        end
 
         if product_params
           payload = { products: products_to_flowlink }
@@ -71,19 +62,6 @@ module QBWC
         end
       end
 
-      def inventories_to_flowlink
-        records.map do |record|
-          object = {
-            id: record['Name'],
-            sku: record['Name'],
-            product_id: record['Name'],
-            quantity: record['QuantityOnHand'],
-            grabbed_at: Time.now.to_s,
-            fullname: record['FullName']
-          }
-        end
-      end
-
       def products_to_flowlink
         # puts "Product object from QBE: #{records.first}"
         records.map do |record|
@@ -92,44 +70,19 @@ module QBWC
             sku: record['Name'],
             product_id: record['Name'],
             qbe_id: record['ListID'],
-            key: 'qbe_id',
-            name: record['Name'],
-            fullname: record['FullName'],
-            quantity: record['QuantityOnHand'],
-            is_active: record['IsActive'],
-            sales_price: record['SalesPrice'],
-            purchase_description: record['PurchaseDesc'],
-            purchase_cost: record['PurchaseCost'],
-            vendor: {
-              name: record.dig('PrefVendorRef', 'FullName'),
-              external_id: record.dig('PrefVendorRef', 'ListID'),
-              qbe_id: record.dig('PrefVendorRef', 'ListID')
-            },
-            unit_measure: record.dig('UnitOfMeasureSetRef', 'FullName'),
-            class_name: record.dig('ClassRef', 'FullName'),
-            parent_name: record.dig('ParentRef', 'FullName'),
-            sales_tax_code_name: record.dig('SalesTaxCodeRef', 'FullName'),
-            income_account_name: record.dig('IncomeAccountRef', 'FullName'),
-            purchase_tax_code_name: record.dig('PurchaseTaxCodeRef', 'FullName'),
-            cogs_account_name: record.dig('COGSAccountRef', 'FullName'),
-            asset_account_name: record.dig('AssetAccountRef', 'FullName'),
-            average_cost: record['AverageCost'],
-            quantity_on_order: record['QuantityOnOrder'],
-            quantity_on_sales_order: record['QuantityOnSalesOrder'],
             created_at: record['TimeCreated'],
             modified_at: record['TimeModified'],
-            relationships: [
-              { object: "vendor", key: "qbe_id" }
-            ],
+            key: 'qbe_id',
+            name: record['Name'],
             barcode_value: record['BarCodeValue'],
-            sublevel: record['Sublevel'],
-            manufacturer_part_number: record['ManufacturerPartNumber'],
-            is_tax_included: record['IsTaxIncluded'],
-            sales_description: record['SalesDesc'],
-            reorder_point: record['ReorderPoint'],
-            max: record['Max'],
+            is_active: record['IsActive'],
+            description: record['ItemDesc'],
+            tax_rate: record['TaxRate'],
             external_guid: record['ExternalGUID'],
-            qbe_item_type: 'qbe_inventory'
+            tax_vendor_name: record.dig('TaxVendorRef', 'FullName'),
+            sales_tax_return_line_name: record.dig('SalesTaxReturnLineRef', 'FullName'),
+            class_name: record.dig('ClassRef', 'FullName'),
+            qbe_item_type: 'sales_tax'
           }.compact
 
           object

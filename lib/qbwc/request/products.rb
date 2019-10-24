@@ -128,16 +128,40 @@ module QBWC
           <<-XML
             <!-- polling products -->
             <ItemInventoryQueryRq requestID="#{session_id}">
-            <MaxReturned>1000</MaxReturned>
+            <MaxReturned>50</MaxReturned>
               #{query_by_date(params, time)}
               <!-- <IncludeRetElement>Name</IncludeRetElement> -->
             </ItemInventoryQueryRq>
             <!-- polling assembled products -->
             <ItemInventoryAssemblyQueryRq requestID="#{session_id}">
-            <MaxReturned>1000</MaxReturned>
+            <MaxReturned>50</MaxReturned>
               #{query_by_date(params, time)}
               <!-- <IncludeRetElement>Name</IncludeRetElement> -->
             </ItemInventoryAssemblyQueryRq>
+            <!-- polling non inventory products -->
+            <ItemNonInventoryQueryRq requestID="#{session_id}">
+            <MaxReturned>50</MaxReturned>
+              #{query_by_date(params, time)}
+              <!-- <IncludeRetElement>Name</IncludeRetElement> -->
+            </ItemNonInventoryQueryRq>
+            <!-- polling sales tax products -->
+            <ItemSalesTaxQueryRq requestID="#{session_id}">
+            <MaxReturned>50</MaxReturned>
+              #{query_by_date(params, time)}
+              <!-- <IncludeRetElement>Name</IncludeRetElement> -->
+            </ItemSalesTaxQueryRq>
+            <!-- polling service products -->
+            <ItemServiceQueryRq requestID="#{session_id}">
+            <MaxReturned>50</MaxReturned>
+              #{query_by_date(params, time)}
+              <!-- <IncludeRetElement>Name</IncludeRetElement> -->
+            </ItemServiceQueryRq>
+            <!-- polling discount products -->
+            <ItemDiscountQueryRq requestID="#{session_id}">
+            <MaxReturned>50</MaxReturned>
+              #{query_by_date(params, time)}
+              <!-- <IncludeRetElement>Name</IncludeRetElement> -->
+            </ItemDiscountQueryRq>
           XML
         end
 
