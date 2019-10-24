@@ -1,54 +1,58 @@
 require 'nori'
 
-require 'qbwc/response/item_inventory_add_rs'
-require 'qbwc/response/item_inventory_mod_rs'
-require 'qbwc/response/item_inventory_query_rs'
-
-require 'qbwc/response/item_inventory_assembly_query_rs'
-
-require 'qbwc/response/item_other_charge_query_rs'
-require 'qbwc/response/item_other_charge_add_rs'
-
-require 'qbwc/response/customer_query_rs'
 require 'qbwc/response/customer_add_rs'
 require 'qbwc/response/customer_mod_rs'
+require 'qbwc/response/customer_query_rs'
 
-require 'qbwc/response/vendor_query_rs'
-require 'qbwc/response/vendor_add_rs'
-require 'qbwc/response/vendor_mod_rs'
-
-require 'qbwc/response/sales_order_query_rs'
-require 'qbwc/response/sales_order_add_rs'
-require 'qbwc/response/sales_order_mod_rs'
-
-require 'qbwc/response/sales_receipt_query_rs'
-require 'qbwc/response/sales_receipt_add_rs'
-require 'qbwc/response/sales_receipt_mod_rs'
-
-require 'qbwc/response/receive_payment_add_rs'
-require 'qbwc/response/receive_payment_mod_rs'
-require 'qbwc/response/receive_payment_query_rs'
+require 'qbwc/response/inventory_adjustment_add_rs'
+require 'qbwc/response/inventory_adjustment_query_rs'
 
 require 'qbwc/response/invoice_add_rs'
 require 'qbwc/response/invoice_mod_rs'
 require 'qbwc/response/invoice_query_rs'
 
-require 'qbwc/response/inventory_adjustment_add_rs'
-require 'qbwc/response/inventory_adjustment_query_rs'
+require 'qbwc/response/item_discount_query_rs'
 
-require 'qbwc/response/inventory_adjustment_query_rs'
+require 'qbwc/response/item_inventory_add_rs'
+require 'qbwc/response/item_inventory_assembly_query_rs'
+require 'qbwc/response/item_inventory_mod_rs'
+require 'qbwc/response/item_inventory_query_rs'
+
+require 'qbwc/response/item_non_inventory_query_rs'
+
+require 'qbwc/response/item_other_charge_add_rs'
+require 'qbwc/response/item_other_charge_query_rs'
 
 require 'qbwc/response/item_receipt_query_rs'
 
-require 'qbwc/response/purchase_order_query_rs'
-require 'qbwc/response/purchase_order_add_rs'
-require 'qbwc/response/purchase_order_mod_rs'
+require 'qbwc/response/item_sales_tax_query_rs'
+require 'qbwc/response/item_service_query_rs'
 
 require 'qbwc/response/journal_entry_add_rs'
-require 'qbwc/response/journal_entry_query_rs'
 require 'qbwc/response/journal_entry_mod_rs'
+require 'qbwc/response/journal_entry_query_rs'
+
+require 'qbwc/response/purchase_order_add_rs'
+require 'qbwc/response/purchase_order_mod_rs'
+require 'qbwc/response/purchase_order_query_rs'
+
+require 'qbwc/response/receive_payment_add_rs'
+require 'qbwc/response/receive_payment_mod_rs'
+require 'qbwc/response/receive_payment_query_rs'
+
+require 'qbwc/response/sales_order_add_rs'
+require 'qbwc/response/sales_order_mod_rs'
+require 'qbwc/response/sales_order_query_rs'
+
+require 'qbwc/response/sales_receipt_add_rs'
+require 'qbwc/response/sales_receipt_mod_rs'
+require 'qbwc/response/sales_receipt_query_rs'
 
 require 'qbwc/response/txn_del_rs'
+
+require 'qbwc/response/vendor_add_rs'
+require 'qbwc/response/vendor_mod_rs'
+require 'qbwc/response/vendor_query_rs'
 
 module QBWC
   module Response
