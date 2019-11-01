@@ -1,6 +1,70 @@
 module QBWC
   module Request
     class Customers
+
+      FIELD_MAP = {
+        IsActive: "is_active",
+        CompanyName: "company",
+        Salutation: "salutation",
+        MiddleName: "middlename",
+        JobTitle: "job_title",
+        Fax: "fax",
+        Cc: "cc",
+        Contact: "contact",
+        AltContact: "alternative_contact",
+        ResaleNumber: "resale_number",
+        AccountNumber: "account_number",
+        CreditLimit: "credit_limit",
+        JobStartDate: "job_start_date",
+        JobProjectedEndDate: "job_projected_end_date",
+        JobEndDate: "job_end_date",
+        JobDesc: "job_description",
+        Notes: "notes",
+        ExternalGUID: "external_guid",
+        TaxRegistrationNumber: "tax_registration_number",
+        OpenBalance: "open_balance",
+        OpenBalanceDate: "open_balance_date"
+      }
+
+      ADDRESS_MAP = {
+        Addr1: "address1",
+        Addr2: "address2",
+        Addr3: "address3",
+        Addr4: "address4",
+        Addr5: "address5",
+        City: "city",
+        State: "state",
+        PostalCode: "zipcode",
+        Country: "country",
+        Note: "note"
+      }
+
+      REF_MAP = {
+        ClassRef: "class_name",
+        ParentRef: "parent_name",
+        CustomerTypeRef: "customer_type_name",
+        TermsRef: "terms",
+        SalesRepRef: "sales_rep_name",
+        SalesTaxCodeRef: "sales_tax_code_name",
+        ItemSalesTaxRef: "item_sales_tax_name",
+        PreferredPaymentMethodRef: "preferred_payment_method_name",
+        JobTypeRef: "job_type_name",
+        PriceLevelRef: "price_level_name",
+        CurrencyRef: "currency_name"
+      }
+
+      CONTACTS_MAP = {
+        Salutation: "salutation",
+        FirstName: "firstname",
+        MiddleName: "middlename",
+        LastName: "lastname",
+        JobTitle: "job_title"
+      }
+
+      SALES_TAX_COUNTRIES = ['Australia', 'Canada', 'UK', 'US']
+      JOB_STATUSES = ['Awarded', 'Closed', 'InProgress', 'None', 'NotAwarded', 'Pending']
+      DELIVERY_METHODS = ['None', 'Email', 'Fax']
+
       class << self
         def generate_request_insert_update(objects, params = {})
           objects.inject('') do |request, object|
@@ -96,28 +160,26 @@ module QBWC
             <CustomerAddRq requestID="#{session_id}">
               <CustomerAdd>
                 <Name>#{object['name']}</Name>
-                #{"<CompanyName>#{object['company']}</CompanyName>" if object['company']}
                 <FirstName>#{object['firstname'] ? object['name'].split.first : object['firstname']}</FirstName>
                 #{"<LastName>#{object['lastname'] || object['name'].split.last}</LastName>" if object['lastname']}
-                <BillAddress>
-                  <Addr1>#{object['billing_address']['address1'] if object['billing_address']}</Addr1>
-                  #{"<Addr2>#{object['billing_address']['address2']}</Addr2>" if object['billing_address'] && object['billing_address']['address2']}
-                  <City>#{object['billing_address']['city'] if object['billing_address']}</City>
-                  <State>#{object['billing_address']['state'] if object['billing_address']}</State>
-                  <PostalCode>#{object['billing_address']['zipcode'] if object['billing_address']}</PostalCode>
-                  <Country>#{object['billing_address']['country'] if object['billing_address']}</Country>
-                </BillAddress>
-                <ShipAddress>
-                  <Addr1>#{object['shipping_address']['address1'] if object['shipping_address']}</Addr1>
-                  #{"<Addr2>#{object['shipping_address']['address2']}</Addr2>" if object['shipping_address'] && object['shipping_address']['address2']}
-                  <City>#{object['shipping_address']['city'] if object['shipping_address']}</City>
-                  <State>#{object['shipping_address']['state'] if object['shipping_address']}</State>
-                  <PostalCode>#{object['shipping_address']['zipcode'] if object['shipping_address']}</PostalCode>
-                  <Country>#{object['shipping_address']['country'] if object['shipping_address']}</Country>
-                </ShipAddress>
                 <Phone>#{object['billing_address']['phone'] if object['billing_address']}</Phone>
                 <AltPhone>#{object['shipping_address']['phone'] if object['shipping_address']}</AltPhone>
                 <Email>#{object['email']}</Email>
+                #{add_fields(object, FIELD_MAP)}
+                #{add_refs(object)}
+                #{sales_tax_country(object)}
+                #{job_status(object)}
+                #{preferred_delivery_method(object)}
+                <BillAddress>
+                  #{add_fields(object['billing_address'], ADDRESS_MAP) if object['billing_address']}
+                </BillAddress>
+                <ShipAddress>
+                  #{add_fields(object['shipping_address'], ADDRESS_MAP) if object['shipping_address']}
+                </ShipAddress>
+                #{ship_to_address(object)}
+                #{additional_contacts(object)}
+                #{additional_notes(object)}
+                #{contacts(object)}
               </CustomerAdd>
             </CustomerAddRq>
           XML
@@ -130,34 +192,123 @@ module QBWC
                 <ListID>#{object['list_id']}</ListID>
                 <EditSequence>#{object['edit_sequence']}</EditSequence>
                 <Name>#{object['name']}</Name>
-                <CompanyName>#{object['company']}</CompanyName>
-                <FirstName>#{object['firstname']}</FirstName>
-                <LastName>#{object['lastname']}</LastName>
-                <BillAddress>
-                  <Addr1>#{object['billing_address']['address1'] if object['billing_address']}</Addr1>
-                  <Addr2>#{object['billing_address']['address2'] if object['billing_address']}</Addr2>
-                  <City>#{object['billing_address']['city'] if object['billing_address']}</City>
-                  <State>#{object['billing_address']['state'] if object['billing_address']}</State>
-                  <PostalCode>#{object['billing_address']['zipcode'] if object['billing_address']}</PostalCode>
-                  <Country>#{object['billing_address']['country'] if object['billing_address']}</Country>
-                </BillAddress>
-                <ShipAddress>
-                  <Addr1>#{object['shipping_address']['address1'] if object['shipping_address']}</Addr1>
-                  <Addr2>#{object['shipping_address']['address2'] if object['shipping_address']}</Addr2>
-                  <City>#{object['shipping_address']['city'] if object['shipping_address']}</City>
-                  <State>#{object['shipping_address']['state'] if object['shipping_address']}</State>
-                  <PostalCode>#{object['shipping_address']['zipcode'] if object['shipping_address']}</PostalCode>
-                  <Country>#{object['shipping_address']['country'] if object['shipping_address']}</Country>
-                </ShipAddress>
+                <FirstName>#{object['firstname'] ? object['name'].split.first : object['firstname']}</FirstName>
+                #{"<LastName>#{object['lastname'] || object['name'].split.last}</LastName>" if object['lastname']}
                 <Phone>#{object['billing_address']['phone'] if object['billing_address']}</Phone>
                 <AltPhone>#{object['shipping_address']['phone'] if object['shipping_address']}</AltPhone>
                 <Email>#{object['email']}</Email>
+                #{add_fields(object, FIELD_MAP)}
+                #{add_refs(object)}
+                #{sales_tax_country(object)}
+                #{job_status(object)}
+                #{preferred_delivery_method(object)}
+                <BillAddress>
+                  #{add_fields(object['billing_address'], ADDRESS_MAP) if object['billing_address']}
+                </BillAddress>
+                <ShipAddress>
+                  #{add_fields(object['shipping_address'], ADDRESS_MAP) if object['shipping_address']}
+                </ShipAddress>
+                #{ship_to_address(object)}
+                #{additional_contacts(object)}
+                #{additional_notes(object)}
+                #{contacts(object)}
               </CustomerMod>
             </CustomerModRq>
           XML
         end
 
         private
+
+        def ship_to_address(object)
+          return "" unless object['ship_to_address'] && object['ship_to_address'].is_a?(Array)
+
+          fields = ""
+          object['ship_to_address'].each do |addr|
+            fields += "<ShipToAddress>"
+            fields += "<Name>#{addr['name']}</Name>"
+            fields += "<DefaultShipTo>#{addr['default_ship_to']}</DefaultShipTo>"
+            fields += add_fields(addr, ADDRESS_MAP)
+            fields += "</ShipToAddress>"
+          end
+          
+          fields
+        end
+
+        def add_refs(object)
+          fields = ""
+          REF_MAP.each do |qbe_name, flowlink_name|
+            fields += "<#{qbe_name}><FullName>#{object[flowlink_name]}</FullName></#{qbe_name}>" unless object[flowlink_name].nil?
+          end
+
+          fields
+        end
+
+        def add_fields(object, mapping)
+          fields = ""
+          mapping.each do |qbe_name, flowlink_name|
+            fields += "<#{qbe_name}>#{object[flowlink_name]}</#{qbe_name}>\n" unless object[flowlink_name].nil?
+          end
+
+          fields
+        end
+
+        def sales_tax_country(object)
+          return "" unless SALES_TAX_COUNTRIES.include?(object['sales_tax_country'])
+          "<SalesTaxCountry>#{object['sales_tax_country']}</SalesTaxCountry>"
+        end
+
+        def job_status(object)
+          return "" unless JOB_STATUSES.include?(object['job_status'])
+          "<JobStatus>#{object['job_status']}</JobStatus>"
+        end
+
+        def preferred_delivery_method(object)
+          return "" unless DELIVERY_METHODS.include?(object['preferred_delivery_method'])
+          "<PreferredDeliveryMethod>#{object['preferred_delivery_method']}</PreferredDeliveryMethod>"
+        end
+
+        def additional_contacts(object)
+          return unless object['additional_contacts'] && object['additional_contacts'].is_a?(Array)
+          
+          fields = ""
+          object['additional_contacts'].each do |contact|
+            # Both name and value required
+            next unless contact['name'] && contact['value']
+            fields += <<~XML
+                              <AdditionalContactRef>
+                                <ContactName >#{contact['name']}</ContactName>
+                                <ContactValue >#{contact['value']}</ContactValue>
+                              </AdditionalContactRef>
+                            XML
+          end
+
+          fields
+        end
+
+        def additional_notes(object)
+          return unless object['additional_notes'] && object['additional_notes'].is_a?(Array)
+          
+          fields = ""
+          object['additional_notes'].each do |note|
+            fields += "<AdditionalNotes><Note>#{note}</Note></AdditionalNotes>"
+          end
+
+          fields
+        end
+
+        def contacts(object)
+          return unless object['contacts'] && object['contacts'].is_a?(Array)
+          
+          fields = ""
+          object['contacts'].each do |contact|
+            fields += "<Contacts>"
+            fields += add_fields(contact, CONTACTS_MAP)
+            fields += additional_contacts(contact)
+            fields += "</Contacts>"
+          end
+
+          fields
+        end
 
         def sanitize_customer(customer)
           # customer['company'].gsub!(/[^0-9A-Za-z\s]/, '') if customer['company']
