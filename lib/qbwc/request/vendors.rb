@@ -41,16 +41,24 @@ module QBWC
       }
 
       ADDRESS_MAP = {
-        Addr1: 'address1',
-        Addr2: 'address2',
-        Addr3: 'address3',
-        Addr4: 'address4',
-        Addr5: 'address5',
-        City: 'city',
-        State: 'state',
-        PostalCode: 'zipcode',
-        Country: 'country',
-        Note: 'note'
+        Addr1: "address1",
+        Addr2: "address2",
+        Addr3: "address3",
+        Addr4: "address4",
+        Addr5: "address5",
+        City: "city",
+        State: "state",
+        PostalCode: "zipcode",
+        Country: "country",
+        Note: "note"
+      }
+
+      CONTACTS_MAP = {
+        Salutation: "salutation",
+        FirstName: "firstname",
+        MiddleName: "middlename",
+        LastName: "lastname",
+        JobTitle: "job_title"
       }
 
       SALES_TAX_COUNTRIES = ['Australia', 'Canada', 'UK', 'US']
@@ -145,6 +153,9 @@ module QBWC
                 <ShipAddress>
                   #{add_fields(object['ship_from_address'], ADDRESS_MAP) if object['ship_from_address']}
                 </ShipAddress>
+                #{additional_contacts(object)}
+                #{additional_notes(object)}
+                #{contacts(object)}
               </VendorAdd>
             </VendorAddRq>
           XML
@@ -172,6 +183,9 @@ module QBWC
                 <ShipAddress>
                   #{add_fields(object['ship_from_address'], ADDRESS_MAP) if object['ship_from_address']}
                 </ShipAddress>
+                #{additional_contacts(object)}
+                #{additional_notes(object)}
+                #{contacts(object)}
               </VendorMod>
             </VendorModRq>
           XML
@@ -207,6 +221,49 @@ module QBWC
           "<ReportingPeriod>#{object['reporting_period']}</ReportingPeriod>"
         end
 
+        def additional_contacts(object)
+          return unless object['additional_contacts'] && object['additional_contacts'].is_a?(Array)
+          
+          fields = ""
+          object['additional_contacts'].each do |contact|
+            # Both name and value required
+            next unless contact['name'] && contact['value']
+            fields += <<~XML
+                              <AdditionalContactRef>
+                                <ContactName >#{contact['name']}</ContactName>
+                                <ContactValue >#{contact['value']}</ContactValue>
+                              </AdditionalContactRef>
+                            XML
+          end
+
+          fields
+        end
+
+        def additional_notes(object)
+          return unless object['additional_notes'] && object['additional_notes'].is_a?(Array)
+          
+          fields = ""
+          object['additional_notes'].each do |note|
+            fields += "<AdditionalNotes><Note>#{note}</Note></AdditionalNotes>"
+          end
+
+          fields
+        end
+
+        def contacts(object)
+          return unless object['contacts'] && object['contacts'].is_a?(Array)
+          
+          fields = ""
+          object['contacts'].each do |contact|
+            fields += "<Contacts>"
+            fields += add_fields(contact, CONTACTS_MAP)
+            fields += additional_contacts(contact)
+            fields += "</Contacts>"
+          end
+
+          fields
+        end
+
         def sanitize_vendor(vendor)
           puts "Sanitizing: #{vendor}"
           # vendor['company'].gsub!(/[^0-9A-Za-z\s]/, '') if vendor['company']
@@ -234,3 +291,9 @@ module QBWC
     end
   end
 end
+
+# TODO: Still need these on Add/Update (not sure what they do)
+# <PrefillAccountRef> <!-- must occur 0 - 3 times -->
+#         <ListID >IDTYPE</ListID> <!-- optional -->
+#         <FullName >STRTYPE</FullName> <!-- optional -->
+# </PrefillAccountRef>

@@ -68,5 +68,31 @@
       "phone": "1234567890"
   },
   "sales_tax_country": "US",
-  "reporting_period": "Quarterly"
+  "reporting_period": "Quarterly",
+  "additional_contacts": [
+    {"name": "initial contact", "value": "initial value"},
+    {"name": "secondary contact", "value": "secondary value"}
+  ],
+  "additional_notes": ["note #1"],
+  "contacts": [
+    {
+      "salutation": "Miss",
+      "firstname": "Lady",
+      "middlename": "middle",
+      "lastname": "Surname",
+      "job_title": "Thinker",
+      "additional_contacts": [
+        {"name": "initial contact 1", "value": "initial value 1"},
+        {"name": "secondary contact 1", "value": "secondary value 1"}
+      ]
+    },
+    {
+      "salutation": "Dr",
+      "firstname": "John",
+      "middlename": "F",
+      "lastname": "Doe",
+      "job_title": "Doctor",
+      "additional_contacts": []
+    }
+  ]
 }

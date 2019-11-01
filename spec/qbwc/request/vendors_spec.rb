@@ -103,6 +103,37 @@ RSpec.describe QBWC::Request::Vendors do
       <Country>United States</Country>
       <Note>ship address note</Note>
       </ShipAddress>
+      <AdditionalContactRef>
+      <ContactName>initial contact</ContactName>
+      <ContactValue>initial value</ContactValue>
+      </AdditionalContactRef>
+      <AdditionalContactRef>
+      <ContactName>secondary contact</ContactName>
+      <ContactValue>secondary value</ContactValue>
+      </AdditionalContactRef>
+      <AdditionalNotes><Note>note #1</Note></AdditionalNotes>
+      <Contacts>
+      <Salutation>Miss</Salutation>
+      <FirstName>Lady</FirstName>
+      <MiddleName>middle</MiddleName>
+      <LastName>Surname</LastName>
+      <JobTitle>Thinker</JobTitle>
+      <AdditionalContactRef>
+      <ContactName>initial contact 1</ContactName>
+      <ContactValue>initial value 1</ContactValue>
+      </AdditionalContactRef>
+      <AdditionalContactRef>
+      <ContactName>secondary contact 1</ContactName>
+      <ContactValue>secondary value 1</ContactValue>
+      </AdditionalContactRef>
+      </Contacts>
+      <Contacts>
+      <Salutation>Dr</Salutation>
+      <FirstName>John</FirstName>
+      <MiddleName>F</MiddleName>
+      <LastName>Doe</LastName>
+      <JobTitle>Doctor</JobTitle>
+      </Contacts>
     XML
   end
 end
