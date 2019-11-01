@@ -49,7 +49,7 @@ module QBWC
 
           time = Time.parse(timestamp).in_time_zone 'Pacific Time (US & Canada)'
 
-          <<-XML
+          <<~XML
             <!-- polling sales_receipts -->
             <SalesReceiptQueryRq requestID="#{session_id}">
             <MaxReturned>100</MaxReturned>
@@ -120,7 +120,7 @@ module QBWC
             record['placed_on'] = Time.now.to_s
           end
 
-          <<-XML
+          <<~XML
             <CustomerRef>
               <FullName>#{record['customer']['name']}</FullName>
             </CustomerRef>
@@ -149,7 +149,7 @@ module QBWC
         def class_ref_for_sales_receipt(record)
           return '' unless record['class_name']
 
-          <<-XML
+          <<~XML
             <ClassRef>
               <FullName>#{record['class_name']}</FullName>
             </ClassRef>
@@ -159,7 +159,7 @@ module QBWC
         def class_ref_for_sales_receipt_line(line)
           return '' unless line['class_name']
 
-          <<-XML
+          <<~XML
             <ClassRef>
               <FullName>#{line['class_name']}</FullName>
             </ClassRef>
@@ -167,7 +167,7 @@ module QBWC
         end
 
         def sales_receipt_line_add(line)
-          <<-XML
+          <<~XML
             <SalesReceiptLineAdd>
               #{sales_receipt_line(line)}
             </SalesReceiptLineAdd>
@@ -203,7 +203,7 @@ module QBWC
         end
 
         def sales_receipt_line_mod(line)
-          <<-XML
+          <<~XML
             <SalesReceiptLineMod>
               <TxnLineID>#{line['txn_line_id']}</TxnLineID>
               #{sales_receipt_line(line)}
@@ -237,7 +237,7 @@ module QBWC
         end
 
         def sales_receipt_line(line)
-          <<-XML
+          <<~XML
             <ItemRef>
               <FullName>#{line['product_id']}</FullName>
             </ItemRef>
@@ -252,7 +252,7 @@ module QBWC
         def inventory_site(line)
           return '' unless line['inventory_site_name']
 
-          <<-XML
+          <<~XML
             <InventorySiteRef>
               <FullName>#{line['inventory_site_name']}</FullName>
             </InventorySiteRef>
@@ -268,7 +268,7 @@ module QBWC
         def tax_code_line(line)
           return '' if line['tax_code_id'].to_s.empty?
 
-          <<-XML
+          <<~XML
             <SalesTaxCodeRef>
               <FullName>#{line['tax_code_id']}</FullName>
             </SalesTaxCodeRef>

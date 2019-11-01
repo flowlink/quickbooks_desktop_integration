@@ -32,7 +32,7 @@ module QBWC
 
           return '' if codes.to_s.empty?
 
-          <<-XML
+          <<~XML
     <ItemInventoryQueryRq requestID="#{session_id}">
       #{codes}
     </ItemInventoryQueryRq>
@@ -51,7 +51,7 @@ module QBWC
 
           time = Time.parse(timestamp).in_time_zone 'Pacific Time (US & Canada)'
 
-          <<-XML
+          <<~XML
 
             <!-- begin polling inventories -->
             <ItemInventoryQueryRq requestID="#{session_id}">
@@ -91,7 +91,7 @@ module QBWC
 
         # TODO BUG: http://www.productivecomputing.com/forum/index.php?topic=2559.0
         def add_xml_to_send(inventory, params, session_id)
-          <<-XML
+          <<~XML
             <InventoryAdjustmentAddRq requestID="#{session_id}">
               <InventoryAdjustmentAdd>
                 #{inventory_xml(inventory, params)}
@@ -101,7 +101,7 @@ module QBWC
         end
 
         def inventory_xml(inventory, params)
-          <<-XML
+          <<~XML
             <AccountRef>
               <FullName>#{params['quickbooks_income_account']}</FullName>
             </AccountRef>

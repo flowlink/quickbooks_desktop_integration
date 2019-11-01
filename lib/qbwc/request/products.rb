@@ -25,7 +25,7 @@ module QBWC
         end
 
         def search_xml(product_id, session_id)
-          <<-XML
+          <<~XML
             <ItemInventoryQueryRq requestID="#{session_id}">
               <MaxReturned>10000</MaxReturned>
               <NameRangeFilter>
@@ -37,7 +37,7 @@ module QBWC
         end
 
         def add_xml_to_send(product, params, session_id)
-          <<-XML
+          <<~XML
             <ItemInventoryAddRq requestID="#{session_id}">
                <ItemInventoryAdd>
                 #{product_xml(product, params)}
@@ -47,7 +47,7 @@ module QBWC
         end
 
         def update_xml_to_send(product, params, session_id)
-          <<-XML
+          <<~XML
             <ItemInventoryModRq requestID="#{session_id}">
                 <ItemInventoryMod>
                   <ListID>#{product['list_id']}</ListID>
@@ -59,14 +59,14 @@ module QBWC
         end
 
         def product_only_touch_xml(product, _params)
-          <<-XML
+          <<~XML
             <Name>#{product['product_id']}</Name>
             <IsActive>true</IsActive>
           XML
         end
 
         def product_xml(product, params)
-          <<-XML
+          <<~XML
             <Name>#{product['product_id']}</Name>
             <SalesDesc>#{product['description']}</SalesDesc>
             <SalesPrice>#{'%.2f' % product['price'].to_f}</SalesPrice>
@@ -89,7 +89,7 @@ module QBWC
         def quantity(product)
           return '' unless product['quantity']
 
-          <<-XML
+          <<~XML
             <QuantityOnHand>#{product['quantity']}</QuantityOnHand>
           XML
         end
@@ -97,7 +97,7 @@ module QBWC
         def manufacturer_part_number(product)
           return '' unless product['manufacturer_part_number']
 
-          <<-XML
+          <<~XML
             <ManufacturerPartNumber>#{product['manufacturer_part_number']}</ManufacturerPartNumber>
           XML
         end
@@ -105,7 +105,7 @@ module QBWC
         def unit_of_measure(product)
           return '' unless product['unit_of_measure']
 
-          <<-XML
+          <<~XML
             <UnitOfMeasureSetRef>
               <FullName>#{product['unit_of_measure']}</FullName>
             </UnitOfMeasureSetRef>
@@ -125,7 +125,7 @@ module QBWC
 
           time = Time.parse(timestamp).in_time_zone 'Pacific Time (US & Canada)'
 
-          <<-XML
+          <<~XML
             <!-- polling products -->
             <ItemInventoryQueryRq requestID="#{session_id}">
             <MaxReturned>50</MaxReturned>

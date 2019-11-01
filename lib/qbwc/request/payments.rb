@@ -30,7 +30,7 @@ module QBWC
         end
 
         def search_xml(payment_id, session_id)
-          <<-XML
+          <<~XML
           <ReceivePaymentQueryRq requestID="#{session_id}">
             <RefNumber>#{payment_id}</RefNumber>
           </ReceivePaymentQueryRq>
@@ -38,7 +38,7 @@ module QBWC
         end
 
         def add_xml_to_send(payment, params, session_id)
-          <<-XML
+          <<~XML
             <ReceivePaymentAddRq requestID="#{session_id}">
               <ReceivePaymentAdd>
                 #{payment_xml(payment, params)}
@@ -49,7 +49,7 @@ module QBWC
         end
 
         def payment_apply_transaction_xml(payment)
-          <<-XML
+          <<~XML
             <AppliedToTxnAdd>
                 <TxnID>#{payment['invoice_txn_id']}</TxnID>
                 <PaymentAmount>#{'%.2f' % payment['amount'].to_f}</PaymentAmount>
@@ -58,13 +58,13 @@ module QBWC
         end
 
         def auto_apply
-          <<-XML
+          <<~XML
           <IsAutoApply>true</IsAutoApply>
           XML
         end
 
         def update_xml_to_send(payment, params, session_id)
-          <<-XML
+          <<~XML
             <ReceivePaymentModRq requestID="#{session_id}">
                <ReceivePaymentMod>
                   <TxnID>#{payment['list_id']}</TxnID>
@@ -76,7 +76,7 @@ module QBWC
         end
 
         def payment_apply_invoice_xml(payment, _params)
-          <<-XML
+          <<~XML
             <RefNumber>#{payment['id']}</RefNumber>
             <TotalAmount>#{'%.2f' % payment['amount'].to_f}</TotalAmount>
             <AppliedToTxnMod>
@@ -87,7 +87,7 @@ module QBWC
         end
 
         def payment_xml(payment, _params)
-          <<-XML
+          <<~XML
             <CustomerRef>
               <FullName>#{payment['customer']['name']}</FullName>
             </CustomerRef>

@@ -40,7 +40,7 @@ module QBWC
 
           time = Time.parse(timestamp).in_time_zone 'Pacific Time (US & Canada)'
 
-          <<-XML
+          <<~XML
             <!-- polling orders -->
             <SalesOrderQueryRq requestID="#{session_id}">
             <MaxReturned>100</MaxReturned>
@@ -54,7 +54,7 @@ module QBWC
         end
 
         def search_xml(order_id, session_id)
-          <<-XML
+          <<~XML
             <SalesOrderQueryRq requestID="#{session_id}">
               <RefNumberCaseSensitive>#{order_id}</RefNumberCaseSensitive>
               <IncludeLineItems>true</IncludeLineItems>
@@ -63,7 +63,7 @@ module QBWC
         end
 
         def add_xml_to_send(record, params= {}, session_id)
-          <<-XML
+          <<~XML
             <SalesOrderAddRq requestID="#{session_id}">
               <SalesOrderAdd>
                 #{sales_order record, params}
@@ -75,7 +75,7 @@ module QBWC
         end
 
         def update_xml_to_send(record, params= {}, session_id)
-          <<-XML
+          <<~XML
             <SalesOrderModRq requestID="#{session_id}">
               <SalesOrderMod>
                 <TxnID>#{record['list_id']}</TxnID>
@@ -110,7 +110,7 @@ module QBWC
             record['placed_on'] = Time.now.to_s
           end
 
-          <<-XML
+          <<~XML
             #{customer_ref_for_order(record)}
             #{class_ref_for_order(record)}
             <TxnDate>#{Time.parse(record['placed_on']).to_date}</TxnDate>
@@ -138,7 +138,7 @@ module QBWC
         def customer_ref_for_order(record)
           return customer_by_id(record) if record['customer']['list_id']
 
-          <<-XML
+          <<~XML
             <CustomerRef>
               <FullName>#{record['customer']['name']}</FullName>
             </CustomerRef>
@@ -146,7 +146,7 @@ module QBWC
         end
 
         def customer_by_id(record)
-          <<-XML
+          <<~XML
             <CustomerRef>
               <ListID>#{record['customer']['list_id']}</ListID>
             </CustomerRef>
@@ -156,7 +156,7 @@ module QBWC
         def class_ref_for_order(record)
           return '' unless record['class_name']
 
-          <<-XML
+          <<~XML
             <ClassRef>
               <FullName>#{record['class_name']}</FullName>
             </ClassRef>
@@ -166,7 +166,7 @@ module QBWC
         def class_ref_for_order_line(line)
           return '' unless line['class_name']
 
-          <<-XML
+          <<~XML
             <ClassRef>
               <FullName>#{line['class_name']}</FullName>
             </ClassRef>
@@ -174,7 +174,7 @@ module QBWC
         end
 
         def sales_order_line_add(line)
-          <<-XML
+          <<~XML
             <SalesOrderLineAdd>
               #{sales_order_line(line)}
             </SalesOrderLineAdd>
@@ -211,7 +211,7 @@ module QBWC
         end
 
         def sales_order_line_mod(line)
-          <<-XML
+          <<~XML
             <SalesOrderLineMod>
               <TxnLineID>#{line['txn_line_id']}</TxnLineID>
               #{sales_order_line(line)}
@@ -243,7 +243,7 @@ module QBWC
         end
 
         def sales_order_line(line)
-          <<-XML
+          <<~XML
             <ItemRef>
               <FullName>#{line['product_id']}</FullName>
             </ItemRef>
@@ -264,7 +264,7 @@ module QBWC
         def tax_code_line(line)
           return '' if line['tax_code_id'].to_s.empty?
 
-          <<-XML
+          <<~XML
             <SalesTaxCodeRef>
               <FullName>#{line['tax_code_id']}</FullName>
             </SalesTaxCodeRef>
@@ -274,7 +274,7 @@ module QBWC
         def rate_line(line)
           return '' if !line['amount'].to_s.empty?
 
-          <<-XML
+          <<~XML
             <Rate>#{'%.2f' % price(line).to_f}</Rate>
           XML
         end
@@ -282,7 +282,7 @@ module QBWC
         def amount_line(line)
           return '' if line['amount'].to_s.empty?
 
-          <<-XML
+          <<~XML
             <Amount>#{'%.2f' % line['amount'].to_f}</Amount>
           XML
         end
@@ -291,7 +291,7 @@ module QBWC
         def cancel_order?(object)
           return '' unless object['status'].to_s == 'cancelled' || object['status'].to_s == 'closed'
 
-          <<-XML
+          <<~XML
             <IsManuallyClosed>true</IsManuallyClosed>
           XML
         end

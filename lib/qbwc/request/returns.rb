@@ -25,7 +25,7 @@ module QBWC
         end
 
         def search_xml(return_id, session_id)
-          <<-XML
+          <<~XML
             <SalesReceiptQueryRq requestID="#{session_id}">
               <RefNumberCaseSensitive>#{return_id}</RefNumberCaseSensitive>
               <IncludeLineItems>true</IncludeLineItems>
@@ -34,7 +34,7 @@ module QBWC
         end
 
         def add_xml_to_send(record, params= {}, session_id)
-          <<-XML
+          <<~XML
             <SalesReceiptAddRq requestID="#{session_id}">
               <SalesReceiptAdd>
                 #{sales_receipt record, params}
@@ -46,7 +46,7 @@ module QBWC
 
         def update_xml_to_send(record, params= {}, session_id)
           # {record['items'].map { |l| sales_receipt_line_mod l }.join("")}
-          <<-XML
+          <<~XML
             <SalesReceiptModRq requestID="#{session_id}">
               <SalesReceiptMod>
                 <TxnID>#{record['list_id']}</TxnID>
@@ -58,7 +58,7 @@ module QBWC
         end
 
         def sales_receipt(record, params)
-          <<-XML
+          <<~XML
             <CustomerRef>
               <FullName>#{record['email']}</FullName>
             </CustomerRef>
@@ -88,7 +88,7 @@ module QBWC
         def payment_ref(record, _params)
           return '' if record['refunds'].to_a.empty?
 
-          <<-XML
+          <<~XML
             <PaymentMethodRef>
               <FullName>#{record['refunds'].to_a.first['payment_method']}</FullName>
             </PaymentMethodRef>
@@ -99,7 +99,7 @@ module QBWC
           return '' unless params.key?('quickbooks_deposit_account') &&
                            !params['quickbooks_deposit_account'].to_s.empty?
 
-          <<-XML
+          <<~XML
             <DepositToAccountRef>
               <FullName>#{params['quickbooks_deposit_account']}</FullName>
             </DepositToAccountRef>
@@ -107,7 +107,7 @@ module QBWC
         end
 
         def sales_receipt_line_add(line)
-          <<-XML
+          <<~XML
             <SalesReceiptLineAdd>
               #{sales_receipt_line(line)}
             </SalesReceiptLineAdd>
@@ -115,7 +115,7 @@ module QBWC
         end
 
         def sales_receipt_line_mod(line)
-          <<-XML
+          <<~XML
             <SalesReceiptLineMod>
               <TxnLineID>#{line['txn_line_id']}</TxnLineID>
               #{sales_receipt_line(line)}
@@ -124,7 +124,7 @@ module QBWC
         end
 
         def sales_receipt_line(line)
-          <<-XML
+          <<~XML
             <ItemRef>
               <FullName>#{line['product_id']}</FullName>
             </ItemRef>
@@ -139,7 +139,7 @@ module QBWC
         def tax_code_line(line)
           return '' if line['tax_code_id'].to_s.empty?
 
-          <<-XML
+          <<~XML
             <SalesTaxCodeRef>
               <FullName>#{line['tax_code_id']}</FullName>
             </SalesTaxCodeRef>
