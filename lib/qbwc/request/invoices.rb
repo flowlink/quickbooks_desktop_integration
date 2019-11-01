@@ -52,7 +52,7 @@ module QBWC
 
           time = Time.parse(timestamp).in_time_zone 'Pacific Time (US & Canada)'
 
-          <<-XML
+          <<~XML
             <!-- polling invoices -->
             <InvoiceQueryRq requestID="#{session_id}">
               <MaxReturned>300</MaxReturned>
@@ -140,7 +140,7 @@ module QBWC
             record['placed_on'] = Time.now.to_s
           end
 
-          <<-XML
+          <<~XML
             #{customer_ref_for_invoice(record)}
             #{class_ref_for_invoice(record)}
             <TxnDate>#{Time.parse(record['placed_on']).to_date}</TxnDate>
@@ -172,7 +172,7 @@ module QBWC
         def shipping_method(record)
           return '' unless record.dig('shipping_method','name')
 
-          <<-XML
+          <<~XML
             <ShipMethodRef>
               <FullName>#{record['shipping_method']['name']}</FullName>
             </ShipMethodRef>
@@ -182,7 +182,7 @@ module QBWC
         def is_to_be_printed(record)
           return '' unless record.dig('is_to_be_printed')
 
-          <<-XML
+          <<~XML
             <IsToBePrinted>#{record['is_to_be_printed']}</IsToBePrinted>
           XML
         end
@@ -190,7 +190,7 @@ module QBWC
         def is_to_be_emailed(record)
           return '' unless record.dig('is_to_be_emailed')
 
-          <<-XML
+          <<~XML
             <IsToBeEmailed>#{record['is_to_be_emailed']}</IsToBeEmailed>
           XML
         end
@@ -198,7 +198,7 @@ module QBWC
         def sales_rep(record)
           return '' unless record.dig('sales_rep','name')
 
-          <<-XML
+          <<~XML
             <SalesRepRef>
               <FullName>#{record['sales_rep']['name']}</FullName>
             </SalesRepRef>
@@ -208,7 +208,7 @@ module QBWC
         def po_number(record)
           return '' unless record['purchase_order_number'] && record['purchase_order_number'] != ""
 
-          <<-XML
+          <<~XML
             <PONumber>#{record['purchase_order_number']}</PONumber>
           XML
         end
@@ -216,7 +216,7 @@ module QBWC
         def customer_ref_for_invoice(record)
           return customer_by_id(record) if record['customer']['list_id']
 
-          <<-XML
+          <<~XML
             <CustomerRef>
               <FullName>#{record['customer']['name']}</FullName>
             </CustomerRef>
@@ -224,7 +224,7 @@ module QBWC
         end
 
         def customer_by_id(record)
-          <<-XML
+          <<~XML
             <CustomerRef>
               <ListID>#{record['customer']['list_id']}</ListID>
             </CustomerRef>
@@ -234,7 +234,7 @@ module QBWC
         def class_ref_for_invoice(record)
           return '' unless record['class_name']
 
-          <<-XML
+          <<~XML
             <ClassRef>
               <FullName>#{record['class_name']}</FullName>
             </ClassRef>
@@ -244,7 +244,7 @@ module QBWC
         def class_ref_for_invoice_line(line)
           return '' unless line['class_name']
 
-          <<-XML
+          <<~XML
             <ClassRef>
               <FullName>#{line['class_name']}</FullName>
             </ClassRef>
@@ -252,7 +252,7 @@ module QBWC
         end
 
         def invoice_line_add(line)
-          <<-XML
+          <<~XML
             <InvoiceLineAdd>
               #{invoice_line(line)}
             </InvoiceLineAdd>
@@ -289,7 +289,7 @@ module QBWC
         end
 
         def invoice_line_mod(line)
-          <<-XML
+          <<~XML
             <InvoiceLineMod>
               <TxnLineID>#{line['txn_line_id']}</TxnLineID>
               #{invoice_line(line)}
@@ -324,7 +324,7 @@ module QBWC
         end
 
         def invoice_line(line)
-          <<-XML
+          <<~XML
             <ItemRef>
               <FullName>#{line['product_id']}</FullName>
             </ItemRef>
@@ -339,7 +339,7 @@ module QBWC
         def inventory_site(line)
           return '' unless line['inventory_site_name']
 
-          <<-XML
+          <<~XML
             <InventorySiteRef>
               <FullName>#{line['inventory_site_name']}</FullName>
             </InventorySiteRef>
@@ -355,7 +355,7 @@ module QBWC
         def tax_code_line(line)
           return '' if line['tax_code_id'].to_s.empty?
 
-          <<-XML
+          <<~XML
             <SalesTaxCodeRef>
               <FullName>#{line['tax_code_id']}</FullName>
             </SalesTaxCodeRef>
@@ -365,7 +365,7 @@ module QBWC
         def rate_line(line)
           return '' if !line['amount'].to_s.empty?
 
-          <<-XML
+          <<~XML
             <Rate>#{'%.2f' % price(line).to_f}</Rate>
           XML
         end
@@ -373,7 +373,7 @@ module QBWC
         def amount_line(line)
           return '' if line['amount'].to_s.empty?
 
-          <<-XML
+          <<~XML
             <Amount>#{'%.2f' % line['amount'].to_f}</Amount>
           XML
         end

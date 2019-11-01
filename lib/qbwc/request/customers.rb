@@ -90,7 +90,7 @@ module QBWC
 
           time = Time.parse(timestamp).in_time_zone 'Pacific Time (US & Canada)'
 
-          <<-XML
+          <<~XML
             <!-- polling customers -->
             <CustomerQueryRq requestID="#{session_id}">
               <MaxReturned>100000</MaxReturned>
@@ -131,7 +131,7 @@ module QBWC
         def search_xml_by_id(object_id, session_id)
           puts "Building customer xml by list_id #{object_id}, #{session_id}"
 
-          <<-XML
+          <<~XML
             <CustomerQueryRq requestID="#{session_id}">
               <MaxReturned>50</MaxReturned>
               <ListIDList>
@@ -144,7 +144,7 @@ module QBWC
         def search_xml_by_name(object_id, session_id)
           puts "Building customer xml by name #{object_id}, #{session_id}"
 
-          <<-XML
+          <<~XML
             <CustomerQueryRq requestID="#{session_id}">
               <MaxReturned>50</MaxReturned>
               <NameRangeFilter>
@@ -156,7 +156,7 @@ module QBWC
         end
 
         def add_xml_to_send(object, session_id)
-          <<-XML
+          <<~XML
             <CustomerAddRq requestID="#{session_id}">
               <CustomerAdd>
                 <Name>#{object['name']}</Name>
@@ -186,7 +186,7 @@ module QBWC
         end
 
         def update_xml_to_send(object, session_id)
-          <<-XML
+          <<~XML
             <CustomerModRq requestID="#{session_id}">
               <CustomerMod>
                 <ListID>#{object['list_id']}</ListID>

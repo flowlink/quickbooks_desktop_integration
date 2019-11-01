@@ -40,7 +40,7 @@ module QBWC
 
           time = Time.parse(timestamp).in_time_zone 'Pacific Time (US & Canada)'
 
-          <<-XML
+          <<~XML
             <!-- polling purchase orders -->
             <PurchaseOrderQueryRq requestID="#{session_id}">
             <MaxReturned>100</MaxReturned>
@@ -54,7 +54,7 @@ module QBWC
         end
 
         def search_xml(order_id, session_id)
-          <<-XML
+          <<~XML
             <PurchaseOrderQueryRq requestID="#{session_id}">
               <RefNumberCaseSensitive>#{order_id}</RefNumberCaseSensitive>
               <IncludeLineItems>true</IncludeLineItems>
@@ -63,7 +63,7 @@ module QBWC
         end
 
         def add_xml_to_send(record, params= {}, session_id)
-          <<-XML
+          <<~XML
             <PurchaseOrderAddRq requestID="#{session_id}">
               <PurchaseOrderAdd>
                 #{purchaseorder record, params}
@@ -75,7 +75,7 @@ module QBWC
         end
 
         def update_xml_to_send(record, params= {}, session_id)
-          <<-XML
+          <<~XML
             <PurchaseOrderModRq requestID="#{session_id}">
               <PurchaseOrderMod>
                 <TxnID>#{record['list_id']}</TxnID>
@@ -110,7 +110,7 @@ module QBWC
             record['placed_on'] = Time.now.to_s
           end
 
-          <<-XML
+          <<~XML
             <VendorRef>
               <FullName>#{record['supplier']['name']}</FullName>
             </VendorRef>
@@ -140,7 +140,7 @@ module QBWC
         def class_ref_for_order(record)
           return '' unless record['class_name']
 
-          <<-XML
+          <<~XML
             <ClassRef>
               <FullName>#{record['class_name']}</FullName>
             </ClassRef>
@@ -150,7 +150,7 @@ module QBWC
         def class_ref_for_order_line(line)
           return '' unless line['class_name']
 
-          <<-XML
+          <<~XML
             <ClassRef>
               <FullName>#{line['class_name']}</FullName>
             </ClassRef>
@@ -158,7 +158,7 @@ module QBWC
         end
 
         def purchaseorder_line_add(line)
-          <<-XML
+          <<~XML
             <PurchaseOrderLineAdd>
               #{purchaseorder_line(line)}
             </PurchaseOrderLineAdd>
@@ -194,7 +194,7 @@ module QBWC
         end
 
         def purchaseorder_line_mod(line)
-          <<-XML
+          <<~XML
             <PurchaseOrderLineMod>
               <TxnLineID>#{line['txn_line_id']}</TxnLineID>
               #{purchaseorder_line(line)}
@@ -226,7 +226,7 @@ module QBWC
         end
 
         def purchaseorder_line(line)
-          <<-XML
+          <<~XML
             <ItemRef>
               <FullName>#{line['product_id']}</FullName>
             </ItemRef>
@@ -246,7 +246,7 @@ module QBWC
         def tax_code_line(line)
           return '' if line['tax_code_id'].to_s.empty?
 
-          <<-XML
+          <<~XML
             <SalesTaxCodeRef>
               <FullName>#{line['tax_code_id']}</FullName>
             </SalesTaxCodeRef>
@@ -256,7 +256,7 @@ module QBWC
         def cancel_order?(object)
           return '' unless object['status'].to_s == 'cancelled'
 
-          <<-XML
+          <<~XML
             <IsManuallyClosed>true</IsManuallyClosed>
           XML
         end
