@@ -89,7 +89,7 @@ module QBWC
 
           time = Time.parse(timestamp).in_time_zone 'Pacific Time (US & Canada)'
 
-          <<-XML
+          <<~XML
             <!-- polling customers -->
             <VendorQueryRq requestID="#{session_id}">
               <MaxReturned>100000</MaxReturned>
@@ -122,7 +122,7 @@ module QBWC
         end
 
         def search_xml(object_id, session_id)
-          <<-XML
+          <<~XML
             <VendorQueryRq requestID="#{session_id}">
               <MaxReturned>50</MaxReturned>
               <NameRangeFilter>
@@ -134,7 +134,7 @@ module QBWC
         end
 
         def add_xml_to_send(object, session_id)
-          <<-XML
+          <<~XML
             <VendorAddRq requestID="#{session_id}">
               <VendorAdd>
                 <Name>#{object['name']}</Name>
@@ -162,7 +162,7 @@ module QBWC
         end
 
         def update_xml_to_send(object, session_id)
-          <<-XML
+          <<~XML
             <VendorModRq requestID="#{session_id}">
               <VendorMod>
                 <ListID>#{object['list_id']}</ListID>

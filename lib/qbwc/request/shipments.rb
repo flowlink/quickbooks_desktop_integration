@@ -29,7 +29,7 @@ module QBWC
         end
 
         def search_xml(shipment_id, session_id)
-          <<-XML
+          <<~XML
             <InvoiceQueryRq requestID="#{session_id}">
               <RefNumberCaseSensitive>#{shipment_id}</RefNumberCaseSensitive>
               <IncludeLineItems>true</IncludeLineItems>
@@ -38,7 +38,7 @@ module QBWC
         end
 
         def update_xml_to_send(record, params = {}, session_id = nil)
-          <<-XML
+          <<~XML
             <InvoiceModRq requestID="#{session_id}">
               <InvoiceMod>
                 <TxnID>#{record['list_id']}</TxnID>
@@ -52,7 +52,7 @@ module QBWC
         end
 
         def add_xml_to_send(record, params = {}, session_id = nil)
-          <<-XML
+          <<~XML
             <InvoiceAddRq requestID="#{session_id}">
               <InvoiceAdd>
                 #{invoice_xml(record, params)}
@@ -64,7 +64,7 @@ module QBWC
         end
 
         def invoice_xml(record, _params)
-          <<-XML
+          <<~XML
             <CustomerRef>
               <FullName>#{record['email']}</FullName>
             </CustomerRef>
@@ -98,7 +98,7 @@ module QBWC
         end
 
         def invoice_line_add(item)
-          <<-XML
+          <<~XML
             <InvoiceLineAdd>
               #{quantity(item)}
               <Rate>#{item['price']}</Rate>
@@ -108,7 +108,7 @@ module QBWC
         end
 
         def invoice_line_mod(item)
-          <<-XML
+          <<~XML
             <InvoiceLineMod>
               <TxnLineID>#{item['txn_line_id']}</TxnLineID>
               <ItemRef>
@@ -127,7 +127,7 @@ module QBWC
         end
 
         def invoice_adjustment_add(item)
-          <<-XML
+          <<~XML
             <InvoiceLineAdd>
               <Rate>#{item['value']}</Rate>
               #{link_to_sales_order(item)}
@@ -136,7 +136,7 @@ module QBWC
         end
 
         def invoice_adjustment_mod(item, params)
-          <<-XML
+          <<~XML
             <InvoiceLineMod>
               <TxnLineID>#{item['txn_line_id']}</TxnLineID>
               <ItemRef>
@@ -150,7 +150,7 @@ module QBWC
         def link_to_sales_order(item)
           return '' unless item.key?('sales_order_txn_line_id') && !item['sales_order_txn_line_id'].to_s.empty?
 
-          <<-XML
+          <<~XML
             <LinkToTxn>
               <TxnID>#{item['sales_order_txn_id']}</TxnID>
               <TxnLineID>#{item['sales_order_txn_line_id']}</TxnLineID>
