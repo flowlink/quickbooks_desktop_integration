@@ -49,40 +49,40 @@ module QBWC
         def update_xml_to_send(product, params, session_id)
           <<-XML
             <ItemInventoryModRq requestID="#{session_id}">
-               <ItemInventoryMod>
+                <ItemInventoryMod>
                   <ListID>#{product['list_id']}</ListID>
                   <EditSequence>#{product['edit_sequence']}</EditSequence>
                   #{product.key?('active') ? product_only_touch_xml(product, params) : product_xml(product, params)}
-               </ItemInventoryMod>
+                </ItemInventoryMod>
             </ItemInventoryModRq>
           XML
         end
 
         def product_only_touch_xml(product, _params)
           <<-XML
-                  <Name>#{product['product_id']}</Name>
-                  <IsActive>true</IsActive>
+            <Name>#{product['product_id']}</Name>
+            <IsActive>true</IsActive>
           XML
         end
 
         def product_xml(product, params)
           <<-XML
-              <Name>#{product['product_id']}</Name>
-              <SalesDesc>#{product['description']}</SalesDesc>
-              <SalesPrice>#{'%.2f' % product['price'].to_f}</SalesPrice>
-              <IncomeAccountRef>
-                 <FullName>#{product['income_account'] || params['quickbooks_income_account']}</FullName>
-              </IncomeAccountRef>
-              <PurchaseCost>#{'%.2f' % product['cost'].to_f}</PurchaseCost>
-              #{quantity(product)}
-              #{manufacturer_part_number(product)}
-              #{unit_of_measure(product)}
-              <COGSAccountRef>
-                <FullName>#{product['cogs_account'] || params['quickbooks_cogs_account']}</FullName>
-              </COGSAccountRef>
-              <AssetAccountRef>
-                 <FullName>#{product['inventory_account'] || params['quickbooks_inventory_account']}</FullName>
-              </AssetAccountRef>
+            <Name>#{product['product_id']}</Name>
+            <SalesDesc>#{product['description']}</SalesDesc>
+            <SalesPrice>#{'%.2f' % product['price'].to_f}</SalesPrice>
+            <IncomeAccountRef>
+                <FullName>#{product['income_account'] || params['quickbooks_income_account']}</FullName>
+            </IncomeAccountRef>
+            <PurchaseCost>#{'%.2f' % product['cost'].to_f}</PurchaseCost>
+            #{quantity(product)}
+            #{manufacturer_part_number(product)}
+            #{unit_of_measure(product)}
+            <COGSAccountRef>
+              <FullName>#{product['cogs_account'] || params['quickbooks_cogs_account']}</FullName>
+            </COGSAccountRef>
+            <AssetAccountRef>
+                <FullName>#{product['inventory_account'] || params['quickbooks_inventory_account']}</FullName>
+            </AssetAccountRef>
           XML
         end
 
@@ -90,7 +90,7 @@ module QBWC
           return '' unless product['quantity']
 
           <<-XML
-              <QuantityOnHand>#{product['quantity']}</QuantityOnHand>
+            <QuantityOnHand>#{product['quantity']}</QuantityOnHand>
           XML
         end
 
@@ -98,7 +98,7 @@ module QBWC
           return '' unless product['manufacturer_part_number']
 
           <<-XML
-              <ManufacturerPartNumber>#{product['manufacturer_part_number']}</ManufacturerPartNumber>
+            <ManufacturerPartNumber>#{product['manufacturer_part_number']}</ManufacturerPartNumber>
           XML
         end
 
@@ -106,9 +106,9 @@ module QBWC
           return '' unless product['unit_of_measure']
 
           <<-XML
-              <UnitOfMeasureSetRef>
-                <FullName>#{product['unit_of_measure']}</FullName>
-              </UnitOfMeasureSetRef>
+            <UnitOfMeasureSetRef>
+              <FullName>#{product['unit_of_measure']}</FullName>
+            </UnitOfMeasureSetRef>
           XML
         end
 

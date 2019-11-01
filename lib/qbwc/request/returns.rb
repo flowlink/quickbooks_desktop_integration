@@ -26,10 +26,10 @@ module QBWC
 
         def search_xml(return_id, session_id)
           <<-XML
-          <SalesReceiptQueryRq requestID="#{session_id}">
-            <RefNumberCaseSensitive>#{return_id}</RefNumberCaseSensitive>
-            <IncludeLineItems>true</IncludeLineItems>
-          </SalesReceiptQueryRq>
+            <SalesReceiptQueryRq requestID="#{session_id}">
+              <RefNumberCaseSensitive>#{return_id}</RefNumberCaseSensitive>
+              <IncludeLineItems>true</IncludeLineItems>
+            </SalesReceiptQueryRq>
           XML
         end
 
@@ -125,14 +125,14 @@ module QBWC
 
         def sales_receipt_line(line)
           <<-XML
-              <ItemRef>
-                <FullName>#{line['product_id']}</FullName>
-              </ItemRef>
-              <Quantity>#{line['return_authorized']}</Quantity>
+            <ItemRef>
+              <FullName>#{line['product_id']}</FullName>
+            </ItemRef>
+            <Quantity>#{line['return_authorized']}</Quantity>
 
-              <!-- <Amount>#{'%.2f' % line['price'].to_f}</Amount> -->
-              <Rate>#{line['price']}</Rate>
-              #{tax_code_line(line)}
+            <!-- <Amount>#{'%.2f' % line['price'].to_f}</Amount> -->
+            <Rate>#{line['price']}</Rate>
+            #{tax_code_line(line)}
           XML
         end
 

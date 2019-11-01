@@ -60,9 +60,9 @@ module QBWC
         def add_xml_to_send(journal, params, session_id)
           <<-XML
             <JournalEntryAddRq requestID="#{session_id}">
-               <JournalEntryAdd>
-                #{journal_xml(journal, params, false)}
-               </JournalEntryAdd>
+              <JournalEntryAdd>
+              #{journal_xml(journal, params, false)}
+              </JournalEntryAdd>
             </JournalEntryAddRq>
           XML
         end
@@ -72,32 +72,32 @@ module QBWC
           # If you have the wrong edit_sequence (AKA someone manually updated since create/update) it will fail
           <<-XML
             <JournalEntryModRq requestID="#{session_id}">
-               <JournalEntryMod>
-                  <TxnID>#{journal['list_id']}</TxnID>
-                  <EditSequence>#{journal['edit_sequence']}</EditSequence>
-                  #{journal_xml(journal, params, true)}
-               </JournalEntryMod>
+              <JournalEntryMod>
+                <TxnID>#{journal['list_id']}</TxnID>
+                <EditSequence>#{journal['edit_sequence']}</EditSequence>
+                #{journal_xml(journal, params, true)}
+              </JournalEntryMod>
             </JournalEntryModRq>
           XML
         end
 
         def delete_xml_to_send(journal, session_id)
           <<-XML
-          <TxnDelRq requestID="#{session_id}">
-            <TxnDelType >JournalEntry</TxnDelType>
-            <TxnID>#{journal['list_id']}</TxnID>
-          </TxnDelRq>
+            <TxnDelRq requestID="#{session_id}">
+              <TxnDelType >JournalEntry</TxnDelType>
+              <TxnID>#{journal['list_id']}</TxnID>
+            </TxnDelRq>
           XML
         end
 
         def journal_xml(journal, params, isAdjustment)
           credit_lines, debit_lines = split_lines(journal['line_items'])
           <<-XML
-              <TxnDate>#{Time.parse(journal['journal_date']).to_date}</TxnDate>
-              <RefNumber>#{journal['id']}</RefNumber>
-              <IsAdjustment>#{isAdjustment}</IsAdjustment>
-              #{debit_lines.map { |debit| build_debit_line(debit) }.join('')}
-              #{credit_lines.map { |credit| build_credit_line(credit) }.join('')}
+            <TxnDate>#{Time.parse(journal['journal_date']).to_date}</TxnDate>
+            <RefNumber>#{journal['id']}</RefNumber>
+            <IsAdjustment>#{isAdjustment}</IsAdjustment>
+            #{debit_lines.map { |debit| build_debit_line(debit) }.join('')}
+            #{credit_lines.map { |credit| build_credit_line(credit) }.join('')}
           XML
         end
 

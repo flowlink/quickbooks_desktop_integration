@@ -31,11 +31,9 @@ module QBWC
 
         def search_xml(payment_id, session_id)
           <<-XML
-
-         <ReceivePaymentQueryRq requestID="#{session_id}">
-           <RefNumber>#{payment_id}</RefNumber>
-         </ReceivePaymentQueryRq>
-
+          <ReceivePaymentQueryRq requestID="#{session_id}">
+            <RefNumber>#{payment_id}</RefNumber>
+          </ReceivePaymentQueryRq>
           XML
         end
 
@@ -52,20 +50,16 @@ module QBWC
 
         def payment_apply_transaction_xml(payment)
           <<-XML
-
-         <AppliedToTxnAdd>
-            <TxnID>#{payment['invoice_txn_id']}</TxnID>
-            <PaymentAmount>#{'%.2f' % payment['amount'].to_f}</PaymentAmount>
-         </AppliedToTxnAdd>
-
+            <AppliedToTxnAdd>
+                <TxnID>#{payment['invoice_txn_id']}</TxnID>
+                <PaymentAmount>#{'%.2f' % payment['amount'].to_f}</PaymentAmount>
+            </AppliedToTxnAdd>
           XML
         end
 
         def auto_apply
           <<-XML
-
-         <IsAutoApply>true</IsAutoApply>
-
+          <IsAutoApply>true</IsAutoApply>
           XML
         end
 
@@ -83,25 +77,25 @@ module QBWC
 
         def payment_apply_invoice_xml(payment, _params)
           <<-XML
-              <RefNumber>#{payment['id']}</RefNumber>
-              <TotalAmount>#{'%.2f' % payment['amount'].to_f}</TotalAmount>
-              <AppliedToTxnMod>
-                <TxnID>#{payment['invoice_txn_id']}</TxnID>
-                <PaymentAmount>#{'%.2f' % payment['amount'].to_f}</PaymentAmount>
-              </AppliedToTxnMod>
+            <RefNumber>#{payment['id']}</RefNumber>
+            <TotalAmount>#{'%.2f' % payment['amount'].to_f}</TotalAmount>
+            <AppliedToTxnMod>
+              <TxnID>#{payment['invoice_txn_id']}</TxnID>
+              <PaymentAmount>#{'%.2f' % payment['amount'].to_f}</PaymentAmount>
+            </AppliedToTxnMod>
           XML
         end
 
         def payment_xml(payment, _params)
           <<-XML
-              <CustomerRef>
-                <FullName>#{payment['customer']['name']}</FullName>
-              </CustomerRef>
-              <RefNumber>#{payment['id']}</RefNumber>
-              <TotalAmount>#{'%.2f' % payment['amount'].to_f}</TotalAmount>
-              <PaymentMethodRef>
-                <FullName>#{payment['payment_method']}</FullName>
-              </PaymentMethodRef>
+            <CustomerRef>
+              <FullName>#{payment['customer']['name']}</FullName>
+            </CustomerRef>
+            <RefNumber>#{payment['id']}</RefNumber>
+            <TotalAmount>#{'%.2f' % payment['amount'].to_f}</TotalAmount>
+            <PaymentMethodRef>
+              <FullName>#{payment['payment_method']}</FullName>
+            </PaymentMethodRef>
           XML
         end
       end
