@@ -136,9 +136,9 @@ module QBWC
                 <AltPhone>#{object['ship_from_address']['phone'] if object['ship_from_address']}</AltPhone>
                 <Email>#{object['email']}</Email>
                 #{add_fields(object, FIELD_MAP)}
-                #{sales_tax_country}
-                #{reporting_period}
-                #{add_refs}
+                #{sales_tax_country(object)}
+                #{reporting_period(object)}
+                #{add_refs(object)}
                 <VendorAddress>
                   #{add_fields(object['vendor_address'], ADDRESS_MAP) if object['vendor_address']}
                 </VendorAddress>
@@ -159,19 +159,19 @@ module QBWC
                 <Name>#{object['name']}</Name>
                 <FirstName>#{object['firstname']}</FirstName>
                 <LastName>#{object['lastname']}</LastName>
+                <Phone>#{object['vendor_address']['phone'] if object['vendor_address']}</Phone>
+                <AltPhone>#{object['ship_from_address']['phone'] if object['ship_from_address']}</AltPhone>
+                <Email>#{object['email']}</Email>
+                #{add_fields(object, FIELD_MAP)}
+                #{sales_tax_country(object)}
+                #{reporting_period(object)}
+                #{add_refs(object)}
                 <VendorAddress>
                   #{add_fields(object['vendor_address'], ADDRESS_MAP) if object['vendor_address']}
                 </VendorAddress>
                 <ShipAddress>
                   #{add_fields(object['ship_from_address'], ADDRESS_MAP) if object['ship_from_address']}
                 </ShipAddress>
-                <Phone>#{object['vendor_address']['phone'] if object['vendor_address']}</Phone>
-                <AltPhone>#{object['ship_from_address']['phone'] if object['ship_from_address']}</AltPhone>
-                <Email>#{object['email']}</Email>
-                #{add_fields(object, FIELD_MAP)}
-                #{sales_tax_country}
-                #{reporting_period}
-                #{add_refs}
               </VendorMod>
             </VendorModRq>
           XML
@@ -182,7 +182,7 @@ module QBWC
         def add_refs(object)
           fields = ""
           REF_MAP.each do |qbe_name, flowlink_name|
-            fields += "<#{qbe_name}><FullName>#{object[flowlink_name]}</FullName></#{qbe_name}>" if object[flowlink_name]
+            fields += "<#{qbe_name}><FullName>#{object[flowlink_name]}</FullName></#{qbe_name}>" unless object[flowlink_name].nil?
           end
 
           fields
@@ -191,7 +191,7 @@ module QBWC
         def add_fields(object, mapping)
           fields = ""
           mapping.each do |qbe_name, flowlink_name|
-            fields += "<#{qbe_name}>#{object[flowlink_name]}</#{qbe_name}>\n" if object[flowlink_name]
+            fields += "<#{qbe_name}>#{object[flowlink_name]}</#{qbe_name}>\n" unless object[flowlink_name].nil?
           end
 
           fields
@@ -202,7 +202,7 @@ module QBWC
           "<SalesTaxCountry>#{object['sales_tax_country']}</SalesTaxCountry>"
         end
 
-        def reporting_period
+        def reporting_period(object)
           return "" unless REPORTING_PERIODS.include?(object['reporting_period'])
           "<ReportingPeriod>#{object['reporting_period']}</ReportingPeriod>"
         end
