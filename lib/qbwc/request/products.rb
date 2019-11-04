@@ -93,8 +93,9 @@ module QBWC
 
         def inventory_date(product)
           return '' unless product['quantity']
-
-          date_to_use = Time.parse(product['inventory_date']).to_date || Time.now.to_date
+          
+          date_to_use = Time.now.to_date
+          date_to_use = Time.parse(product['inventory_date']).to_date if product['inventory_date']
           <<~XML
           <InventoryDate>#{date_to_use}</InventoryDate>
           XML
