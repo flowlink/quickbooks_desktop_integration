@@ -86,7 +86,6 @@ module QBWC
               <AssetAccountRef>
                  <FullName>#{product['inventory_account'] || params['quickbooks_inventory_account']}</FullName>
               </AssetAccountRef>
-              <TotalValue >AMTTYPE</TotalValue>
               #{inventory_date(product)}
           XML
         end
