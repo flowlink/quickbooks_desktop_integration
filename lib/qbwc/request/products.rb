@@ -86,6 +86,17 @@ module QBWC
               <AssetAccountRef>
                  <FullName>#{product['inventory_account'] || params['quickbooks_inventory_account']}</FullName>
               </AssetAccountRef>
+              <TotalValue >AMTTYPE</TotalValue>
+              #{inventory_date(product)}
+          XML
+        end
+
+        def inventory_date(product)
+          return '' unless product['quantity']
+
+          date_to_use = Time.parse(product['inventory_date']).to_date || Time.now.to_date
+          <<~XML
+          <InventoryDate>#{date_to_use}</InventoryDate>
           XML
         end
 
