@@ -30,17 +30,15 @@ module QBWC
         end
 
         def search_xml(payment_id, session_id)
-          <<-XML
-
-         <ReceivePaymentQueryRq requestID="#{session_id}">
-           <RefNumber>#{payment_id}</RefNumber>
-         </ReceivePaymentQueryRq>
-
+          <<~XML
+          <ReceivePaymentQueryRq requestID="#{session_id}">
+            <RefNumber>#{payment_id}</RefNumber>
+          </ReceivePaymentQueryRq>
           XML
         end
 
         def add_xml_to_send(payment, params, session_id)
-          <<-XML
+          <<~XML
             <ReceivePaymentAddRq requestID="#{session_id}">
               <ReceivePaymentAdd>
                 #{payment_xml(payment, params)}
@@ -51,26 +49,22 @@ module QBWC
         end
 
         def payment_apply_transaction_xml(payment)
-          <<-XML
-
-         <AppliedToTxnAdd>
-            <TxnID>#{payment['invoice_txn_id']}</TxnID>
-            <PaymentAmount>#{'%.2f' % payment['amount'].to_f}</PaymentAmount>
-         </AppliedToTxnAdd>
-
+          <<~XML
+            <AppliedToTxnAdd>
+                <TxnID>#{payment['invoice_txn_id']}</TxnID>
+                <PaymentAmount>#{'%.2f' % payment['amount'].to_f}</PaymentAmount>
+            </AppliedToTxnAdd>
           XML
         end
 
         def auto_apply
-          <<-XML
-
-         <IsAutoApply>true</IsAutoApply>
-
+          <<~XML
+          <IsAutoApply>true</IsAutoApply>
           XML
         end
 
         def update_xml_to_send(payment, params, session_id)
-          <<-XML
+          <<~XML
             <ReceivePaymentModRq requestID="#{session_id}">
                <ReceivePaymentMod>
                   <TxnID>#{payment['list_id']}</TxnID>
@@ -82,26 +76,26 @@ module QBWC
         end
 
         def payment_apply_invoice_xml(payment, _params)
-          <<-XML
-              <RefNumber>#{payment['id']}</RefNumber>
-              <TotalAmount>#{'%.2f' % payment['amount'].to_f}</TotalAmount>
-              <AppliedToTxnMod>
-                <TxnID>#{payment['invoice_txn_id']}</TxnID>
-                <PaymentAmount>#{'%.2f' % payment['amount'].to_f}</PaymentAmount>
-              </AppliedToTxnMod>
+          <<~XML
+            <RefNumber>#{payment['id']}</RefNumber>
+            <TotalAmount>#{'%.2f' % payment['amount'].to_f}</TotalAmount>
+            <AppliedToTxnMod>
+              <TxnID>#{payment['invoice_txn_id']}</TxnID>
+              <PaymentAmount>#{'%.2f' % payment['amount'].to_f}</PaymentAmount>
+            </AppliedToTxnMod>
           XML
         end
 
         def payment_xml(payment, _params)
-          <<-XML
-              <CustomerRef>
-                <FullName>#{payment['customer']['name']}</FullName>
-              </CustomerRef>
-              <RefNumber>#{payment['id']}</RefNumber>
-              <TotalAmount>#{'%.2f' % payment['amount'].to_f}</TotalAmount>
-              <PaymentMethodRef>
-                <FullName>#{payment['payment_method']}</FullName>
-              </PaymentMethodRef>
+          <<~XML
+            <CustomerRef>
+              <FullName>#{payment['customer']['name']}</FullName>
+            </CustomerRef>
+            <RefNumber>#{payment['id']}</RefNumber>
+            <TotalAmount>#{'%.2f' % payment['amount'].to_f}</TotalAmount>
+            <PaymentMethodRef>
+              <FullName>#{payment['payment_method']}</FullName>
+            </PaymentMethodRef>
           XML
         end
       end

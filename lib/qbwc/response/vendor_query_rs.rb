@@ -189,38 +189,6 @@ module QBWC
 end
 
 # TODO: Still need these fields when getting vendors
-# <AdditionalContactRef> <!-- must occur 0 - 8 times -->
-#         <ContactName >STRTYPE</ContactName> <!-- required -->
-#         <ContactValue >STRTYPE</ContactValue> <!-- required -->
-# </AdditionalContactRef>
-# <ContactsRet> <!-- optional, may repeat -->
-#         <ListID >IDTYPE</ListID> <!-- required -->
-#         <TimeCreated >DATETIMETYPE</TimeCreated> <!-- required -->
-#         <TimeModified >DATETIMETYPE</TimeModified> <!-- required -->
-#         <EditSequence >STRTYPE</EditSequence> <!-- required -->
-#         <Contact >STRTYPE</Contact> <!-- optional -->
-#         <Salutation >STRTYPE</Salutation> <!-- optional -->
-#         <FirstName >STRTYPE</FirstName> <!-- required -->
-#         <MiddleName >STRTYPE</MiddleName> <!-- optional -->
-#         <LastName >STRTYPE</LastName> <!-- optional -->
-#         <JobTitle >STRTYPE</JobTitle> <!-- optional -->
-#         <AdditionalContactRef> <!-- must occur 0 - 5 times -->
-#                 <ContactName >STRTYPE</ContactName> <!-- required -->
-#                 <ContactValue >STRTYPE</ContactValue> <!-- required -->
-#         </AdditionalContactRef>
-# </ContactsRet>
-# <AdditionalNotesRet> <!-- optional, may repeat -->
-#         <NoteID >INTTYPE</NoteID> <!-- required -->
-#         <Date >DATETYPE</Date> <!-- required -->
-#         <Note >STRTYPE</Note> <!-- required -->
-# </AdditionalNotesRet>
-# <DataExtRet> <!-- optional, may repeat -->
-#         <OwnerID >GUIDTYPE</OwnerID> <!-- optional -->
-#         <DataExtName >STRTYPE</DataExtName> <!-- required -->
-#         <!-- DataExtType may have one of the following values: AMTTYPE, DATETIMETYPE, INTTYPE, PERCENTTYPE, PRICETYPE, QUANTYPE, STR1024TYPE, STR255TYPE -->
-#         <DataExtType >ENUMTYPE</DataExtType> <!-- required -->
-#         <DataExtValue >STRTYPE</DataExtValue> <!-- required -->
-# </DataExtRet>
 # <PrefillAccountRef> <!-- must occur 0 - 3 times -->
 #         <ListID >IDTYPE</ListID> <!-- optional -->
 #         <FullName >STRTYPE</FullName> <!-- optional -->

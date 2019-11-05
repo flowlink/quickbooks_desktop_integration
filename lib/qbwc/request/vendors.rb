@@ -26,11 +26,11 @@ module QBWC
 
           time = Time.parse(timestamp).in_time_zone 'Pacific Time (US & Canada)'
 
-          <<-XML
+          <<~XML
             <!-- polling customers -->
             <VendorQueryRq requestID="#{session_id}">
-            <MaxReturned>100000</MaxReturned>
-            #{query_by_date(params, time)}
+              <MaxReturned>100000</MaxReturned>
+              #{query_by_date(params, time)}
             </VendorQueryRq>
           XML
         end
@@ -59,80 +59,80 @@ module QBWC
         end
 
         def search_xml(object_id, session_id)
-          <<-XML
-<VendorQueryRq requestID="#{session_id}">
-  <MaxReturned>50</MaxReturned>
-  <NameRangeFilter>
-    <FromName>#{object_id}</FromName>
-    <ToName>#{object_id}</ToName>
-  </NameRangeFilter>
-</VendorQueryRq>
+          <<~XML
+            <VendorQueryRq requestID="#{session_id}">
+              <MaxReturned>50</MaxReturned>
+              <NameRangeFilter>
+                <FromName>#{object_id}</FromName>
+                <ToName>#{object_id}</ToName>
+              </NameRangeFilter>
+            </VendorQueryRq>
           XML
         end
 
         def add_xml_to_send(object, session_id)
-          <<-XML
-<VendorAddRq requestID="#{session_id}">
-   <VendorAdd>
-    <Name>#{object['name']}</Name>
-    #{"<CompanyName>#{object['company']}</CompanyName>" if object['company']}
-    <FirstName>#{object['firstname'] || object['name'].split.first}</FirstName>
-    #{"<LastName>#{object['lastname'] || object['name'].split.last}</LastName>" if object['lastname']}
-    <VendorAddress>
-      <Addr1>#{object['vendor_address']['address1'] if object['vendor_address']}</Addr1>
-      #{"<Addr2>#{object['vendor_address']['address2']}</Addr2>" if object['vendor_address'] && object['vendor_address']['address2']}
-      <City>#{object['vendor_address']['city'] if object['vendor_address']}</City>
-      <State>#{object['vendor_address']['state'] if object['vendor_address']}</State>
-      <PostalCode>#{object['vendor_address']['zipcode'] if object['vendor_address']}</PostalCode>
-      <Country>#{object['vendor_address']['country'] if object['vendor_address']}</Country>
-    </VendorAddress>
-    <ShipAddress>
-      <Addr1>#{object['ship_from_address']['address1'] if object['ship_from_address']}</Addr1>
-      #{"<Addr2>#{object['ship_from_address']['address2']}</Addr2>" if object['ship_from_address'] && object['ship_from_address']['address2']}
-      <City>#{object['ship_from_address']['city'] if object['ship_from_address']}</City>
-      <State>#{object['ship_from_address']['state'] if object['ship_from_address']}</State>
-      <PostalCode>#{object['ship_from_address']['zipcode'] if object['ship_from_address']}</PostalCode>
-      <Country>#{object['ship_from_address']['country'] if object['ship_from_address']}</Country>
-    </ShipAddress>
-    <Phone>#{object['vendor_address']['phone'] if object['vendor_address']}</Phone>
-    <AltPhone>#{object['ship_from_address']['phone'] if object['ship_from_address']}</AltPhone>
-    <Email>#{object['email']}</Email>
-   </VendorAdd>
-</VendorAddRq>
+          <<~XML
+            <VendorAddRq requestID="#{session_id}">
+              <VendorAdd>
+                <Name>#{object['name']}</Name>
+                #{"<CompanyName>#{object['company']}</CompanyName>" if object['company']}
+                <FirstName>#{object['firstname'] || object['name'].split.first}</FirstName>
+                #{"<LastName>#{object['lastname'] || object['name'].split.last}</LastName>" if object['lastname']}
+                <VendorAddress>
+                  <Addr1>#{object['vendor_address']['address1'] if object['vendor_address']}</Addr1>
+                  #{"<Addr2>#{object['vendor_address']['address2']}</Addr2>" if object['vendor_address'] && object['vendor_address']['address2']}
+                  <City>#{object['vendor_address']['city'] if object['vendor_address']}</City>
+                  <State>#{object['vendor_address']['state'] if object['vendor_address']}</State>
+                  <PostalCode>#{object['vendor_address']['zipcode'] if object['vendor_address']}</PostalCode>
+                  <Country>#{object['vendor_address']['country'] if object['vendor_address']}</Country>
+                </VendorAddress>
+                <ShipAddress>
+                  <Addr1>#{object['ship_from_address']['address1'] if object['ship_from_address']}</Addr1>
+                  #{"<Addr2>#{object['ship_from_address']['address2']}</Addr2>" if object['ship_from_address'] && object['ship_from_address']['address2']}
+                  <City>#{object['ship_from_address']['city'] if object['ship_from_address']}</City>
+                  <State>#{object['ship_from_address']['state'] if object['ship_from_address']}</State>
+                  <PostalCode>#{object['ship_from_address']['zipcode'] if object['ship_from_address']}</PostalCode>
+                  <Country>#{object['ship_from_address']['country'] if object['ship_from_address']}</Country>
+                </ShipAddress>
+                <Phone>#{object['vendor_address']['phone'] if object['vendor_address']}</Phone>
+                <AltPhone>#{object['ship_from_address']['phone'] if object['ship_from_address']}</AltPhone>
+                <Email>#{object['email']}</Email>
+              </VendorAdd>
+            </VendorAddRq>
           XML
         end
 
         def update_xml_to_send(object, session_id)
-          <<-XML
-<VendorModRq requestID="#{session_id}">
-   <VendorMod>
-      <ListID>#{object['list_id']}</ListID>
-      <EditSequence>#{object['edit_sequence']}</EditSequence>
-      <Name>#{object['name']}</Name>
-      <CompanyName>#{object['company']}</CompanyName>
-      <FirstName>#{object['firstname']}</FirstName>
-      <LastName>#{object['lastname']}</LastName>
-      <VendorAddress>
-        <Addr1>#{object['vendor_address']['address1'] if object['vendor_address']}</Addr1>
-        <Addr2>#{object['vendor_address']['address2'] if object['vendor_address']}</Addr2>
-        <City>#{object['vendor_address']['city'] if object['vendor_address']}</City>
-        <State>#{object['vendor_address']['state'] if object['vendor_address']}</State>
-        <PostalCode>#{object['vendor_address']['zipcode'] if object['vendor_address']}</PostalCode>
-        <Country>#{object['vendor_address']['country'] if object['vendor_address']}</Country>
-      </VendorAddress>
-      <ShipAddress>
-        <Addr1>#{object['ship_from_address']['address1'] if object['ship_from_address']}</Addr1>
-        <Addr2>#{object['ship_from_address']['address2'] if object['ship_from_address']}</Addr2>
-        <City>#{object['ship_from_address']['city'] if object['ship_from_address']}</City>
-        <State>#{object['ship_from_address']['state'] if object['ship_from_address']}</State>
-        <PostalCode>#{object['ship_from_address']['zipcode'] if object['ship_from_address']}</PostalCode>
-        <Country>#{object['ship_from_address']['country'] if object['ship_from_address']}</Country>
-      </ShipAddress>
-      <Phone>#{object['vendor_address']['phone'] if object['vendor_address']}</Phone>
-      <AltPhone>#{object['ship_from_address']['phone'] if object['ship_from_address']}</AltPhone>
-      <Email>#{object['email']}</Email>
-   </VendorMod>
-</VendorModRq>
+          <<~XML
+            <VendorModRq requestID="#{session_id}">
+              <VendorMod>
+                  <ListID>#{object['list_id']}</ListID>
+                  <EditSequence>#{object['edit_sequence']}</EditSequence>
+                  <Name>#{object['name']}</Name>
+                  <CompanyName>#{object['company']}</CompanyName>
+                  <FirstName>#{object['firstname']}</FirstName>
+                  <LastName>#{object['lastname']}</LastName>
+                  <VendorAddress>
+                    <Addr1>#{object['vendor_address']['address1'] if object['vendor_address']}</Addr1>
+                    <Addr2>#{object['vendor_address']['address2'] if object['vendor_address']}</Addr2>
+                    <City>#{object['vendor_address']['city'] if object['vendor_address']}</City>
+                    <State>#{object['vendor_address']['state'] if object['vendor_address']}</State>
+                    <PostalCode>#{object['vendor_address']['zipcode'] if object['vendor_address']}</PostalCode>
+                    <Country>#{object['vendor_address']['country'] if object['vendor_address']}</Country>
+                  </VendorAddress>
+                  <ShipAddress>
+                    <Addr1>#{object['ship_from_address']['address1'] if object['ship_from_address']}</Addr1>
+                    <Addr2>#{object['ship_from_address']['address2'] if object['ship_from_address']}</Addr2>
+                    <City>#{object['ship_from_address']['city'] if object['ship_from_address']}</City>
+                    <State>#{object['ship_from_address']['state'] if object['ship_from_address']}</State>
+                    <PostalCode>#{object['ship_from_address']['zipcode'] if object['ship_from_address']}</PostalCode>
+                    <Country>#{object['ship_from_address']['country'] if object['ship_from_address']}</Country>
+                  </ShipAddress>
+                  <Phone>#{object['vendor_address']['phone'] if object['vendor_address']}</Phone>
+                  <AltPhone>#{object['ship_from_address']['phone'] if object['ship_from_address']}</AltPhone>
+                  <Email>#{object['email']}</Email>
+              </VendorMod>
+            </VendorModRq>
           XML
         end
 

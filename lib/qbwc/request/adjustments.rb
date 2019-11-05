@@ -33,7 +33,7 @@ module QBWC
         end
 
         def search_xml(adjustment_id, session_id)
-          <<-XML
+          <<~XML
             <ItemOtherChargeQueryRq requestID="#{session_id}">
               <MaxReturned>100</MaxReturned>
               <NameRangeFilter>
@@ -45,7 +45,7 @@ module QBWC
         end
 
         def add_xml_to_send(adjustment, params, session_id)
-          <<-XML
+          <<~XML
             <ItemOtherChargeAddRq requestID="#{session_id}">
                <ItemOtherChargeAdd>
                 #{adjustment_xml(adjustment, params)}
@@ -55,7 +55,7 @@ module QBWC
         end
 
         def adjustment_xml(adjustment, params)
-          <<-XML
+          <<~XML
                <Name>#{adjustment['id']}</Name>
                <SalesOrPurchase>
                  <Desc>#{adjustment['description']}</Desc>

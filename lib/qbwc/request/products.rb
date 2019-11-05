@@ -28,7 +28,7 @@ module QBWC
         end
 
         def search_xml(product_id, session_id)
-          <<-XML
+          <<~XML
             <ItemInventoryQueryRq requestID="#{session_id}">
               <MaxReturned>10000</MaxReturned>
               <NameRangeFilter>
@@ -40,7 +40,7 @@ module QBWC
         end
 
         def add_xml_to_send(product, params, session_id)
-          <<-XML
+          <<~XML
             <ItemInventoryAddRq requestID="#{session_id}">
                <ItemInventoryAdd>
                 #{product_xml(product, params)}
@@ -50,43 +50,43 @@ module QBWC
         end
 
         def update_xml_to_send(product, params, session_id)
-          <<-XML
+          <<~XML
             <ItemInventoryModRq requestID="#{session_id}">
-               <ItemInventoryMod>
+                <ItemInventoryMod>
                   <ListID>#{product['list_id']}</ListID>
                   <EditSequence>#{product['edit_sequence']}</EditSequence>
                   #{product.key?('active') ? product_only_touch_xml(product, params) : product_xml(product, params)}
-               </ItemInventoryMod>
+                </ItemInventoryMod>
             </ItemInventoryModRq>
           XML
         end
 
         def product_only_touch_xml(product, _params)
-          <<-XML
-                  <Name>#{product['product_id']}</Name>
-                  <IsActive>true</IsActive>
+          <<~XML
+            <Name>#{product['product_id']}</Name>
+            <IsActive>true</IsActive>
           XML
         end
 
         def product_xml(product, params)
-          <<-XML
-              <Name>#{product['product_id']}</Name>
-              <SalesDesc>#{product['description']}</SalesDesc>
-              <SalesPrice>#{'%.2f' % product['price'].to_f}</SalesPrice>
-              <IncomeAccountRef>
-                 <FullName>#{product['income_account'] || params['quickbooks_income_account']}</FullName>
-              </IncomeAccountRef>
-              <PurchaseCost>#{'%.2f' % product['cost'].to_f}</PurchaseCost>
-              #{quantity(product)}
-              #{manufacturer_part_number(product)}
-              #{unit_of_measure(product)}
-              <COGSAccountRef>
-                <FullName>#{product['cogs_account'] || params['quickbooks_cogs_account']}</FullName>
-              </COGSAccountRef>
-              <AssetAccountRef>
-                 <FullName>#{product['inventory_account'] || params['quickbooks_inventory_account']}</FullName>
-              </AssetAccountRef>
-              #{inventory_date(product)}
+          <<~XML
+            <Name>#{product['product_id']}</Name>
+            <SalesDesc>#{product['description']}</SalesDesc>
+            <SalesPrice>#{'%.2f' % product['price'].to_f}</SalesPrice>
+            <IncomeAccountRef>
+                <FullName>#{product['income_account'] || params['quickbooks_income_account']}</FullName>
+            </IncomeAccountRef>
+            <PurchaseCost>#{'%.2f' % product['cost'].to_f}</PurchaseCost>
+            #{quantity(product)}
+            #{manufacturer_part_number(product)}
+            #{unit_of_measure(product)}
+            <COGSAccountRef>
+              <FullName>#{product['cogs_account'] || params['quickbooks_cogs_account']}</FullName>
+            </COGSAccountRef>
+            <AssetAccountRef>
+                <FullName>#{product['inventory_account'] || params['quickbooks_inventory_account']}</FullName>
+            </AssetAccountRef>
+            #{inventory_date(product)}
           XML
         end
 
@@ -96,33 +96,33 @@ module QBWC
           date_to_use = Time.now.to_date
           date_to_use = Time.parse(product['inventory_date']).to_date if product['inventory_date']
           <<~XML
-          <InventoryDate>#{date_to_use}</InventoryDate>
+            <InventoryDate>#{date_to_use}</InventoryDate>
           XML
         end
 
         def quantity(product)
           return '' unless product['quantity']
 
-          <<-XML
-              <QuantityOnHand>#{product['quantity']}</QuantityOnHand>
+          <<~XML
+            <QuantityOnHand>#{product['quantity']}</QuantityOnHand>
           XML
         end
 
         def manufacturer_part_number(product)
           return '' unless product['manufacturer_part_number']
 
-          <<-XML
-              <ManufacturerPartNumber>#{product['manufacturer_part_number']}</ManufacturerPartNumber>
+          <<~XML
+            <ManufacturerPartNumber>#{product['manufacturer_part_number']}</ManufacturerPartNumber>
           XML
         end
 
         def unit_of_measure(product)
           return '' unless product['unit_of_measure']
 
-          <<-XML
-              <UnitOfMeasureSetRef>
-                <FullName>#{product['unit_of_measure']}</FullName>
-              </UnitOfMeasureSetRef>
+          <<~XML
+            <UnitOfMeasureSetRef>
+              <FullName>#{product['unit_of_measure']}</FullName>
+            </UnitOfMeasureSetRef>
           XML
         end
 
@@ -139,7 +139,7 @@ module QBWC
 
           time = Time.parse(timestamp).in_time_zone 'Pacific Time (US & Canada)'
 
-          <<-XML
+          <<~XML
             <!-- polling products -->
             <ItemInventoryQueryRq requestID="#{session_id}">
             <MaxReturned>50</MaxReturned>

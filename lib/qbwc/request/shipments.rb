@@ -29,16 +29,16 @@ module QBWC
         end
 
         def search_xml(shipment_id, session_id)
-          <<-XML
-  <InvoiceQueryRq requestID="#{session_id}">
-    <RefNumberCaseSensitive>#{shipment_id}</RefNumberCaseSensitive>
-    <IncludeLineItems>true</IncludeLineItems>
-  </InvoiceQueryRq>
+          <<~XML
+            <InvoiceQueryRq requestID="#{session_id}">
+              <RefNumberCaseSensitive>#{shipment_id}</RefNumberCaseSensitive>
+              <IncludeLineItems>true</IncludeLineItems>
+            </InvoiceQueryRq>
           XML
         end
 
         def update_xml_to_send(record, params = {}, session_id = nil)
-          <<-XML
+          <<~XML
             <InvoiceModRq requestID="#{session_id}">
               <InvoiceMod>
                 <TxnID>#{record['list_id']}</TxnID>
@@ -52,7 +52,7 @@ module QBWC
         end
 
         def add_xml_to_send(record, params = {}, session_id = nil)
-          <<-XML
+          <<~XML
             <InvoiceAddRq requestID="#{session_id}">
               <InvoiceAdd>
                 #{invoice_xml(record, params)}
@@ -64,41 +64,41 @@ module QBWC
         end
 
         def invoice_xml(record, _params)
-          <<-XML
-                <CustomerRef>
-                  <FullName>#{record['email']}</FullName>
-                </CustomerRef>
-                <!-- <TxnDate>DATETYPE</TxnDate> -->
-                <RefNumber>#{record['order_id']}</RefNumber>
-                <!-- <IsFinanceCharge>BOOLTYPE</IsFinanceCharge> -->
-                <BillAddress>
-                  <Addr1>#{record['billing_address']['address1']}</Addr1>
-                  <Addr2>#{record['billing_address']['address2']}</Addr2>
-                  <City>#{record['billing_address']['city']}</City>
-                  <State>#{record['billing_address']['state']}</State>
-                  <PostalCode>#{record['billing_address']['zipcode']}</PostalCode>
-                  <Country>#{record['billing_address']['country']}</Country>
-                </BillAddress>
-                <ShipAddress>
-                  <Addr1>#{record['shipping_address']['address1']}</Addr1>
-                  <Addr2>#{record['shipping_address']['address2']}</Addr2>
-                  <City>#{record['shipping_address']['city']}</City>
-                  <State>#{record['shipping_address']['state']}</State>
-                  <PostalCode>#{record['shipping_address']['zipcode']}</PostalCode>
-                  <Country>#{record['shipping_address']['country']}</Country>
-                </ShipAddress>
-                <IsPending>false</IsPending>
-                <PONumber>#{record['id']}</PONumber>
-                <!--
-                <ShipMethodRef>
-                  <FullName></FullName>
-                </ShipMethodRef>
-                -->
+          <<~XML
+            <CustomerRef>
+              <FullName>#{record['email']}</FullName>
+            </CustomerRef>
+            <!-- <TxnDate>DATETYPE</TxnDate> -->
+            <RefNumber>#{record['order_id']}</RefNumber>
+            <!-- <IsFinanceCharge>BOOLTYPE</IsFinanceCharge> -->
+            <BillAddress>
+              <Addr1>#{record['billing_address']['address1']}</Addr1>
+              <Addr2>#{record['billing_address']['address2']}</Addr2>
+              <City>#{record['billing_address']['city']}</City>
+              <State>#{record['billing_address']['state']}</State>
+              <PostalCode>#{record['billing_address']['zipcode']}</PostalCode>
+              <Country>#{record['billing_address']['country']}</Country>
+            </BillAddress>
+            <ShipAddress>
+              <Addr1>#{record['shipping_address']['address1']}</Addr1>
+              <Addr2>#{record['shipping_address']['address2']}</Addr2>
+              <City>#{record['shipping_address']['city']}</City>
+              <State>#{record['shipping_address']['state']}</State>
+              <PostalCode>#{record['shipping_address']['zipcode']}</PostalCode>
+              <Country>#{record['shipping_address']['country']}</Country>
+            </ShipAddress>
+            <IsPending>false</IsPending>
+            <PONumber>#{record['id']}</PONumber>
+            <!--
+            <ShipMethodRef>
+              <FullName></FullName>
+            </ShipMethodRef>
+            -->
           XML
         end
 
         def invoice_line_add(item)
-          <<-XML
+          <<~XML
             <InvoiceLineAdd>
               #{quantity(item)}
               <Rate>#{item['price']}</Rate>
@@ -108,7 +108,7 @@ module QBWC
         end
 
         def invoice_line_mod(item)
-          <<-XML
+          <<~XML
             <InvoiceLineMod>
               <TxnLineID>#{item['txn_line_id']}</TxnLineID>
               <ItemRef>
@@ -127,7 +127,7 @@ module QBWC
         end
 
         def invoice_adjustment_add(item)
-          <<-XML
+          <<~XML
             <InvoiceLineAdd>
               <Rate>#{item['value']}</Rate>
               #{link_to_sales_order(item)}
@@ -136,7 +136,7 @@ module QBWC
         end
 
         def invoice_adjustment_mod(item, params)
-          <<-XML
+          <<~XML
             <InvoiceLineMod>
               <TxnLineID>#{item['txn_line_id']}</TxnLineID>
               <ItemRef>
@@ -150,11 +150,11 @@ module QBWC
         def link_to_sales_order(item)
           return '' unless item.key?('sales_order_txn_line_id') && !item['sales_order_txn_line_id'].to_s.empty?
 
-          <<-XML
-          <LinkToTxn>
-            <TxnID>#{item['sales_order_txn_id']}</TxnID>
-            <TxnLineID>#{item['sales_order_txn_line_id']}</TxnLineID>
-          </LinkToTxn>
+          <<~XML
+            <LinkToTxn>
+              <TxnID>#{item['sales_order_txn_id']}</TxnID>
+              <TxnLineID>#{item['sales_order_txn_line_id']}</TxnLineID>
+            </LinkToTxn>
           XML
         end
 
