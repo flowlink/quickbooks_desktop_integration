@@ -28,7 +28,7 @@ module Persistence
 
     def generate_extra_flows
       config_aux = config.dup
-      %w(add_products add_customers add_vendors).each do |extra_flow|
+      %w(add_products add_customers add_vendors add_noninventoryproducts).each do |extra_flow|
         config_aux['flow'] = extra_flow
         file = "#{base_name}/#{extra_flow}.json"
         s3_object = amazon_s3.bucket.object(file)

@@ -15,6 +15,26 @@ module QBWC
         SalesTaxCodeRef: "sales_tax_code_name"
       }
 
+      SALES_OR_PURCHASE_MAP = {
+        Desc: "description",
+        Price: "price",
+        PricePercent: "price_percent"
+      }
+
+      SALES_AND_PURCHASE_MAP = {
+        SalesDesc: "description",
+        SalesPrice: "price",
+        PurchaseDesc: "description",
+        PurchaseCost: "price"
+      }
+
+      SALES_AND_PURCHASE_REF_MAP = {
+        IncomeAccountRef: "income_account",
+        PurchaseTaxCodeRef: "purchase_tax_code_name",
+        ExpenseAccountRef: "expense_account",
+        PrefVendorRef: "preferred_vendor_name"
+      }
+
       class << self
         def generate_request_insert_update(objects, params = {})
           objects.inject('') do |request, object|
@@ -74,23 +94,19 @@ module QBWC
 
         def product_only_touch_xml(product, _params)
           <<~XML
-                  <Name>#{product['product_id']}</Name>
-                  <IsActive>true</IsActive>
+            <Name>#{product['product_id'] || product['sku']}</Name>
+            <IsActive>true</IsActive>
           XML
         end
 
         def product_xml(product, params)
           <<~XML
-              <Name>#{product['product_id'] || product['sku']}</Name>
-              <IsActive >#{product['is_active'] || true}</IsActive>
-              #{add_refs(product)}
-              #{add_fields(product, FIELD_MAP)}
-              #{add_barcode(product)}
-              #{sale_or_and_purchase(product)}
-
-              <SalesDesc>#{product['description']}</SalesDesc>
-              <SalesPrice>#{'%.2f' % product['price'].to_f}</SalesPrice>
-              <PurchaseCost>#{'%.2f' % product['cost'].to_f}</PurchaseCost>
+            <Name>#{product['product_id'] || product['sku']}</Name>
+            <IsActive >#{product['is_active'] || true}</IsActive>
+            #{add_refs(product)}
+            #{add_fields(product, FIELD_MAP)}
+            #{add_barcode(product)}
+            #{sale_or_and_purchase(product)}
           XML
         end
 
@@ -115,6 +131,7 @@ module QBWC
 
         def add_barcode(product)
           return '' unless product['barcode_value']
+
           <<~XML
             <BarCode>
               <BarCodeValue>#{product['barcode_value']}</BarCodeValue>
@@ -125,26 +142,20 @@ module QBWC
         end
 
         def sale_or_and_purchase(product)
+          return '' unless product['sale_or_purchase'] || product['sale_or_purchase']
+
           if product['sale_or_purchase']
             <<~XML
               <SalesOrPurchase>
-                <Desc>#{product['description']}</Desc>
-                <Price>#{'%.2f' % product['price'].to_f}</Price>
-                <PricePercent>#{product['price_percent']}</PricePercent>
+                #{add_fields(product, SALES_OR_PURCHASE_MAP)}
                 <AccountRef><FullName>#{product['account_name'] || config['account_name']}</FullName></AccountRef>
               </SalesOrPurchase>
             XML
           else
             <<~XML
               <SalesAndPurchase>
-                <SalesDesc>#{product['description']}</SalesDesc>
-                <SalesPrice>#{product['description']}</SalesPrice>
-                <PurchaseDesc>#{product['description']}</PurchaseDesc>
-                <PurchaseCost>#{product['description']}</PurchaseCost>
-                <IncomeAccountRef><FullName>#{product['account_name'] || config['account_name']}</FullName></IncomeAccountRef>
-                <PurchaseTaxCodeRef><FullName>#{product['account_name'] || config['account_name']}</FullName></PurchaseTaxCodeRef>
-                <ExpenseAccountRef><FullName>#{product['account_name'] || config['account_name']}</FullName></ExpenseAccountRef>
-                <PrefVendorRef><FullName>#{product['account_name'] || config['account_name']}</FullName></PrefVendorRef>
+                #{add_fields(product, SALES_AND_PURCHASE_MAP)}
+                #{add_fields(product, SALES_AND_PURCHASE_REF_MAP)}
               </SalesAndPurchase>
             XML
           end
@@ -153,7 +164,8 @@ module QBWC
         def add_refs(object)
           fields = ""
           REF_MAP.each do |qbe_name, flowlink_name|
-            fields += "<#{qbe_name}><FullName>#{object[flowlink_name]}</FullName></#{qbe_name}>" unless object[flowlink_name].nil?
+            full_name = object[flowlink_name] || config[flowlink_name]
+            fields += "<#{qbe_name}><FullName>#{full_name}</FullName></#{qbe_name}>" unless full_name.nil?
           end
 
           fields
@@ -162,7 +174,12 @@ module QBWC
         def add_fields(object, mapping)
           fields = ""
           mapping.each do |qbe_name, flowlink_name|
-            fields += "<#{qbe_name}>#{object[flowlink_name]}</#{qbe_name}>\n" unless object[flowlink_name].nil?
+            return '' if object[flowlink_name].nil?
+
+            name = flowlink_name
+            name = '%.2f' % object[flowlink_name].to_f if name == 'cost' || name == 'price'
+
+            fields += "<#{qbe_name}>#{name}</#{qbe_name}>"
           end
 
           fields
