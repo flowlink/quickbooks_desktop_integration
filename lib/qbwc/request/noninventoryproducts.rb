@@ -1,6 +1,20 @@
 module QBWC
   module Request
     class Noninventoryproducts
+
+      FIELD_MAP = {
+        ManufacturerPartNumber: "manufacturer_part_number",
+        IsTaxIncluded: "is_tax_included",
+        ExternalGUID: "external_guid"
+      }
+
+      REF_MAP = {
+        ClassRef: "class_name",
+        ParentRef: "parent_name",
+        UnitOfMeasureSetRef: "unit_of_measure",
+        SalesTaxCodeRef: "sales_tax_code_name"
+      }
+
       class << self
         def generate_request_insert_update(objects, params = {})
           objects.inject('') do |request, object|
@@ -69,42 +83,14 @@ module QBWC
           <<~XML
               <Name>#{product['product_id'] || product['sku']}</Name>
               <IsActive >#{product['is_active'] || true}</IsActive>
-
+              #{add_refs(product)}
+              #{add_fields(product, FIELD_MAP)}
+              #{add_barcode(product)}
+              #{sale_or_and_purchase(product)}
 
               <SalesDesc>#{product['description']}</SalesDesc>
               <SalesPrice>#{'%.2f' % product['price'].to_f}</SalesPrice>
-              <IncomeAccountRef>
-                 <FullName>#{product['income_account'] || params['quickbooks_income_account']}</FullName>
-              </IncomeAccountRef>
               <PurchaseCost>#{'%.2f' % product['cost'].to_f}</PurchaseCost>
-              #{quantity(product)}
-              #{manufacturer_part_number(product)}
-              #{unit_of_measure(product)}
-              <COGSAccountRef>
-                <FullName>#{product['cogs_account'] || params['quickbooks_cogs_account']}</FullName>
-              </COGSAccountRef>
-              <AssetAccountRef>
-                 <FullName>#{product['inventory_account'] || params['quickbooks_inventory_account']}</FullName>
-              </AssetAccountRef>
-              #{inventory_date(product)}
-          XML
-        end
-
-        def manufacturer_part_number(product)
-          return '' unless product['manufacturer_part_number']
-
-          <<~XML
-              <ManufacturerPartNumber>#{product['manufacturer_part_number']}</ManufacturerPartNumber>
-          XML
-        end
-
-        def unit_of_measure(product)
-          return '' unless product['unit_of_measure']
-
-          <<~XML
-              <UnitOfMeasureSetRef>
-                <FullName>#{product['unit_of_measure']}</FullName>
-              </UnitOfMeasureSetRef>
           XML
         end
 
@@ -123,6 +109,63 @@ module QBWC
               #{query_by_date(params, time)}
             </ItemNonInventoryQueryRq>
           XML
+        end
+
+        private
+
+        def add_barcode(product)
+          return '' unless product['barcode_value']
+          <<~XML
+            <BarCode>
+              <BarCodeValue>#{product['barcode_value']}</BarCodeValue>
+              <AssignEvenIfUsed>#{product['assign_barcode_even_if_used'] || false}</AssignEvenIfUsed>
+              <AllowOverride>#{product['allow_barcode_override'] || false}</AllowOverride>
+            </BarCode>
+          XML
+        end
+
+        def sale_or_and_purchase(product)
+          if product['sale_or_purchase']
+            <<~XML
+              <SalesOrPurchase>
+                <Desc>#{product['description']}</Desc>
+                <Price>#{'%.2f' % product['price'].to_f}</Price>
+                <PricePercent>#{product['price_percent']}</PricePercent>
+                <AccountRef><FullName>#{product['account_name'] || config['account_name']}</FullName></AccountRef>
+              </SalesOrPurchase>
+            XML
+          else
+            <<~XML
+              <SalesAndPurchase>
+                <SalesDesc>#{product['description']}</SalesDesc>
+                <SalesPrice>#{product['description']}</SalesPrice>
+                <PurchaseDesc>#{product['description']}</PurchaseDesc>
+                <PurchaseCost>#{product['description']}</PurchaseCost>
+                <IncomeAccountRef><FullName>#{product['account_name'] || config['account_name']}</FullName></IncomeAccountRef>
+                <PurchaseTaxCodeRef><FullName>#{product['account_name'] || config['account_name']}</FullName></PurchaseTaxCodeRef>
+                <ExpenseAccountRef><FullName>#{product['account_name'] || config['account_name']}</FullName></ExpenseAccountRef>
+                <PrefVendorRef><FullName>#{product['account_name'] || config['account_name']}</FullName></PrefVendorRef>
+              </SalesAndPurchase>
+            XML
+          end
+        end
+
+        def add_refs(object)
+          fields = ""
+          REF_MAP.each do |qbe_name, flowlink_name|
+            fields += "<#{qbe_name}><FullName>#{object[flowlink_name]}</FullName></#{qbe_name}>" unless object[flowlink_name].nil?
+          end
+
+          fields
+        end
+
+        def add_fields(object, mapping)
+          fields = ""
+          mapping.each do |qbe_name, flowlink_name|
+            fields += "<#{qbe_name}>#{object[flowlink_name]}</#{qbe_name}>\n" unless object[flowlink_name].nil?
+          end
+
+          fields
         end
 
         def query_by_date(config, time)
