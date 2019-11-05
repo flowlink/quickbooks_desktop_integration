@@ -1,6 +1,69 @@
 module QBWC
   module Request
     class Vendors
+
+      FIELD_MAP = {
+        IsActive: "is_active",
+        Salutation: "salutation",
+        MiddleName: "middlename",
+        JobTitle: "job_title",
+        Fax: "fax",
+        Cc: "cc",
+        Contact: "contact",
+        AltContact: "alternative_contact",
+        CreditLimit: "credit_limit",
+        VendorTaxIdent: "vendor_tax_ident",
+        IsVendorEligibleFor1099: "is_vendor_eligible_for_1099",
+        OpenBalance: "open_balance",
+        OpenBalanceDate: "open_balance_date",
+        ExternalGUID: "external_guid",
+        NameOnCheck: "name_on_check",
+        AccountNumber: "account_number",
+        Notes: "notes",
+        IsSalesTaxAgency: "is_sales_tax_agency",
+        TaxRegistrationNumber: "tax_registration_number",
+        IsTaxTrackedOnPurchases: "is_tax_tracked_on_purchases",
+        IsTaxTrackedOnSales: "is_tax_tracked_on_sales",
+        IsTaxOnTax: "is_tax_on_tax",
+        CompanyName: "company"
+      }
+
+      REF_MAP = {
+        ClassRef: "class_name",
+        BillingRateRef: "billing_rate_name",
+        VendorTypeRef: "vendor_type_name",
+        TermsRef: "terms",
+        SalesTaxCodeRef: "sales_tax_code_name",
+        SalesTaxReturnRef: "sales_tax_return_name",
+        TaxOnPurchasesAccountRef: "tax_on_purchases_account_name",
+        TaxOnSalesAccountRef: "tax_on_sales_account_name",
+        CurrencyRef: "currency_name"
+      }
+
+      ADDRESS_MAP = {
+        Addr1: "address1",
+        Addr2: "address2",
+        Addr3: "address3",
+        Addr4: "address4",
+        Addr5: "address5",
+        City: "city",
+        State: "state",
+        PostalCode: "zipcode",
+        Country: "country",
+        Note: "note"
+      }
+
+      CONTACTS_MAP = {
+        Salutation: "salutation",
+        FirstName: "firstname",
+        MiddleName: "middlename",
+        LastName: "lastname",
+        JobTitle: "job_title"
+      }
+
+      SALES_TAX_COUNTRIES = ['Australia', 'Canada', 'UK', 'US']
+      REPORTING_PERIODS = ['Monthly', 'Quarterly']
+
       class << self
         def generate_request_insert_update(objects, params = {})
           objects.inject('') do |request, object|
@@ -75,28 +138,24 @@ module QBWC
             <VendorAddRq requestID="#{session_id}">
               <VendorAdd>
                 <Name>#{object['name']}</Name>
-                #{"<CompanyName>#{object['company']}</CompanyName>" if object['company']}
                 <FirstName>#{object['firstname'] || object['name'].split.first}</FirstName>
                 #{"<LastName>#{object['lastname'] || object['name'].split.last}</LastName>" if object['lastname']}
-                <VendorAddress>
-                  <Addr1>#{object['vendor_address']['address1'] if object['vendor_address']}</Addr1>
-                  #{"<Addr2>#{object['vendor_address']['address2']}</Addr2>" if object['vendor_address'] && object['vendor_address']['address2']}
-                  <City>#{object['vendor_address']['city'] if object['vendor_address']}</City>
-                  <State>#{object['vendor_address']['state'] if object['vendor_address']}</State>
-                  <PostalCode>#{object['vendor_address']['zipcode'] if object['vendor_address']}</PostalCode>
-                  <Country>#{object['vendor_address']['country'] if object['vendor_address']}</Country>
-                </VendorAddress>
-                <ShipAddress>
-                  <Addr1>#{object['ship_from_address']['address1'] if object['ship_from_address']}</Addr1>
-                  #{"<Addr2>#{object['ship_from_address']['address2']}</Addr2>" if object['ship_from_address'] && object['ship_from_address']['address2']}
-                  <City>#{object['ship_from_address']['city'] if object['ship_from_address']}</City>
-                  <State>#{object['ship_from_address']['state'] if object['ship_from_address']}</State>
-                  <PostalCode>#{object['ship_from_address']['zipcode'] if object['ship_from_address']}</PostalCode>
-                  <Country>#{object['ship_from_address']['country'] if object['ship_from_address']}</Country>
-                </ShipAddress>
                 <Phone>#{object['vendor_address']['phone'] if object['vendor_address']}</Phone>
                 <AltPhone>#{object['ship_from_address']['phone'] if object['ship_from_address']}</AltPhone>
                 <Email>#{object['email']}</Email>
+                #{add_fields(object, FIELD_MAP)}
+                #{sales_tax_country(object)}
+                #{reporting_period(object)}
+                #{add_refs(object)}
+                <VendorAddress>
+                  #{add_fields(object['vendor_address'], ADDRESS_MAP) if object['vendor_address']}
+                </VendorAddress>
+                <ShipAddress>
+                  #{add_fields(object['ship_from_address'], ADDRESS_MAP) if object['ship_from_address']}
+                </ShipAddress>
+                #{additional_contacts(object)}
+                #{additional_notes(object)}
+                #{contacts(object)}
               </VendorAdd>
             </VendorAddRq>
           XML
@@ -106,37 +165,105 @@ module QBWC
           <<~XML
             <VendorModRq requestID="#{session_id}">
               <VendorMod>
-                  <ListID>#{object['list_id']}</ListID>
-                  <EditSequence>#{object['edit_sequence']}</EditSequence>
-                  <Name>#{object['name']}</Name>
-                  <CompanyName>#{object['company']}</CompanyName>
-                  <FirstName>#{object['firstname']}</FirstName>
-                  <LastName>#{object['lastname']}</LastName>
-                  <VendorAddress>
-                    <Addr1>#{object['vendor_address']['address1'] if object['vendor_address']}</Addr1>
-                    <Addr2>#{object['vendor_address']['address2'] if object['vendor_address']}</Addr2>
-                    <City>#{object['vendor_address']['city'] if object['vendor_address']}</City>
-                    <State>#{object['vendor_address']['state'] if object['vendor_address']}</State>
-                    <PostalCode>#{object['vendor_address']['zipcode'] if object['vendor_address']}</PostalCode>
-                    <Country>#{object['vendor_address']['country'] if object['vendor_address']}</Country>
-                  </VendorAddress>
-                  <ShipAddress>
-                    <Addr1>#{object['ship_from_address']['address1'] if object['ship_from_address']}</Addr1>
-                    <Addr2>#{object['ship_from_address']['address2'] if object['ship_from_address']}</Addr2>
-                    <City>#{object['ship_from_address']['city'] if object['ship_from_address']}</City>
-                    <State>#{object['ship_from_address']['state'] if object['ship_from_address']}</State>
-                    <PostalCode>#{object['ship_from_address']['zipcode'] if object['ship_from_address']}</PostalCode>
-                    <Country>#{object['ship_from_address']['country'] if object['ship_from_address']}</Country>
-                  </ShipAddress>
-                  <Phone>#{object['vendor_address']['phone'] if object['vendor_address']}</Phone>
-                  <AltPhone>#{object['ship_from_address']['phone'] if object['ship_from_address']}</AltPhone>
-                  <Email>#{object['email']}</Email>
+                <ListID>#{object['list_id']}</ListID>
+                <EditSequence>#{object['edit_sequence']}</EditSequence>
+                <Name>#{object['name']}</Name>
+                <FirstName>#{object['firstname']}</FirstName>
+                <LastName>#{object['lastname']}</LastName>
+                <Phone>#{object['vendor_address']['phone'] if object['vendor_address']}</Phone>
+                <AltPhone>#{object['ship_from_address']['phone'] if object['ship_from_address']}</AltPhone>
+                <Email>#{object['email']}</Email>
+                #{add_fields(object, FIELD_MAP)}
+                #{sales_tax_country(object)}
+                #{reporting_period(object)}
+                #{add_refs(object)}
+                <VendorAddress>
+                  #{add_fields(object['vendor_address'], ADDRESS_MAP) if object['vendor_address']}
+                </VendorAddress>
+                <ShipAddress>
+                  #{add_fields(object['ship_from_address'], ADDRESS_MAP) if object['ship_from_address']}
+                </ShipAddress>
+                #{additional_contacts(object)}
+                #{additional_notes(object)}
+                #{contacts(object)}
               </VendorMod>
             </VendorModRq>
           XML
         end
 
         private
+
+        def add_refs(object)
+          fields = ""
+          REF_MAP.each do |qbe_name, flowlink_name|
+            full_name = object[flowlink_name] || config[flowlink_name]
+            fields += "<#{qbe_name}><FullName>#{full_name}</FullName></#{qbe_name}>" unless full_name.nil?
+          end
+
+          fields
+        end
+
+        def add_fields(object, mapping)
+          fields = ""
+          mapping.each do |qbe_name, flowlink_name|
+            fields += "<#{qbe_name}>#{object[flowlink_name]}</#{qbe_name}>\n" unless object[flowlink_name].nil?
+          end
+
+          fields
+        end
+
+        def sales_tax_country(object)
+          return "" unless SALES_TAX_COUNTRIES.include?(object['sales_tax_country'])
+          "<SalesTaxCountry>#{object['sales_tax_country']}</SalesTaxCountry>"
+        end
+
+        def reporting_period(object)
+          return "" unless REPORTING_PERIODS.include?(object['reporting_period'])
+          "<ReportingPeriod>#{object['reporting_period']}</ReportingPeriod>"
+        end
+
+        def additional_contacts(object)
+          return "" unless object['additional_contacts'] && object['additional_contacts'].is_a?(Array)
+          
+          fields = ""
+          object['additional_contacts'].each do |contact|
+            # Both name and value required
+            next unless contact['name'] && contact['value']
+            fields += <<~XML
+                              <AdditionalContactRef>
+                                <ContactName >#{contact['name']}</ContactName>
+                                <ContactValue >#{contact['value']}</ContactValue>
+                              </AdditionalContactRef>
+                            XML
+          end
+
+          fields
+        end
+
+        def additional_notes(object)
+          return "" unless object['additional_notes'] && object['additional_notes'].is_a?(Array)
+          
+          fields = ""
+          object['additional_notes'].each do |note|
+            fields += "<AdditionalNotes><Note>#{note}</Note></AdditionalNotes>"
+          end
+
+          fields
+        end
+
+        def contacts(object)
+          return "" unless object['contacts'] && object['contacts'].is_a?(Array)
+          
+          fields = ""
+          object['contacts'].each do |contact|
+            fields += "<Contacts>"
+            fields += add_fields(contact, CONTACTS_MAP)
+            fields += additional_contacts(contact)
+            fields += "</Contacts>"
+          end
+
+          fields
+        end
 
         def sanitize_vendor(vendor)
           puts "Sanitizing: #{vendor}"
@@ -165,3 +292,9 @@ module QBWC
     end
   end
 end
+
+# TODO: Still need these on Add/Update (not sure what they do)
+# <PrefillAccountRef> <!-- must occur 0 - 3 times -->
+#         <ListID >IDTYPE</ListID> <!-- optional -->
+#         <FullName >STRTYPE</FullName> <!-- optional -->
+# </PrefillAccountRef>
