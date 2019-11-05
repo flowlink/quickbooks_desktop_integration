@@ -52,7 +52,7 @@ module QBWC
 
           time = Time.parse(timestamp).in_time_zone 'Pacific Time (US & Canada)'
 
-          <<-XML
+          <<~XML
             <!-- polling invoices -->
             <InvoiceQueryRq requestID="#{session_id}">
               <MaxReturned>300</MaxReturned>
@@ -84,38 +84,36 @@ module QBWC
 
         def search_xml(invoice_id, session_id)
           <<~XML
-<InvoiceQueryRq requestID="#{session_id}">
-  <RefNumberCaseSensitive>#{invoice_id}</RefNumberCaseSensitive>
-  <IncludeLineItems>true</IncludeLineItems>
-</InvoiceQueryRq>
+            <InvoiceQueryRq requestID="#{session_id}">
+              <RefNumberCaseSensitive>#{invoice_id}</RefNumberCaseSensitive>
+              <IncludeLineItems>true</IncludeLineItems>
+            </InvoiceQueryRq>
           XML
         end
 
         def add_xml_to_send(record, params = {}, session_id)
           <<~XML
-
-<InvoiceAddRq requestID="#{session_id}">
-  <InvoiceAdd>
-    #{invoice record, params}
-    #{items(record).map { |l| invoice_line_add l }.join('')}
-    #{adjustments_add_xml record, params}
-  </InvoiceAdd>
-</InvoiceAddRq>
+            <InvoiceAddRq requestID="#{session_id}">
+              <InvoiceAdd>
+                #{invoice record, params}
+                #{items(record).map { |l| invoice_line_add l }.join('')}
+                #{adjustments_add_xml record, params}
+              </InvoiceAdd>
+            </InvoiceAddRq>
           XML
         end
 
         def update_xml_to_send(record, params = {}, session_id)
           <<~XML
-
-<InvoiceModRq requestID="#{session_id}">
-  <InvoiceMod>
-    <TxnID>#{record['list_id']}</TxnID>
-    <EditSequence>#{record['edit_sequence']}</EditSequence>
-    #{invoice record, params}
-    #{items(record).map { |l| invoice_line_mod l }.join('')}
-    #{adjustments_mod_xml record, params}
-  </InvoiceMod>
-</InvoiceModRq>
+            <InvoiceModRq requestID="#{session_id}">
+              <InvoiceMod>
+                <TxnID>#{record['list_id']}</TxnID>
+                <EditSequence>#{record['edit_sequence']}</EditSequence>
+                #{invoice record, params}
+                #{items(record).map { |l| invoice_line_mod l }.join('')}
+                #{adjustments_mod_xml record, params}
+              </InvoiceMod>
+            </InvoiceModRq>
           XML
         end
 
@@ -142,133 +140,122 @@ module QBWC
             record['placed_on'] = Time.now.to_s
           end
 
-          <<-XML
-
-    #{customer_ref_for_invoice(record)}
-    #{class_ref_for_invoice(record)}
-    <TxnDate>#{Time.parse(record['placed_on']).to_date}</TxnDate>
-    <RefNumber>#{record['id']}</RefNumber>
-    <BillAddress>
-      <Addr1>#{record['billing_address']['address1']}</Addr1>
-      <Addr2>#{record['billing_address']['address2']}</Addr2>
-      <City>#{record['billing_address']['city']}</City>
-      <State>#{record['billing_address']['state']}</State>
-      <PostalCode>#{record['billing_address']['zipcode']}</PostalCode>
-      <Country>#{record['billing_address']['country']}</Country>
-    </BillAddress>
-    <ShipAddress>
-      <Addr1>#{record['shipping_address']['address1']}</Addr1>
-      <Addr2>#{record['shipping_address']['address2']}</Addr2>
-      <City>#{record['shipping_address']['city']}</City>
-      <State>#{record['shipping_address']['state']}</State>
-      <PostalCode>#{record['shipping_address']['zipcode']}</PostalCode>
-      <Country>#{record['shipping_address']['country']}</Country>
-    </ShipAddress>
-    #{po_number(record)}
-    #{sales_rep(record)}
-    #{shipping_method(record)}
-    #{is_to_be_printed(record)}
-    #{is_to_be_emailed(record)}
+          <<~XML
+            #{customer_ref_for_invoice(record)}
+            #{class_ref_for_invoice(record)}
+            <TxnDate>#{Time.parse(record['placed_on']).to_date}</TxnDate>
+            <RefNumber>#{record['id']}</RefNumber>
+            <BillAddress>
+              <Addr1>#{record['billing_address']['address1']}</Addr1>
+              <Addr2>#{record['billing_address']['address2']}</Addr2>
+              <City>#{record['billing_address']['city']}</City>
+              <State>#{record['billing_address']['state']}</State>
+              <PostalCode>#{record['billing_address']['zipcode']}</PostalCode>
+              <Country>#{record['billing_address']['country']}</Country>
+            </BillAddress>
+            <ShipAddress>
+              <Addr1>#{record['shipping_address']['address1']}</Addr1>
+              <Addr2>#{record['shipping_address']['address2']}</Addr2>
+              <City>#{record['shipping_address']['city']}</City>
+              <State>#{record['shipping_address']['state']}</State>
+              <PostalCode>#{record['shipping_address']['zipcode']}</PostalCode>
+              <Country>#{record['shipping_address']['country']}</Country>
+            </ShipAddress>
+            #{po_number(record)}
+            #{sales_rep(record)}
+            #{shipping_method(record)}
+            #{is_to_be_printed(record)}
+            #{is_to_be_emailed(record)}
           XML
         end
 
         def shipping_method(record)
           return '' unless record.dig('shipping_method','name')
 
-          <<-XML
-
-          <ShipMethodRef>
-            <FullName>#{record['shipping_method']['name']}</FullName>
-          </ShipMethodRef>
+          <<~XML
+            <ShipMethodRef>
+              <FullName>#{record['shipping_method']['name']}</FullName>
+            </ShipMethodRef>
           XML
         end
 
         def is_to_be_printed(record)
           return '' unless record.dig('is_to_be_printed')
 
-          <<-XML
-
-          <IsToBePrinted>#{record['is_to_be_printed']}</IsToBePrinted>
+          <<~XML
+            <IsToBePrinted>#{record['is_to_be_printed']}</IsToBePrinted>
           XML
         end
 
         def is_to_be_emailed(record)
           return '' unless record.dig('is_to_be_emailed')
 
-          <<-XML
-
-          <IsToBeEmailed>#{record['is_to_be_emailed']}</IsToBeEmailed>
+          <<~XML
+            <IsToBeEmailed>#{record['is_to_be_emailed']}</IsToBeEmailed>
           XML
         end
 
         def sales_rep(record)
           return '' unless record.dig('sales_rep','name')
 
-          <<-XML
-
-          <SalesRepRef>
-            <FullName>#{record['sales_rep']['name']}</FullName>
-          </SalesRepRef>
+          <<~XML
+            <SalesRepRef>
+              <FullName>#{record['sales_rep']['name']}</FullName>
+            </SalesRepRef>
           XML
         end
 
         def po_number(record)
           return '' unless record['purchase_order_number'] && record['purchase_order_number'] != ""
 
-          <<-XML
-
-          <PONumber>#{record['purchase_order_number']}</PONumber>
+          <<~XML
+            <PONumber>#{record['purchase_order_number']}</PONumber>
           XML
         end
 
         def customer_ref_for_invoice(record)
           return customer_by_id(record) if record['customer']['list_id']
 
-          <<-XML
-
-          <CustomerRef>
-            <FullName>#{record['customer']['name']}</FullName>
-          </CustomerRef>
+          <<~XML
+            <CustomerRef>
+              <FullName>#{record['customer']['name']}</FullName>
+            </CustomerRef>
           XML
         end
 
         def customer_by_id(record)
-          <<-XML
-
-          <CustomerRef>
-            <ListID>#{record['customer']['list_id']}</ListID>
-          </CustomerRef>
+          <<~XML
+            <CustomerRef>
+              <ListID>#{record['customer']['list_id']}</ListID>
+            </CustomerRef>
           XML
         end
 
         def class_ref_for_invoice(record)
           return '' unless record['class_name']
 
-          <<-XML
-
-    <ClassRef>
-      <FullName>#{record['class_name']}</FullName>
-    </ClassRef>
+          <<~XML
+            <ClassRef>
+              <FullName>#{record['class_name']}</FullName>
+            </ClassRef>
           XML
         end
 
         def class_ref_for_invoice_line(line)
           return '' unless line['class_name']
 
-          <<-XML
-
-      <ClassRef>
-        <FullName>#{line['class_name']}</FullName>
-      </ClassRef>
+          <<~XML
+            <ClassRef>
+              <FullName>#{line['class_name']}</FullName>
+            </ClassRef>
           XML
         end
 
         def invoice_line_add(line)
-          <<-XML
-
-    <InvoiceLineAdd>
-      #{invoice_line(line)}
-    </InvoiceLineAdd>
+          <<~XML
+            <InvoiceLineAdd>
+              #{invoice_line(line)}
+            </InvoiceLineAdd>
           XML
         end
 
@@ -298,18 +285,15 @@ module QBWC
             'name' => tax_line_item['name']
           }
 
-
-
           invoice_line_add line
         end
 
         def invoice_line_mod(line)
-          <<-XML
-
-    <InvoiceLineMod>
-      <TxnLineID>#{line['txn_line_id']}</TxnLineID>
-      #{invoice_line(line)}
-    </InvoiceLineMod>
+          <<~XML
+            <InvoiceLineMod>
+              <TxnLineID>#{line['txn_line_id']}</TxnLineID>
+              #{invoice_line(line)}
+            </InvoiceLineMod>
           XML
         end
 
@@ -340,26 +324,25 @@ module QBWC
         end
 
         def invoice_line(line)
-          <<-XML
-
-      <ItemRef>
-        <FullName>#{line['product_id']}</FullName>
-      </ItemRef>
-      <Desc>#{line['name']}</Desc>
-      #{quantity(line)}
-      #{rate_line(line)}
-      #{tax_code_line(line)}
-      #{inventory_site(line)}
+          <<~XML
+            <ItemRef>
+              <FullName>#{line['product_id']}</FullName>
+            </ItemRef>
+            <Desc>#{line['name']}</Desc>
+            #{quantity(line)}
+            #{rate_line(line)}
+            #{tax_code_line(line)}
+            #{inventory_site(line)}
           XML
         end
 
         def inventory_site(line)
           return '' unless line['inventory_site_name']
 
-          <<-XML
-      <InventorySiteRef>
-        <FullName>#{line['inventory_site_name']}</FullName>
-      </InventorySiteRef>
+          <<~XML
+            <InventorySiteRef>
+              <FullName>#{line['inventory_site_name']}</FullName>
+            </InventorySiteRef>
           XML
         end
 
@@ -372,29 +355,26 @@ module QBWC
         def tax_code_line(line)
           return '' if line['tax_code_id'].to_s.empty?
 
-          <<-XML
-
-      <SalesTaxCodeRef>
-        <FullName>#{line['tax_code_id']}</FullName>
-      </SalesTaxCodeRef>
+          <<~XML
+            <SalesTaxCodeRef>
+              <FullName>#{line['tax_code_id']}</FullName>
+            </SalesTaxCodeRef>
           XML
         end
 
         def rate_line(line)
           return '' if !line['amount'].to_s.empty?
 
-          <<-XML
-
-      <Rate>#{'%.2f' % price(line).to_f}</Rate>
+          <<~XML
+            <Rate>#{'%.2f' % price(line).to_f}</Rate>
           XML
         end
 
         def amount_line(line)
           return '' if line['amount'].to_s.empty?
 
-          <<-XML
-
-      <Amount>#{'%.2f' % line['amount'].to_f}</Amount>
+          <<~XML
+            <Amount>#{'%.2f' % line['amount'].to_f}</Amount>
           XML
         end
 

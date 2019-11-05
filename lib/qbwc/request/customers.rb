@@ -26,11 +26,11 @@ module QBWC
 
           time = Time.parse(timestamp).in_time_zone 'Pacific Time (US & Canada)'
 
-          <<-XML
+          <<~XML
             <!-- polling customers -->
             <CustomerQueryRq requestID="#{session_id}">
-            <MaxReturned>100000</MaxReturned>
-            #{query_by_date(params, time)}
+              <MaxReturned>100000</MaxReturned>
+              #{query_by_date(params, time)}
             </CustomerQueryRq>
           XML
         end
@@ -67,93 +67,93 @@ module QBWC
         def search_xml_by_id(object_id, session_id)
           puts "Building customer xml by list_id #{object_id}, #{session_id}"
 
-          <<-XML
-<CustomerQueryRq requestID="#{session_id}">
-  <MaxReturned>50</MaxReturned>
-  <ListIDList>
-    #{object_id}
-  </ListIDList>
-</CustomerQueryRq>
+          <<~XML
+            <CustomerQueryRq requestID="#{session_id}">
+              <MaxReturned>50</MaxReturned>
+              <ListIDList>
+                #{object_id}
+              </ListIDList>
+            </CustomerQueryRq>
           XML
         end
 
         def search_xml_by_name(object_id, session_id)
           puts "Building customer xml by name #{object_id}, #{session_id}"
 
-          <<-XML
-<CustomerQueryRq requestID="#{session_id}">
-  <MaxReturned>50</MaxReturned>
-  <NameRangeFilter>
-    <FromName>#{object_id}</FromName>
-    <ToName>#{object_id}</ToName>
-  </NameRangeFilter>
-</CustomerQueryRq>
+          <<~XML
+            <CustomerQueryRq requestID="#{session_id}">
+              <MaxReturned>50</MaxReturned>
+              <NameRangeFilter>
+                <FromName>#{object_id}</FromName>
+                <ToName>#{object_id}</ToName>
+              </NameRangeFilter>
+            </CustomerQueryRq>
           XML
         end
 
         def add_xml_to_send(object, session_id)
-          <<-XML
-<CustomerAddRq requestID="#{session_id}">
-   <CustomerAdd>
-    <Name>#{object['name']}</Name>
-    #{"<CompanyName>#{object['company']}</CompanyName>" if object['company']}
-    <FirstName>#{object['firstname'] ? object['name'].split.first : object['firstname']}</FirstName>
-    #{"<LastName>#{object['lastname'] || object['name'].split.last}</LastName>" if object['lastname']}
-    <BillAddress>
-      <Addr1>#{object['billing_address']['address1'] if object['billing_address']}</Addr1>
-      #{"<Addr2>#{object['billing_address']['address2']}</Addr2>" if object['billing_address'] && object['billing_address']['address2']}
-      <City>#{object['billing_address']['city'] if object['billing_address']}</City>
-      <State>#{object['billing_address']['state'] if object['billing_address']}</State>
-      <PostalCode>#{object['billing_address']['zipcode'] if object['billing_address']}</PostalCode>
-      <Country>#{object['billing_address']['country'] if object['billing_address']}</Country>
-    </BillAddress>
-    <ShipAddress>
-      <Addr1>#{object['shipping_address']['address1'] if object['shipping_address']}</Addr1>
-      #{"<Addr2>#{object['shipping_address']['address2']}</Addr2>" if object['shipping_address'] && object['shipping_address']['address2']}
-      <City>#{object['shipping_address']['city'] if object['shipping_address']}</City>
-      <State>#{object['shipping_address']['state'] if object['shipping_address']}</State>
-      <PostalCode>#{object['shipping_address']['zipcode'] if object['shipping_address']}</PostalCode>
-      <Country>#{object['shipping_address']['country'] if object['shipping_address']}</Country>
-    </ShipAddress>
-    <Phone>#{object['billing_address']['phone'] if object['billing_address']}</Phone>
-    <AltPhone>#{object['shipping_address']['phone'] if object['shipping_address']}</AltPhone>
-    <Email>#{object['email']}</Email>
-   </CustomerAdd>
-</CustomerAddRq>
+          <<~XML
+            <CustomerAddRq requestID="#{session_id}">
+              <CustomerAdd>
+                <Name>#{object['name']}</Name>
+                #{"<CompanyName>#{object['company']}</CompanyName>" if object['company']}
+                <FirstName>#{object['firstname'] ? object['name'].split.first : object['firstname']}</FirstName>
+                #{"<LastName>#{object['lastname'] || object['name'].split.last}</LastName>" if object['lastname']}
+                <BillAddress>
+                  <Addr1>#{object['billing_address']['address1'] if object['billing_address']}</Addr1>
+                  #{"<Addr2>#{object['billing_address']['address2']}</Addr2>" if object['billing_address'] && object['billing_address']['address2']}
+                  <City>#{object['billing_address']['city'] if object['billing_address']}</City>
+                  <State>#{object['billing_address']['state'] if object['billing_address']}</State>
+                  <PostalCode>#{object['billing_address']['zipcode'] if object['billing_address']}</PostalCode>
+                  <Country>#{object['billing_address']['country'] if object['billing_address']}</Country>
+                </BillAddress>
+                <ShipAddress>
+                  <Addr1>#{object['shipping_address']['address1'] if object['shipping_address']}</Addr1>
+                  #{"<Addr2>#{object['shipping_address']['address2']}</Addr2>" if object['shipping_address'] && object['shipping_address']['address2']}
+                  <City>#{object['shipping_address']['city'] if object['shipping_address']}</City>
+                  <State>#{object['shipping_address']['state'] if object['shipping_address']}</State>
+                  <PostalCode>#{object['shipping_address']['zipcode'] if object['shipping_address']}</PostalCode>
+                  <Country>#{object['shipping_address']['country'] if object['shipping_address']}</Country>
+                </ShipAddress>
+                <Phone>#{object['billing_address']['phone'] if object['billing_address']}</Phone>
+                <AltPhone>#{object['shipping_address']['phone'] if object['shipping_address']}</AltPhone>
+                <Email>#{object['email']}</Email>
+              </CustomerAdd>
+            </CustomerAddRq>
           XML
         end
 
         def update_xml_to_send(object, session_id)
-          <<-XML
-<CustomerModRq requestID="#{session_id}">
-   <CustomerMod>
-      <ListID>#{object['list_id']}</ListID>
-      <EditSequence>#{object['edit_sequence']}</EditSequence>
-      <Name>#{object['name']}</Name>
-      <CompanyName>#{object['company']}</CompanyName>
-      <FirstName>#{object['firstname']}</FirstName>
-      <LastName>#{object['lastname']}</LastName>
-      <BillAddress>
-        <Addr1>#{object['billing_address']['address1'] if object['billing_address']}</Addr1>
-        <Addr2>#{object['billing_address']['address2'] if object['billing_address']}</Addr2>
-        <City>#{object['billing_address']['city'] if object['billing_address']}</City>
-        <State>#{object['billing_address']['state'] if object['billing_address']}</State>
-        <PostalCode>#{object['billing_address']['zipcode'] if object['billing_address']}</PostalCode>
-        <Country>#{object['billing_address']['country'] if object['billing_address']}</Country>
-      </BillAddress>
-      <ShipAddress>
-        <Addr1>#{object['shipping_address']['address1'] if object['shipping_address']}</Addr1>
-        <Addr2>#{object['shipping_address']['address2'] if object['shipping_address']}</Addr2>
-        <City>#{object['shipping_address']['city'] if object['shipping_address']}</City>
-        <State>#{object['shipping_address']['state'] if object['shipping_address']}</State>
-        <PostalCode>#{object['shipping_address']['zipcode'] if object['shipping_address']}</PostalCode>
-        <Country>#{object['shipping_address']['country'] if object['shipping_address']}</Country>
-      </ShipAddress>
-      <Phone>#{object['billing_address']['phone'] if object['billing_address']}</Phone>
-      <AltPhone>#{object['shipping_address']['phone'] if object['shipping_address']}</AltPhone>
-      <Email>#{object['email']}</Email>
-   </CustomerMod>
-</CustomerModRq>
+          <<~XML
+            <CustomerModRq requestID="#{session_id}">
+              <CustomerMod>
+                <ListID>#{object['list_id']}</ListID>
+                <EditSequence>#{object['edit_sequence']}</EditSequence>
+                <Name>#{object['name']}</Name>
+                <CompanyName>#{object['company']}</CompanyName>
+                <FirstName>#{object['firstname']}</FirstName>
+                <LastName>#{object['lastname']}</LastName>
+                <BillAddress>
+                  <Addr1>#{object['billing_address']['address1'] if object['billing_address']}</Addr1>
+                  <Addr2>#{object['billing_address']['address2'] if object['billing_address']}</Addr2>
+                  <City>#{object['billing_address']['city'] if object['billing_address']}</City>
+                  <State>#{object['billing_address']['state'] if object['billing_address']}</State>
+                  <PostalCode>#{object['billing_address']['zipcode'] if object['billing_address']}</PostalCode>
+                  <Country>#{object['billing_address']['country'] if object['billing_address']}</Country>
+                </BillAddress>
+                <ShipAddress>
+                  <Addr1>#{object['shipping_address']['address1'] if object['shipping_address']}</Addr1>
+                  <Addr2>#{object['shipping_address']['address2'] if object['shipping_address']}</Addr2>
+                  <City>#{object['shipping_address']['city'] if object['shipping_address']}</City>
+                  <State>#{object['shipping_address']['state'] if object['shipping_address']}</State>
+                  <PostalCode>#{object['shipping_address']['zipcode'] if object['shipping_address']}</PostalCode>
+                  <Country>#{object['shipping_address']['country'] if object['shipping_address']}</Country>
+                </ShipAddress>
+                <Phone>#{object['billing_address']['phone'] if object['billing_address']}</Phone>
+                <AltPhone>#{object['shipping_address']['phone'] if object['shipping_address']}</AltPhone>
+                <Email>#{object['email']}</Email>
+              </CustomerMod>
+            </CustomerModRq>
           XML
         end
 

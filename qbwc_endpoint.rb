@@ -123,7 +123,7 @@ class QBWCEndpoint < Sinatra::Base
   end
 
   def send_request_xml(connection_id, _body)
-    @qbxml = <<-XML
+    @qbxml = <<~XML
 <?xml version="1.0" encoding="utf-8"?>
 <?qbxml version="11.0"?>
 <QBXML>

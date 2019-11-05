@@ -32,7 +32,7 @@ module QBWC
 
           return '' if codes.to_s.empty?
 
-          <<-XML
+          <<~XML
     <ItemInventoryQueryRq requestID="#{session_id}">
       #{codes}
     </ItemInventoryQueryRq>
@@ -51,72 +51,70 @@ module QBWC
 
           time = Time.parse(timestamp).in_time_zone 'Pacific Time (US & Canada)'
 
-          <<-XML
+          <<~XML
 
-      <!-- begin polling inventories -->
-      <ItemInventoryQueryRq requestID="#{session_id}">
-       <MaxReturned>10000</MaxReturned>
-      </ItemInventoryQueryRq>
+            <!-- begin polling inventories -->
+            <ItemInventoryQueryRq requestID="#{session_id}">
+            <MaxReturned>10000</MaxReturned>
+            </ItemInventoryQueryRq>
 
-      <ItemInventoryAssemblyQueryRq requestID="#{session_id}">
-        <MaxReturned>10000</MaxReturned>
-      </ItemInventoryAssemblyQueryRq>
+            <ItemInventoryAssemblyQueryRq requestID="#{session_id}">
+              <MaxReturned>10000</MaxReturned>
+            </ItemInventoryAssemblyQueryRq>
 
-      <PurchaseOrderQueryRq requestID="#{session_id}">
-        <MaxReturned>10000</MaxReturned>
-        <ModifiedDateRangeFilter>
-          <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
-        </ModifiedDateRangeFilter>
-        <IncludeLineItems>true</IncludeLineItems>
-      </PurchaseOrderQueryRq>
+            <PurchaseOrderQueryRq requestID="#{session_id}">
+              <MaxReturned>10000</MaxReturned>
+              <ModifiedDateRangeFilter>
+                <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
+              </ModifiedDateRangeFilter>
+              <IncludeLineItems>true</IncludeLineItems>
+            </PurchaseOrderQueryRq>
 
-      <InventoryAdjustmentQueryRq requestID="#{session_id}">
-        <MaxReturned>10000</MaxReturned>
-        <ModifiedDateRangeFilter>
-          <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
-        </ModifiedDateRangeFilter>
-        <IncludeLineItems>true</IncludeLineItems>
-      </InventoryAdjustmentQueryRq>
+            <InventoryAdjustmentQueryRq requestID="#{session_id}">
+              <MaxReturned>10000</MaxReturned>
+              <ModifiedDateRangeFilter>
+                <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
+              </ModifiedDateRangeFilter>
+              <IncludeLineItems>true</IncludeLineItems>
+            </InventoryAdjustmentQueryRq>
 
-      <ItemReceiptQueryRq requestID="#{session_id}">
-        <MaxReturned>10000</MaxReturned>
-        <ModifiedDateRangeFilter>
-          <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
-        </ModifiedDateRangeFilter>
-        <IncludeLineItems>true</IncludeLineItems>
-      </ItemReceiptQueryRq>
-      <!-- end polling inventories -->
+            <ItemReceiptQueryRq requestID="#{session_id}">
+              <MaxReturned>10000</MaxReturned>
+              <ModifiedDateRangeFilter>
+                <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
+              </ModifiedDateRangeFilter>
+              <IncludeLineItems>true</IncludeLineItems>
+            </ItemReceiptQueryRq>
+            <!-- end polling inventories -->
           XML
         end
 
         # TODO BUG: http://www.productivecomputing.com/forum/index.php?topic=2559.0
         def add_xml_to_send(inventory, params, session_id)
-          <<-XML
-<InventoryAdjustmentAddRq requestID="#{session_id}">
-   <InventoryAdjustmentAdd>
-    #{inventory_xml(inventory, params)}
-   </InventoryAdjustmentAdd>
-</InventoryAdjustmentAddRq>
+          <<~XML
+            <InventoryAdjustmentAddRq requestID="#{session_id}">
+              <InventoryAdjustmentAdd>
+                #{inventory_xml(inventory, params)}
+              </InventoryAdjustmentAdd>
+            </InventoryAdjustmentAddRq>
           XML
         end
 
         def inventory_xml(inventory, params)
-          <<-XML
-
-      <AccountRef>
-        <FullName>#{params['quickbooks_income_account']}</FullName>
-      </AccountRef>
-      <RefNumber>#{inventory['id']}</RefNumber>
-      <Memo>Inventory Adjustment</Memo>
-      <InventoryAdjustmentLineAdd>
-        <ItemRef>
-          <FullName>#{inventory['product_id']}</FullName>
-        </ItemRef>
-        <ValueAdjustment>
-          <NewQuantity>#{inventory['quantity'].to_f}</NewQuantity>
-        </ValueAdjustment>
-      </InventoryAdjustmentLineAdd>
-
+          <<~XML
+            <AccountRef>
+              <FullName>#{params['quickbooks_income_account']}</FullName>
+            </AccountRef>
+            <RefNumber>#{inventory['id']}</RefNumber>
+            <Memo>Inventory Adjustment</Memo>
+            <InventoryAdjustmentLineAdd>
+              <ItemRef>
+                <FullName>#{inventory['product_id']}</FullName>
+              </ItemRef>
+              <ValueAdjustment>
+                <NewQuantity>#{inventory['quantity'].to_f}</NewQuantity>
+              </ValueAdjustment>
+            </InventoryAdjustmentLineAdd>
           XML
         end
       end

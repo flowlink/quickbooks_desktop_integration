@@ -40,7 +40,7 @@ module QBWC
 
           time = Time.parse(timestamp).in_time_zone 'Pacific Time (US & Canada)'
 
-          <<-XML
+          <<~XML
             <!-- polling purchase orders -->
             <PurchaseOrderQueryRq requestID="#{session_id}">
             <MaxReturned>100</MaxReturned>
@@ -54,39 +54,37 @@ module QBWC
         end
 
         def search_xml(order_id, session_id)
-          <<-XML
-<PurchaseOrderQueryRq requestID="#{session_id}">
-  <RefNumberCaseSensitive>#{order_id}</RefNumberCaseSensitive>
-  <IncludeLineItems>true</IncludeLineItems>
-</PurchaseOrderQueryRq>
+          <<~XML
+            <PurchaseOrderQueryRq requestID="#{session_id}">
+              <RefNumberCaseSensitive>#{order_id}</RefNumberCaseSensitive>
+              <IncludeLineItems>true</IncludeLineItems>
+            </PurchaseOrderQueryRq>
           XML
         end
 
         def add_xml_to_send(record, params= {}, session_id)
-          <<-XML
-
-<PurchaseOrderAddRq requestID="#{session_id}">
-  <PurchaseOrderAdd>
-    #{purchaseorder record, params}
-    #{items(record).map { |l| purchaseorder_line_add l }.join('')}
-    #{adjustments_add_xml record, params}
-  </PurchaseOrderAdd>
-</PurchaseOrderAddRq>
+          <<~XML
+            <PurchaseOrderAddRq requestID="#{session_id}">
+              <PurchaseOrderAdd>
+                #{purchaseorder record, params}
+                #{items(record).map { |l| purchaseorder_line_add l }.join('')}
+                #{adjustments_add_xml record, params}
+              </PurchaseOrderAdd>
+            </PurchaseOrderAddRq>
           XML
         end
 
         def update_xml_to_send(record, params= {}, session_id)
-          <<-XML
-
-<PurchaseOrderModRq requestID="#{session_id}">
-  <PurchaseOrderMod>
-    <TxnID>#{record['list_id']}</TxnID>
-    <EditSequence>#{record['edit_sequence']}</EditSequence>
-    #{purchaseorder record, params}
-    #{items(record).map { |l| purchaseorder_line_mod l }.join('')}
-    #{adjustments_mod_xml record, params}
-  </PurchaseOrderMod>
-</PurchaseOrderModRq>
+          <<~XML
+            <PurchaseOrderModRq requestID="#{session_id}">
+              <PurchaseOrderMod>
+                <TxnID>#{record['list_id']}</TxnID>
+                <EditSequence>#{record['edit_sequence']}</EditSequence>
+                #{purchaseorder record, params}
+                #{items(record).map { |l| purchaseorder_line_mod l }.join('')}
+                #{adjustments_mod_xml record, params}
+              </PurchaseOrderMod>
+            </PurchaseOrderModRq>
           XML
         end
 
@@ -112,62 +110,58 @@ module QBWC
             record['placed_on'] = Time.now.to_s
           end
 
-          <<-XML
-
-    <VendorRef>
-      <FullName>#{record['supplier']['name']}</FullName>
-    </VendorRef>
-    #{class_ref_for_order(record)}
-    <TxnDate>#{Time.parse(record['placed_on']).to_date}</TxnDate>
-    <RefNumber>#{record['id']}</RefNumber>
-    <VendorAddress>
-      <Addr1>#{record['vendor_address']['address1'] if record['vendor_address']}</Addr1>
-      <Addr2>#{record['vendor_address']['address2'] if record['vendor_address']}</Addr2>
-      <City>#{record['vendor_address']['city'] if record['vendor_address']}</City>
-      <State>#{record['vendor_address']['state'] if record['vendor_address']}</State>
-      <PostalCode>#{record['vendor_address']['zipcode'] if record['vendor_address']}</PostalCode>
-      <Country>#{record['vendor_address']['country'] if record['vendor_address']}</Country>
-    </VendorAddress>
-    <ShipAddress>
-      <Addr1>#{record['shipping_address']['address1']}</Addr1>
-      <Addr2>#{record['shipping_address']['address2']}</Addr2>
-      <City>#{record['shipping_address']['city']}</City>
-      <State>#{record['shipping_address']['state']}</State>
-      <PostalCode>#{record['shipping_address']['zipcode']}</PostalCode>
-      <Country>#{record['shipping_address']['country']}</Country>
-    </ShipAddress>
-    #{cancel_order?(record)}
+          <<~XML
+            <VendorRef>
+              <FullName>#{record['supplier']['name']}</FullName>
+            </VendorRef>
+            #{class_ref_for_order(record)}
+            <TxnDate>#{Time.parse(record['placed_on']).to_date}</TxnDate>
+            <RefNumber>#{record['id']}</RefNumber>
+            <VendorAddress>
+              <Addr1>#{record['vendor_address']['address1'] if record['vendor_address']}</Addr1>
+              <Addr2>#{record['vendor_address']['address2'] if record['vendor_address']}</Addr2>
+              <City>#{record['vendor_address']['city'] if record['vendor_address']}</City>
+              <State>#{record['vendor_address']['state'] if record['vendor_address']}</State>
+              <PostalCode>#{record['vendor_address']['zipcode'] if record['vendor_address']}</PostalCode>
+              <Country>#{record['vendor_address']['country'] if record['vendor_address']}</Country>
+            </VendorAddress>
+            <ShipAddress>
+              <Addr1>#{record['shipping_address']['address1']}</Addr1>
+              <Addr2>#{record['shipping_address']['address2']}</Addr2>
+              <City>#{record['shipping_address']['city']}</City>
+              <State>#{record['shipping_address']['state']}</State>
+              <PostalCode>#{record['shipping_address']['zipcode']}</PostalCode>
+              <Country>#{record['shipping_address']['country']}</Country>
+            </ShipAddress>
+            #{cancel_order?(record)}
           XML
         end
 
         def class_ref_for_order(record)
           return '' unless record['class_name']
 
-          <<-XML
-
-    <ClassRef>
-      <FullName>#{record['class_name']}</FullName>
-    </ClassRef>
+          <<~XML
+            <ClassRef>
+              <FullName>#{record['class_name']}</FullName>
+            </ClassRef>
           XML
         end
 
         def class_ref_for_order_line(line)
           return '' unless line['class_name']
 
-          <<-XML
-
-      <ClassRef>
-        <FullName>#{line['class_name']}</FullName>
-      </ClassRef>
+          <<~XML
+            <ClassRef>
+              <FullName>#{line['class_name']}</FullName>
+            </ClassRef>
           XML
         end
 
         def purchaseorder_line_add(line)
-          <<-XML
-
-    <PurchaseOrderLineAdd>
-      #{purchaseorder_line(line)}
-    </PurchaseOrderLineAdd>
+          <<~XML
+            <PurchaseOrderLineAdd>
+              #{purchaseorder_line(line)}
+            </PurchaseOrderLineAdd>
           XML
         end
 
@@ -200,12 +194,11 @@ module QBWC
         end
 
         def purchaseorder_line_mod(line)
-          <<-XML
-
-    <PurchaseOrderLineMod>
-      <TxnLineID>#{line['txn_line_id']}</TxnLineID>
-      #{purchaseorder_line(line)}
-    </PurchaseOrderLineMod>
+          <<~XML
+            <PurchaseOrderLineMod>
+              <TxnLineID>#{line['txn_line_id']}</TxnLineID>
+              #{purchaseorder_line(line)}
+            </PurchaseOrderLineMod>
           XML
         end
 
@@ -233,15 +226,14 @@ module QBWC
         end
 
         def purchaseorder_line(line)
-          <<-XML
-
-      <ItemRef>
-        <FullName>#{line['product_id']}</FullName>
-      </ItemRef>
-      <Desc>#{line['name']}</Desc>
-      #{quantity(line)}
-      <Rate>#{'%.2f' % line['price'].to_f}</Rate>
-      #{tax_code_line(line)}
+          <<~XML
+            <ItemRef>
+              <FullName>#{line['product_id']}</FullName>
+            </ItemRef>
+            <Desc>#{line['name']}</Desc>
+            #{quantity(line)}
+            <Rate>#{'%.2f' % line['price'].to_f}</Rate>
+            #{tax_code_line(line)}
           XML
         end
 
@@ -254,21 +246,18 @@ module QBWC
         def tax_code_line(line)
           return '' if line['tax_code_id'].to_s.empty?
 
-          <<-XML
-
-      <SalesTaxCodeRef>
-        <FullName>#{line['tax_code_id']}</FullName>
-      </SalesTaxCodeRef>
+          <<~XML
+            <SalesTaxCodeRef>
+              <FullName>#{line['tax_code_id']}</FullName>
+            </SalesTaxCodeRef>
           XML
         end
 
         def cancel_order?(object)
           return '' unless object['status'].to_s == 'cancelled'
 
-          <<-XML
-
-          <IsManuallyClosed>true</IsManuallyClosed>
-
+          <<~XML
+            <IsManuallyClosed>true</IsManuallyClosed>
           XML
         end
 

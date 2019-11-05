@@ -50,7 +50,7 @@ module QBWC
         end
 
         def search_xml(journal_id, session_id)
-          <<-XML
+          <<~XML
             <JournalEntryQueryRq requestID="#{session_id}">
               <RefNumber>#{journal_id}</RefNumber>
             </JournalEntryQueryRq>
@@ -58,11 +58,11 @@ module QBWC
         end
 
         def add_xml_to_send(journal, params, session_id)
-          <<-XML
+          <<~XML
             <JournalEntryAddRq requestID="#{session_id}">
-               <JournalEntryAdd>
-                #{journal_xml(journal, params, false)}
-               </JournalEntryAdd>
+              <JournalEntryAdd>
+              #{journal_xml(journal, params, false)}
+              </JournalEntryAdd>
             </JournalEntryAddRq>
           XML
         end
@@ -70,34 +70,34 @@ module QBWC
         def update_xml_to_send(journal, params, session_id)
           # You NEED the edit_sequence to update
           # If you have the wrong edit_sequence (AKA someone manually updated since create/update) it will fail
-          <<-XML
+          <<~XML
             <JournalEntryModRq requestID="#{session_id}">
-               <JournalEntryMod>
-                  <TxnID>#{journal['list_id']}</TxnID>
-                  <EditSequence>#{journal['edit_sequence']}</EditSequence>
-                  #{journal_xml(journal, params, true)}
-               </JournalEntryMod>
+              <JournalEntryMod>
+                <TxnID>#{journal['list_id']}</TxnID>
+                <EditSequence>#{journal['edit_sequence']}</EditSequence>
+                #{journal_xml(journal, params, true)}
+              </JournalEntryMod>
             </JournalEntryModRq>
           XML
         end
 
         def delete_xml_to_send(journal, session_id)
-          <<-XML
-          <TxnDelRq requestID="#{session_id}">
-            <TxnDelType >JournalEntry</TxnDelType>
-            <TxnID>#{journal['list_id']}</TxnID>
-          </TxnDelRq>
+          <<~XML
+            <TxnDelRq requestID="#{session_id}">
+              <TxnDelType >JournalEntry</TxnDelType>
+              <TxnID>#{journal['list_id']}</TxnID>
+            </TxnDelRq>
           XML
         end
 
         def journal_xml(journal, params, isAdjustment)
           credit_lines, debit_lines = split_lines(journal['line_items'])
-          <<-XML
-              <TxnDate>#{Time.parse(journal['journal_date']).to_date}</TxnDate>
-              <RefNumber>#{journal['id']}</RefNumber>
-              <IsAdjustment>#{isAdjustment}</IsAdjustment>
-              #{debit_lines.map { |debit| build_debit_line(debit) }.join('')}
-              #{credit_lines.map { |credit| build_credit_line(credit) }.join('')}
+          <<~XML
+            <TxnDate>#{Time.parse(journal['journal_date']).to_date}</TxnDate>
+            <RefNumber>#{journal['id']}</RefNumber>
+            <IsAdjustment>#{isAdjustment}</IsAdjustment>
+            #{debit_lines.map { |debit| build_debit_line(debit) }.join('')}
+            #{credit_lines.map { |credit| build_credit_line(credit) }.join('')}
           XML
         end
 
@@ -109,7 +109,7 @@ module QBWC
         end
 
         def build_debit_line(item)
-          <<-XML
+          <<~XML
             <JournalDebitLine>
               #{fill_line_item(item, item['debit'])}
             </JournalDebitLine>
@@ -117,7 +117,7 @@ module QBWC
         end
 
         def build_credit_line(item)
-          <<-XML
+          <<~XML
             <JournalCreditLine>
               #{fill_line_item(item, item['credit'])}
             </JournalCreditLine>
@@ -125,7 +125,7 @@ module QBWC
         end
 
         def fill_line_item(item, amount)
-          <<-XML
+          <<~XML
             #{item['line_id'] ? "<TxnLineID>#{item['line_id']}</TxnLineID>" : ''}
             <AccountRef>
                 <FullName>#{item['account_description']}</FullName>
@@ -138,7 +138,7 @@ module QBWC
         end
 
         def fill_customer(name)
-          <<-XML
+          <<~XML
             <EntityRef>
                 <FullName>#{name}</FullName>
             </EntityRef>
@@ -146,7 +146,7 @@ module QBWC
         end
 
         def fill_class(name)
-          <<-XML
+          <<~XML
             <ClassRef>
                 <FullName>#{name}</FullName>
             </ClassRef>
