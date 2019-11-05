@@ -6,7 +6,10 @@ module QBWC
           objects.inject('') do |request, object|
             config = { connection_id: params['connection_id'] }.with_indifferent_access
             session_id = Persistence::Session.save(config, object)
-
+            
+            if params['connection_id'] == 'systum1' || params['connection_id'] == 'kidmademodern'
+              puts "#{params['connection_id']} \n #{add_xml_to_send(object, params, session_id)}"
+            end
             request << if object[:list_id].to_s.empty?
                          add_xml_to_send(object, params, session_id)
                        else
@@ -83,6 +86,17 @@ module QBWC
             <AssetAccountRef>
                 <FullName>#{product['inventory_account'] || params['quickbooks_inventory_account']}</FullName>
             </AssetAccountRef>
+            #{inventory_date(product)}
+          XML
+        end
+
+        def inventory_date(product)
+          return '' unless product['quantity']
+          
+          date_to_use = Time.now.to_date
+          date_to_use = Time.parse(product['inventory_date']).to_date if product['inventory_date']
+          <<~XML
+            <InventoryDate>#{date_to_use}</InventoryDate>
           XML
         end
 
