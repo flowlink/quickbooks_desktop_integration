@@ -53,7 +53,25 @@ The following parameters are required when setting up a Flow with this webhook:
 | quickbooks_customer_email       | If present, uses given email for all customers |
 | quickbooks_auto_create_products | If checked, automatically create products for orders and shipments |
 
-# About FlowLink
+## QBE Config and Refs
+
+### Possible Config ONLY Values
+
+| Name | Info |
+| :----| :-----|
+| quickbooks_customer_email | ?? |
+| quickbooks_auto_create_products | ?? |
+| quickbooks_auto_create_payments | ?? |
+| origin | Should almost always be "flowlink" |
+| connection_id | connection ID param|
+| quickbooks_force_config | Set to 1 or "true" |
+| return_all | Use to return all objects |
+| receive | I think this gets set within the integration |
+| flow | I think this gets set within the integration |
+
+[Adding QBE Refs Readme](./QBE_REFS.md)
+
+## About FlowLink
 
 [FlowLink](http://flowlink.io/) allows you to connect to your own custom integrations.
 Feel free to modify the source code and host your own version of the integration
