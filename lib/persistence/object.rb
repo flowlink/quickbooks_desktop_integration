@@ -553,13 +553,13 @@ module Persistence
     # this is to force this update and
     # return to Wombat item inventories updated
     def generate_extra_objects(object)
-      if payload_key.pluralize == 'inventories'
-        object_aux = object.dup
-        object_aux['id'] = object_aux['product_id']
-        object_aux['active'] = true
+      # if payload_key.pluralize == 'inventories'
+      #   object_aux = object.dup
+      #   object_aux['id'] = object_aux['product_id']
+      #   object_aux['active'] = true
 
-        save_pending_file(object_aux['id'], 'products', object_aux)
-      end
+      #   save_pending_file(object_aux['id'], 'products', object_aux)
+      # end
     end
 
     def generate_inserts_for_two_phase(object, use_customer_email_param)
