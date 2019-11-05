@@ -7,9 +7,6 @@ module QBWC
             config = { connection_id: params['connection_id'] }.with_indifferent_access
             session_id = Persistence::Session.save(config, object)
             
-            if params['connection_id'] == 'systum1' || params['connection_id'] == 'kidmademodern'
-              puts "#{params['connection_id']} \n #{add_xml_to_send(object, params, session_id)}"
-            end
             request << if object[:list_id].to_s.empty?
                          add_xml_to_send(object, params, session_id)
                        else
@@ -74,7 +71,7 @@ module QBWC
             <SalesDesc>#{product['description']}</SalesDesc>
             <SalesPrice>#{'%.2f' % product['price'].to_f}</SalesPrice>
             <IncomeAccountRef>
-                <FullName>#{product['income_account'] || params['quickbooks_income_account']}</FullName>
+              <FullName>#{product['income_account'] || params['quickbooks_income_account']}</FullName>
             </IncomeAccountRef>
             <PurchaseCost>#{'%.2f' % product['cost'].to_f}</PurchaseCost>
             #{quantity(product)}
@@ -84,7 +81,7 @@ module QBWC
               <FullName>#{product['cogs_account'] || params['quickbooks_cogs_account']}</FullName>
             </COGSAccountRef>
             <AssetAccountRef>
-                <FullName>#{product['inventory_account'] || params['quickbooks_inventory_account']}</FullName>
+              <FullName>#{product['inventory_account'] || params['quickbooks_inventory_account']}</FullName>
             </AssetAccountRef>
             #{inventory_date(product)}
           XML
