@@ -223,7 +223,7 @@ module QBWC
         end
 
         def additional_contacts(object)
-          return unless object['additional_contacts'] && object['additional_contacts'].is_a?(Array)
+          return "" unless object['additional_contacts'] && object['additional_contacts'].is_a?(Array)
           
           fields = ""
           object['additional_contacts'].each do |contact|
@@ -241,7 +241,7 @@ module QBWC
         end
 
         def additional_notes(object)
-          return unless object['additional_notes'] && object['additional_notes'].is_a?(Array)
+          return "" unless object['additional_notes'] && object['additional_notes'].is_a?(Array)
           
           fields = ""
           object['additional_notes'].each do |note|
@@ -252,7 +252,7 @@ module QBWC
         end
 
         def contacts(object)
-          return unless object['contacts'] && object['contacts'].is_a?(Array)
+          return "" unless object['contacts'] && object['contacts'].is_a?(Array)
           
           fields = ""
           object['contacts'].each do |contact|
