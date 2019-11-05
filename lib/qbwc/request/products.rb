@@ -63,14 +63,14 @@ module QBWC
 
         def product_only_touch_xml(product, _params)
           <<~XML
-            <Name>#{product['product_id']}</Name>
+            <Name>#{product['product_id'] || product['sku']}</Name>
             <IsActive>true</IsActive>
           XML
         end
 
         def product_xml(product, params)
           <<~XML
-            <Name>#{product['product_id']}</Name>
+            <Name>#{product['product_id'] || product['sku']}</Name>
             <SalesDesc>#{product['description']}</SalesDesc>
             <SalesPrice>#{'%.2f' % product['price'].to_f}</SalesPrice>
             <IncomeAccountRef>
