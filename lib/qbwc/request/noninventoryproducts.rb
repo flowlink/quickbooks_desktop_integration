@@ -42,9 +42,9 @@ module QBWC
             session_id = Persistence::Session.save(config, object)
 
             request << if object[:list_id].to_s.empty?
-                         add_xml_to_send(object, params, session_id)
+                         add_xml_to_send(object, params, session_id, config)
                        else
-                         update_xml_to_send(object, params, session_id)
+                         update_xml_to_send(object, params, session_id, config)
                        end
           end
         end
@@ -70,23 +70,23 @@ module QBWC
           XML
         end
 
-        def add_xml_to_send(product, params, session_id)
+        def add_xml_to_send(product, params, session_id, config)
           <<~XML
             <ItemNonInventoryAddRq requestID="#{session_id}">
                <ItemNonInventoryAdd>
-                #{product_xml(product, params)}
+                #{product_xml(product, params, config)}
                </ItemNonInventoryAdd>
             </ItemNonInventoryAddRq>
           XML
         end
 
-        def update_xml_to_send(product, params, session_id)
+        def update_xml_to_send(product, params, session_id, config)
           <<~XML
             <ItemInventoryModRq requestID="#{session_id}">
                <ItemInventoryMod>
                   <ListID>#{product['list_id']}</ListID>
                   <EditSequence>#{product['edit_sequence']}</EditSequence>
-                  #{product.key?('active') ? product_only_touch_xml(product, params) : product_xml(product, params)}
+                  #{product.key?('active') ? product_only_touch_xml(product, params) : product_xml(product, params, config)}
                </ItemInventoryMod>
             </ItemInventoryModRq>
           XML
@@ -99,14 +99,14 @@ module QBWC
           XML
         end
 
-        def product_xml(product, params)
+        def product_xml(product, params, config)
           <<~XML
             <Name>#{product['product_id'] || product['sku']}</Name>
             <IsActive >#{product['is_active'] || true}</IsActive>
-            #{add_refs(product)}
+            #{add_refs(product, config)}
             #{add_fields(product, FIELD_MAP)}
             #{add_barcode(product)}
-            #{sale_or_and_purchase(product)}
+            #{sale_or_and_purchase(product, config)}
           XML
         end
 
@@ -141,7 +141,7 @@ module QBWC
           XML
         end
 
-        def sale_or_and_purchase(product)
+        def sale_or_and_purchase(product, config)
           return '' unless product['sale_or_purchase'] || product['sale_or_purchase']
 
           if product['sale_or_purchase']
@@ -161,7 +161,7 @@ module QBWC
           end
         end
 
-        def add_refs(object)
+        def add_refs(object, config)
           fields = ""
           REF_MAP.each do |qbe_name, flowlink_name|
             full_name = object[flowlink_name] || config[flowlink_name]

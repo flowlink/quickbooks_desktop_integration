@@ -8,9 +8,9 @@ module QBWC
             session_id = Persistence::Session.save(config, object)
             
             request << if object[:list_id].to_s.empty?
-                         add_xml_to_send(object, params, session_id)
+                         add_xml_to_send(object, params, session_id, config)
                        else
-                         update_xml_to_send(object, params, session_id)
+                         update_xml_to_send(object, params, session_id, config)
                        end
           end
         end
@@ -36,23 +36,23 @@ module QBWC
           XML
         end
 
-        def add_xml_to_send(product, params, session_id)
+        def add_xml_to_send(product, params, session_id, config)
           <<~XML
             <ItemInventoryAddRq requestID="#{session_id}">
                <ItemInventoryAdd>
-                #{product_xml(product, params)}
+                #{product_xml(product, params, config)}
                </ItemInventoryAdd>
             </ItemInventoryAddRq>
           XML
         end
 
-        def update_xml_to_send(product, params, session_id)
+        def update_xml_to_send(product, params, session_id, config)
           <<~XML
             <ItemInventoryModRq requestID="#{session_id}">
                 <ItemInventoryMod>
                   <ListID>#{product['list_id']}</ListID>
                   <EditSequence>#{product['edit_sequence']}</EditSequence>
-                  #{product.key?('active') ? product_only_touch_xml(product, params) : product_xml(product, params)}
+                  #{product.key?('active') ? product_only_touch_xml(product, params) : product_xml(product, params, config)}
                 </ItemInventoryMod>
             </ItemInventoryModRq>
           XML
@@ -65,7 +65,7 @@ module QBWC
           XML
         end
 
-        def product_xml(product, params)
+        def product_xml(product, params, config)
           <<~XML
             <Name>#{product['product_id'] || product['sku']}</Name>
             <SalesDesc>#{product['description']}</SalesDesc>
