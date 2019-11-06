@@ -146,7 +146,7 @@ module QBWC
                 #{add_fields(object, FIELD_MAP)}
                 #{sales_tax_country(object)}
                 #{reporting_period(object)}
-                #{add_refs(object, config)}
+                #{add_refs(object, REF_MAP, config)}
                 <VendorAddress>
                   #{add_fields(object['vendor_address'], ADDRESS_MAP) if object['vendor_address']}
                 </VendorAddress>
@@ -176,7 +176,7 @@ module QBWC
                 #{add_fields(object, FIELD_MAP)}
                 #{sales_tax_country(object)}
                 #{reporting_period(object)}
-                #{add_refs(object, config)}
+                #{add_refs(object, REF_MAP, config)}
                 <VendorAddress>
                   #{add_fields(object['vendor_address'], ADDRESS_MAP) if object['vendor_address']}
                 </VendorAddress>
@@ -193,9 +193,9 @@ module QBWC
 
         private
 
-        def add_refs(object, config)
+        def add_refs(object, mapping, config)
           fields = ""
-          REF_MAP.each do |qbe_name, flowlink_name|
+          mapping.each do |qbe_name, flowlink_name|
             full_name = object[flowlink_name] || config[flowlink_name]
             fields += "<#{qbe_name}><FullName>#{full_name}</FullName></#{qbe_name}>" unless full_name.nil?
           end

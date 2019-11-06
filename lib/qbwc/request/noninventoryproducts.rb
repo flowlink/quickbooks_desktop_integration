@@ -24,8 +24,8 @@ module QBWC
       SALES_AND_PURCHASE_MAP = {
         SalesDesc: "description",
         SalesPrice: "price",
-        PurchaseDesc: "description",
-        PurchaseCost: "price"
+        PurchaseDesc: "purchase_description",
+        PurchaseCost: "purchase_price"
       }
 
       SALES_AND_PURCHASE_REF_MAP = {
@@ -106,7 +106,7 @@ module QBWC
           <<~XML
             <Name>#{product_identifier(product)}</Name>
             <IsActive >#{product['is_active'] || true}</IsActive>
-            #{add_refs(product, config)}
+            #{add_refs(product, REF_MAP, config)}
             #{add_fields(product, FIELD_MAP)}
             #{add_barcode(product)}
             #{sale_or_and_purchase(product, config)}
@@ -149,8 +149,6 @@ module QBWC
         end
 
         def sale_or_and_purchase(product, config)
-          return '' unless product['sale_or_purchase'] || product['sale_or_purchase']
-
           if product['sale_or_purchase']
             <<~XML
               <SalesOrPurchase>
@@ -162,15 +160,15 @@ module QBWC
             <<~XML
               <SalesAndPurchase>
                 #{add_fields(product, SALES_AND_PURCHASE_MAP)}
-                #{add_fields(product, SALES_AND_PURCHASE_REF_MAP)}
+                #{add_refs(product, SALES_AND_PURCHASE_REF_MAP, config)}
               </SalesAndPurchase>
             XML
           end
         end
 
-        def add_refs(object, config)
+        def add_refs(object, mapping, config)
           fields = ""
-          REF_MAP.each do |qbe_name, flowlink_name|
+          mapping.each do |qbe_name, flowlink_name|
             full_name = object[flowlink_name] || config[flowlink_name]
             fields += "<#{qbe_name}><FullName>#{full_name}</FullName></#{qbe_name}>" unless full_name.nil?
           end
