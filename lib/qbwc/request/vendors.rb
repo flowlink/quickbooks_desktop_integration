@@ -196,7 +196,7 @@ module QBWC
         def add_refs(object)
           fields = ""
           REF_MAP.each do |qbe_name, flowlink_name|
-            full_name = object[flowlink_name] || config[flowlink_name]
+            full_name = object[flowlink_name] || config[flowlink_name] || config["quickbooks_#{flowlink_name}"]
             fields += "<#{qbe_name}><FullName>#{full_name}</FullName></#{qbe_name}>" unless full_name.nil?
           end
 

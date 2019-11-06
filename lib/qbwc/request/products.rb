@@ -1,6 +1,35 @@
 module QBWC
   module Request
     class Products
+
+      REF_MAP = {
+        ClassRef: "class_name",
+        ParentRef: "parent_name",
+        UnitOfMeasureSetRef: "unit_of_measure",
+        SalesTaxCodeRef: "sales_tax_code_name",
+        IncomeAccountRef: "income_account",
+        PurchaseTaxCodeRef: "purchase_tax_code_name",
+        COGSAccountRef: "cogs_account",
+        PrefVendorRef: "preferred_vendor_name",
+        AssetAccountRef: "inventory_account"
+      }
+
+      FIELDS_MAP = {
+        ManufacturerPartNumber: "manufacturer_part_number",
+        SalesDesc: "description",
+        PurchaseDesc: "purchase_description",
+        IsActive: "is_active",
+        IsTaxIncluded: "is_tax_included",
+        ReorderPoint: "reorder_point",
+        Max: "max",
+        QuantityOnHand: "quantity",
+        TotalValue: "total_value",
+        SalesPrice: "price",
+        PurchaseCost: "purchase",
+        InventoryDate: "inventory_date",
+        ExternalGUID: "external_guid"
+      }
+
       class << self
         def generate_request_insert_update(objects, params = {})
           objects.inject('') do |request, object|
@@ -68,22 +97,9 @@ module QBWC
         def product_xml(product, params)
           <<~XML
             <Name>#{product['product_id'] || product['sku']}</Name>
-            <SalesDesc>#{product['description']}</SalesDesc>
-            <SalesPrice>#{'%.2f' % product['price'].to_f}</SalesPrice>
-            <IncomeAccountRef>
-              <FullName>#{product['income_account'] || params['quickbooks_income_account']}</FullName>
-            </IncomeAccountRef>
-            <PurchaseCost>#{'%.2f' % product['cost'].to_f}</PurchaseCost>
-            #{quantity(product)}
-            #{manufacturer_part_number(product)}
-            #{unit_of_measure(product)}
-            <COGSAccountRef>
-              <FullName>#{product['cogs_account'] || params['quickbooks_cogs_account']}</FullName>
-            </COGSAccountRef>
-            <AssetAccountRef>
-              <FullName>#{product['inventory_account'] || params['quickbooks_inventory_account']}</FullName>
-            </AssetAccountRef>
-            #{inventory_date(product)}
+            #{add_fields(product, FIELDS_MAP)}
+            #{add_refs(product)}
+            #{add_barcode(product)}
           XML
         end
 
@@ -95,37 +111,6 @@ module QBWC
           <<~XML
             <InventoryDate>#{date_to_use}</InventoryDate>
           XML
-        end
-
-        def quantity(product)
-          return '' unless product['quantity']
-
-          <<~XML
-            <QuantityOnHand>#{product['quantity']}</QuantityOnHand>
-          XML
-        end
-
-        def manufacturer_part_number(product)
-          return '' unless product['manufacturer_part_number']
-
-          <<~XML
-            <ManufacturerPartNumber>#{product['manufacturer_part_number']}</ManufacturerPartNumber>
-          XML
-        end
-
-        def unit_of_measure(product)
-          return '' unless product['unit_of_measure']
-
-          <<~XML
-            <UnitOfMeasureSetRef>
-              <FullName>#{product['unit_of_measure']}</FullName>
-            </UnitOfMeasureSetRef>
-          XML
-        end
-
-        def polling_others_items_xml(_timestamp, _config)
-          # nothing on this class
-          ''
         end
 
         def polling_current_items_xml(params, config)
@@ -184,7 +169,47 @@ module QBWC
             <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
           XML
         end
+
+        private
+
+        def add_refs(object)
+          fields = ""
+          REF_MAP.each do |qbe_name, flowlink_name|
+            full_name = object[flowlink_name] || config[flowlink_name] || config["quickbooks_#{flowlink_name}"]
+            fields += "<#{qbe_name}><FullName>#{full_name}</FullName></#{qbe_name}>" unless full_name.nil?
+          end
+
+          fields
+        end
+
+        def add_fields(object, mapping)
+          fields = ""
+          mapping.each do |qbe_name, flowlink_name|
+            return '' if object[flowlink_name].nil?
+
+            name = flowlink_name
+            name = '%.2f' % object[flowlink_name].to_f if name == 'cost' || name == 'price'
+
+            fields += "<#{qbe_name}>#{name}</#{qbe_name}>"
+          end
+
+          fields
+        end
+
+        def add_barcode(product)
+          return '' unless product['barcode_value']
+
+          <<~XML
+            <BarCode>
+              <BarCodeValue>#{product['barcode_value']}</BarCodeValue>
+              <AssignEvenIfUsed>#{product['assign_barcode_even_if_used'] || false}</AssignEvenIfUsed>
+              <AllowOverride>#{product['allow_barcode_override'] || false}</AllowOverride>
+            </BarCode>
+          XML
+        end
+
       end
     end
   end
 end
+
