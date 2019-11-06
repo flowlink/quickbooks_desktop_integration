@@ -57,7 +57,7 @@ module QBWC
             config = { connection_id: params['connection_id'] }.with_indifferent_access
             session_id = Persistence::Session.save(config, object)
 
-            request << search_xml(object.key?('product_id') ? object['product_id'] : object['id'], session_id)
+            request << search_xml(product_identifier, session_id)
           end
         end
 
@@ -97,14 +97,14 @@ module QBWC
 
         def product_only_touch_xml(product, _params)
           <<~XML
-            <Name>#{product['product_id'] || product['sku']}</Name>
+            <Name>#{product_identifier(product)}</Name>
             <IsActive>true</IsActive>
           XML
         end
 
         def product_xml(product, params, config)
           <<~XML
-            <Name>#{product['product_id'] || product['sku']}</Name>
+            <Name>#{product_identifier(product)}</Name>
             <IsActive >#{product['is_active'] || true}</IsActive>
             #{add_refs(product, config)}
             #{add_fields(product, FIELD_MAP)}
@@ -131,6 +131,10 @@ module QBWC
         end
 
         private
+
+        def product_identifier(object)
+          object['product_id'] || object['sku'] || object['id']
+        end
 
         def add_barcode(product)
           return '' unless product['barcode_value']
