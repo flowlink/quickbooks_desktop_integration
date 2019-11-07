@@ -160,7 +160,7 @@ module QBWC
             <CustomerAddRq requestID="#{session_id}">
               <CustomerAdd>
                 <Name>#{object['name']}</Name>
-                <FirstName>#{object['firstname'] ? object['name'].split.first : object['firstname']}</FirstName>
+                <FirstName>#{object['firstname'] ? object['firstname'] : object['name'].split.first}</FirstName>
                 #{"<LastName>#{object['lastname'] || object['name'].split.last}</LastName>" if object['lastname']}
                 <Phone>#{object['billing_address']['phone'] if object['billing_address']}</Phone>
                 <AltPhone>#{object['shipping_address']['phone'] if object['shipping_address']}</AltPhone>
@@ -192,7 +192,7 @@ module QBWC
                 <ListID>#{object['list_id']}</ListID>
                 <EditSequence>#{object['edit_sequence']}</EditSequence>
                 <Name>#{object['name']}</Name>
-                <FirstName>#{object['firstname'] ? object['name'].split.first : object['firstname']}</FirstName>
+                <FirstName>#{object['firstname'] ? object['firstname'] : object['name'].split.first}</FirstName>
                 #{"<LastName>#{object['lastname'] || object['name'].split.last}</LastName>" if object['lastname']}
                 <Phone>#{object['billing_address']['phone'] if object['billing_address']}</Phone>
                 <AltPhone>#{object['shipping_address']['phone'] if object['shipping_address']}</AltPhone>
