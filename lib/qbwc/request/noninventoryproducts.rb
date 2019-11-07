@@ -25,7 +25,7 @@ module QBWC
         SalesDesc: "description",
         SalesPrice: "price",
         PurchaseDesc: "purchase_description",
-        PurchaseCost: "purchase_price"
+        PurchaseCost: "cost"
       }
 
       SALES_AND_PURCHASE_REF_MAP = {
@@ -113,6 +113,11 @@ module QBWC
           XML
         end
 
+        def polling_others_items_xml(_timestamp, _config)
+          # nothing on this class
+          ''
+        end
+
         def polling_current_items_xml(params, config)
           timestamp = params
           timestamp = params['quickbooks_since'] if params['return_all']
@@ -124,8 +129,8 @@ module QBWC
           <<~XML
             <!-- polling non inventory products -->
             <ItemNonInventoryQueryRq requestID="#{session_id}">
-            <MaxReturned>100</MaxReturned>
-              #{query_by_date(params, time)}
+              <MaxReturned>100</MaxReturned>
+                #{query_by_date(params, time)}
             </ItemNonInventoryQueryRq>
           XML
         end
@@ -153,7 +158,7 @@ module QBWC
             <<~XML
               <SalesOrPurchase>
                 #{add_fields(product, SALES_OR_PURCHASE_MAP)}
-                <AccountRef><FullName>#{product['account_name'] || config['account_name']}</FullName></AccountRef>
+                <AccountRef><FullName>#{product['account_name'] || config['account_name'] || config['quickbooks_account_name']}</FullName></AccountRef>
               </SalesOrPurchase>
             XML
           else
@@ -169,7 +174,7 @@ module QBWC
         def add_refs(object, mapping, config)
           fields = ""
           mapping.each do |qbe_name, flowlink_name|
-            full_name = object[flowlink_name] || config[flowlink_name]
+            full_name = object[flowlink_name] || config[flowlink_name] || config["quickbooks_#{flowlink_name}"]
             fields += "<#{qbe_name}><FullName>#{full_name}</FullName></#{qbe_name}>" unless full_name.nil?
           end
 

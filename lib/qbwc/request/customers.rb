@@ -160,13 +160,13 @@ module QBWC
             <CustomerAddRq requestID="#{session_id}">
               <CustomerAdd>
                 <Name>#{object['name']}</Name>
-                <FirstName>#{object['firstname'] ? object['name'].split.first : object['firstname']}</FirstName>
+                <FirstName>#{object['firstname'] ? object['firstname'] : object['name'].split.first}</FirstName>
                 #{"<LastName>#{object['lastname'] || object['name'].split.last}</LastName>" if object['lastname']}
                 <Phone>#{object['billing_address']['phone'] if object['billing_address']}</Phone>
                 <AltPhone>#{object['shipping_address']['phone'] if object['shipping_address']}</AltPhone>
                 <Email>#{object['email']}</Email>
                 #{add_fields(object, FIELD_MAP)}
-                #{add_refs(object, config)}
+                #{add_refs(object, REF_MAP, config)}
                 #{sales_tax_country(object)}
                 #{job_status(object)}
                 #{preferred_delivery_method(object)}
@@ -192,13 +192,13 @@ module QBWC
                 <ListID>#{object['list_id']}</ListID>
                 <EditSequence>#{object['edit_sequence']}</EditSequence>
                 <Name>#{object['name']}</Name>
-                <FirstName>#{object['firstname'] ? object['name'].split.first : object['firstname']}</FirstName>
+                <FirstName>#{object['firstname'] ? object['firstname'] : object['name'].split.first}</FirstName>
                 #{"<LastName>#{object['lastname'] || object['name'].split.last}</LastName>" if object['lastname']}
                 <Phone>#{object['billing_address']['phone'] if object['billing_address']}</Phone>
                 <AltPhone>#{object['shipping_address']['phone'] if object['shipping_address']}</AltPhone>
                 <Email>#{object['email']}</Email>
                 #{add_fields(object, FIELD_MAP)}
-                #{add_refs(object, config)}
+                #{add_refs(object, REF_MAP, config)}
                 #{sales_tax_country(object)}
                 #{job_status(object)}
                 #{preferred_delivery_method(object)}
@@ -234,10 +234,10 @@ module QBWC
           fields
         end
 
-        def add_refs(object, config)
+        def add_refs(object, mapping, config)
           fields = ""
-          REF_MAP.each do |qbe_name, flowlink_name|
-            full_name = object[flowlink_name] || config[flowlink_name]
+          mapping.each do |qbe_name, flowlink_name|
+            full_name = object[flowlink_name] || config[flowlink_name] || config["quickbooks_#{flowlink_name}"]
             fields += "<#{qbe_name}><FullName>#{full_name}</FullName></#{qbe_name}>" unless full_name.nil?
           end
 
@@ -247,7 +247,12 @@ module QBWC
         def add_fields(object, mapping)
           fields = ""
           mapping.each do |qbe_name, flowlink_name|
-            fields += "<#{qbe_name}>#{object[flowlink_name]}</#{qbe_name}>\n" unless object[flowlink_name].nil?
+            return '' if object[flowlink_name].nil?
+
+            name = flowlink_name
+            name = '%.2f' % object[flowlink_name].to_f if name == 'cost' || name == 'price'
+
+            fields += "<#{qbe_name}>#{name}</#{qbe_name}>"
           end
 
           fields

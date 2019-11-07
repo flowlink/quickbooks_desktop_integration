@@ -137,25 +137,7 @@ module QBWC
           <<~XML
             <VendorAddRq requestID="#{session_id}">
               <VendorAdd>
-                <Name>#{object['name']}</Name>
-                <FirstName>#{object['firstname'] || object['name'].split.first}</FirstName>
-                #{"<LastName>#{object['lastname'] || object['name'].split.last}</LastName>" if object['lastname']}
-                <Phone>#{object['vendor_address']['phone'] if object['vendor_address']}</Phone>
-                <AltPhone>#{object['ship_from_address']['phone'] if object['ship_from_address']}</AltPhone>
-                <Email>#{object['email']}</Email>
-                #{add_fields(object, FIELD_MAP)}
-                #{sales_tax_country(object)}
-                #{reporting_period(object)}
-                #{add_refs(object, REF_MAP, config)}
-                <VendorAddress>
-                  #{add_fields(object['vendor_address'], ADDRESS_MAP) if object['vendor_address']}
-                </VendorAddress>
-                <ShipAddress>
-                  #{add_fields(object['ship_from_address'], ADDRESS_MAP) if object['ship_from_address']}
-                </ShipAddress>
-                #{additional_contacts(object)}
-                #{additional_notes(object)}
-                #{contacts(object)}
+                #{vendor_xml(object, config)}
               </VendorAdd>
             </VendorAddRq>
           XML
@@ -167,25 +149,7 @@ module QBWC
               <VendorMod>
                 <ListID>#{object['list_id']}</ListID>
                 <EditSequence>#{object['edit_sequence']}</EditSequence>
-                <Name>#{object['name']}</Name>
-                <FirstName>#{object['firstname']}</FirstName>
-                <LastName>#{object['lastname']}</LastName>
-                <Phone>#{object['vendor_address']['phone'] if object['vendor_address']}</Phone>
-                <AltPhone>#{object['ship_from_address']['phone'] if object['ship_from_address']}</AltPhone>
-                <Email>#{object['email']}</Email>
-                #{add_fields(object, FIELD_MAP)}
-                #{sales_tax_country(object)}
-                #{reporting_period(object)}
-                #{add_refs(object, REF_MAP, config)}
-                <VendorAddress>
-                  #{add_fields(object['vendor_address'], ADDRESS_MAP) if object['vendor_address']}
-                </VendorAddress>
-                <ShipAddress>
-                  #{add_fields(object['ship_from_address'], ADDRESS_MAP) if object['ship_from_address']}
-                </ShipAddress>
-                #{additional_contacts(object)}
-                #{additional_notes(object)}
-                #{contacts(object)}
+                #{vendor_xml(object, config)}
               </VendorMod>
             </VendorModRq>
           XML
@@ -193,10 +157,41 @@ module QBWC
 
         private
 
+        def vendor_xml(object, config)
+          <<~XML
+            <Name>#{object['name']}</Name>
+            <FirstName>#{build_name(object, 'firstname')}</FirstName>
+            <LastName>#{build_name(object, 'lastname')}</LastName>
+            <Phone>#{object['vendor_address'] ? object['vendor_address']['phone'] : ""}</Phone>
+            <AltPhone>#{object['ship_from_address'] ? object['ship_from_address']['phone'] : ""}</AltPhone>
+            <Email>#{object['email']}</Email>
+            #{add_fields(object, FIELD_MAP)}
+            #{sales_tax_country(object)}
+            #{reporting_period(object)}
+            #{add_refs(object, REF_MAP, config)}
+            <VendorAddress>
+              #{add_fields(object['vendor_address'], ADDRESS_MAP) if object['vendor_address']}
+            </VendorAddress>
+            <ShipAddress>
+              #{add_fields(object['ship_from_address'], ADDRESS_MAP) if object['ship_from_address']}
+            </ShipAddress>
+            #{additional_contacts(object)}
+            #{additional_notes(object)}
+            #{contacts(object)}
+          XML
+        end
+
+        def build_name(object, name_field)
+          return object[name_field] if object[name_field]
+          return "" unless object['name']
+
+          return name_field == 'firstname' ? object['name'].split.first : object['name'].split.first 
+        end
+
         def add_refs(object, mapping, config)
           fields = ""
           mapping.each do |qbe_name, flowlink_name|
-            full_name = object[flowlink_name] || config[flowlink_name]
+            full_name = object[flowlink_name] || config[flowlink_name] || config["quickbooks_#{flowlink_name}"]
             fields += "<#{qbe_name}><FullName>#{full_name}</FullName></#{qbe_name}>" unless full_name.nil?
           end
 
@@ -206,7 +201,12 @@ module QBWC
         def add_fields(object, mapping)
           fields = ""
           mapping.each do |qbe_name, flowlink_name|
-            fields += "<#{qbe_name}>#{object[flowlink_name]}</#{qbe_name}>\n" unless object[flowlink_name].nil?
+            return '' if object[flowlink_name].nil?
+
+            name = flowlink_name
+            name = '%.2f' % object[flowlink_name].to_f if name == 'cost' || name == 'price'
+
+            fields += "<#{qbe_name}>#{name}</#{qbe_name}>"
           end
 
           fields

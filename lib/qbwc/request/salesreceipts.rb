@@ -246,6 +246,7 @@ module QBWC
             <Rate>#{'%.2f' % line['price'].to_f}</Rate>
             #{tax_code_line(line)}
             #{inventory_site(line)}
+            #{amount_line(line)}
           XML
         end
 
@@ -256,6 +257,14 @@ module QBWC
             <InventorySiteRef>
               <FullName>#{line['inventory_site_name']}</FullName>
             </InventorySiteRef>
+          XML
+        end
+
+        def amount_line(line)
+          return '' if line['amount'].to_s.empty?
+
+          <<~XML
+            <Amount>#{'%.2f' % line['amount'].to_f}</Amount>
           XML
         end
 
