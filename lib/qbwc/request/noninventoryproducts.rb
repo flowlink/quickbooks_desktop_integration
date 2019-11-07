@@ -24,8 +24,8 @@ module QBWC
       SALES_AND_PURCHASE_MAP = {
         SalesDesc: "description",
         SalesPrice: "price",
-        PurchaseDesc: "description",
-        PurchaseCost: "price"
+        PurchaseDesc: "purchase_description",
+        PurchaseCost: "purchase_price"
       }
 
       SALES_AND_PURCHASE_REF_MAP = {
@@ -41,10 +41,13 @@ module QBWC
             config = { connection_id: params['connection_id'] }.with_indifferent_access
             session_id = Persistence::Session.save(config, object)
 
+            puts "systum1"
+            puts add_xml_to_send(object, params, session_id, config).gsub(/\s+/, "")
+            puts object.to_s.gsub(/\s+/, "")
             request << if object[:list_id].to_s.empty?
-                         add_xml_to_send(object, params, session_id)
+                         add_xml_to_send(object, params, session_id, config)
                        else
-                         update_xml_to_send(object, params, session_id)
+                         update_xml_to_send(object, params, session_id, config)
                        end
           end
         end
@@ -54,7 +57,7 @@ module QBWC
             config = { connection_id: params['connection_id'] }.with_indifferent_access
             session_id = Persistence::Session.save(config, object)
 
-            request << search_xml(object.key?('product_id') ? object['product_id'] : object['id'], session_id)
+            request << search_xml(product_identifier, session_id)
           end
         end
 
@@ -70,23 +73,23 @@ module QBWC
           XML
         end
 
-        def add_xml_to_send(product, params, session_id)
+        def add_xml_to_send(product, params, session_id, config)
           <<~XML
             <ItemNonInventoryAddRq requestID="#{session_id}">
                <ItemNonInventoryAdd>
-                #{product_xml(product, params)}
+                #{product_xml(product, params, config)}
                </ItemNonInventoryAdd>
             </ItemNonInventoryAddRq>
           XML
         end
 
-        def update_xml_to_send(product, params, session_id)
+        def update_xml_to_send(product, params, session_id, config)
           <<~XML
             <ItemInventoryModRq requestID="#{session_id}">
                <ItemInventoryMod>
                   <ListID>#{product['list_id']}</ListID>
                   <EditSequence>#{product['edit_sequence']}</EditSequence>
-                  #{product.key?('active') ? product_only_touch_xml(product, params) : product_xml(product, params)}
+                  #{product.key?('active') ? product_only_touch_xml(product, params) : product_xml(product, params, config)}
                </ItemInventoryMod>
             </ItemInventoryModRq>
           XML
@@ -94,20 +97,25 @@ module QBWC
 
         def product_only_touch_xml(product, _params)
           <<~XML
-            <Name>#{product['product_id'] || product['sku']}</Name>
+            <Name>#{product_identifier(product)}</Name>
             <IsActive>true</IsActive>
           XML
         end
 
-        def product_xml(product, params)
+        def product_xml(product, params, config)
           <<~XML
-            <Name>#{product['product_id'] || product['sku']}</Name>
+            <Name>#{product_identifier(product)}</Name>
             <IsActive >#{product['is_active'] || true}</IsActive>
-            #{add_refs(product)}
+            #{add_refs(product, REF_MAP, config)}
             #{add_fields(product, FIELD_MAP)}
             #{add_barcode(product)}
-            #{sale_or_and_purchase(product)}
+            #{sale_or_and_purchase(product, config)}
           XML
+        end
+
+        def polling_others_items_xml(_timestamp, _config)
+          # nothing on this class
+          ''
         end
 
         def polling_current_items_xml(params, config)
@@ -121,13 +129,17 @@ module QBWC
           <<~XML
             <!-- polling non inventory products -->
             <ItemNonInventoryQueryRq requestID="#{session_id}">
-            <MaxReturned>100</MaxReturned>
-              #{query_by_date(params, time)}
+              <MaxReturned>100</MaxReturned>
+                #{query_by_date(params, time)}
             </ItemNonInventoryQueryRq>
           XML
         end
 
         private
+
+        def product_identifier(object)
+          object['product_id'] || object['sku'] || object['id']
+        end
 
         def add_barcode(product)
           return '' unless product['barcode_value']
@@ -141,29 +153,27 @@ module QBWC
           XML
         end
 
-        def sale_or_and_purchase(product)
-          return '' unless product['sale_or_purchase'] || product['sale_and_purchase']
-
+        def sale_or_and_purchase(product, config)
           if product['sale_or_purchase']
             <<~XML
               <SalesOrPurchase>
                 #{add_fields(product, SALES_OR_PURCHASE_MAP)}
-                <AccountRef><FullName>#{product['account_name'] || config['account_name']}</FullName></AccountRef>
+                <AccountRef><FullName>#{product['account_name'] || config['account_name'] || config['quickbooks_account_name']}</FullName></AccountRef>
               </SalesOrPurchase>
             XML
           else
             <<~XML
               <SalesAndPurchase>
                 #{add_fields(product, SALES_AND_PURCHASE_MAP)}
-                #{add_fields(product, SALES_AND_PURCHASE_REF_MAP)}
+                #{add_refs(product, SALES_AND_PURCHASE_REF_MAP, config)}
               </SalesAndPurchase>
             XML
           end
         end
 
-        def add_refs(object)
+        def add_refs(object, mapping, config)
           fields = ""
-          REF_MAP.each do |qbe_name, flowlink_name|
+          mapping.each do |qbe_name, flowlink_name|
             full_name = object[flowlink_name] || config[flowlink_name] || config["quickbooks_#{flowlink_name}"]
             fields += "<#{qbe_name}><FullName>#{full_name}</FullName></#{qbe_name}>" unless full_name.nil?
           end

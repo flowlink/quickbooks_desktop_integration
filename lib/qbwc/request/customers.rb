@@ -73,7 +73,7 @@ module QBWC
             config = { connection_id: params['connection_id'] }.with_indifferent_access
             session_id = Persistence::Session.save(config, object)
 
-            request << (object[:list_id].to_s.empty? ? add_xml_to_send(object, session_id) : update_xml_to_send(object, session_id))
+            request << (object[:list_id].to_s.empty? ? add_xml_to_send(object, session_id, config) : update_xml_to_send(object, session_id, config))
           end
         end
 
@@ -155,7 +155,7 @@ module QBWC
           XML
         end
 
-        def add_xml_to_send(object, session_id)
+        def add_xml_to_send(object, session_id, config)
           <<~XML
             <CustomerAddRq requestID="#{session_id}">
               <CustomerAdd>
@@ -166,7 +166,7 @@ module QBWC
                 <AltPhone>#{object['shipping_address']['phone'] if object['shipping_address']}</AltPhone>
                 <Email>#{object['email']}</Email>
                 #{add_fields(object, FIELD_MAP)}
-                #{add_refs(object)}
+                #{add_refs(object, REF_MAP, config)}
                 #{sales_tax_country(object)}
                 #{job_status(object)}
                 #{preferred_delivery_method(object)}
@@ -185,7 +185,7 @@ module QBWC
           XML
         end
 
-        def update_xml_to_send(object, session_id)
+        def update_xml_to_send(object, session_id, config)
           <<~XML
             <CustomerModRq requestID="#{session_id}">
               <CustomerMod>
@@ -198,7 +198,7 @@ module QBWC
                 <AltPhone>#{object['shipping_address']['phone'] if object['shipping_address']}</AltPhone>
                 <Email>#{object['email']}</Email>
                 #{add_fields(object, FIELD_MAP)}
-                #{add_refs(object)}
+                #{add_refs(object, REF_MAP, config)}
                 #{sales_tax_country(object)}
                 #{job_status(object)}
                 #{preferred_delivery_method(object)}
@@ -234,9 +234,9 @@ module QBWC
           fields
         end
 
-        def add_refs(object)
+        def add_refs(object, mapping, config)
           fields = ""
-          REF_MAP.each do |qbe_name, flowlink_name|
+          mapping.each do |qbe_name, flowlink_name|
             full_name = object[flowlink_name] || config[flowlink_name] || config["quickbooks_#{flowlink_name}"]
             fields += "<#{qbe_name}><FullName>#{full_name}</FullName></#{qbe_name}>" unless full_name.nil?
           end
@@ -247,7 +247,12 @@ module QBWC
         def add_fields(object, mapping)
           fields = ""
           mapping.each do |qbe_name, flowlink_name|
-            fields += "<#{qbe_name}>#{object[flowlink_name]}</#{qbe_name}>\n" unless object[flowlink_name].nil?
+            return '' if object[flowlink_name].nil?
+
+            name = flowlink_name
+            name = '%.2f' % object[flowlink_name].to_f if name == 'cost' || name == 'price'
+
+            fields += "<#{qbe_name}>#{name}</#{qbe_name}>"
           end
 
           fields

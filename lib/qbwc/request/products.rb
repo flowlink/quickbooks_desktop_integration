@@ -37,9 +37,9 @@ module QBWC
             session_id = Persistence::Session.save(config, object)
             
             request << if object[:list_id].to_s.empty?
-                         add_xml_to_send(object, params, session_id)
+                         add_xml_to_send(object, params, session_id, config)
                        else
-                         update_xml_to_send(object, params, session_id)
+                         update_xml_to_send(object, params, session_id, config)
                        end
           end
         end
@@ -49,7 +49,7 @@ module QBWC
             config = { connection_id: params['connection_id'] }.with_indifferent_access
             session_id = Persistence::Session.save(config, object)
 
-            request << search_xml(object.key?('product_id') ? object['product_id'] : object['id'], session_id)
+            request << search_xml(product_identifier(object), session_id)
           end
         end
 
@@ -65,23 +65,23 @@ module QBWC
           XML
         end
 
-        def add_xml_to_send(product, params, session_id)
+        def add_xml_to_send(product, params, session_id, config)
           <<~XML
             <ItemInventoryAddRq requestID="#{session_id}">
                <ItemInventoryAdd>
-                #{product_xml(product, params)}
+                #{product_xml(product, params, config)}
                </ItemInventoryAdd>
             </ItemInventoryAddRq>
           XML
         end
 
-        def update_xml_to_send(product, params, session_id)
+        def update_xml_to_send(product, params, session_id, config)
           <<~XML
             <ItemInventoryModRq requestID="#{session_id}">
                 <ItemInventoryMod>
                   <ListID>#{product['list_id']}</ListID>
                   <EditSequence>#{product['edit_sequence']}</EditSequence>
-                  #{product.key?('active') ? product_only_touch_xml(product, params) : product_xml(product, params)}
+                  #{product.key?('active') ? product_only_touch_xml(product, params) : product_xml(product, params, config)}
                 </ItemInventoryMod>
             </ItemInventoryModRq>
           XML
@@ -89,16 +89,16 @@ module QBWC
 
         def product_only_touch_xml(product, _params)
           <<~XML
-            <Name>#{product['product_id'] || product['sku']}</Name>
+            <Name>#{product_identifier(product)}</Name>
             <IsActive>true</IsActive>
           XML
         end
 
-        def product_xml(product, params)
+        def product_xml(product, params, config)
           <<~XML
-            <Name>#{product['product_id'] || product['sku']}</Name>
+            <Name>#{product_identifier(product)}</Name>
             #{add_fields(product, FIELDS_MAP)}
-            #{add_refs(product)}
+            #{add_refs(product, REF_MAP, config)}
             #{add_barcode(product)}
           XML
         end
@@ -172,9 +172,13 @@ module QBWC
 
         private
 
-        def add_refs(object)
+        def product_identifier(object)
+          object['product_id'] || object['sku'] || object['id']
+        end
+
+        def add_refs(object, mapping, config)
           fields = ""
-          REF_MAP.each do |qbe_name, flowlink_name|
+          mapping.each do |qbe_name, flowlink_name|
             full_name = object[flowlink_name] || config[flowlink_name] || config["quickbooks_#{flowlink_name}"]
             fields += "<#{qbe_name}><FullName>#{full_name}</FullName></#{qbe_name}>" unless full_name.nil?
           end
