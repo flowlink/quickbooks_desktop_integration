@@ -191,8 +191,12 @@ module QBWC
         def add_refs(object, mapping, config)
           fields = ""
           mapping.each do |qbe_name, flowlink_name|
-            full_name = object[flowlink_name] || config[flowlink_name] || config["quickbooks_#{flowlink_name}"]
-            fields += "<#{qbe_name}><FullName>#{full_name}</FullName></#{qbe_name}>" unless full_name.nil?
+            if object[flowlink_name].respond_to?(:has_key?) && object[flowlink_name]['list_id']
+              fields += "<#{qbe_name}><ListID>#{object[flowlink_name]['list_id']}</ListID></#{qbe_name}>"
+            else
+              full_name = object[flowlink_name] || config[flowlink_name] || config["quickbooks_#{flowlink_name}"]
+              fields += "<#{qbe_name}><FullName>#{full_name}</FullName></#{qbe_name}>" unless full_name.nil?
+            end
           end
 
           fields
