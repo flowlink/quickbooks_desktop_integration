@@ -25,7 +25,7 @@ module QBWC
         SalesDesc: "description",
         SalesPrice: "price",
         PurchaseDesc: "purchase_description",
-        PurchaseCost: "purchase_price"
+        PurchaseCost: "cost"
       }
 
       SALES_AND_PURCHASE_REF_MAP = {

@@ -25,7 +25,7 @@ module QBWC
         QuantityOnHand: "quantity",
         TotalValue: "total_value",
         SalesPrice: "price",
-        PurchaseCost: "purchase",
+        PurchaseCost: "cost",
         InventoryDate: "inventory_date",
         ExternalGUID: "external_guid"
       }
