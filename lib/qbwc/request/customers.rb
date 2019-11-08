@@ -19,6 +19,7 @@ module QBWC
         {qbe_name: "Phone", flowlink_name: "phone", is_ref: false},
         {qbe_name: "AltPhone", flowlink_name: "mobile", is_ref: false},
         {qbe_name: "Fax", flowlink_name: "fax", is_ref: false},
+        {qbe_name: "Email", flowlink_name: "email", is_ref: false},
         {qbe_name: "Cc", flowlink_name: "cc", is_ref: false},
         {qbe_name: "Contact", flowlink_name: "contact", is_ref: false},
         {qbe_name: "AltContact", flowlink_name: "alternative_contact", is_ref: false}
