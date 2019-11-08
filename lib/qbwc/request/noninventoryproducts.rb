@@ -41,9 +41,6 @@ module QBWC
             config = { connection_id: params['connection_id'] }.with_indifferent_access
             session_id = Persistence::Session.save(config, object)
 
-            puts "systum1"
-            puts add_xml_to_send(object, params, session_id, config).gsub(/\s+/, "")
-            puts object.to_s.gsub(/\s+/, "")
             request << if object[:list_id].to_s.empty?
                          add_xml_to_send(object, params, session_id, config)
                        else
