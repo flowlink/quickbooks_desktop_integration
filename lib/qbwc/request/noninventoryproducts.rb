@@ -2,38 +2,35 @@ module QBWC
   module Request
     class Noninventoryproducts
 
-      FIELD_MAP = {
-        ManufacturerPartNumber: "manufacturer_part_number",
-        IsTaxIncluded: "is_tax_included",
-        ExternalGUID: "external_guid"
-      }
 
-      REF_MAP = {
-        ClassRef: "class_name",
-        ParentRef: "parent_name",
-        UnitOfMeasureSetRef: "unit_of_measure",
-        SalesTaxCodeRef: "sales_tax_code_name"
-      }
+      GENERAL_MAPPING = [
+        {qbe_name: "ParentRef", flowlink_name: "parent_name", is_ref: true},
+        {qbe_name: "ClassRef", flowlink_name: "class_name", is_ref: true},
+        {qbe_name: "ManufacturerPartNumber", flowlink_name: "manufacturer_part_number", is_ref: false},
+        {qbe_name: "UnitOfMeasureSetRef", flowlink_name: "unit_of_measure", is_ref: true},
+        {qbe_name: "IsTaxIncluded", flowlink_name: "is_tax_included", is_ref: false},
+        {qbe_name: "SalesTaxCodeRef", flowlink_name: "sales_tax_code_name", is_ref: true},
+      ]
 
-      SALES_OR_PURCHASE_MAP = {
-        Desc: "description",
-        Price: "price",
-        PricePercent: "price_percent"
-      }
+      SALES_OR_PURCHASE_MAP = [
+        {qbe_name: "Desc", flowlink_name: "description", is_ref: false},
+        {qbe_name: "Price", flowlink_name: "price", is_ref: false},
+        {qbe_name: "PricePercent", flowlink_name: "price_percent", is_ref: false},
+        {qbe_name: "AccountRef", flowlink_name: "account_name", is_ref: true}
+      ]
 
-      SALES_AND_PURCHASE_MAP = {
-        SalesDesc: "description",
-        SalesPrice: "price",
-        PurchaseDesc: "purchase_description",
-        PurchaseCost: "cost"
-      }
+      SALES_AND_PURCHASE_MAP = [
+        {qbe_name: "SalesDesc", flowlink_name: "description", is_ref: false},
+        {qbe_name: "SalesPrice", flowlink_name: "price", is_ref: false},
+        {qbe_name: "IncomeAccountRef", flowlink_name: "income_account", is_ref: true},
+        {qbe_name: "PurchaseDesc", flowlink_name: "purchase_description", is_ref: false},
+        {qbe_name: "PurchaseCost", flowlink_name: "cost", is_ref: false},
+        {qbe_name: "PurchaseTaxCodeRef", flowlink_name: "purchase_tax_code_name", is_ref: true},
+        {qbe_name: "ExpenseAccountRef", flowlink_name: "expense_account", is_ref: true},
+        {qbe_name: "PrefVendorRef", flowlink_name: "preferred_vendor_name", is_ref: true}
+      ]
 
-      SALES_AND_PURCHASE_REF_MAP = {
-        IncomeAccountRef: "income_account",
-        PurchaseTaxCodeRef: "purchase_tax_code_name",
-        ExpenseAccountRef: "expense_account",
-        PrefVendorRef: "preferred_vendor_name"
-      }
+      EXTERNAL_GUID_MAP = [{qbe_name: "ExternalGUID", flowlink_name: "external_guid", is_ref: false}]
 
       class << self
         def generate_request_insert_update(objects, params = {})
@@ -102,11 +99,11 @@ module QBWC
         def product_xml(product, params, config)
           <<~XML
             <Name>#{product_identifier(product)}</Name>
-            <IsActive >#{product['is_active'] || true}</IsActive>
-            #{add_refs(product, REF_MAP, config)}
-            #{add_fields(product, FIELD_MAP)}
             #{add_barcode(product)}
+            <IsActive >#{product['is_active'] || true}</IsActive>
+            #{add_fields(product, GENERAL_MAPPING, config)}
             #{sale_or_and_purchase(product, config)}
+            #{add_fields(product, EXTERNAL_GUID_MAP, config)}
           XML
         end
 
@@ -154,46 +151,54 @@ module QBWC
           if product['sale_or_purchase']
             <<~XML
               <SalesOrPurchase>
-                #{add_fields(product, SALES_OR_PURCHASE_MAP)}
-                <AccountRef><FullName>#{product['account_name'] || config['account_name'] || config['quickbooks_account_name']}</FullName></AccountRef>
+                #{add_fields(product, SALES_OR_PURCHASE_MAP, config)}
               </SalesOrPurchase>
             XML
           else
             <<~XML
               <SalesAndPurchase>
-                #{add_fields(product, SALES_AND_PURCHASE_MAP)}
-                #{add_refs(product, SALES_AND_PURCHASE_REF_MAP, config)}
+                #{add_fields(product, SALES_AND_PURCHASE_MAP, config)}
               </SalesAndPurchase>
             XML
           end
         end
 
-        def add_refs(object, mapping, config)
+        def add_fields(object, mapping, config)
           fields = ""
-          mapping.each do |qbe_name, flowlink_name|
-            if object[flowlink_name].respond_to?(:has_key?) && object[flowlink_name]['list_id']
-              fields += "<#{qbe_name}><ListID>#{object[flowlink_name]['list_id']}</ListID></#{qbe_name}>"
+          mapping.each do |map_item|
+            if map_item[:is_ref]
+              fields += add_ref_xml(object, map_item, config)
             else
-              full_name = object[flowlink_name] || config[flowlink_name] || config["quickbooks_#{flowlink_name}"]
-              fields += "<#{qbe_name}><FullName>#{full_name}</FullName></#{qbe_name}>" unless full_name.nil?
+              fields += add_basic_xml(object, map_item)
             end
           end
 
           fields
         end
 
-        def add_fields(object, mapping)
-          fields = ""
-          mapping.each do |qbe_name, flowlink_name|
-            next '' if object[flowlink_name].nil?
+        def add_basic_xml(object, mapping)
+          flowlink_field = object[mapping[:flowlink_name]]
+          qbe_field_name = mapping[:qbe_name]
 
-            name = object[flowlink_name]
-            name = '%.2f' % name.to_f if name == 'cost' || name == 'price'
+          return '' if flowlink_field.nil?
 
-            fields += "<#{qbe_name}>#{name}</#{qbe_name}>"
+          flowlink_field = '%.2f' % flowlink_field.to_f if mapping[:flowlink_name] == 'cost' || mapping[:flowlink_name] == 'price'
+
+          "<#{qbe_field_name}>#{flowlink_field}</#{qbe_field_name}>"
+        end
+
+        def add_refs(object, mapping, config)
+          flowlink_field = object[mapping[:flowlink_name]]
+          qbe_field_name = mapping[:qbe_name]
+
+          if flowlink_field.respond_to?(:has_key?) && flowlink_field['list_id']
+            return "<#{qbe_field_name}><ListID>#{flowlink_field['list_id']}</ListID></#{qbe_field_name}>"
           end
+          full_name = flowlink_field ||
+                                config[mapping[:flowlink_name]] ||
+                                config["quickbooks_#{mapping[:flowlink_name]}"]
 
-          fields
+          full_name.nil? ? "" : "<#{qbe_field_name}><FullName>#{full_name}</FullName></#{qbe_field_name}>"
         end
 
         def query_by_date(config, time)
