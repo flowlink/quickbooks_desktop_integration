@@ -44,6 +44,11 @@ module QBWC
           end
         end
 
+        def polling_others_items_xml(_timestamp, _config)
+          # nothing on this class
+          ''
+        end
+
         def generate_request_queries(objects, params)
           objects.inject('') do |request, object|
             config = { connection_id: params['connection_id'] }.with_indifferent_access
