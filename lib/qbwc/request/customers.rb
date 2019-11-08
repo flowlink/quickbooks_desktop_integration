@@ -251,14 +251,12 @@ module QBWC
         end
 
         def add_fields(object, mapping)
-          puts "Adding fields"
           fields = ""
           mapping.each do |qbe_name, flowlink_name|
-            puts "#{flowlink_name} is nil? - #{object[flowlink_name].nil?}"
             return '' if object[flowlink_name].nil?
-            puts "Value on object: #{object[flowlink_name]}"
+
             name = object[flowlink_name]
-            name = '%.2f' % object[flowlink_name].to_f if name == 'cost' || name == 'price'
+            name = '%.2f' % name.to_f if name == 'cost' || name == 'price'
 
             fields += "<#{qbe_name}>#{name}</#{qbe_name}>"
           end

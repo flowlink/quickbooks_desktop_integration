@@ -190,8 +190,8 @@ module QBWC
           mapping.each do |qbe_name, flowlink_name|
             return '' if object[flowlink_name].nil?
 
-            name = flowlink_name
-            name = '%.2f' % object[flowlink_name].to_f if name == 'cost' || name == 'price'
+            name = object[flowlink_name]
+            name = '%.2f' % name.to_f if name == 'cost' || name == 'price'
 
             fields += "<#{qbe_name}>#{name}</#{qbe_name}>"
           end
