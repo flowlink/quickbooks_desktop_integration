@@ -195,7 +195,7 @@ module QBWC
 
         def customer_xml(initial_object, config)
           object = pre_mapping_logic(initial_object)
-          
+
           <<~XML
             #{add_fields(object, MAPPING_ONE, config)}
             <BillAddress>
@@ -217,6 +217,7 @@ module QBWC
         def ship_to_address(object)
           return "" unless object['ship_to_address'] && object['ship_to_address'].is_a?(Array)
 
+          object['ship_to_address'] = object['ship_to_address'][0...50] if object['ship_to_address'].length > 50
           fields = ""
           object['ship_to_address'].each do |addr|
             fields += "<ShipToAddress>"
