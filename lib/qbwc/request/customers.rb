@@ -170,24 +170,10 @@ module QBWC
         end
 
         def add_xml_to_send(object, session_id, config)
-          pre_mapping_logic(object)
           <<~XML
             <CustomerAddRq requestID="#{session_id}">
               <CustomerAdd>
-                #{add_fields(object, MAPPING_ONE, config)}
-                <BillAddress>
-                  #{add_fields(object['billing_address'], ADDRESS_MAP, config) if object['billing_address']}
-                </BillAddress>
-                <ShipAddress>
-                  #{add_fields(object['shipping_address'], ADDRESS_MAP, config) if object['shipping_address']}
-                </ShipAddress>
-                #{ship_to_address(object)}
-                #{add_fields(object, MAPPING_TWO, config)}
-                #{additional_contacts(object)}
-                #{contacts(object)}
-                #{add_fields(object, MAPPING_THREE, config)}
-                #{additional_notes(object)}
-                #{add_fields(object, MAPPING_FOUR, config)}
+                #{customer_xml(object, config)}
               </CustomerAdd>
             </CustomerAddRq>
           XML
@@ -199,33 +185,34 @@ module QBWC
               <CustomerMod>
                 <ListID>#{object['list_id']}</ListID>
                 <EditSequence>#{object['edit_sequence']}</EditSequence>
-                <Name>#{object['name']}</Name>
-                <FirstName>#{object['firstname'] ? object['firstname'] : object['name'].split.first}</FirstName>
-                #{"<LastName>#{object['lastname'] || object['name'].split.last}</LastName>" if object['lastname']}
-                <Phone>#{object['billing_address']['phone'] if object['billing_address']}</Phone>
-                <AltPhone>#{object['shipping_address']['phone'] if object['shipping_address']}</AltPhone>
-                <Email>#{object['email']}</Email>
-                #{add_fields(object, FIELD_MAP)}
-                #{add_refs(object, REF_MAP, config)}
-                #{sales_tax_country(object)}
-                #{job_status(object)}
-                #{preferred_delivery_method(object)}
-                <BillAddress>
-                  #{add_fields(object['billing_address'], ADDRESS_MAP) if object['billing_address']}
-                </BillAddress>
-                <ShipAddress>
-                  #{add_fields(object['shipping_address'], ADDRESS_MAP) if object['shipping_address']}
-                </ShipAddress>
-                #{ship_to_address(object)}
-                #{additional_contacts(object)}
-                #{additional_notes(object)}
-                #{contacts(object)}
+                #{customer_xml(object, config)}
               </CustomerMod>
             </CustomerModRq>
           XML
         end
 
         private
+
+        def customer_xml(initial_object, config)
+          object = pre_mapping_logic(initial_object)
+          
+          <<~XML
+            #{add_fields(object, MAPPING_ONE, config)}
+            <BillAddress>
+              #{add_fields(object['billing_address'], ADDRESS_MAP, config) if object['billing_address']}
+            </BillAddress>
+            <ShipAddress>
+              #{add_fields(object['shipping_address'], ADDRESS_MAP, config) if object['shipping_address']}
+            </ShipAddress>
+            #{ship_to_address(object)}
+            #{add_fields(object, MAPPING_TWO, config)}
+            #{additional_contacts(object)}
+            #{contacts(object)}
+            #{add_fields(object, MAPPING_THREE, config)}
+            #{additional_notes(object)}
+            #{add_fields(object, MAPPING_FOUR, config)}
+          XML
+        end
 
         def ship_to_address(object)
           return "" unless object['ship_to_address'] && object['ship_to_address'].is_a?(Array)
@@ -234,8 +221,8 @@ module QBWC
           object['ship_to_address'].each do |addr|
             fields += "<ShipToAddress>"
             fields += "<Name>#{addr['name']}</Name>" if addr['name']
-            fields += "<DefaultShipTo>#{addr['default_ship_to']}</DefaultShipTo>" if addr['default_ship_to']
             fields += add_fields(addr, ADDRESS_MAP, config)
+            fields += "<DefaultShipTo>#{addr['default_ship_to']}</DefaultShipTo>" if addr['default_ship_to']
             fields += "</ShipToAddress>"
           end
           
@@ -287,7 +274,9 @@ module QBWC
           fields
         end
 
-        def pre_mapping_logic(object)
+        def pre_mapping_logic(initial_object)
+          object = initial_object
+
           object['is_active'] = object['is_active'] || true
           object['firstname'] = object['firstname'] || object['name'].split.first
           object['lastname'] = object['lastname'] || object['name'].split.last
@@ -298,6 +287,8 @@ module QBWC
           object['preferred_delivery_method'] = "" unless DELIVERY_METHODS.include?(object['preferred_delivery_method'])
           object['job_status'] = "" unless JOB_STATUSES.include?(object['job_status'])
           object['sales_tax_country'] = "" unless SALES_TAX_COUNTRIES.include?(object['sales_tax_country'])
+
+          object
         end
 
         def add_fields(object, mapping, config)
