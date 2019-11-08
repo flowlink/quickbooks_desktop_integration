@@ -236,7 +236,6 @@ module QBWC
           fields
         end
 
-
         def additional_contacts(object)
           return "" unless object['additional_contacts'] && object['additional_contacts'].is_a?(Array)
           
@@ -291,9 +290,9 @@ module QBWC
           if object['mobile'] && object['mobile'] != ''
             object['mobile'] = object['shipping_address']['phone'] if object['shipping_address']
           end
-          object['preferred_delivery_method'] = "" unless DELIVERY_METHODS.include?(object['preferred_delivery_method'])
-          object['job_status'] = "" unless JOB_STATUSES.include?(object['job_status'])
-          object['sales_tax_country'] = "" unless SALES_TAX_COUNTRIES.include?(object['sales_tax_country'])
+          object['preferred_delivery_method'] = nil unless DELIVERY_METHODS.include?(object['preferred_delivery_method'])
+          object['job_status'] = nil unless JOB_STATUSES.include?(object['job_status'])
+          object['sales_tax_country'] = nil unless SALES_TAX_COUNTRIES.include?(object['sales_tax_country'])
 
           object
         end

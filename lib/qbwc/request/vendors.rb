@@ -201,8 +201,8 @@ module QBWC
           if object['mobile'] && object['mobile'] != ''
             object['mobile'] = object['ship_from_address']['phone'] if object['ship_from_address']
           end
-          object['reporting_period'] = "" unless REPORTING_PERIODS.include?(object['reporting_period'])
-          object['sales_tax_country'] = "" unless SALES_TAX_COUNTRIES.include?(object['sales_tax_country'])
+          object['reporting_period'] = nil unless REPORTING_PERIODS.include?(object['reporting_period'])
+          object['sales_tax_country'] = nil unless SALES_TAX_COUNTRIES.include?(object['sales_tax_country'])
 
           object
         end
@@ -250,7 +250,6 @@ module QBWC
 
           fields
         end
-
 
         def add_fields(object, mapping, config)
           fields = ""
