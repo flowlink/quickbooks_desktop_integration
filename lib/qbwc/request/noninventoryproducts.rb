@@ -187,7 +187,7 @@ module QBWC
           "<#{qbe_field_name}>#{flowlink_field}</#{qbe_field_name}>"
         end
 
-        def add_refs(object, mapping, config)
+        def add_ref_xml(object, mapping, config)
           flowlink_field = object[mapping[:flowlink_name]]
           qbe_field_name = mapping[:qbe_name]
 
