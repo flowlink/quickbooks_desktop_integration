@@ -2,7 +2,6 @@ module QBWC
   module Request
     class Noninventoryproducts
 
-
       GENERAL_MAPPING = [
         {qbe_name: "ParentRef", flowlink_name: "parent_name", is_ref: true},
         {qbe_name: "ClassRef", flowlink_name: "class_name", is_ref: true},
@@ -179,10 +178,11 @@ module QBWC
         def add_basic_xml(object, mapping)
           flowlink_field = object[mapping[:flowlink_name]]
           qbe_field_name = mapping[:qbe_name]
+          float_fields = ['price', 'cost']
 
           return '' if flowlink_field.nil?
 
-          flowlink_field = '%.2f' % flowlink_field.to_f if mapping[:flowlink_name] == 'cost' || mapping[:flowlink_name] == 'price'
+          flowlink_field = '%.2f' % flowlink_field.to_f if float_fields.include?(mapping[:flowlink_name])
 
           "<#{qbe_field_name}>#{flowlink_field}</#{qbe_field_name}>"
         end

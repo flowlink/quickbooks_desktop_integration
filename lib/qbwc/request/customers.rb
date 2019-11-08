@@ -2,64 +2,78 @@ module QBWC
   module Request
     class Customers
 
-      FIELD_MAP = {
-        IsActive: "is_active",
-        CompanyName: "company",
-        Salutation: "salutation",
-        MiddleName: "middlename",
-        JobTitle: "job_title",
-        Fax: "fax",
-        Cc: "cc",
-        Contact: "contact",
-        AltContact: "alternative_contact",
-        ResaleNumber: "resale_number",
-        AccountNumber: "account_number",
-        CreditLimit: "credit_limit",
-        JobStartDate: "job_start_date",
-        JobProjectedEndDate: "job_projected_end_date",
-        JobEndDate: "job_end_date",
-        JobDesc: "job_description",
-        Notes: "notes",
-        ExternalGUID: "external_guid",
-        TaxRegistrationNumber: "tax_registration_number",
-        OpenBalance: "open_balance",
-        OpenBalanceDate: "open_balance_date"
-      }
+      MAPPING_ONE = [
+        {qbe_name: "Name", flowlink_name: "name", is_ref: false},
+        {qbe_name: "IsActive", flowlink_name: "is_active", is_ref: false},
+        {qbe_name: "ClassRef", flowlink_name: "class_name", is_ref: true},
+        {qbe_name: "ParentRef", flowlink_name: "parent_name", is_ref: true},
+        {qbe_name: "CompanyName", flowlink_name: "company", is_ref: false},
+        {qbe_name: "Salutation", flowlink_name: "salutation", is_ref: false},
+        {qbe_name: "FirstName", flowlink_name: "firstname", is_ref: false},
+        {qbe_name: "MiddleName", flowlink_name: "middlename", is_ref: false},
+        {qbe_name: "LastName", flowlink_name: "lastname", is_ref: false},
+        {qbe_name: "JobTitle", flowlink_name: "job_title", is_ref: false}
+      ]
 
-      ADDRESS_MAP = {
-        Addr1: "address1",
-        Addr2: "address2",
-        Addr3: "address3",
-        Addr4: "address4",
-        Addr5: "address5",
-        City: "city",
-        State: "state",
-        PostalCode: "zipcode",
-        Country: "country",
-        Note: "note"
-      }
+      MAPPING_TWO = [
+        {qbe_name: "Phone", flowlink_name: "phone", is_ref: false},
+        {qbe_name: "AltPhone", flowlink_name: "mobile", is_ref: false},
+        {qbe_name: "Fax", flowlink_name: "fax", is_ref: false},
+        {qbe_name: "Cc", flowlink_name: "cc", is_ref: false},
+        {qbe_name: "Contact", flowlink_name: "contact", is_ref: false},
+        {qbe_name: "AltContact", flowlink_name: "alternative_contact", is_ref: false}
+      ]
 
-      REF_MAP = {
-        ClassRef: "class_name",
-        ParentRef: "parent_name",
-        CustomerTypeRef: "customer_type_name",
-        TermsRef: "terms",
-        SalesRepRef: "sales_rep_name",
-        SalesTaxCodeRef: "sales_tax_code_name",
-        ItemSalesTaxRef: "item_sales_tax_name",
-        PreferredPaymentMethodRef: "preferred_payment_method_name",
-        JobTypeRef: "job_type_name",
-        PriceLevelRef: "price_level_name",
-        CurrencyRef: "currency_name"
-      }
+      MAPPING_THREE = [
+        {qbe_name: "CustomerTypeRef", flowlink_name: "customer_type_name", is_ref: true},
+        {qbe_name: "TermsRef", flowlink_name: "terms", is_ref: true},
+        {qbe_name: "SalesRepRef", flowlink_name: "sales_rep_name", is_ref: true},
+        {qbe_name: "OpenBalance", flowlink_name: "open_balance", is_ref: false},
+        {qbe_name: "OpenBalanceDate", flowlink_name: "open_balance_date", is_ref: false},
+        {qbe_name: "SalesTaxCodeRef", flowlink_name: "sales_tax_code_name", is_ref: true},
+        {qbe_name: "ItemSalesTaxRef", flowlink_name: "item_sales_tax_name", is_ref: true},
+        {qbe_name: "SalesTaxCountry", flowlink_name: "sales_tax_country", is_ref: false},
+        {qbe_name: "ResaleNumber", flowlink_name: "resale_number", is_ref: false},
+        {qbe_name: "AccountNumber", flowlink_name: "account_number", is_ref: false},
+        {qbe_name: "CreditLimit", flowlink_name: "credit_limit", is_ref: false},
+        {qbe_name: "PreferredPaymentMethodRef", flowlink_name: "preferred_payment_method_name", is_ref: true},
+        {qbe_name: "JobStatus", flowlink_name: "job_status", is_ref: false},
+        {qbe_name: "JobStartDate", flowlink_name: "job_start_date", is_ref: false},
+        {qbe_name: "JobProjectedEndDate", flowlink_name: "job_projected_end_date", is_ref: false},
+        {qbe_name: "JobEndDate", flowlink_name: "job_end_date", is_ref: false},
+        {qbe_name: "JobDesc", flowlink_name: "job_description", is_ref: false},
+        {qbe_name: "JobTypeRef", flowlink_name: "job_type_name", is_ref: true},
+        {qbe_name: "Notes", flowlink_name: "notes", is_ref: false}
+      ]
 
-      CONTACTS_MAP = {
-        Salutation: "salutation",
-        FirstName: "firstname",
-        MiddleName: "middlename",
-        LastName: "lastname",
-        JobTitle: "job_title"
-      }
+      MAPPING_FOUR = [
+        {qbe_name: "PreferredDeliveryMethod", flowlink_name: "preferred_delivery_method", is_ref: false},
+        {qbe_name: "PriceLevelRef", flowlink_name: "price_level_name", is_ref: true},
+        {qbe_name: "ExternalGUID", flowlink_name: "external_guid", is_ref: false},
+        {qbe_name: "TaxRegistrationNumber", flowlink_name: "tax_registration_number", is_ref: false},
+        {qbe_name: "CurrencyRef", flowlink_name: "currency_name", is_ref: true}
+      ]
+      
+      ADDRESS_MAP = [
+        {qbe_name: "Addr1", flowlink_name: "address1", is_ref: false},
+        {qbe_name: "Addr2", flowlink_name: "address2", is_ref: false},
+        {qbe_name: "Addr3", flowlink_name: "address3", is_ref: false},
+        {qbe_name: "Addr4", flowlink_name: "address4", is_ref: false},
+        {qbe_name: "Addr5", flowlink_name: "address5", is_ref: false},
+        {qbe_name: "City", flowlink_name: "city", is_ref: false},
+        {qbe_name: "State", flowlink_name: "state", is_ref: false},
+        {qbe_name: "PostalCode", flowlink_name: "zipcode", is_ref: false},
+        {qbe_name: "Country", flowlink_name: "country", is_ref: false},
+        {qbe_name: "Note", flowlink_name: "note", is_ref: false}
+      ]
+
+      CONTACTS_MAP = [
+        {qbe_name: "Salutation", flowlink_name: "salutation", is_ref: false},
+        {qbe_name: "FirstName", flowlink_name: "firstname", is_ref: false},
+        {qbe_name: "MiddleName", flowlink_name: "middlename", is_ref: false},
+        {qbe_name: "LastName", flowlink_name: "lastname", is_ref: false},
+        {qbe_name: "JobTitle", flowlink_name: "job_title", is_ref: false}
+      ]
 
       SALES_TAX_COUNTRIES = ['Australia', 'Canada', 'UK', 'US']
       JOB_STATUSES = ['Awarded', 'Closed', 'InProgress', 'None', 'NotAwarded', 'Pending']
@@ -156,30 +170,24 @@ module QBWC
         end
 
         def add_xml_to_send(object, session_id, config)
+          pre_mapping_logic(object)
           <<~XML
             <CustomerAddRq requestID="#{session_id}">
               <CustomerAdd>
-                <Name>#{object['name']}</Name>
-                <FirstName>#{object['firstname'] ? object['firstname'] : object['name'].split.first}</FirstName>
-                #{"<LastName>#{object['lastname'] || object['name'].split.last}</LastName>" if object['lastname']}
-                <Phone>#{object['billing_address']['phone'] if object['billing_address']}</Phone>
-                <AltPhone>#{object['shipping_address']['phone'] if object['shipping_address']}</AltPhone>
-                <Email>#{object['email']}</Email>
-                #{add_fields(object, FIELD_MAP)}
-                #{add_refs(object, REF_MAP, config)}
-                #{sales_tax_country(object)}
-                #{job_status(object)}
-                #{preferred_delivery_method(object)}
+                #{add_fields(object, MAPPING_ONE, config)}
                 <BillAddress>
-                  #{add_fields(object['billing_address'], ADDRESS_MAP) if object['billing_address']}
+                  #{add_fields(object['billing_address'], ADDRESS_MAP, config) if object['billing_address']}
                 </BillAddress>
                 <ShipAddress>
-                  #{add_fields(object['shipping_address'], ADDRESS_MAP) if object['shipping_address']}
+                  #{add_fields(object['shipping_address'], ADDRESS_MAP, config) if object['shipping_address']}
                 </ShipAddress>
                 #{ship_to_address(object)}
+                #{add_fields(object, MAPPING_TWO, config)}
                 #{additional_contacts(object)}
-                #{additional_notes(object)}
                 #{contacts(object)}
+                #{add_fields(object, MAPPING_THREE, config)}
+                #{additional_notes(object)}
+                #{add_fields(object, MAPPING_FOUR, config)}
               </CustomerAdd>
             </CustomerAddRq>
           XML
@@ -225,57 +233,15 @@ module QBWC
           fields = ""
           object['ship_to_address'].each do |addr|
             fields += "<ShipToAddress>"
-            fields += "<Name>#{addr['name']}</Name>"
-            fields += "<DefaultShipTo>#{addr['default_ship_to']}</DefaultShipTo>"
-            fields += add_fields(addr, ADDRESS_MAP)
+            fields += "<Name>#{addr['name']}</Name>" if addr['name']
+            fields += "<DefaultShipTo>#{addr['default_ship_to']}</DefaultShipTo>" if addr['default_ship_to']
+            fields += add_fields(addr, ADDRESS_MAP, config)
             fields += "</ShipToAddress>"
           end
           
           fields
         end
 
-        def add_refs(object, mapping, config)
-          fields = ""
-          mapping.each do |qbe_name, flowlink_name|
-            if object[flowlink_name].respond_to?(:has_key?) && object[flowlink_name]['list_id']
-              fields += "<#{qbe_name}><ListID>#{object[flowlink_name]['list_id']}</ListID></#{qbe_name}>"
-            else
-              full_name = object[flowlink_name] || config[flowlink_name] || config["quickbooks_#{flowlink_name}"]
-              fields += "<#{qbe_name}><FullName>#{full_name}</FullName></#{qbe_name}>" unless full_name.nil?
-            end
-          end
-
-          fields
-        end
-
-        def add_fields(object, mapping)
-          fields = ""
-          mapping.each do |qbe_name, flowlink_name|
-            next '' if object[flowlink_name].nil?
-
-            name = object[flowlink_name]
-            name = '%.2f' % name.to_f if name == 'cost' || name == 'price'
-
-            fields += "<#{qbe_name}>#{name}</#{qbe_name}>"
-          end
-
-          fields
-        end
-
-        def sales_tax_country(object)
-          return "" unless SALES_TAX_COUNTRIES.include?(object['sales_tax_country'])
-          "<SalesTaxCountry>#{object['sales_tax_country']}</SalesTaxCountry>"
-        end
-
-        def job_status(object)
-          return "" unless JOB_STATUSES.include?(object['job_status'])
-          "<JobStatus>#{object['job_status']}</JobStatus>"
-        end
-
-        def preferred_delivery_method(object)
-          return "" unless DELIVERY_METHODS.include?(object['preferred_delivery_method'])
-          "<PreferredDeliveryMethod>#{object['preferred_delivery_method']}</PreferredDeliveryMethod>"
-        end
 
         def additional_contacts(object)
           return "" unless object['additional_contacts'] && object['additional_contacts'].is_a?(Array)
@@ -300,6 +266,7 @@ module QBWC
           
           fields = ""
           object['additional_notes'].each do |note|
+            next unless note
             fields += "<AdditionalNotes><Note>#{note}</Note></AdditionalNotes>"
           end
 
@@ -312,12 +279,64 @@ module QBWC
           fields = ""
           object['contacts'].each do |contact|
             fields += "<Contacts>"
-            fields += add_fields(contact, CONTACTS_MAP)
+            fields += add_fields(contact, CONTACTS_MAP, config)
             fields += additional_contacts(contact)
             fields += "</Contacts>"
           end
 
           fields
+        end
+
+        def pre_mapping_logic(object)
+          object['is_active'] = object['is_active'] || true
+          object['firstname'] = object['firstname'] || object['name'].split.first
+          object['lastname'] = object['lastname'] || object['name'].split.last
+          object['phone'] = object['billing_address']['phone'] if object['billing_address']
+          if object['mobile'] && object['mobile'] != ''
+            object['mobile'] = object['shipping_address']['phone'] if object['shipping_address']
+          end
+          object['preferred_delivery_method'] = "" unless DELIVERY_METHODS.include?(object['preferred_delivery_method'])
+          object['job_status'] = "" unless JOB_STATUSES.include?(object['job_status'])
+          object['sales_tax_country'] = "" unless SALES_TAX_COUNTRIES.include?(object['sales_tax_country'])
+        end
+
+        def add_fields(object, mapping, config)
+          fields = ""
+          mapping.each do |map_item|
+            if map_item[:is_ref]
+              fields += add_ref_xml(object, map_item, config)
+            else
+              fields += add_basic_xml(object, map_item)
+            end
+          end
+
+          fields
+        end
+
+        def add_basic_xml(object, mapping)
+          flowlink_field = object[mapping[:flowlink_name]]
+          qbe_field_name = mapping[:qbe_name]
+          float_fields = ['price', 'cost']
+
+          return '' if flowlink_field.nil?
+
+          flowlink_field = '%.2f' % flowlink_field.to_f if float_fields.include?(mapping[:flowlink_name])
+
+          "<#{qbe_field_name}>#{flowlink_field}</#{qbe_field_name}>"
+        end
+
+        def add_ref_xml(object, mapping, config)
+          flowlink_field = object[mapping[:flowlink_name]]
+          qbe_field_name = mapping[:qbe_name]
+
+          if flowlink_field.respond_to?(:has_key?) && flowlink_field['list_id']
+            return "<#{qbe_field_name}><ListID>#{flowlink_field['list_id']}</ListID></#{qbe_field_name}>"
+          end
+          full_name = flowlink_field ||
+                                config[mapping[:flowlink_name]] ||
+                                config["quickbooks_#{mapping[:flowlink_name]}"]
+
+          full_name.nil? ? "" : "<#{qbe_field_name}><FullName>#{full_name}</FullName></#{qbe_field_name}>"
         end
 
         def sanitize_customer(customer)
