@@ -1,34 +1,31 @@
 module QBWC
   module Request
     class Products
-
-      REF_MAP = {
-        ClassRef: "class_name",
-        ParentRef: "parent_name",
-        UnitOfMeasureSetRef: "unit_of_measure",
-        SalesTaxCodeRef: "sales_tax_code_name",
-        IncomeAccountRef: "income_account",
-        PurchaseTaxCodeRef: "purchase_tax_code_name",
-        COGSAccountRef: "cogs_account",
-        PrefVendorRef: "preferred_vendor_name",
-        AssetAccountRef: "inventory_account"
-      }
-
-      FIELDS_MAP = {
-        ManufacturerPartNumber: "manufacturer_part_number",
-        SalesDesc: "description",
-        PurchaseDesc: "purchase_description",
-        IsActive: "is_active",
-        IsTaxIncluded: "is_tax_included",
-        ReorderPoint: "reorder_point",
-        Max: "max",
-        QuantityOnHand: "quantity",
-        TotalValue: "total_value",
-        SalesPrice: "price",
-        PurchaseCost: "cost",
-        InventoryDate: "inventory_date",
-        ExternalGUID: "external_guid"
-      }
+      
+      MAPPING = [
+        {qbe_name: "IsActive", flowlink_name: "is_active", is_ref: false},
+        {qbe_name: "ClassRef", flowlink_name: "class_name", is_ref: true},
+        {qbe_name: "ParentRef", flowlink_name: "parent_name", is_ref: true},
+        {qbe_name: "ManufacturerPartNumber", flowlink_name: "manufacturer_part_number", is_ref: false},
+        {qbe_name: "UnitOfMeasureSetRef", flowlink_name: "unit_of_measure", is_ref: true},
+        {qbe_name: "IsTaxIncluded", flowlink_name: "is_tax_included", is_ref: false},
+        {qbe_name: "SalesTaxCodeRef", flowlink_name: "sales_tax_code_name", is_ref: true},
+        {qbe_name: "SalesDesc", flowlink_name: "description", is_ref: false},
+        {qbe_name: "SalesPrice", flowlink_name: "price", is_ref: false},
+        {qbe_name: "IncomeAccountRef", flowlink_name: "income_account", is_ref: true},
+        {qbe_name: "PurchaseDesc", flowlink_name: "purchase_description", is_ref: false},
+        {qbe_name: "PurchaseCost", flowlink_name: "cost", is_ref: false},
+        {qbe_name: "PurchaseTaxCodeRef", flowlink_name: "purchase_tax_code_name", is_ref: true},
+        {qbe_name: "COGSAccountRef", flowlink_name: "cogs_account", is_ref: true},
+        {qbe_name: "PrefVendorRef", flowlink_name: "preferred_vendor_name", is_ref: true},
+        {qbe_name: "AssetAccountRef", flowlink_name: "inventory_account", is_ref: true},
+        {qbe_name: "ReorderPoint", flowlink_name: "reorder_point", is_ref: false},
+        {qbe_name: "Max", flowlink_name: "max", is_ref: false},
+        {qbe_name: "QuantityOnHand", flowlink_name: "quantity", is_ref: false},
+        {qbe_name: "TotalValue", flowlink_name: "total_value", is_ref: false},
+        {qbe_name: "InventoryDate", flowlink_name: "inventory_date", is_ref: false},
+        {qbe_name: "ExternalGUID", flowlink_name: "external_guid", is_ref: false}
+      ]
 
       class << self
         def generate_request_insert_update(objects, params = {})
@@ -107,9 +104,8 @@ module QBWC
         def product_xml(product, params, config)
           <<~XML
             <Name>#{product_identifier(product)}</Name>
-            #{add_fields(product, FIELDS_MAP)}
-            #{add_refs(product, REF_MAP, config)}
             #{add_barcode(product)}
+            #{add_fields(product, MAPPING, config)}
           XML
         end
 
@@ -186,34 +182,6 @@ module QBWC
           object['product_id'] || object['sku'] || object['id']
         end
 
-        def add_refs(object, mapping, config)
-          fields = ""
-          mapping.each do |qbe_name, flowlink_name|
-            if object[flowlink_name].respond_to?(:has_key?) && object[flowlink_name]['list_id']
-              fields += "<#{qbe_name}><ListID>#{object[flowlink_name]['list_id']}</ListID></#{qbe_name}>"
-            else
-              full_name = object[flowlink_name] || config[flowlink_name] || config["quickbooks_#{flowlink_name}"]
-              fields += "<#{qbe_name}><FullName>#{full_name}</FullName></#{qbe_name}>" unless full_name.nil?
-            end
-          end
-
-          fields
-        end
-
-        def add_fields(object, mapping)
-          fields = ""
-          mapping.each do |qbe_name, flowlink_name|
-            next '' if object[flowlink_name].nil?
-
-            name = object[flowlink_name]
-            name = '%.2f' % name.to_f if name == 'cost' || name == 'price'
-
-            fields += "<#{qbe_name}>#{name}</#{qbe_name}>"
-          end
-
-          fields
-        end
-
         def add_barcode(product)
           return '' unless product['barcode_value']
 
@@ -224,6 +192,45 @@ module QBWC
               <AllowOverride>#{product['allow_barcode_override'] || false}</AllowOverride>
             </BarCode>
           XML
+        end
+
+        def add_fields(object, mapping, config)
+          fields = ""
+          mapping.each do |map_item|
+            if map_item[:is_ref]
+              fields += add_ref_xml(object, map_item, config)
+            else
+              fields += add_basic_xml(object, map_item)
+            end
+          end
+
+          fields
+        end
+
+        def add_basic_xml(object, mapping)
+          flowlink_field = object[mapping[:flowlink_name]]
+          qbe_field_name = mapping[:qbe_name]
+          float_fields = ['price', 'cost']
+
+          return '' if flowlink_field.nil?
+
+          flowlink_field = '%.2f' % flowlink_field.to_f if float_fields.include?(mapping[:flowlink_name])
+
+          "<#{qbe_field_name}>#{flowlink_field}</#{qbe_field_name}>"
+        end
+
+        def add_ref_xml(object, mapping, config)
+          flowlink_field = object[mapping[:flowlink_name]]
+          qbe_field_name = mapping[:qbe_name]
+
+          if flowlink_field.respond_to?(:has_key?) && flowlink_field['list_id']
+            return "<#{qbe_field_name}><ListID>#{flowlink_field['list_id']}</ListID></#{qbe_field_name}>"
+          end
+          full_name = flowlink_field ||
+                                config[mapping[:flowlink_name]] ||
+                                config["quickbooks_#{mapping[:flowlink_name]}"]
+
+          full_name.nil? ? "" : "<#{qbe_field_name}><FullName>#{full_name}</FullName></#{qbe_field_name}>"
         end
 
       end
