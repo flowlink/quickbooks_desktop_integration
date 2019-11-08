@@ -72,7 +72,6 @@ module QBWC
 
             config = { connection_id: params['connection_id'] }.with_indifferent_access
             session_id = Persistence::Session.save(config, object)
-            puts "HERE - #{add_fields(object['billing_address'], ADDRESS_MAP).gsub(/\s+/, "")}"
 
             request << (object[:list_id].to_s.empty? ? add_xml_to_send(object, session_id, config) : update_xml_to_send(object, session_id, config))
           end
@@ -157,7 +156,6 @@ module QBWC
         end
 
         def add_xml_to_send(object, session_id, config)
-          puts "ADD - BILLING #{object['billing_address']}"
           <<~XML
             <CustomerAddRq requestID="#{session_id}">
               <CustomerAdd>
@@ -188,7 +186,6 @@ module QBWC
         end
 
         def update_xml_to_send(object, session_id, config)
-          puts "UPDATE - BILLING #{object['billing_address']}"
           <<~XML
             <CustomerModRq requestID="#{session_id}">
               <CustomerMod>
