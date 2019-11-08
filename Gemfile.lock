@@ -60,8 +60,8 @@ GEM
       byebug (~> 9.0)
       pry (~> 0.10)
     public_suffix (2.0.5)
-    rack (1.6.8)
-    rack-protection (1.5.3)
+    rack (1.6.11)
+    rack-protection (1.5.5)
       rack
     rack-test (0.7.0)
       rack (>= 1.0, < 3)
