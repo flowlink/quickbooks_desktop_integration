@@ -1,11 +1,10 @@
 module QBWC
   module Request
-    class Noninventoryproducts
+    class Serviceproducts
 
       GENERAL_MAPPING = [
         {qbe_name: "ParentRef", flowlink_name: "parent_name", is_ref: true},
         {qbe_name: "ClassRef", flowlink_name: "class_name", is_ref: true},
-        {qbe_name: "ManufacturerPartNumber", flowlink_name: "manufacturer_part_number", is_ref: false},
         {qbe_name: "UnitOfMeasureSetRef", flowlink_name: "unit_of_measure", is_ref: true},
         {qbe_name: "IsTaxIncluded", flowlink_name: "is_tax_included", is_ref: false},
         {qbe_name: "SalesTaxCodeRef", flowlink_name: "sales_tax_code_name", is_ref: true},
@@ -56,35 +55,35 @@ module QBWC
 
         def search_xml(product_id, session_id)
           <<~XML
-            <ItemNonInventoryQueryRq requestID="#{session_id}">
+            <ItemServiceQueryRq requestID="#{session_id}">
               <MaxReturned>10000</MaxReturned>
               <NameRangeFilter>
                 <FromName>#{product_id}</FromName>
                 <ToName>#{product_id}</ToName>
               </NameRangeFilter>
-            </ItemNonInventoryQueryRq>
+            </ItemServiceQueryRq>
           XML
         end
 
         def add_xml_to_send(product, params, session_id, config)
           <<~XML
-            <ItemNonInventoryAddRq requestID="#{session_id}">
-               <ItemNonInventoryAdd>
+            <ItemServiceAddRq requestID="#{session_id}">
+               <ItemServiceAdd>
                 #{product_xml(product, params, config)}
-               </ItemNonInventoryAdd>
-            </ItemNonInventoryAddRq>
+               </ItemServiceAdd>
+            </ItemServiceAddRq>
           XML
         end
 
         def update_xml_to_send(product, params, session_id, config)
           <<~XML
-            <ItemNonInventoryModRq requestID="#{session_id}">
-               <ItemNonInventoryMod>
+            <ItemServiceModRq requestID="#{session_id}">
+               <ItemServiceMod>
                   <ListID>#{product['list_id']}</ListID>
                   <EditSequence>#{product['edit_sequence']}</EditSequence>
                   #{product.key?('active') ? product_only_touch_xml(product, params) : product_xml(product, params, config)}
-               </ItemNonInventoryMod>
-            </ItemNonInventoryModRq>
+               </ItemServiceMod>
+            </ItemServiceModRq>
           XML
         end
 
@@ -121,10 +120,10 @@ module QBWC
 
           <<~XML
             <!-- polling non inventory products -->
-            <ItemNonInventoryQueryRq requestID="#{session_id}">
+            <ItemServiceQueryRq requestID="#{session_id}">
               <MaxReturned>100</MaxReturned>
                 #{query_by_date(params, time)}
-            </ItemNonInventoryQueryRq>
+            </ItemServiceQueryRq>
           XML
         end
 
