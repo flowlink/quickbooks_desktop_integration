@@ -8,23 +8,26 @@ module QBWC
         {qbe_name: "ParentRef", flowlink_name: "parent_name", is_ref: true},
         {qbe_name: "ManufacturerPartNumber", flowlink_name: "manufacturer_part_number", is_ref: false},
         {qbe_name: "UnitOfMeasureSetRef", flowlink_name: "unit_of_measure", is_ref: true},
+        {qbe_name: "ForceUOMChange", flowlink_name: "force_uom_change", is_ref: false, mod_only: true},
         {qbe_name: "IsTaxIncluded", flowlink_name: "is_tax_included", is_ref: false},
         {qbe_name: "SalesTaxCodeRef", flowlink_name: "sales_tax_code_name", is_ref: true},
         {qbe_name: "SalesDesc", flowlink_name: "description", is_ref: false},
         {qbe_name: "SalesPrice", flowlink_name: "price", is_ref: false},
         {qbe_name: "IncomeAccountRef", flowlink_name: "income_account", is_ref: true},
+        {qbe_name: "ApplyIncomeAccountRefToExistingTxns", flowlink_name: "apply_income_account_ref_to_existing_txns", is_ref: false, mod_only: true},
         {qbe_name: "PurchaseDesc", flowlink_name: "purchase_description", is_ref: false},
         {qbe_name: "PurchaseCost", flowlink_name: "cost", is_ref: false},
         {qbe_name: "PurchaseTaxCodeRef", flowlink_name: "purchase_tax_code_name", is_ref: true},
         {qbe_name: "COGSAccountRef", flowlink_name: "cogs_account", is_ref: true},
+        {qbe_name: "ApplyCOGSAccountRefToExistingTxns", flowlink_name: "apply_cogs_account_ref_to_existing_txns", is_ref: false, mod_only: true},
         {qbe_name: "PrefVendorRef", flowlink_name: "preferred_vendor_name", is_ref: true},
         {qbe_name: "AssetAccountRef", flowlink_name: "inventory_account", is_ref: true},
         {qbe_name: "ReorderPoint", flowlink_name: "reorder_point", is_ref: false},
         {qbe_name: "Max", flowlink_name: "max", is_ref: false},
-        {qbe_name: "QuantityOnHand", flowlink_name: "quantity", is_ref: false},
-        {qbe_name: "TotalValue", flowlink_name: "total_value", is_ref: false},
-        {qbe_name: "InventoryDate", flowlink_name: "inventory_date", is_ref: false},
-        {qbe_name: "ExternalGUID", flowlink_name: "external_guid", is_ref: false}
+        {qbe_name: "QuantityOnHand", flowlink_name: "quantity", is_ref: false, add_only: true},
+        {qbe_name: "TotalValue", flowlink_name: "total_value", is_ref: false, add_only: true},
+        {qbe_name: "InventoryDate", flowlink_name: "inventory_date", is_ref: false, add_only: true},
+        {qbe_name: "ExternalGUID", flowlink_name: "external_guid", is_ref: false, add_only: true}
       ]
 
       class << self
@@ -76,7 +79,7 @@ module QBWC
           <<~XML
             <ItemInventoryAddRq requestID="#{session_id}">
                <ItemInventoryAdd>
-                #{product_xml(product, params, config)}
+                #{product_xml(product, params, config, false)}
                </ItemInventoryAdd>
             </ItemInventoryAddRq>
           XML
@@ -88,7 +91,7 @@ module QBWC
                 <ItemInventoryMod>
                   <ListID>#{product['list_id']}</ListID>
                   <EditSequence>#{product['edit_sequence']}</EditSequence>
-                  #{product.key?('active') ? product_only_touch_xml(product, params) : product_xml(product, params, config)}
+                  #{product.key?('active') ? product_only_touch_xml(product, params) : product_xml(product, params, config, true)}
                 </ItemInventoryMod>
             </ItemInventoryModRq>
           XML
@@ -101,11 +104,11 @@ module QBWC
           XML
         end
 
-        def product_xml(product, params, config)
+        def product_xml(product, params, config, is_mod)
           <<~XML
             <Name>#{product_identifier(product)}</Name>
             #{add_barcode(product)}
-            #{add_fields(product, MAPPING, config)}
+            #{add_fields(product, MAPPING, config, is_mod)}
           XML
         end
 
@@ -194,9 +197,12 @@ module QBWC
           XML
         end
 
-        def add_fields(object, mapping, config)
+        def add_fields(object, mapping, config, is_mod)
           fields = ""
           mapping.each do |map_item|
+            return "" if object[:mod_only] && object[:mod_only] != is_mod
+            return "" if object[:add_only] && object[:add_only] == is_mod
+
             if map_item[:is_ref]
               fields += add_ref_xml(object, map_item, config)
             else
