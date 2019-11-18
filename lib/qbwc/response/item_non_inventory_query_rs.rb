@@ -11,7 +11,7 @@ module QBWC
         errors.each do |error|
           Persistence::Object.handle_error(config,
                                            error.merge(context: 'Querying non-inventory products'),
-                                           'products',
+                                           'noninventoryproducts',
                                            error[:request_id])
         end
       end
@@ -54,7 +54,7 @@ module QBWC
       def objects_to_update
         records.map do |record|
           {
-            object_type: 'product',
+            object_type: 'noninventoryproduct',
             object_ref: (record['ParentRef'].is_a?(Array) ? record['ParentRef'] : (record['ParentRef'].nil? ? [] : [record['ParentRef']])).map { |item| item['FullName'] + ':' }.join('') + record['Name'],
             list_id: record['ListID'],
             edit_sequence: record['EditSequence']
