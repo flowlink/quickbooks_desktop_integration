@@ -28,6 +28,9 @@ require 'qbwc/response/item_other_charge_query_rs'
 require 'qbwc/response/item_receipt_query_rs'
 
 require 'qbwc/response/item_sales_tax_query_rs'
+
+require 'qbwc/response/item_service_add_rs'
+require 'qbwc/response/item_service_mod_rs'
 require 'qbwc/response/item_service_query_rs'
 
 require 'qbwc/response/journal_entry_add_rs'

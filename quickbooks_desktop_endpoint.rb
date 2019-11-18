@@ -3,6 +3,23 @@ require 'sinatra/reloader'
 
 require File.expand_path(File.dirname(__FILE__) + '/lib/quickbooks_desktop_integration')
 
+ENDPOINTS = %w(
+  add_salesreceipts
+  add_payments
+  add_products
+  add_purchaseorders
+  add_orders
+  add_invoices
+  add_returns
+  add_customers
+  add_shipments
+  cancel_order
+  add_journals
+  add_vendors
+  add_noninventoryproducts
+  add_serviceproducts
+)
+
 class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
   set :logging, true
 
@@ -16,7 +33,7 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
   # Changing the endpoint paths might break internal logic as they're expected
   # to be always in plural. e.g. products not product
 
-  %w(add_salesreceipts add_payments add_products add_purchaseorders add_orders add_invoices add_returns add_customers add_shipments cancel_order add_journals add_vendors add_noninventoryproducts).each do |path|
+  ENDPOINTS.each do |path|
     post "/#{path}" do
       config = {
         connection_id: request.env['HTTP_X_HUB_STORE'],
