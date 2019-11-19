@@ -29,8 +29,8 @@ module QBWC
         {qbe_name: "CustomerTypeRef", flowlink_name: "customer_type_name", is_ref: true},
         {qbe_name: "TermsRef", flowlink_name: "terms", is_ref: true},
         {qbe_name: "SalesRepRef", flowlink_name: "sales_rep_name", is_ref: true},
-        {qbe_name: "OpenBalance", flowlink_name: "open_balance", is_ref: false},
-        {qbe_name: "OpenBalanceDate", flowlink_name: "open_balance_date", is_ref: false},
+        {qbe_name: "OpenBalance", flowlink_name: "open_balance", is_ref: false, add_only: true},
+        {qbe_name: "OpenBalanceDate", flowlink_name: "open_balance_date", is_ref: false, add_only: true},
         {qbe_name: "SalesTaxCodeRef", flowlink_name: "sales_tax_code_name", is_ref: true},
         {qbe_name: "ItemSalesTaxRef", flowlink_name: "item_sales_tax_name", is_ref: true},
         {qbe_name: "SalesTaxCountry", flowlink_name: "sales_tax_country", is_ref: false},
@@ -50,7 +50,7 @@ module QBWC
       MAPPING_FOUR = [
         {qbe_name: "PreferredDeliveryMethod", flowlink_name: "preferred_delivery_method", is_ref: false},
         {qbe_name: "PriceLevelRef", flowlink_name: "price_level_name", is_ref: true},
-        {qbe_name: "ExternalGUID", flowlink_name: "external_guid", is_ref: false},
+        {qbe_name: "ExternalGUID", flowlink_name: "external_guid", is_ref: false, add_only: true},
         {qbe_name: "TaxRegistrationNumber", flowlink_name: "tax_registration_number", is_ref: false},
         {qbe_name: "CurrencyRef", flowlink_name: "currency_name", is_ref: true}
       ]
@@ -179,7 +179,7 @@ module QBWC
           <<~XML
             <CustomerAddRq requestID="#{session_id}">
               <CustomerAdd>
-                #{customer_xml(object, config)}
+                #{customer_xml(object, config, false)}
               </CustomerAdd>
             </CustomerAddRq>
           XML
@@ -191,7 +191,7 @@ module QBWC
               <CustomerMod>
                 <ListID>#{object['list_id']}</ListID>
                 <EditSequence>#{object['edit_sequence']}</EditSequence>
-                #{customer_xml(object, config)}
+                #{customer_xml(object, config, true)}
               </CustomerMod>
             </CustomerModRq>
           XML
@@ -199,24 +199,24 @@ module QBWC
 
         private
 
-        def customer_xml(initial_object, config)
+        def customer_xml(initial_object, config, is_mod)
           object = pre_mapping_logic(initial_object)
 
           <<~XML
-            #{add_fields(object, MAPPING_ONE, config)}
+            #{add_fields(object, MAPPING_ONE, config, is_mod)}
             <BillAddress>
-              #{add_fields(object['billing_address'], ADDRESS_MAP, config) if object['billing_address']}
+              #{add_fields(object['billing_address'], ADDRESS_MAP, config, is_mod) if object['billing_address']}
             </BillAddress>
             <ShipAddress>
-              #{add_fields(object['shipping_address'], ADDRESS_MAP, config) if object['shipping_address']}
+              #{add_fields(object['shipping_address'], ADDRESS_MAP, config, is_mod) if object['shipping_address']}
             </ShipAddress>
             #{ship_to_address(object)}
-            #{add_fields(object, MAPPING_TWO, config)}
+            #{add_fields(object, MAPPING_TWO, config, is_mod)}
             #{additional_contacts(object)}
             #{contacts(object)}
-            #{add_fields(object, MAPPING_THREE, config)}
-            #{additional_notes(object)}
-            #{add_fields(object, MAPPING_FOUR, config)}
+            #{add_fields(object, MAPPING_THREE, config, is_mod)}
+            #{additional_notes(object, is_mod)}
+            #{add_fields(object, MAPPING_FOUR, config, is_mod)}
           XML
         end
 
@@ -259,22 +259,26 @@ module QBWC
           
           fields = ""
           object['additional_notes'].each do |note|
-            next unless note
-            fields += "<AdditionalNotes><Note>#{note}</Note></AdditionalNotes>"
+            next unless note && note[:note]
+
+            fields += is_mod ? "<AdditionalNotesMod>" : "<AdditionalNotes>"
+            fields += "<NoteID>#{note[:id]}</NoteID>" if is_mod
+            fields += "<Note>#{note[:note]}</Note>"
+            fields += is_mod ? "</AdditionalNotesMod>" : "</AdditionalNotes>"
           end
 
           fields
         end
 
-        def contacts(object)
+        def contacts(object, is_mod)
           return "" unless object['contacts'] && object['contacts'].is_a?(Array)
           
           fields = ""
           object['contacts'].each do |contact|
-            fields += "<Contacts>"
+            fields += is_mod ? "<ContactsMod>" : "<Contacts>"
             fields += add_fields(contact, CONTACTS_MAP, config)
             fields += additional_contacts(contact)
-            fields += "</Contacts>"
+            fields += is_mod ? "</ContactsMod>" : "</Contacts>"
           end
 
           fields
@@ -297,9 +301,12 @@ module QBWC
           object
         end
 
-        def add_fields(object, mapping, config)
+        def add_fields(object, mapping, config, is_mod)
           fields = ""
           mapping.each do |map_item|
+            return "" if object[:mod_only] && object[:mod_only] != is_mod
+            return "" if object[:add_only] && object[:add_only] == is_mod
+
             if map_item[:is_ref]
               fields += add_ref_xml(object, map_item, config)
             else
