@@ -71,6 +71,35 @@ The following parameters are required when setting up a Flow with this webhook:
 
 [Adding QBE Refs Readme](./QBE_REFS.md)
 
+### Getting Products
+
+You can retrieve products from QBE in a couple different ways.
+
+You can retrieve specific product types by calling any of the following endpoints:
+
+* /get_noninventoryproducts
+* /get_serviceproducts
+* /get_salestaxproducts
+* /get_discountproducts
+* /get_inventoryproducts
+
+---
+
+You can also get all products by calling `/get_products` and it will return all possible types (inventory, non-inventory, assembly, service, sales tax, discount)
+
+---
+
+You can also call `/get_products` and specify a config value - see below
+
+  ```ruby
+  # Accepted values in the array are shown below
+  # Non valid inputs will be ignored
+
+  config[:quickbooks_specify_products] = "[\"inventory\", \"assembly\", \"noninventory\", \"salestax\", \"service\", \"discount\"]"
+
+  # NOTE: Be sure to escape the string values of each item in the "array"
+```
+
 ## About FlowLink
 
 [FlowLink](http://flowlink.io/) allows you to connect to your own custom integrations.

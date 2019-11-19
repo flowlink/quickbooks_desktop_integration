@@ -18,6 +18,24 @@ ENDPOINTS = %w(
   add_vendors
   add_noninventoryproducts
   add_serviceproducts
+  add_salestaxproducts
+  add_discountproducts
+)
+
+GET_ENDPOINTS =  %w(
+  get_inventory
+  get_inventories
+  get_products
+  get_invoices
+  get_purchaseorders
+  get_customers
+  get_orders
+  get_vendors
+  get_noninventoryproducts
+  get_serviceproducts
+  get_salestaxproducts
+  get_discountproducts
+  get_inventoryproducts
 )
 
 class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
@@ -95,7 +113,7 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
     result 200, "Inventory waiting for Quickbooks Desktop scheduler"
   end
 
-  %w(get_inventory get_inventories get_products get_invoices get_purchaseorders get_customers get_orders get_vendors get_noninventoryproducts).each do |path|
+ GET_ENDPOINTS.each do |path|
     post "/#{path}" do
       object_type = path.split('_').last.pluralize
 

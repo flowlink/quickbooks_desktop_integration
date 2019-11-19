@@ -27,6 +27,15 @@ module QBWC
         {qbe_name: "ExternalGUID", flowlink_name: "external_guid", is_ref: false}
       ]
 
+      PRODUCT_TYPES = {
+        inventory: "ItemInventoryQueryRq",
+        assembly: "ItemInventoryAssemblyQueryRq",
+        noninventory: "ItemNonInventoryQueryRq",
+        salestax: "ItemSalesTaxQueryRq",
+        service: "ItemServiceQueryRq",
+        discount: "ItemDiscountQueryRq"
+      }
+
       class << self
         def generate_request_insert_update(objects, params = {})
           objects.inject('') do |request, object|
@@ -127,42 +136,34 @@ module QBWC
 
           time = Time.parse(timestamp).in_time_zone 'Pacific Time (US & Canada)'
 
+          if params['quickbooks_specify_products'] && params['quickbooks_specify_products'] != ""
+            return build_polling_from_config_param(params, session_id, time)
+          end
+
           <<~XML
-            <!-- polling products -->
             <ItemInventoryQueryRq requestID="#{session_id}">
-            <MaxReturned>50</MaxReturned>
+              <MaxReturned>50</MaxReturned>
               #{query_by_date(params, time)}
-              <!-- <IncludeRetElement>Name</IncludeRetElement> -->
             </ItemInventoryQueryRq>
-            <!-- polling assembled products -->
             <ItemInventoryAssemblyQueryRq requestID="#{session_id}">
-            <MaxReturned>50</MaxReturned>
+              <MaxReturned>50</MaxReturned>
               #{query_by_date(params, time)}
-              <!-- <IncludeRetElement>Name</IncludeRetElement> -->
             </ItemInventoryAssemblyQueryRq>
-            <!-- polling non inventory products -->
             <ItemNonInventoryQueryRq requestID="#{session_id}">
-            <MaxReturned>50</MaxReturned>
+              <MaxReturned>50</MaxReturned>
               #{query_by_date(params, time)}
-              <!-- <IncludeRetElement>Name</IncludeRetElement> -->
             </ItemNonInventoryQueryRq>
-            <!-- polling sales tax products -->
             <ItemSalesTaxQueryRq requestID="#{session_id}">
-            <MaxReturned>50</MaxReturned>
+              <MaxReturned>50</MaxReturned>
               #{query_by_date(params, time)}
-              <!-- <IncludeRetElement>Name</IncludeRetElement> -->
             </ItemSalesTaxQueryRq>
-            <!-- polling service products -->
             <ItemServiceQueryRq requestID="#{session_id}">
-            <MaxReturned>50</MaxReturned>
+              <MaxReturned>50</MaxReturned>
               #{query_by_date(params, time)}
-              <!-- <IncludeRetElement>Name</IncludeRetElement> -->
             </ItemServiceQueryRq>
-            <!-- polling discount products -->
             <ItemDiscountQueryRq requestID="#{session_id}">
-            <MaxReturned>50</MaxReturned>
+              <MaxReturned>50</MaxReturned>
               #{query_by_date(params, time)}
-              <!-- <IncludeRetElement>Name</IncludeRetElement> -->
             </ItemDiscountQueryRq>
           XML
         end
@@ -177,6 +178,18 @@ module QBWC
         end
 
         private
+
+        def build_polling_from_config_param(params, session, time)
+          JSON.parse(params['quickbooks_specify_products']).map do |value|
+            next unless PRODUCT_TYPES.has_key?(value.to_sym)
+            <<~XML
+              <#{PRODUCT_TYPES[value.to_sym]} requestID=#{session_id}>
+                <MaxReturned>50</MaxReturned>
+                #{query_by_date(params, time)}
+              </#{PRODUCT_TYPES[value.to_sym]}>
+            XML
+          end.join
+        end
 
         def product_identifier(object)
           object['product_id'] || object['sku'] || object['id']
