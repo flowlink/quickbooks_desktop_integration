@@ -11,6 +11,8 @@ require 'qbwc/response/invoice_add_rs'
 require 'qbwc/response/invoice_mod_rs'
 require 'qbwc/response/invoice_query_rs'
 
+require 'qbwc/response/item_discount_add_rs'
+require 'qbwc/response/item_discount_mod_rs'
 require 'qbwc/response/item_discount_query_rs'
 
 require 'qbwc/response/item_inventory_add_rs'
@@ -27,6 +29,8 @@ require 'qbwc/response/item_other_charge_query_rs'
 
 require 'qbwc/response/item_receipt_query_rs'
 
+require 'qbwc/response/item_sales_tax_add_rs'
+require 'qbwc/response/item_sales_tax_mod_rs'
 require 'qbwc/response/item_sales_tax_query_rs'
 
 require 'qbwc/response/item_service_add_rs'
