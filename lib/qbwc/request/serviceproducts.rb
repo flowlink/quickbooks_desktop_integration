@@ -3,9 +3,10 @@ module QBWC
     class Serviceproducts
 
       GENERAL_MAPPING = [
-        {qbe_name: "ParentRef", flowlink_name: "parent_name", is_ref: true},
         {qbe_name: "ClassRef", flowlink_name: "class_name", is_ref: true},
+        {qbe_name: "ParentRef", flowlink_name: "parent_name", is_ref: true},
         {qbe_name: "UnitOfMeasureSetRef", flowlink_name: "unit_of_measure", is_ref: true},
+        {qbe_name: "ForceUOMChange", flowlink_name: "force_uom_change", is_ref: false, mod_only: true},
         {qbe_name: "IsTaxIncluded", flowlink_name: "is_tax_included", is_ref: false},
         {qbe_name: "SalesTaxCodeRef", flowlink_name: "sales_tax_code_name", is_ref: true},
       ]
@@ -14,21 +15,24 @@ module QBWC
         {qbe_name: "Desc", flowlink_name: "description", is_ref: false},
         {qbe_name: "Price", flowlink_name: "price", is_ref: false},
         {qbe_name: "PricePercent", flowlink_name: "price_percent", is_ref: false},
-        {qbe_name: "AccountRef", flowlink_name: "account_name", is_ref: true}
+        {qbe_name: "AccountRef", flowlink_name: "account_name", is_ref: true},
+        {qbe_name: "ApplyAccountRefToExistingTxns", flowlink_name: "apply_account_ref_to_existing_txns", is_ref: false, mod_only: true}
       ]
 
       SALES_AND_PURCHASE_MAP = [
         {qbe_name: "SalesDesc", flowlink_name: "description", is_ref: false},
         {qbe_name: "SalesPrice", flowlink_name: "price", is_ref: false},
         {qbe_name: "IncomeAccountRef", flowlink_name: "income_account", is_ref: true},
+        {qbe_name: "ApplyIncomeAccountRefToExistingTxns", flowlink_name: "apply_income_account_ref_to_existing_txns", is_ref: false, mod_only: true},
         {qbe_name: "PurchaseDesc", flowlink_name: "purchase_description", is_ref: false},
         {qbe_name: "PurchaseCost", flowlink_name: "cost", is_ref: false},
         {qbe_name: "PurchaseTaxCodeRef", flowlink_name: "purchase_tax_code_name", is_ref: true},
         {qbe_name: "ExpenseAccountRef", flowlink_name: "expense_account", is_ref: true},
+        {qbe_name: "ApplyExpenseAccountRefToExistingTxns", flowlink_name: "apply_expense_account_ref_to_existing_txns", is_ref: false, mod_only: true},
         {qbe_name: "PrefVendorRef", flowlink_name: "preferred_vendor_name", is_ref: true}
       ]
 
-      EXTERNAL_GUID_MAP = [{qbe_name: "ExternalGUID", flowlink_name: "external_guid", is_ref: false}]
+      EXTERNAL_GUID_MAP = [{qbe_name: "ExternalGUID", flowlink_name: "external_guid", is_ref: false, add_only: true}]
 
       class << self
         def generate_request_insert_update(objects, params = {})
@@ -69,7 +73,7 @@ module QBWC
           <<~XML
             <ItemServiceAddRq requestID="#{session_id}">
                <ItemServiceAdd>
-                #{product_xml(product, params, config)}
+                #{product_xml(product, params, config, false)}
                </ItemServiceAdd>
             </ItemServiceAddRq>
           XML
@@ -81,7 +85,7 @@ module QBWC
                <ItemServiceMod>
                   <ListID>#{product['list_id']}</ListID>
                   <EditSequence>#{product['edit_sequence']}</EditSequence>
-                  #{product.key?('active') ? product_only_touch_xml(product, params) : product_xml(product, params, config)}
+                  #{product.key?('active') ? product_only_touch_xml(product, params) : product_xml(product, params, config, true)}
                </ItemServiceMod>
             </ItemServiceModRq>
           XML
@@ -94,14 +98,14 @@ module QBWC
           XML
         end
 
-        def product_xml(product, params, config)
+        def product_xml(product, params, config, is_mod)
           <<~XML
             <Name>#{product_identifier(product)}</Name>
             #{add_barcode(product)}
             <IsActive >#{product['is_active'] || true}</IsActive>
-            #{add_fields(product, GENERAL_MAPPING, config)}
-            #{sale_or_and_purchase(product, config)}
-            #{add_fields(product, EXTERNAL_GUID_MAP, config)}
+            #{add_fields(product, GENERAL_MAPPING, config, is_mod)}
+            #{sale_or_and_purchase(product, config, is_mod)}
+            #{add_fields(product, EXTERNAL_GUID_MAP, config, is_mod)}
           XML
         end
 
@@ -145,25 +149,31 @@ module QBWC
           XML
         end
 
-        def sale_or_and_purchase(product, config)
-          if product['sale_or_purchase']
-            <<~XML
-              <SalesOrPurchase>
-                #{add_fields(product, SALES_OR_PURCHASE_MAP, config)}
-              </SalesOrPurchase>
-            XML
-          else
-            <<~XML
-              <SalesAndPurchase>
-                #{add_fields(product, SALES_AND_PURCHASE_MAP, config)}
-              </SalesAndPurchase>
-            XML
+        def sale_or_and_purchase(product, config, is_mod)
+          map = product['sale_or_purchase'] ? SALES_OR_PURCHASE_MAP : SALES_AND_PURCHASE_MAP
+          tag = "SalesAndPurchase"
+
+          if product['sale_or_purchase'] && is_mod
+            tag = "SalesOrPurchaseMod"
+          elsif product['sale_or_purchase']
+            tag = "SalesOrPurchase"
+          elsif is_mod
+            tag = "SalesAndPurchaseMod"
           end
+
+          <<~XML
+            <"#{tag}">
+              #{add_fields(product, map, config, is_mod)}
+            </"#{tag}">
+          XML
         end
 
-        def add_fields(object, mapping, config)
+        def add_fields(object, mapping, config, is_mod)
           fields = ""
           mapping.each do |map_item|
+            return "" if object[:mod_only] && object[:mod_only] != is_mod
+            return "" if object[:add_only] && object[:add_only] == is_mod
+
             if map_item[:is_ref]
               fields += add_ref_xml(object, map_item, config)
             else

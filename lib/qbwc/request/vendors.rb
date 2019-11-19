@@ -36,10 +36,10 @@ module QBWC
         {qbe_name: "CreditLimit", flowlink_name: "credit_limit", is_ref: false},
         {qbe_name: "VendorTaxIdent", flowlink_name: "vendor_tax_ident", is_ref: false},
         {qbe_name: "IsVendorEligibleFor1099", flowlink_name: "is_vendor_eligible_for_1099", is_ref: false},
-        {qbe_name: "OpenBalance", flowlink_name: "open_balance", is_ref: false},
-        {qbe_name: "OpenBalanceDate", flowlink_name: "open_balance_date", is_ref: false},
+        {qbe_name: "OpenBalance", flowlink_name: "open_balance", is_ref: false, add_only: true},
+        {qbe_name: "OpenBalanceDate", flowlink_name: "open_balance_date", is_ref: false, add_only: true},
         {qbe_name: "BillingRateRef", flowlink_name: "billing_rate_name", is_ref: true},
-        {qbe_name: "ExternalGUID", flowlink_name: "external_guid", is_ref: false},
+        {qbe_name: "ExternalGUID", flowlink_name: "external_guid", is_ref: false, add_only: true},
         {qbe_name: "SalesTaxCodeRef", flowlink_name: "sales_tax_code_name", is_ref: true},
         {qbe_name: "SalesTaxCountry", flowlink_name: "sales_tax_country", is_ref: false},
         {qbe_name: "IsSalesTaxAgency", flowlink_name: "is_sales_tax_agency", is_ref: false},
@@ -151,7 +151,7 @@ module QBWC
           <<~XML
             <VendorAddRq requestID="#{session_id}">
               <VendorAdd>
-                #{vendor_xml(object, config)}
+                #{vendor_xml(object, config, false)}
               </VendorAdd>
             </VendorAddRq>
           XML
@@ -163,7 +163,7 @@ module QBWC
               <VendorMod>
                 <ListID>#{object['list_id']}</ListID>
                 <EditSequence>#{object['edit_sequence']}</EditSequence>
-                #{vendor_xml(object, config)}
+                #{vendor_xml(object, config, true)}
               </VendorMod>
             </VendorModRq>
           XML
@@ -171,23 +171,23 @@ module QBWC
 
         private
 
-        def vendor_xml(initial_object, config)
+        def vendor_xml(initial_object, config, is_mod)
           object = pre_mapping_logic(initial_object)
 
           <<~XML
-            #{add_fields(object, MAPPING_ONE, config)}
+            #{add_fields(object, MAPPING_ONE, config, is_mod)}
             <VendorAddress>
-              #{add_fields(object['vendor_address'], ADDRESS_MAP, config) if object['vendor_address']}
+              #{add_fields(object['vendor_address'], ADDRESS_MAP, config, is_mod) if object['vendor_address']}
             </VendorAddress>
             <ShipAddress>
-              #{add_fields(object['ship_from_address'], ADDRESS_MAP, config) if object['ship_from_address']}
+              #{add_fields(object['ship_from_address'], ADDRESS_MAP, config, is_mod) if object['ship_from_address']}
             </ShipAddress>
-            #{add_fields(object, MAPPING_TWO, config)}
+            #{add_fields(object, MAPPING_TWO, config, is_mod)}
             #{additional_contacts(object)}
             #{contacts(object)}
-            #{add_fields(object, MAPPING_THREE, config)}
+            #{add_fields(object, MAPPING_THREE, config, is_mod)}
             #{additional_notes(object)}
-            #{add_fields(object, MAPPING_FOUR, config)}
+            #{add_fields(object, MAPPING_FOUR, config, is_mod)}
           XML
         end
 
@@ -230,30 +230,37 @@ module QBWC
           
           fields = ""
           object['additional_notes'].each do |note|
-            next unless note
-            fields += "<AdditionalNotes><Note>#{note}</Note></AdditionalNotes>"
+            next unless note && note[:note]
+
+            fields += is_mod ? "<AdditionalNotesMod>" : "<AdditionalNotes>"
+            fields += "<NoteID>#{note[:id]}</NoteID>" if is_mod
+            fields += "<Note>#{note[:note]}</Note>"
+            fields += is_mod ? "</AdditionalNotesMod>" : "</AdditionalNotes>"
           end
 
           fields
         end
 
-        def contacts(object)
+        def contacts(object, is_mod)
           return "" unless object['contacts'] && object['contacts'].is_a?(Array)
           
           fields = ""
           object['contacts'].each do |contact|
-            fields += "<Contacts>"
+            fields += is_mod ? "<ContactsMod>" : "<Contacts>"
             fields += add_fields(contact, CONTACTS_MAP, config)
             fields += additional_contacts(contact)
-            fields += "</Contacts>"
+            fields += is_mod ? "</ContactsMod>" : "</Contacts>"
           end
 
           fields
         end
 
-        def add_fields(object, mapping, config)
+        def add_fields(object, mapping, config, is_mod)
           fields = ""
           mapping.each do |map_item|
+            return "" if object[:mod_only] && object[:mod_only] != is_mod
+            return "" if object[:add_only] && object[:add_only] == is_mod
+
             if map_item[:is_ref]
               fields += add_ref_xml(object, map_item, config)
             else
