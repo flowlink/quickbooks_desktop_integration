@@ -81,7 +81,7 @@ module QBWC
       class << self
         def generate_request_insert_update(objects, params = {})
           objects.inject('') do |request, object|
-            puts "OSG" if params['connection_id'] == 'oilsolutionsgroup'
+            puts "OSG!" if params['connection_id'] == 'oilsolutionsgroup'
             sanitize_vendor(object)
 
             config = { connection_id: params['connection_id'] }.with_indifferent_access
