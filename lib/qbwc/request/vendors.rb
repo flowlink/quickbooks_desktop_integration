@@ -131,11 +131,31 @@ module QBWC
             config = { connection_id: params['connection_id'] }.with_indifferent_access
             session_id = Persistence::Session.save(config, object)
 
-            request << search_xml(object['name'], session_id)
+            if object['list_id'].to_s.empty?
+              request << search_xml_by_name(object['name'], session_id)
+            else
+              request << search_xml_by_id(object['list_id'], session_id)
+            end
+
           end
         end
 
-        def search_xml(object_id, session_id)
+        def search_xml_by_id(object_id, session_id)
+          puts "Building vendor xml by list_id #{object_id}, #{session_id}"
+
+          <<~XML
+            <VendorQueryRq requestID="#{session_id}">
+              <MaxReturned>50</MaxReturned>
+              <ListIDList>
+                #{object_id}
+              </ListIDList>
+            </VendorQueryRq>
+          XML
+        end
+
+        def search_xml_by_name(object_id, session_id)
+          puts "Building vendor xml by name #{object_id}, #{session_id}"
+
           <<~XML
             <VendorQueryRq requestID="#{session_id}">
               <MaxReturned>50</MaxReturned>
