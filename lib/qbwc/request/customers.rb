@@ -213,9 +213,9 @@ module QBWC
             #{ship_to_address(object)}
             #{add_fields(object, MAPPING_TWO, config, is_mod)}
             #{additional_contacts(object)}
-            #{contacts(object)}
+            #{contacts(object, is_mod)}
             #{add_fields(object, MAPPING_THREE, config, is_mod)}
-            #{additional_notes(object, is_mod)}
+            #{additional_notes(object)}
             #{add_fields(object, MAPPING_FOUR, config, is_mod)}
           XML
         end
