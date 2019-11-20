@@ -81,15 +81,15 @@ module QBWC
       class << self
         def generate_request_insert_update(objects, params = {})
           objects.inject('') do |request, object|
-            puts "SYSTUM1" if params['connection_id'] == 'systum1'
+            puts "OSG" if params['connection_id'] == 'oilsolutionsgroup'
             sanitize_vendor(object)
 
             config = { connection_id: params['connection_id'] }.with_indifferent_access
             session_id = Persistence::Session.save(config, object)
 
-            if params['connection_id'] == 'systum1'
-              puts "SYSTUM1"
-              puts object
+            if params['connection_id'] == 'oilsolutionsgroup'
+              puts "OSG"
+              puts add_xml_to_send(object, session_id, config)
             end
 
             request << (object[:list_id].to_s.empty? ? add_xml_to_send(object, session_id, config) : update_xml_to_send(object, session_id, config))
