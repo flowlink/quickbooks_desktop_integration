@@ -145,7 +145,7 @@ module QBWC
 
           <<~XML
             <ItemInventoryQueryRq requestID="#{session_id}">
-              <MaxReturned>50</MaxReturned>
+              <MaxReturned>500</MaxReturned>
               #{query_by_date(params, time)}
             </ItemInventoryQueryRq>
             <ItemInventoryAssemblyQueryRq requestID="#{session_id}">
