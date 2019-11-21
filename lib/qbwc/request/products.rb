@@ -143,9 +143,13 @@ module QBWC
             return build_polling_from_config_param(params, session_id, time)
           end
 
+          if params['quickbooks_max_returned'] && params['quickbooks_max_returned'] != ""
+            inventory_max_returned = params['quickbooks_max_returned']
+          end
+
           <<~XML
             <ItemInventoryQueryRq requestID="#{session_id}">
-              <MaxReturned>500</MaxReturned>
+              <MaxReturned>#{inventory_max_returned || 50}</MaxReturned>
               #{query_by_date(params, time)}
             </ItemInventoryQueryRq>
             <ItemInventoryAssemblyQueryRq requestID="#{session_id}">
