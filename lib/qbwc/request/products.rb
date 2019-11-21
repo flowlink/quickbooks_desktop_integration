@@ -143,6 +143,7 @@ module QBWC
             return build_polling_from_config_param(params, session_id, time)
           end
 
+          inventory_max_returned = nil
           if params['quickbooks_max_returned'] && params['quickbooks_max_returned'] != ""
             inventory_max_returned = params['quickbooks_max_returned']
           end
