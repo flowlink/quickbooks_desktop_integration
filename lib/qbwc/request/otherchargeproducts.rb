@@ -1,10 +1,8 @@
 module QBWC
   module Request
-    # We will not remove this class, because the customer probably will change their mind and we will start to use again
-    class Adjustments
+    class Otherchargeproducts
 
       GENERAL_MAPPING = [
-        {qbe_name: "IsActive", flowlink_name: "is_active", is_ref: false},
         {qbe_name: "ClassRef", flowlink_name: "class_name", is_ref: true},
         {qbe_name: "ParentRef", flowlink_name: "parent_name", is_ref: true},
         {qbe_name: "IsTaxIncluded", flowlink_name: "is_tax_included", is_ref: false},
@@ -39,21 +37,12 @@ module QBWC
           objects.inject('') do |request, object|
             config = { connection_id: params['connection_id'] }.with_indifferent_access
             session_id = Persistence::Session.save(config, object)
-            if object[:list_id].to_s.empty?
-              request = add_xml_to_send(object, params, session_id, config)
-            elsif params['is_add_adjustments_workflow'].to_s == "1"
-              request = mod_xml_to_send(object, params, session_id, config)
-            else
-              request = ''
-              objects_to_update = [{ adjustments: {
-                id: object['id'],
-                list_id: object['list_id'],
-                edit_sequence: object['edit_sequence']
-              }
-                                   }]
-              Persistence::Object.update_statuses(params, objects_to_update)
-            end
-            request
+
+            request << if object[:list_id].to_s.empty?
+                         add_xml_to_send(object, params, session_id, config)
+                       else
+                         update_xml_to_send(object, params, session_id, config)
+                       end
           end
         end
 
@@ -66,96 +55,81 @@ module QBWC
           end
         end
 
-        def search_xml(adjustment_id, session_id)
+        def search_xml(product_id, session_id)
           <<~XML
             <ItemOtherChargeQueryRq requestID="#{session_id}">
-              <MaxReturned>100</MaxReturned>
+              <MaxReturned>10000</MaxReturned>
               <NameRangeFilter>
-                <FromName>#{adjustment_id}</FromName>
-                <ToName>#{adjustment_id}</ToName>
+                <FromName>#{product_id}</FromName>
+                <ToName>#{product_id}</ToName>
               </NameRangeFilter>
             </ItemOtherChargeQueryRq>
           XML
         end
 
-        def add_xml_to_send(adjustment, params, session_id, config)
+        def add_xml_to_send(product, params, session_id, config)
           <<~XML
             <ItemOtherChargeAddRq requestID="#{session_id}">
                <ItemOtherChargeAdd>
-                #{adjustment_xml(adjustment, params, config, false)}
+                #{product_xml(product, params, config, false)}
                </ItemOtherChargeAdd>
             </ItemOtherChargeAddRq>
           XML
         end
 
-        def mod_xml_to_send(adjustment, params, session_id, config)
+        def update_xml_to_send(product, params, session_id, config)
           <<~XML
             <ItemOtherChargeModRq requestID="#{session_id}">
                <ItemOtherChargeMod>
-                #{adjustment_xml(adjustment, params, config, true)}
+                  <ListID>#{product['list_id']}</ListID>
+                  <EditSequence>#{product['edit_sequence']}</EditSequence>
+                  #{product.key?('active') ? product_only_touch_xml(product, params) : product_xml(product, params, config, true)}
                </ItemOtherChargeMod>
             </ItemOtherChargeModRq>
           XML
         end
 
-        def adjustment_xml(adj, params, config, is_mod)
-          adjustment = pre_mapping_logic(adj, params)
-
+        def product_only_touch_xml(product, _params)
           <<~XML
-            <Name>#{product_identifier(adjustment)}</Name>
-            #{add_barcode(adjustment)}
-            #{add_fields(adjustment, GENERAL_MAPPING, config, is_mod)}
-            #{sale_or_and_purchase(adjustment, config, is_mod)}
-            #{add_fields(adjustment, EXTERNAL_GUID_MAP, config, is_mod)}
+            <Name>#{product_identifier(product)}</Name>
+            <IsActive>true</IsActive>
           XML
         end
 
-        def account(adjustment, params)
-          if adjustment['id'].downcase.match(/discount/)
-            params['quickbooks_other_charge_discount_account']
-          elsif adjustment['id'].downcase.match(/shipping/)
-            params['quickbooks_other_charge_shipping_account']
-          else
-            params['quickbooks_other_charge_tax_account']
-         end
+        def product_xml(product, params, config, is_mod)
+          <<~XML
+            <Name>#{product_identifier(product)}</Name>
+            #{add_barcode(product)}
+            <IsActive >#{product['is_active'] || true}</IsActive>
+            #{add_fields(product, GENERAL_MAPPING, config, is_mod)}
+            #{sale_or_and_purchase(product, config, is_mod)}
+            #{add_fields(product, EXTERNAL_GUID_MAP, config, is_mod)}
+          XML
         end
 
-        def is_adjustment_tax?(adjustment_name)
-          adjustment_name.downcase.match(/tax/)
+        def polling_others_items_xml(_timestamp, _config)
+          # nothing on this class
+          ''
         end
 
-        def is_adjustment_discount?(adjustment_name)
-          adjustment_name.downcase.match(/discount/)
+        def polling_current_items_xml(params, config)
+          timestamp = params
+          timestamp = params['quickbooks_since'] if params['return_all']
+
+          session_id = Persistence::Session.save(config, 'polling' => timestamp)
+
+          time = Time.parse(timestamp).in_time_zone 'Pacific Time (US & Canada)'
+
+          <<~XML
+            <!-- polling non inventory products -->
+            <ItemOtherChargeQueryRq requestID="#{session_id}">
+              <MaxReturned>100</MaxReturned>
+                #{query_by_date(params, time)}
+            </ItemOtherChargeQueryRq>
+          XML
         end
 
-        def is_adjustment_shipping_discount?(adjustment_name)
-          adjustment_name.downcase.match(/shipping_discount/)
-        end
-
-        def is_adjustment_shipping?(adjustment_name)
-          adjustment_name.downcase.match(/shipping/)
-        end
-
-        def adjustment_product_from_qb(adjustment_name, params, object = nil)
-          if is_adjustment_shipping_discount?(adjustment_name)
-            ( object && object['shipping_discount_item'] ) || params['quickbooks_shipping_discount_item']
-          elsif is_adjustment_discount?(adjustment_name)
-            ( object && object['discount_item'] ) || params['quickbooks_discount_item']
-          elsif is_adjustment_shipping?(adjustment_name)
-            ( object && object['shipping_item'] ) || params['quickbooks_shipping_item']
-          elsif is_adjustment_tax?(adjustment_name)
-            ( object && object['tax_item'] ) || params['quickbooks_tax_item']
-         end
-        end
-
-        def pre_mapping_logic(initial_object, params)
-          object = initial_object
-
-          object['is_active'] = object['is_active'] || true
-          object['account_name'] = account(initial_object, params) if account(initial_object, params)
-          
-          object
-        end
+        private
 
         def product_identifier(object)
           object['product_id'] || object['sku'] || object['id']
@@ -232,6 +206,15 @@ module QBWC
                                 config["quickbooks_#{mapping[:flowlink_name]}"]
 
           full_name.nil? ? "" : "<#{qbe_field_name}><FullName>#{full_name}</FullName></#{qbe_field_name}>"
+        end
+
+        def query_by_date(config, time)
+          puts "Product config for polling: #{config}"
+          return '' if config['return_all']
+
+          <<~XML
+            <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
+          XML
         end
       end
     end
