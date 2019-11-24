@@ -36,7 +36,8 @@ module QBWC
         noninventory: "ItemNonInventoryQueryRq",
         salestax: "ItemSalesTaxQueryRq",
         service: "ItemServiceQueryRq",
-        discount: "ItemDiscountQueryRq"
+        discount: "ItemDiscountQueryRq",
+        adjustment: "ItemOtherChargeQueryRq"
       }
 
       class << self
@@ -154,25 +155,29 @@ module QBWC
               #{query_by_date(params, time)}
             </ItemInventoryQueryRq>
             <ItemInventoryAssemblyQueryRq requestID="#{session_id}">
-              <MaxReturned>50</MaxReturned>
+              <MaxReturned>#{inventory_max_returned || 50}</MaxReturned>
               #{query_by_date(params, time)}
             </ItemInventoryAssemblyQueryRq>
             <ItemNonInventoryQueryRq requestID="#{session_id}">
-              <MaxReturned>50</MaxReturned>
+              <MaxReturned>#{inventory_max_returned || 50}</MaxReturned>
               #{query_by_date(params, time)}
             </ItemNonInventoryQueryRq>
             <ItemSalesTaxQueryRq requestID="#{session_id}">
-              <MaxReturned>50</MaxReturned>
+              <MaxReturned>#{inventory_max_returned || 50}</MaxReturned>
               #{query_by_date(params, time)}
             </ItemSalesTaxQueryRq>
             <ItemServiceQueryRq requestID="#{session_id}">
-              <MaxReturned>50</MaxReturned>
+              <MaxReturned>#{inventory_max_returned || 50}</MaxReturned>
               #{query_by_date(params, time)}
             </ItemServiceQueryRq>
             <ItemDiscountQueryRq requestID="#{session_id}">
-              <MaxReturned>50</MaxReturned>
+              <MaxReturned>#{inventory_max_returned || 50}</MaxReturned>
               #{query_by_date(params, time)}
             </ItemDiscountQueryRq>
+            <ItemOtherChargeQueryRq requestID="#{session_id}">
+              <MaxReturned>#{inventory_max_returned || 50}</MaxReturned>
+              #{query_by_date(params, time)}
+            </ItemOtherChargeQueryRq>
           XML
         end
 

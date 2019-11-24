@@ -95,7 +95,7 @@ You can also call `/get_products` and specify a config value - see below
   # Accepted values in the array are shown below
   # Non valid inputs will be ignored
 
-  config[:quickbooks_specify_products] = "[\"inventory\", \"assembly\", \"noninventory\", \"salestax\", \"service\", \"discount\"]"
+  config[:quickbooks_specify_products] = "[\"inventory\", \"assembly\", \"noninventory\", \"salestax\", \"service\", \"discount\", \"adjustment\"]"
 
   # NOTE: Be sure to escape the string values of each item in the "array"
 ```
