@@ -68,6 +68,7 @@ The following parameters are required when setting up a Flow with this webhook:
 | return_all | Use to return all objects |
 | receive | I think this gets set within the integration |
 | flow | I think this gets set within the integration |
+| is_add_adjustments_workflow | | Set to "1" when calling /add_adjustments endpoint. Adjustments are handled within the Orders/Invoices/Sales Receipts /add endpoints sometimes, so this differentiates |
 
 [Adding QBE Refs Readme](./QBE_REFS.md)
 
