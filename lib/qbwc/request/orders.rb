@@ -322,7 +322,9 @@ module QBWC
               'price'       => item['price'],
               'cost_price'  => item['price'],
               'income_account' => item['income_account'],
-              'inventory_account' => item['inventory_account']
+              'inventory_account' => item['inventory_account'],
+              'cogs_account' => item['cogs_account']
+
             }
           end
         end
