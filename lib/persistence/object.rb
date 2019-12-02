@@ -564,7 +564,19 @@ module Persistence
 
     def generate_inserts_for_two_phase(object, use_customer_email_param)
       # TODO Create a better way to choose between types
-      if payload_key.pluralize == 'orders'
+      if payload_key.pluralize == 'inventories'
+        if auto_create_products
+          products = QBWC::Request::Orders.build_products_from_order(objects)
+          products.flatten.each do |product|
+            save_pending_file(product['id'], 'products', product)
+          end
+        end
+
+        # payments = QBWC::Request::Orders.build_payments_from_order(object)
+        # payments.flatten.each do |payment|
+        #   save_pending_file(payment['id'], 'payments', payment)
+        # end
+      elsif payload_key.pluralize == 'orders'
 
         if !use_customer_email_param
           customer = QBWC::Request::Orders.build_customer_from_order(object)
@@ -683,7 +695,7 @@ module Persistence
     end
 
     def two_phase?
-      %w(orders shipments invoices salesreceipts purchaseorders payments).include?(payload_key.pluralize)
+      %w(orders shipments invoices salesreceipts purchaseorders payments inventories).include?(payload_key.pluralize)
     end
 
 
