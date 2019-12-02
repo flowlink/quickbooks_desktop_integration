@@ -320,7 +320,8 @@ module QBWC
               'product_id'  => item['product_id'],
               'description' => item['description'],
               'price'       => item['price'],
-              'cost_price'  => item['price']
+              'cost_price'  => item['price'],
+              'income_account' => item['income_account']
             }
           end
         end
