@@ -264,7 +264,7 @@ module QBWC
 
           multiplier = QBWC::Request::Adjustments.is_adjustment_discount?(adjustment['name']) ? -1 : 1
           p_id = QBWC::Request::Adjustments.adjustment_product_from_qb(adjustment['name'], params, record)
-          puts "FOUND product_id #{p_id}, NAME #{adjustment['name']}"
+          puts "FOUND product_id #{p_id}, NAME #{adjustment['name']}, multiplier: #{multiplier}"
           line = {
             'product_id' => p_id,
             'quantity' => 0,
