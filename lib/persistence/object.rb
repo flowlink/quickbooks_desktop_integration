@@ -700,7 +700,11 @@ module Persistence
 
 
     def id_of_object(object)
-      id_for_object(object, payload_key.pluralize)
+      id = id_for_object(object, payload_key.pluralize)
+      id = id.gsub("/","-")
+      id = id.gsub("(","-")
+      id = id.gsub(")","-")
+      id
     end
 
     def id_for_object(object, object_type)
