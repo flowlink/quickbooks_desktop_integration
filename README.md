@@ -52,6 +52,7 @@ The following parameters are required when setting up a Flow with this webhook:
 | quickbooks_use_tax_line_items   | If true, uses broken out taxes (if available) |
 | quickbooks_customer_email       | If present, uses given email for all customers |
 | quickbooks_auto_create_products | If checked, automatically create products for orders and shipments |
+| use_amount_for_tax | If set to "1" then we use the "Amount" QBE field rather than "Rate" (used in Invoices too) |
 
 ## QBE Config and Refs
 

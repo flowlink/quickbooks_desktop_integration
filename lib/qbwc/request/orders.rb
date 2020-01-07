@@ -196,6 +196,8 @@ module QBWC
           line['tax_code_id'] = adjustment['tax_code_id'] if adjustment['tax_code_id']
           line['amount'] = adjustment['amount'] if adjustment['amount']
 
+          line['use_amount'] = true if params['use_amount_for_tax'].to_s == "1"
+
           sales_order_line_add line
         end
 
@@ -250,6 +252,7 @@ module QBWC
             <Desc>#{line['name']}</Desc>
             #{quantity(line)}
             #{rate_line(line)}
+            #{amount_line(line)}
             #{tax_code_line(line)}
             #{amount_line(line)}
           XML
@@ -280,10 +283,13 @@ module QBWC
         end
 
         def amount_line(line)
-          return '' if line['amount'].to_s.empty?
+          return '' if rate_line(line) != ''
+
+          amount = line['amount'] || price(line)
+          return '' unless amount
 
           <<~XML
-            <Amount>#{'%.2f' % line['amount'].to_f}</Amount>
+            <Amount>#{'%.2f' % amount.to_f}</Amount>
           XML
         end
 

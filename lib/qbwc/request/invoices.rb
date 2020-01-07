@@ -260,11 +260,9 @@ module QBWC
         end
 
         def invoice_line_add_from_adjustment(adjustment, params, record)
-          puts "IN sales invoice PARAMS = #{params}"
-
           multiplier = QBWC::Request::Adjustments.is_adjustment_discount?(adjustment['name']) ? -1 : 1
           p_id = QBWC::Request::Adjustments.adjustment_product_from_qb(adjustment['name'], params, record)
-          puts "FOUND product_id #{p_id}, NAME #{adjustment['name']}, multiplier: #{multiplier}, #{adjustment['value'].to_f * multiplier}"
+
           line = {
             'product_id' => p_id,
             'quantity' => 0,
@@ -275,9 +273,6 @@ module QBWC
           line['amount'] = adjustment['amount'] if adjustment['amount']
 
           line['use_amount'] = true if params['use_amount_for_tax'].to_s == "1"
-          puts params['connection_id']
-          puts "Adding Tax... Should we use amount? #{params['use_amount_for_tax']} - so line is now: #{line}" if params['connection_id'] == "oilsolutionsgroup"
-
 
           invoice_line_add line
         end
