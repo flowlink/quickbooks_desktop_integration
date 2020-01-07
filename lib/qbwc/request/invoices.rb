@@ -286,6 +286,7 @@ module QBWC
           }
 
           line['use_amount'] = true if params['use_amount_for_tax'].to_s == "1"
+          puts "Adding Tax... Should we use amount? #{params['use_amount_for_tax']} - so line is now: #{line}" if params['connection_id'] == "oilsolutionsgroup"
 
           invoice_line_add line
         end
