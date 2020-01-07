@@ -274,6 +274,11 @@ module QBWC
           line['tax_code_id'] = adjustment['tax_code_id'] if adjustment['tax_code_id']
           line['amount'] = adjustment['amount'] if adjustment['amount']
 
+          line['use_amount'] = true if params['use_amount_for_tax'].to_s == "1"
+          puts params['connection_id']
+          puts "Adding Tax... Should we use amount? #{params['use_amount_for_tax']} - so line is now: #{line}" if params['connection_id'] == "oilsolutionsgroup"
+
+
           invoice_line_add line
         end
 
@@ -284,10 +289,6 @@ module QBWC
             'price' => tax_line_item['value'],
             'name' => tax_line_item['name']
           }
-
-          line['use_amount'] = true if params['use_amount_for_tax'].to_s == "1"
-          puts params['connection_id']
-          puts "Adding Tax... Should we use amount? #{params['use_amount_for_tax']} - so line is now: #{line}" if params['connection_id'] == "oilsolutionsgroup"
 
           invoice_line_add line
         end
