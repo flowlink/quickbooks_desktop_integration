@@ -377,10 +377,10 @@ module QBWC
         end
 
         def amount_line(line)
-          return '' if line['amount'].to_s.empty?
           return '' if rate_line(line) != ''
 
           amount = line['amount'] || price(line)
+          return '' unless amount
 
           <<~XML
             <Amount>#{'%.2f' % amount.to_f}</Amount>
