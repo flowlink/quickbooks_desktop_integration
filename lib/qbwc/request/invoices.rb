@@ -285,6 +285,8 @@ module QBWC
             'name' => tax_line_item['name']
           }
 
+          line['use_amount'] = true if params['use_amount_for_tax'].to_s == "1"
+
           invoice_line_add line
         end
 
@@ -375,8 +377,10 @@ module QBWC
           return '' if line['amount'].to_s.empty?
           return '' if rate_line(line) != ''
 
+          amount = line['amount'] || price(line)
+
           <<~XML
-            <Amount>#{'%.2f' % line['amount'].to_f}</Amount>
+            <Amount>#{'%.2f' % amount.to_f}</Amount>
           XML
         end
 
