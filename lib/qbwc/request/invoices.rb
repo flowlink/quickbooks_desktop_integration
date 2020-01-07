@@ -331,6 +331,7 @@ module QBWC
             <Desc>#{line['name']}</Desc>
             #{quantity(line)}
             #{rate_line(line)}
+            #{amount(line)}
             #{tax_code_line(line)}
             #{inventory_site(line)}
           XML
@@ -363,7 +364,7 @@ module QBWC
         end
 
         def rate_line(line)
-          return '' if !line['amount'].to_s.empty?
+          return '' if !line['amount'].to_s.empty? || line['use_amount'] == true
 
           <<~XML
             <Rate>#{'%.2f' % price(line).to_f}</Rate>
@@ -372,6 +373,7 @@ module QBWC
 
         def amount_line(line)
           return '' if line['amount'].to_s.empty?
+          return '' if rate_line(line) != ''
 
           <<~XML
             <Amount>#{'%.2f' % line['amount'].to_f}</Amount>
