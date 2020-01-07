@@ -336,7 +336,7 @@ module QBWC
             <Desc>#{line['name']}</Desc>
             #{quantity(line)}
             #{rate_line(line)}
-            #{amount(line)}
+            #{amount_line(line)}
             #{tax_code_line(line)}
             #{inventory_site(line)}
           XML
