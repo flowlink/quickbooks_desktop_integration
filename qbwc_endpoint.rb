@@ -133,6 +133,16 @@ class QBWCEndpoint < Sinatra::Base
 </QBXML>
     XML
 
+    if connection_id == "unionville"
+      text = @qbxml.gsub("\n", '')
+      text.each do |t|
+        begin
+          t.encode(Encoding.find("US-ASCII"))
+        rescue => exception
+          puts "Exception!!! - #{t} - #{exception}"
+        end
+      end
+    end
     puts @qbxml.gsub("\n", '').encode(Encoding.find("US-ASCII"))
     erb :'qbwc/send_request_xml'
   end
