@@ -135,7 +135,7 @@ class QBWCEndpoint < Sinatra::Base
 
     if connection_id == "unionville"
       text = @qbxml.gsub("\n", '')
-      text.each do |t|
+      text.split('').each do |t|
         begin
           t.encode(Encoding.find("US-ASCII"))
         rescue => exception
