@@ -11,3 +11,4 @@ services:
     network_mode: bridge
     logging:
       driver: gcplogs
+    restart: always
