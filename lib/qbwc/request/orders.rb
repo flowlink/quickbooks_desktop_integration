@@ -326,10 +326,11 @@ module QBWC
               'product_id'  => item['product_id'],
               'description' => item['description'],
               'price'       => item['price'],
-              'cost_price'  => item['cost'],
+              'cost'  => item['cost'],
               'income_account' => item['income_account'],
               'inventory_account' => item['inventory_account'],
-              'cogs_account' => item['cogs_account']
+              'cogs_account' => item['cogs_account'],
+              'unit_of_measure' => item['unit_of_measure']
 
             }
           end
