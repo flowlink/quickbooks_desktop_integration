@@ -203,7 +203,10 @@ module Persistence
 
       select_precedence_files(collection).reject { |s3| s3.key.match(/notification/) }.map do |s3_object|
         _, _, filename                         = s3_object.key.split('/')
+        puts "=" * 100
         object_type, _, list_id, edit_sequence = filename.split('_')
+        puts "#{@config[:connection_id]} - get_ready_objects_to_send -> filename: #{filename}, object_type: #{object_type} list_id: #{list_id} edit_sequence: #{edit_sequence}"
+        puts "=" * 100
 
         list_id.gsub!('.json', '') unless list_id.nil?
         edit_sequence.gsub!('.json', '') unless edit_sequence.nil?
