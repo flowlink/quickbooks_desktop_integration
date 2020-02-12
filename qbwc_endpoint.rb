@@ -63,8 +63,7 @@ class QBWCEndpoint < Sinatra::Base
     # {"soapenv:Header"=>nil, "soapenv:Body"=>{"fe5:closeConnection"=>{"fe5:ticket"=>"?"}}, "@xmlns:soapenv"=>"http://schemas.xmlsoap.org/soap/envelope/", "@xmlns:fe5"=>"https://fe533b4.ngrok.com/"}}
     # operation = hash['soap:Envelope']['soap:Body'].keys.first.split(':').last.underscore
     #operation = doc.children.first.children.first.children.first.name.underscore
-    soap_body_element = doc.xpath('//soap:Body/*',
-                                  'soap' => 'http://schemas.xmlsoap.org/soap/envelope/')
+    soap_body_element = doc.xpath('//soap:Body/*', 'soap' => 'http://schemas.xmlsoap.org/soap/envelope/')
     operation = soap_body_element.first.name.underscore
 
     # server_version
@@ -124,13 +123,13 @@ class QBWCEndpoint < Sinatra::Base
 
   def send_request_xml(connection_id, _body)
     @qbxml = <<~XML
-<?xml version="1.0" encoding="utf-8"?>
-<?qbxml version="11.0"?>
-<QBXML>
-   <QBXMLMsgsRq onError="continueOnError">
-    #{QBWC::Producer.new(connection_id: connection_id).build_available_actions_to_request}
-   </QBXMLMsgsRq>
-</QBXML>
+      <?xml version="1.0" encoding="utf-8"?>
+      <?qbxml version="11.0"?>
+      <QBXML>
+        <QBXMLMsgsRq onError="continueOnError">
+          #{QBWC::Producer.new(connection_id: connection_id).build_available_actions_to_request}
+        </QBXMLMsgsRq>
+      </QBXML>
     XML
 
     puts @qbxml.gsub("\n", '').encode(Encoding.find("US-ASCII"))
