@@ -27,7 +27,5 @@ RUN apt-get remove -yq build-essential && \
 
 COPY ./ /app
 
-EXPOSE 5000
-
 ENTRYPOINT [ "bundle", "exec" ]
 CMD [ "foreman", "start" ]
