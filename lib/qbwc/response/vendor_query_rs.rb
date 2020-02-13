@@ -19,7 +19,7 @@ module QBWC
       def process(config)
         return if records.empty?
 
-        puts "Config for customer query: #{config}"
+        puts "Config for vendor query: #{config}"
 
         receive_configs = config[:receive] || []
         vendor_params = receive_configs.find { |c| c['vendors'] }
