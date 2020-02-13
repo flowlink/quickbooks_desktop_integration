@@ -20,11 +20,13 @@ module QBWC
       def process(config = {})
         return { statuses_objects: nil }.with_indifferent_access if records.empty?
 
+        puts "Grabbed vendors, now we have this: #{records}"
         objects = records.map do |object|
           { vendors: {
             email: object['Name'],
             id: object['Name'],
             list_id: object['ListID'],
+            testing: "Trying out a test",
             edit_sequence: object['EditSequence'] } }
         end
 

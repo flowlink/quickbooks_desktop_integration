@@ -72,10 +72,11 @@ The following parameters must be setup within [Flowlink](http://flowlink.io):
 | Name | Info | Required |
 | :----| :-----| :-----|
 | quickbooks_customer_email | If present, uses given email for all customers | False |
-| quickbooks_auto_create_products | ?? | False |
-| quickbooks_auto_create_payments | ?? | False |
+| quickbooks_auto_create_products | Set to 1 to have the workflow create products if they do not exist in QBE | False |
+| quickbooks_auto_create_payments | Set to 1 to have the workflow create the payments if they do not exist in QBE | False |
 | origin | Should almost always be "flowlink" | True |
 | connection_id | connection ID param| True |
+| payload_type | The type of object that is being sent to QBE. Lowercase, without underscores, and singular | True |
 | quickbooks_force_config | Set to 1 or "true" | False |
 | return_all | Use to return all objects | False |
 | receive | I think this gets set within the integration | ? |
