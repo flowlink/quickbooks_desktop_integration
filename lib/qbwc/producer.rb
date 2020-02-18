@@ -35,7 +35,7 @@ module QBWC
       rescue  Exception => e
         puts "Exceptions: #{e.message}, #{e.backtrace}"
       end
-      request_xml
+      I18n.transliterate(request_xml)
     end
 
     def build_polling_request
