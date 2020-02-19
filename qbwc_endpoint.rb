@@ -20,6 +20,13 @@ if File.exist? File.join(File.expand_path(File.dirname(__FILE__)), '.env')
   end
 end
 
+
+CHARACTER_MAP = [
+  {character: "™", escaped_character: "&trade;"},
+  {character: "&", escaped_character: "&amp;"},
+  {character: "®", escaped_character: "&reg;"}
+]
+
 class QBWCEndpoint < Sinatra::Base
   set :logging, true
 
@@ -123,17 +130,17 @@ class QBWCEndpoint < Sinatra::Base
 
   def send_request_xml(connection_id, _body)
     @qbxml = <<~XML
-<?xml version="1.0" encoding="UTF-8"?>
-<?qbxml version="11.0"?>
-<QBXML>
-   <QBXMLMsgsRq onError="continueOnError">
-    #{QBWC::Producer.new(connection_id: connection_id).build_available_actions_to_request}
-   </QBXMLMsgsRq>
-</QBXML>
+      <?xml version="1.0" encoding="UTF-8"?>
+      <?qbxml version="11.0"?>
+      <QBXML>
+        <QBXMLMsgsRq onError="continueOnError">
+          #{QBWC::Producer.new(connection_id: connection_id).build_available_actions_to_request}
+        </QBXMLMsgsRq>
+      </QBXML>
     XML
     
     # @qbxml = @qbxml.gsub("\n", '').encode(Encoding.find("UTF-8"))
-    puts @qbxml
+    @qbxml = substitue_weird_characters(@qbxml.gsub("\n", ''))
     erb :'qbwc/send_request_xml'
   end
 
@@ -151,5 +158,13 @@ class QBWCEndpoint < Sinatra::Base
 
   def close_connection(_connection_id, _body)
     erb :'qbwc/close_connection'
+  end
+
+  def substitue_weird_characters(string)
+    CHARACTER_MAP.each do |map|
+      string.gsub!(map[:character], map[:escaped_character])
+    end
+
+    string
   end
 end
