@@ -123,7 +123,7 @@ class QBWCEndpoint < Sinatra::Base
 
   def send_request_xml(connection_id, _body)
     @qbxml = <<~XML
-<?xml version="1.0" encoding="US-ASCII"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <?qbxml version="11.0"?>
 <QBXML>
    <QBXMLMsgsRq onError="continueOnError">
@@ -131,8 +131,8 @@ class QBWCEndpoint < Sinatra::Base
    </QBXMLMsgsRq>
 </QBXML>
     XML
-
-    @qbxml = @qbxml.gsub("\n", '').encode(Encoding.find("UTF-8"))
+    
+    # @qbxml = @qbxml.gsub("\n", '').encode(Encoding.find("UTF-8"))
     puts @qbxml
     erb :'qbwc/send_request_xml'
   end
