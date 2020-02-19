@@ -132,8 +132,8 @@ class QBWCEndpoint < Sinatra::Base
 </QBXML>
     XML
 
-    @qbxml = @qbxml.gsub("\n", '').encode(Encoding.find("US-ASCII"))
-
+    @qbxml = @qbxml.gsub("\n", '').encode(Encoding.find("UTF-8"))
+    puts @qbxml
     erb :'qbwc/send_request_xml'
   end
 
