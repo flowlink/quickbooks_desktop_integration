@@ -63,8 +63,7 @@ class QBWCEndpoint < Sinatra::Base
     # {"soapenv:Header"=>nil, "soapenv:Body"=>{"fe5:closeConnection"=>{"fe5:ticket"=>"?"}}, "@xmlns:soapenv"=>"http://schemas.xmlsoap.org/soap/envelope/", "@xmlns:fe5"=>"https://fe533b4.ngrok.com/"}}
     # operation = hash['soap:Envelope']['soap:Body'].keys.first.split(':').last.underscore
     #operation = doc.children.first.children.first.children.first.name.underscore
-    soap_body_element = doc.xpath('//soap:Body/*',
-                                  'soap' => 'http://schemas.xmlsoap.org/soap/envelope/')
+    soap_body_element = doc.xpath('//soap:Body/*', 'soap' => 'http://schemas.xmlsoap.org/soap/envelope/')
     operation = soap_body_element.first.name.underscore
 
     # server_version
@@ -134,7 +133,7 @@ class QBWCEndpoint < Sinatra::Base
     XML
 
     @qbxml = @qbxml.gsub("\n", '').encode(Encoding.find("US-ASCII"))
-    
+
     erb :'qbwc/send_request_xml'
   end
 

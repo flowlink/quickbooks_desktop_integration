@@ -1,6 +1,6 @@
 module QBWC
   module Response
-    class VendorAddRs
+    class BillAddRs
       attr_reader :records
 
       def initialize(records)
@@ -8,11 +8,10 @@ module QBWC
       end
 
       def handle_error(errors, config)
-        puts "Handling vendor add error #{errors}"
         errors.each do |error|
           Persistence::Object.handle_error(config,
-                                           error.merge(context: 'Adding Vendors'),
-                                           'vendors',
+                                           error.merge(context: 'Adding Bills'),
+                                           'bills',
                                            error[:request_id])
         end
       end
@@ -20,13 +19,10 @@ module QBWC
       def process(config = {})
         return { statuses_objects: nil }.with_indifferent_access if records.empty?
 
-        puts "Grabbed vendors, now we have this: #{records}"
         objects = records.map do |object|
-          { vendors: {
-            email: object['Name'],
+          { bills: {
             id: object['Name'],
             list_id: object['ListID'],
-            testing: "Trying out a test",
             edit_sequence: object['EditSequence'] } }
         end
 

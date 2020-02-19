@@ -237,15 +237,15 @@ module Persistence
     #   ],
     #   :failed => [] }
     def update_objects_files(statuses_objects)
-      # puts "Status objects to be processed: #{statuses_objects}"
+      puts "Status objects to be processed: #{statuses_objects}"
       return if statuses_objects.nil?
 
       statuses_objects.keys.each do |status_key|
-        # puts status_key
+        puts status_key
         statuses_objects[status_key].each do |types|
-          # puts types
+          puts types
           types.keys.each do |object_type|
-            # puts object_type
+            puts object_type
             # NOTE seeing an nil `object` var here sometimes, investigate it
             # happens when you have both add_orders and get_products flows enabled
             begin
@@ -253,15 +253,18 @@ module Persistence
 
               filename = "#{path.base_name}/#{path.ready}/#{object_type}_#{id_for_object(object, object_type)}_"
 
-              # puts "Looking for file: #{filename}"
+              puts "Looking for file: #{filename}"
 
               collection = amazon_s3.bucket.objects(prefix: filename)
               collection.each do |s3_object|
                 # This is for files that end on (n)
-                # puts "Working with #{s3_object.inspect}"
+                puts "Working with #{s3_object.inspect}"
                 _, _, ax_filename = s3_object.key.split('/')
                 _, _, end_of_file, ax_edit_sequence = ax_filename.split('_')
                 end_of_file = '.json' unless ax_edit_sequence.nil?
+
+                puts "AX FIlename: #{ax_filename}"
+                puts "End of File: #{end_of_file}"
 
                 status_folder = path.send status_key
                 new_filename = "#{path.base_name_w_bucket}/#{status_folder}/#{object_type}_#{id_for_object(object, object_type)}_"
