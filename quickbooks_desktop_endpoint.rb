@@ -36,6 +36,7 @@ GET_ENDPOINTS =  %w(
   get_salestaxproducts
   get_discountproducts
   get_inventoryproducts
+  get_inventoryadjustments
 )
 
 class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base

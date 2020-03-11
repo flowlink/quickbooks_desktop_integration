@@ -382,7 +382,6 @@ module QBWC
           XML
         end
 
-
         def build_customer_from_invoice(object)
           billing_address = object['billing_address']
 

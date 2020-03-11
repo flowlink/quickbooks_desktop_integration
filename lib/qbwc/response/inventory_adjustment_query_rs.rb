@@ -17,10 +17,14 @@ module QBWC
       end
 
       def process(config = {})
+        puts "MARCTEST"
+        puts records
+        puts config
         return if records.empty?
 
         receive_configs = config[:receive] || []
         inventory_params = receive_configs.find { |c| c['inventories'] }
+        puts inventory_params
 
         payload = { inventories: inventories_to_flowlink }
         config = { origin: 'quickbooks' }.merge config

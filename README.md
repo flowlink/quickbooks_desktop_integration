@@ -101,6 +101,19 @@ You can also call `/get_products` and specify a config value - see below
   # NOTE: Be sure to escape the string values of each item in the "array"
 ```
 
+### Getting Inventory
+
+[Add info about getting overall/general inventory counts here]
+
+You can also get Inventory from QBE per Inventory Site using the /get_inventoryadjustments endpoint
+
+Config Params allowed for this endpoint (not including the connection params):
+
+| Name | Info |
+| :----| :-----|
+| return_all | Use to return all objects rather than the default of 100 |
+| quickbooks_since | Timestamp used to get new/updated inventory adjustments |
+
 ## About FlowLink
 
 [FlowLink](http://flowlink.io/) allows you to connect to your own custom integrations.
