@@ -210,6 +210,7 @@ module QBWC
             transaction_date: txn['TxnDate'].to_s,
             link_type: txn['LinkType'],
             amount: txn['Amount'],
+            line_item_amount: item['Amount']
           }
         end
       end
@@ -233,12 +234,15 @@ module QBWC
             line_id: item['TxnLineID'],
             description: item['Desc'],
             quantity: item['Quantity'],
+            line_item_quantity: item['Quantity'],
             unit_of_measure: item['UnitOfMeasure'],
             rate: item['Rate'],
+            line_item_rate: item['Rate'],
             rate_percent: item['RatePercent'],
             serial_number: item["SerialNumber"],
             lot_number: item["LotNumber"],
             amount: item['Amount'],
+            line_item_amount: item['Amount'],
             invoiced: item['Invoiced'],
             is_manually_closed: item['IsManuallyClosed'],
             service_date: item['ServiceDate'].to_s,
@@ -257,6 +261,7 @@ module QBWC
             line_id: group_item['TxnLineID'],
             description: group_item['Desc'],
             quantity: group_item['Quantity'],
+            line_item_quantity: group_item['Quantity'],
             unit_of_measure: group_item['UnitOfMeasure'],
             is_print_items_in_group: group_item['IsPrintItemsInGroup'],
             total_amount: group_item['TotalAmount'],
