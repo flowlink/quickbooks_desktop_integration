@@ -36,6 +36,8 @@ require 'qbwc/response/item_receipt_query_rs'
 
 require 'qbwc/response/purchase_order_query_rs'
 
+require 'qbwc/response/journal_entry_add_rs'
+
 module QBWC
   module Response
     class All

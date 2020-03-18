@@ -40,7 +40,8 @@ module QBWC
           <<-XML
 <CustomerAddRq requestID="#{session_id}">
    <CustomerAdd>
-    <Name>#{object['email']}</Name>
+    <Name>#{object['name']}</Name>
+    <CompanyName>#{object['company']}</CompanyName>
     <FirstName>#{object['firstname']}</FirstName>
     <LastName>#{object['lastname']}</LastName>
     <BillAddress>
@@ -73,7 +74,8 @@ module QBWC
    <CustomerMod>
       <ListID>#{object['list_id']}</ListID>
       <EditSequence>#{object['edit_sequence']}</EditSequence>
-      <Name>#{object['email']}</Name>
+      <Name>#{object['name']}</Name>
+      <CompanyName>#{object['company']}</CompanyName>
       <FirstName>#{object['firstname']}</FirstName>
       <LastName>#{object['lastname']}</LastName>
       <BillAddress>

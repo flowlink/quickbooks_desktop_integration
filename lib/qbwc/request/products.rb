@@ -95,13 +95,12 @@ module QBWC
           time = Time.parse(timestamp).in_time_zone 'Pacific Time (US & Canada)'
 
           <<-XML
-
-      <!-- polling products -->
-      <ItemInventoryQueryRq requestID="#{session_id}">
-       <MaxReturned>100</MaxReturned>
-        <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
-        <!-- <IncludeRetElement>Name</IncludeRetElement> -->
-      </ItemInventoryQueryRq>
+            <!-- polling products -->
+            <ItemInventoryQueryRq requestID="#{session_id}">
+            <MaxReturned>100</MaxReturned>
+              <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
+              <!-- <IncludeRetElement>Name</IncludeRetElement> -->
+            </ItemInventoryQueryRq>
           XML
         end
 

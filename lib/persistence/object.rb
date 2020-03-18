@@ -68,9 +68,11 @@ module Persistence
         end
 
         # Get rid of empty addresses
-        [:shipping_address, :billing_address].each do |address_type|
-          if object[address_type].nil? || object[address_type].empty?
-            object[address_type] = generic_address
+        unless payload_key == 'journal'
+          [:shipping_address, :billing_address].each do |address_type|
+            if object[address_type].nil? || object[address_type].empty?
+              object[address_type] = generic_address
+            end
           end
         end
 
@@ -399,7 +401,7 @@ module Persistence
 
     def select_precedence_files(collection)
       first_precedence_types = %w(customers products adjustments inventories payments)
-      second_precedence_types = %w(orders returns)
+      second_precedence_types = %w(orders returns journals)
 
       has_first_precedence_files = collection.select do |file|
         _, _, filename    = file.key.split('/')

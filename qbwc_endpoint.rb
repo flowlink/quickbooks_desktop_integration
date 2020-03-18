@@ -76,6 +76,7 @@ class QBWCEndpoint < Sinatra::Base
 
     puts operation
     # puts body
+    # puts params[:connection_id]
     puts '*' * 100
 
     send operation, params[:connection_id], body

@@ -92,7 +92,7 @@ module QBWC
           <<-XML
 
     <CustomerRef>
-      <FullName>#{record['email']}</FullName>
+      <FullName>#{record['billing_address']['name']}</FullName>
     </CustomerRef>
     <TxnDate>#{Time.parse(record['placed_on']).to_date}</TxnDate>
     <RefNumber>#{record['id']}</RefNumber>
@@ -126,9 +126,13 @@ module QBWC
         end
 
         def sales_order_line_add_from_adjustment(adjustment, params)
+          puts "IN sales order PARAMS = #{params}"
+
           multiplier = QBWC::Request::Adjustments.is_adjustment_discount?(adjustment['name'])  ? -1 : 1
+          p_id = QBWC::Request::Adjustments.adjustment_product_from_qb(adjustment['name'], params)
+          puts "FOUND product_id #{p_id}, NAME #{adjustment['name']}"
           line = {
-            'product_id' => QBWC::Request::Adjustments.adjustment_product_from_qb(adjustment['name'], params),
+            'product_id' => p_id,
             'quantity' => 0,
             'price' => (adjustment['value'].to_f * multiplier).to_s
           }
@@ -188,7 +192,7 @@ module QBWC
       </ItemRef>
       <Desc>#{line['name']}</Desc>
       #{quantity(line)}
-      <Rate>#{line['price']}</Rate>
+      <Rate>#{'%.2f' % line['price'].to_f}</Rate>
       #{tax_code_line(line)}
           XML
         end
@@ -227,6 +231,8 @@ module QBWC
             'id'               => object['email'],
             'firstname'        => billing_address['firstname'],
             'lastname'         => billing_address['lastname'],
+            'name'             => billing_address['name'],
+            'company'          => billing_address['company'],
             'email'            => object['email'],
             'billing_address'  => billing_address,
             'shipping_address' => object['shipping_address']
@@ -262,6 +268,7 @@ module QBWC
         # If the quickbooks_use_tax_line_items is set, then don't include tax from the adjustments object, and instead
         # use tax_line_items if it exists.
         def adjustments_add_xml(record, params)
+        puts "record is #{record}"
           final_adjustments = []
           use_tax_line_items = !params['quickbooks_use_tax_line_items'].nil? &&
                                 params['quickbooks_use_tax_line_items'] == "1" &&
@@ -269,6 +276,8 @@ module QBWC
                                !record['tax_line_items'].empty?
 
           adjustments(record).each do |adjustment|
+                      puts "adjustment is #{adjustment}"
+
             if !use_tax_line_items ||
                !QBWC::Request::Adjustments.is_adjustment_tax?(adjustment['name'])
               final_adjustments << sales_order_line_add_from_adjustment(adjustment, params)
