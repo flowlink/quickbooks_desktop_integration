@@ -35,6 +35,7 @@ module Persistence
     def initialize(config = {}, payload = {})
       @payload_key = payload[:parameters] ? payload[:parameters][:payload_type] : payload.keys.first
       @objects     = payload[payload_key].is_a?(Hash) ? [payload[payload_key]] : Array(payload[payload_key])
+      @payload_key.gsub!('_','')
       @config      = { origin: 'flowlink' }.merge(config).with_indifferent_access
       @amazon_s3   = S3Util.new
       @path        = Persistence::Path.new(@config)
