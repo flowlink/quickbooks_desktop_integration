@@ -143,6 +143,7 @@ module QBWC
               <PostalCode>#{record['shipping_address']['zipcode']}</PostalCode>
               <Country>#{record['shipping_address']['country']}</Country>
             </ShipAddress>
+            <Memo>#{record['memo']}</Memo>
           XML
         end
 
