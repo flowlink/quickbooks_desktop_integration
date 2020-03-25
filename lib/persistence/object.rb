@@ -438,10 +438,6 @@ module Persistence
       second_precedence_types = %w(orders returns journals)
 
       has_first_precedence_files = collection.select do |file|
-        if @config[:connection_id] == 'oilsolutionsgroup'
-          puts "About to split:"
-          puts file.key
-        end
         _, _, filename    = file.key.split('/')
         object_type, _, _ = filename.split('_')
         first_precedence_types.include?(object_type)
