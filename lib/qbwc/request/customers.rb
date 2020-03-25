@@ -153,10 +153,7 @@ module QBWC
 
           <<~XML
             <CustomerQueryRq requestID="#{session_id}">
-              <MaxReturned>50</MaxReturned>
-              <ListIDList>
-                #{object_id}
-              </ListIDList>
+              <ListID>#{object_id}</ListID>
             </CustomerQueryRq>
           XML
         end

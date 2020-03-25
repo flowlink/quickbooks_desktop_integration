@@ -145,10 +145,7 @@ module QBWC
 
           <<~XML
             <VendorQueryRq requestID="#{session_id}">
-              <MaxReturned>50</MaxReturned>
-              <ListIDList>
-                #{object_id}
-              </ListIDList>
+              <ListID>#{object_id}</ListID>
             </VendorQueryRq>
           XML
         end
