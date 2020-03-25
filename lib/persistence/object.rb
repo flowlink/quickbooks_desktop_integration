@@ -440,7 +440,7 @@ module Persistence
       has_first_precedence_files = collection.select do |file|
         if @config[:connection_id] == 'oilsolutionsgroup'
           puts "About to split:"
-          puts file
+          puts file.key
         end
         _, _, filename    = file.key.split('/')
         object_type, _, _ = filename.split('_')
