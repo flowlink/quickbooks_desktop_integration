@@ -109,9 +109,16 @@ module Persistence
       collection = amazon_s3.bucket.objects(prefix: prefix)
 
       collection.map do |s3_object|
+
         _, _, filename    = s3_object.key.split('/')
         object_type, _, _ = filename.split('_')
 
+        if @config[:connection_id] == 'oilsolutionsgroup'
+          puts "OSGHERE"
+          puts s3_object.key
+          puts s3_object.key.split('/')
+          puts filename
+        end
 
         content = amazon_s3.convert_download('json', s3_object.get.body.read).first
         s3_object.move_to("#{path.base_name_w_bucket}/#{path.ready}/#{filename}")
