@@ -63,7 +63,7 @@ module QBWC
       end
 
       def products_to_flowlink
-        # puts "Product object from QBE: #{records.first}"
+        puts "NON inv Product object from QBE: #{records.first}"
         records.map do |record|
           object = {
             id: record['Name'],
