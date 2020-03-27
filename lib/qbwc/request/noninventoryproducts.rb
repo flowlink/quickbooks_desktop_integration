@@ -162,11 +162,7 @@ module QBWC
             tag = "SalesAndPurchaseMod"
           end
 
-          <<~XML
-            <"#{tag}">
-              #{add_fields(product, map, config, is_mod)}
-            </"#{tag}">
-          XML
+          "<#{tag}>#{add_fields(product, map, config, is_mod)}</#{tag}>"
         end
 
         def add_fields(object, mapping, config, is_mod)
