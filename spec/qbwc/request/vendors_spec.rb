@@ -6,12 +6,12 @@ RSpec.describe QBWC::Request::Vendors do
   let(:flowlink_vendor) { JSON.parse(File.read('spec/fixtures/vendor_from_flowlink.json')) }
 
   it "calls add_xml_to_send and outputs the right data" do
-    vendor = described_class.add_xml_to_send(flowlink_vendor, 12345)
+    vendor = described_class.add_xml_to_send(flowlink_vendor, 12345, {})
     expect(vendor.gsub(/\s+/, "")).to eq(qbe_vendor_add.gsub(/\s+/, ""))
   end
 
   it "calls update_xml_to_send and outputs the right data" do
-    vendor = described_class.update_xml_to_send(flowlink_vendor, 12345)
+    vendor = described_class.update_xml_to_send(flowlink_vendor, 12345, {})
     expect(vendor.gsub(/\s+/, "")).to eq(qbe_vendor_update.gsub(/\s+/, ""))
   end
 
@@ -40,12 +40,13 @@ RSpec.describe QBWC::Request::Vendors do
   def qbe_vendor_innards
     <<~XML
       <Name>First Last</Name>
+      <IsActive>true</IsActive>
       <FirstName>First</FirstName>
       <LastName>Last</LastName>
       <Phone>+1 2345678999</Phone>
       <AltPhone>1234567890</AltPhone>
       <Email>test@aol.com</Email>
-      <IsActive>true</IsActive>
+      
       <Salutation>Mr</Salutation>
       <MiddleName>middlename</MiddleName>
       <JobTitle>Developer</JobTitle>
