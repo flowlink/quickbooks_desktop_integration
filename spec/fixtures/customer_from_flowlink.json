@@ -7,6 +7,7 @@
   "lastname": "Last",
   "email": "test@aol.com",
   "phone": "+1 2345678999",
+  "mobile": "1234567890",
   "is_active": true,
   "salutation": "Mr",
   "middlename": "middlename",
@@ -15,6 +16,7 @@
   "cc": "some_email@test.com",
   "contact": "My Contact friend",
   "alternative_contact": "My Other Contact friend",
+  "account_number": 123,
   "resale_number": 300,
   "credit_limit": "10000",
   "job_start_date": "2019-11-01T13:22:02.718+00:00",
@@ -35,9 +37,6 @@
   "sales_tax_code_name": "sales_tax_code_reference",
   "item_sales_tax_name": "item_sales_tax_reference",
   "preferred_payment_method_name": "preferred_payment_method_reference",
-  "job_type_name": "job_type_reference",
-  "price_level_name": "price_level_reference",
-  "currency_name": "currency_reference",
   "billing_address": {
       "address3": "addr line 3",
       "address4": "addr line 4",
@@ -103,7 +102,9 @@
     {"name": "initial contact", "value": "initial value"},
     {"name": "secondary contact", "value": "secondary value"}
   ],
-  "additional_notes": ["note #1"],
+  "additional_notes": [
+    {"note": "note #1", "id": 1}
+  ],
   "contacts": [
     {
       "salutation": "Miss",
