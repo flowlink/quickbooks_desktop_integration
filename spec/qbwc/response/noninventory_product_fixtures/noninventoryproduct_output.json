@@ -1,0 +1,20 @@
+{
+  "id": "test-product",
+  "sku": "test-product",
+  "product_id": "test-product",
+  "qbe_id": "80001019-2039019",
+  "key": "qbe_id",
+  "name": "test-product",
+  "fullname": "Level1:test-product",
+  "is_active": true,
+  "barcode_value": "0001910191",
+  "sublevel": 1,
+  "manufacturer_part_number": "man_part_num",
+  "is_tax_included": false,
+  "external_guid": 109389220,
+  "created_at": "2019-09-24T17:24:16-05:00",
+  "modified_at": "2019-10-26T17:14:29-05:00",
+  "class_name": "Class1:Class2",
+  "parent_name": "GermanCars:Mercedes-Benz",
+  "item_type": "non_inventory"
+}
