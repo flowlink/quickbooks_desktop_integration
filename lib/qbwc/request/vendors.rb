@@ -201,9 +201,9 @@ module QBWC
             </ShipAddress>
             #{add_fields(object, MAPPING_TWO, config, is_mod)}
             #{additional_contacts(object)}
-            #{contacts(object, is_mod)}
+            #{contacts(object, is_mod, config)}
             #{add_fields(object, MAPPING_THREE, config, is_mod)}
-            #{additional_notes(object)}
+            #{additional_notes(object, is_mod)}
             #{add_fields(object, MAPPING_FOUR, config, is_mod)}
           XML
         end
@@ -242,29 +242,29 @@ module QBWC
           fields
         end
 
-        def additional_notes(object)
+        def additional_notes(object, is_mod)
           return "" unless object['additional_notes'] && object['additional_notes'].is_a?(Array)
           
           fields = ""
           object['additional_notes'].each do |note|
-            next unless note && note[:note]
+            next unless note && note['note']
 
             fields += is_mod ? "<AdditionalNotesMod>" : "<AdditionalNotes>"
-            fields += "<NoteID>#{note[:id]}</NoteID>" if is_mod
-            fields += "<Note>#{note[:note]}</Note>"
+            fields += "<NoteID>#{note['id']}</NoteID>" if is_mod
+            fields += "<Note>#{note['note']}</Note>"
             fields += is_mod ? "</AdditionalNotesMod>" : "</AdditionalNotes>"
           end
 
           fields
         end
 
-        def contacts(object, is_mod)
+        def contacts(object, is_mod, config)
           return "" unless object['contacts'] && object['contacts'].is_a?(Array)
           
           fields = ""
           object['contacts'].each do |contact|
             fields += is_mod ? "<ContactsMod>" : "<Contacts>"
-            fields += add_fields(contact, CONTACTS_MAP, config)
+            fields += add_fields(contact, CONTACTS_MAP, config, is_mod)
             fields += additional_contacts(contact)
             fields += is_mod ? "</ContactsMod>" : "</Contacts>"
           end
@@ -275,8 +275,8 @@ module QBWC
         def add_fields(object, mapping, config, is_mod)
           fields = ""
           mapping.each do |map_item|
-            return "" if object[:mod_only] && object[:mod_only] != is_mod
-            return "" if object[:add_only] && object[:add_only] == is_mod
+            next if object[:mod_only] && object[:mod_only] != is_mod
+            next if object[:add_only] && object[:add_only] == is_mod
 
             if map_item[:is_ref]
               fields += add_ref_xml(object, map_item, config)
@@ -308,8 +308,8 @@ module QBWC
             return "<#{qbe_field_name}><ListID>#{flowlink_field['list_id']}</ListID></#{qbe_field_name}>"
           end
           full_name = flowlink_field ||
-                                config[mapping[:flowlink_name]] ||
-                                config["quickbooks_#{mapping[:flowlink_name]}"]
+                                config[mapping[:flowlink_name].to_sym] ||
+                                config["quickbooks_#{mapping[:flowlink_name]}".to_sym]
 
           full_name.nil? ? "" : "<#{qbe_field_name}><FullName>#{full_name}</FullName></#{qbe_field_name}>"
         end
