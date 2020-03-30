@@ -14,12 +14,45 @@ RSpec.describe QBWC::Request::Customers do
 
   it "calls add_xml_to_send and outputs the right data" do
     customer = described_class.add_xml_to_send(flowlink_customer, 12345, config)
+    puts customer.gsub(/\s+/, "")
+    puts "-------------------------------------------"
+    puts qbe_customer_add.gsub(/\s+/, "")
     expect(customer.gsub(/\s+/, "")).to eq(qbe_customer_add.gsub(/\s+/, ""))
   end
 
   it "calls update_xml_to_send and outputs the right data" do
     customer = described_class.update_xml_to_send(flowlink_customer, 12345, config)
     expect(customer.gsub(/\s+/, "")).to eq(qbe_customer_update.gsub(/\s+/, ""))
+  end
+
+  it "calls search_xml_by_id and outputs the right data" do
+    customer = described_class.search_xml_by_id("My ID", 12345)
+    expect(customer.gsub(/\s+/, "")).to eq(qbe_customer_search_id.gsub(/\s+/, ""))
+  end
+
+  it "calls search_xml_by_name and outputs the right data" do
+    customer = described_class.search_xml_by_name("My ID", 12345)
+    expect(customer.gsub(/\s+/, "")).to eq(qbe_customer_search_name.gsub(/\s+/, ""))
+  end
+
+  def qbe_customer_search_name
+    <<~XML
+      <CustomerQueryRq requestID="12345">
+        <MaxReturned>50</MaxReturned>
+        <NameRangeFilter>
+          <FromName>My ID</FromName>
+          <ToName>My ID</ToName>
+        </NameRangeFilter>
+      </CustomerQueryRq>
+    XML
+  end
+
+  def qbe_customer_search_id
+    <<~XML
+      <CustomerQueryRq requestID="12345">
+        <ListID>My ID</ListID>
+      </CustomerQueryRq>
+    XML
   end
 
   def qbe_customer_add
