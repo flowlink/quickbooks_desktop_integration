@@ -22,6 +22,36 @@ RSpec.describe QBWC::Request::Vendors do
     expect(vendor.gsub(/\s+/, "")).to eq(qbe_vendor_update.gsub(/\s+/, ""))
   end
 
+  it "calls search_xml_by_id and outputs the right data" do
+    vendor = described_class.search_xml_by_id("My ID", 12345)
+    expect(vendor.gsub(/\s+/, "")).to eq(qbe_vendor_search_id.gsub(/\s+/, ""))
+  end
+
+  it "calls search_xml_by_name and outputs the right data" do
+    vendor = described_class.search_xml_by_name("My ID", 12345)
+    expect(vendor.gsub(/\s+/, "")).to eq(qbe_vendor_search_name.gsub(/\s+/, ""))
+  end
+
+  def qbe_vendor_search_name
+    <<~XML
+      <VendorQueryRq requestID="12345">
+        <MaxReturned>50</MaxReturned>
+        <NameRangeFilter>
+          <FromName>My ID</FromName>
+          <ToName>My ID</ToName>
+        </NameRangeFilter>
+      </VendorQueryRq>
+    XML
+  end
+
+  def qbe_vendor_search_id
+    <<~XML
+      <VendorQueryRq requestID="12345">
+        <ListID>My ID</ListID>
+      </VendorQueryRq>
+    XML
+  end
+
   def qbe_vendor_add
     <<~XML
       <VendorAddRq requestID="12345">
