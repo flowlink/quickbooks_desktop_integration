@@ -2,6 +2,15 @@ module Persistence
   class Object
     attr_reader :config, :objects, :payload_key, :amazon_s3, :path, :request_id
 
+    PLURAL_PRODUCT_OBJECT_TYPES = %w(
+      products
+      noninventoryproducts
+      discountproducts
+      inventoryproducts
+      salestaxproducts
+      serviceproducts
+    )
+
     class << self
       def handle_error(config, error_context, object_type, request_id)
         Persistence::Object.new(config, {})
@@ -9,8 +18,8 @@ module Persistence
       end
 
       def update_statuses(config = {}, processed = [], failed = [])
+        
         puts({message: "Updating statuses.", config: config, processed: processed, failed: failed})
-
         Persistence::Object.new(config, {})
           .update_objects_files({ processed: processed, failed: failed }.with_indifferent_access)
       end
@@ -107,16 +116,8 @@ module Persistence
       collection = amazon_s3.bucket.objects(prefix: prefix)
 
       collection.map do |s3_object|
-
         _, _, filename    = s3_object.key.split('/')
         object_type, _, _ = filename.split('_')
-
-        if @config[:connection_id] == 'oilsolutionsgroup'
-          puts "OSGHERE"
-          puts s3_object.key
-          puts s3_object.key.split('/')
-          puts filename
-        end
 
         content = amazon_s3.convert_download('json', s3_object.get.body.read).first
         s3_object.move_to("#{path.base_name_w_bucket}/#{path.ready}/#{filename}")
@@ -743,7 +744,7 @@ module Persistence
         object['name']
       elsif key == 'vendors'
         object['name'] || object['id']
-      elsif key == 'products'
+      elsif PLURAL_PRODUCT_OBJECT_TYPES.include?(key)
         object['product_id']
       else
         object['id']
