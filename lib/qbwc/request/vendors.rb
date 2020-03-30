@@ -309,7 +309,7 @@ module QBWC
           end
           full_name = flowlink_field ||
                                 config[mapping[:flowlink_name].to_sym] ||
-                                config["quickbooks_#{mapping[:flowlink_name]}"]
+                                config["quickbooks_#{mapping[:flowlink_name]}".to_sym]
 
           full_name.nil? ? "" : "<#{qbe_field_name}><FullName>#{full_name}</FullName></#{qbe_field_name}>"
         end

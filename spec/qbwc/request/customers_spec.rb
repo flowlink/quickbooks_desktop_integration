@@ -14,14 +14,13 @@ RSpec.describe QBWC::Request::Customers do
 
   it "calls add_xml_to_send and outputs the right data" do
     customer = described_class.add_xml_to_send(flowlink_customer, 12345, config)
-    puts customer.gsub(/\s+/, "")
-    puts "-------------------------------------------"
-    puts qbe_customer_add.gsub(/\s+/, "")
+    # TODO: change the `qbe_customer_add.gsub(/\s+/, "")` below to instead reference the spec/fixtures/add_customer_to_qbe.xml file
     expect(customer.gsub(/\s+/, "")).to eq(qbe_customer_add.gsub(/\s+/, ""))
   end
 
   it "calls update_xml_to_send and outputs the right data" do
     customer = described_class.update_xml_to_send(flowlink_customer, 12345, config)
+    # TODO: change the `qbe_customer_add.gsub(/\s+/, "")` below to instead reference the spec/fixtures/mod_customer_to_qbe.xml file
     expect(customer.gsub(/\s+/, "")).to eq(qbe_customer_update.gsub(/\s+/, ""))
   end
 
