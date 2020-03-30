@@ -18,8 +18,10 @@ module Persistence
       end
 
       def update_statuses(config = {}, processed = [], failed = [])
-        puts {message: "Updating statuses.", config: config, processed: processed, failed: failed}
-
+        puts '-' * 100
+        puts "Processed: " + processed.to_s
+        puts "Failed: " + failed.to_s
+        puts '-' * 100
         Persistence::Object.new(config, {})
           .update_objects_files({ processed: processed, failed: failed }.with_indifferent_access)
       end
@@ -255,7 +257,6 @@ module Persistence
         statuses_objects[status_key].each do |types|
           # puts types
           types.keys.each do |object_type|
-            puts {message: "Processing objects", object_type: object_type}
             # puts object_type
             # NOTE seeing an nil `object` var here sometimes, investigate it
             # happens when you have both add_orders and get_products flows enabled
@@ -264,13 +265,10 @@ module Persistence
 
               filename = "#{path.base_name}/#{path.ready}/#{object_type}_#{id_for_object(object, object_type)}_"
 
-              puts {message: "Filename built and looking in s3 for it", filename: filename}
-
               # puts "Looking for file: #{filename}"
 
               collection = amazon_s3.bucket.objects(prefix: filename)
               collection.each do |s3_object|
-                puts { message: "File found", s3_object: s3_object.inspect }
                 # This is for files that end on (n)
                 # puts "Working with #{s3_object.inspect}"
                 _, _, ax_filename = s3_object.key.split('/')
