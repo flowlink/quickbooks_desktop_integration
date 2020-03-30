@@ -259,7 +259,7 @@ module Persistence
             # NOTE seeing an nil `object` var here sometimes, investigate it
             # happens when you have both add_orders and get_products flows enabled
             begin
-              object = types[object_type].with_indifferent_access
+              object = types[object_type].with_indifferent_access 
 
               filename = "#{path.base_name}/#{path.ready}/#{object_type}_#{id_for_object(object, object_type)}_"
 
@@ -276,9 +276,16 @@ module Persistence
                 _, _, end_of_file, ax_edit_sequence = ax_filename.split('_')
                 end_of_file = '.json' unless ax_edit_sequence.nil?
 
+                puts({message: "Building file parts", ax_filename: ax_filename, end_of_file: end_of_file, ax_edit_sequence: ax_edit_sequence})
+
                 status_folder = path.send status_key
+                puts({message: "Status Folder", status_folder: status_folder})
+
                 new_filename = "#{path.base_name_w_bucket}/#{status_folder}/#{object_type}_#{id_for_object(object, object_type)}_"
                 new_filename << "#{object[:list_id]}_#{object[:edit_sequence]}" unless object[:list_id].to_s.empty?
+
+                puts({message:"New filename", new_filename: new_filename, end_of_file: end_of_file})
+
                 s3_object.move_to("#{new_filename}#{end_of_file}")
 
                 new_filename_no_bucket = "#{path.base_name}/#{status_folder}/#{object_type}_#{id_for_object(object, object_type)}_"
