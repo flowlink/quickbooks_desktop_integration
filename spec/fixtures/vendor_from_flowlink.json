@@ -8,6 +8,7 @@
   "type": "SUPPLIER",
   "email": "test@aol.com",
   "phone": "+1 2345678999",
+  "mobile": "1234567890",
   "tax_calculation": true,
   "is_active": true,
   "salutation": "Mr",
@@ -73,7 +74,9 @@
     {"name": "initial contact", "value": "initial value"},
     {"name": "secondary contact", "value": "secondary value"}
   ],
-  "additional_notes": ["note #1"],
+  "additional_notes": [
+    {"note":"note #1", "id": 1}
+  ],
   "contacts": [
     {
       "salutation": "Miss",
