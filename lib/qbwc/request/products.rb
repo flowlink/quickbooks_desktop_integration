@@ -191,7 +191,7 @@ module QBWC
           JSON.parse(params['quickbooks_specify_products']).map do |value|
             next unless PRODUCT_TYPES.has_key?(value.to_sym)
             <<~XML
-              <#{PRODUCT_TYPES[value.to_sym]} requestID=#{session_id}>
+              <#{PRODUCT_TYPES[value.to_sym]} requestID="#{session_id}">
                 <MaxReturned>50</MaxReturned>
                 #{query_by_date(params, time)}
               </#{PRODUCT_TYPES[value.to_sym]}>
