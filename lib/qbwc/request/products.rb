@@ -187,7 +187,7 @@ module QBWC
 
         private
 
-        def build_polling_from_config_param(params, session, time)
+        def build_polling_from_config_param(params, session_id, time)
           JSON.parse(params['quickbooks_specify_products']).map do |value|
             next unless PRODUCT_TYPES.has_key?(value.to_sym)
             <<~XML

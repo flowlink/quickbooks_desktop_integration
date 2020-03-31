@@ -1,0 +1,6 @@
+{
+  "sales_or_purchase": true,
+  "price_percent": 100,
+  "description": "Sales or Purchase Description",
+  "account_name": "Income Account"
+}

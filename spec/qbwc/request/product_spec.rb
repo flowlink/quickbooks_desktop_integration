@@ -1,4 +1,8 @@
 require 'spec_helper'
+require 'rspec'
+require 'json'
+require "active_support/core_ext/hash/indifferent_access"
+require 'qbwc/request/vendors'
 
 module QBWC
   module Request
@@ -32,4 +36,85 @@ module QBWC
       end
     end
   end
+end
+
+RSpec.describe QBWC::Request::Products do
+  describe "calls build_polling_from_config_param" do
+    config = {since: "2020-03-30 14:25:13 -0400"}.with_indifferent_access
+    time = Time.parse(config[:since]).in_time_zone 'Pacific Time (US & Canada)'
+    session_id = "12345903"
+    
+    it "it matches expected output when given full list of params" do
+      config[:quickbooks_specify_products] = "[\"inventory\", \"assembly\", \"noninventory\", \"salestax\", \"service\", \"discount\"]"
+      response = QBWC::Request::Products.send(:build_polling_from_config_param, config, session_id, time)
+      expect(response.delete!("\n")).to eq(full_expected_output(time).delete!("\n"))
+    end
+
+    it "it matches expected output when given partial list of params" do
+      config[:quickbooks_specify_products] = "[\"inventory\",  \"salestax\", \"service\"]"
+      response = QBWC::Request::Products.send(:build_polling_from_config_param, config, session_id, time)
+      expect(response.delete!("\n")).to eq(partial_expected_output(time).delete!("\n"))
+    end
+
+    it "it matches expected output when given 1 param" do
+      config[:quickbooks_specify_products] = "[\"service\"]"
+      response = QBWC::Request::Products.send(:build_polling_from_config_param, config, session_id, time)
+      expect(response.delete!("\n")).to eq(one_expected_output(time).delete!("\n"))
+    end
+  end
+end
+
+def full_expected_output(time)
+  <<~XML
+    <ItemInventoryQueryRq requestID=12345903>
+      <MaxReturned>50</MaxReturned>
+      <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
+    </ItemInventoryQueryRq>
+    <ItemInventoryAssemblyQueryRq requestID=12345903>
+      <MaxReturned>50</MaxReturned>
+      <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
+    </ItemInventoryAssemblyQueryRq>
+    <ItemNonInventoryQueryRq requestID=12345903>
+      <MaxReturned>50</MaxReturned>
+      <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
+    </ItemNonInventoryQueryRq>
+    <ItemSalesTaxQueryRq requestID=12345903>
+      <MaxReturned>50</MaxReturned>
+      <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
+    </ItemSalesTaxQueryRq>
+    <ItemServiceQueryRq requestID=12345903>
+      <MaxReturned>50</MaxReturned>
+      <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
+    </ItemServiceQueryRq>
+    <ItemDiscountQueryRq requestID=12345903>
+      <MaxReturned>50</MaxReturned>
+      <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
+    </ItemDiscountQueryRq>
+  XML
+end
+
+def partial_expected_output(time)
+  <<~XML
+    <ItemInventoryQueryRq requestID=12345903>
+      <MaxReturned>50</MaxReturned>
+      <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
+    </ItemInventoryQueryRq>
+    <ItemSalesTaxQueryRq requestID=12345903>
+      <MaxReturned>50</MaxReturned>
+      <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
+    </ItemSalesTaxQueryRq>
+    <ItemServiceQueryRq requestID=12345903>
+      <MaxReturned>50</MaxReturned>
+      <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
+    </ItemServiceQueryRq>
+  XML
+end
+
+def one_expected_output(time)
+  <<~XML
+    <ItemServiceQueryRq requestID=12345903>
+      <MaxReturned>50</MaxReturned>
+      <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
+    </ItemServiceQueryRq>
+  XML
 end
