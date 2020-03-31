@@ -740,7 +740,7 @@ module Persistence
         object['id']
       elsif key == 'shipments'
         object['name']
-      elsif key == 'products'
+      elsif PLURAL_PRODUCT_OBJECT_TYPES.include?(key)
         object['product_id']
       else
         object['id']
