@@ -726,14 +726,10 @@ module Persistence
       return object['id'] if object_type.nil?
 
       key = object_type.pluralize
-      if key == 'customers'
-        object['name']
-      elsif key == 'payments'
+      if key == 'payments'
         object['id']
       elsif key == 'shipments'
         object['name']
-      elsif key == 'vendors'
-        object['name'] || object['id']
       elsif key == 'products'
         object['product_id']
       else
