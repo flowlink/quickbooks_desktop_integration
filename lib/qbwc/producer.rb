@@ -52,8 +52,6 @@ module QBWC
       end
     end
 
-    private
-
     def process_insert_update(objects_hash)
       puts "Processing insert/update for #{objects_hash}"
       objects_hash.inject('') do |result, object_hash|
@@ -67,6 +65,8 @@ module QBWC
         )
       end
     end
+
+    private
 
     def add_flows_params(object_type)
       send_settings = @s3_settings.settings('add_') if object_type.pluralize != 'inventories'
