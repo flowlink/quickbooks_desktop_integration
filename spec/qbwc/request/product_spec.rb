@@ -4,6 +4,7 @@ require 'json'
 require "active_support/core_ext/hash/indifferent_access"
 require 'qbwc/request/vendors'
 require 'qbwc/request/product_fixtures/build_polling_from_config_fixtures'
+require 'qbwc/request/product_fixtures/add_and_update_xml_fixtures'
 
 module QBWC
   module Request
@@ -61,6 +62,21 @@ RSpec.describe QBWC::Request::Products do
       config[:quickbooks_specify_products] = "[\"service\"]"
       response = QBWC::Request::Products.send(:build_polling_from_config_param, config, session_id, time)
       expect(response.delete!("\n")).to eq(one_expected_output(time).delete!("\n"))
+    end
+  end
+
+  describe "builds xml for adding or updating" do
+    let(:flowlink_product) { JSON.parse(File.read('spec/qbwc/request/product_fixtures/invproduct_from_flowlink.json')) }
+    config = {quickbooks_cogs_account: "Cost of Goods"}
+
+    it "it matches expected output" do
+      product = QBWC::Request::Products.add_xml_to_send(flowlink_product, nil, 12345, config)
+      expect(product.gsub(/\s+/, "")).to eq(add_xml.gsub(/\s+/, ""))
+    end
+    
+    it "it matches expected output" do
+      product = QBWC::Request::Products.update_xml_to_send(flowlink_product, nil, 12345, config)
+      expect(product.gsub(/\s+/, "")).to eq(update_xml.gsub(/\s+/, ""))
     end
   end
 end
