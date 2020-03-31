@@ -23,6 +23,7 @@ module QBWC
         objects = records.map do |object|
           { vendors: {
             email: object['Name'],
+            name: object['Name'],
             id: object['Name'],
             list_id: object['ListID'],
             edit_sequence: object['EditSequence'] } }
