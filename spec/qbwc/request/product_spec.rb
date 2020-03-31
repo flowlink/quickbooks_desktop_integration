@@ -3,6 +3,7 @@ require 'rspec'
 require 'json'
 require "active_support/core_ext/hash/indifferent_access"
 require 'qbwc/request/vendors'
+require 'qbwc/request/product_fixtures/build_polling_from_config_fixtures'
 
 module QBWC
   module Request
@@ -62,59 +63,4 @@ RSpec.describe QBWC::Request::Products do
       expect(response.delete!("\n")).to eq(one_expected_output(time).delete!("\n"))
     end
   end
-end
-
-def full_expected_output(time)
-  <<~XML
-    <ItemInventoryQueryRq requestID=12345903>
-      <MaxReturned>50</MaxReturned>
-      <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
-    </ItemInventoryQueryRq>
-    <ItemInventoryAssemblyQueryRq requestID=12345903>
-      <MaxReturned>50</MaxReturned>
-      <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
-    </ItemInventoryAssemblyQueryRq>
-    <ItemNonInventoryQueryRq requestID=12345903>
-      <MaxReturned>50</MaxReturned>
-      <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
-    </ItemNonInventoryQueryRq>
-    <ItemSalesTaxQueryRq requestID=12345903>
-      <MaxReturned>50</MaxReturned>
-      <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
-    </ItemSalesTaxQueryRq>
-    <ItemServiceQueryRq requestID=12345903>
-      <MaxReturned>50</MaxReturned>
-      <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
-    </ItemServiceQueryRq>
-    <ItemDiscountQueryRq requestID=12345903>
-      <MaxReturned>50</MaxReturned>
-      <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
-    </ItemDiscountQueryRq>
-  XML
-end
-
-def partial_expected_output(time)
-  <<~XML
-    <ItemInventoryQueryRq requestID=12345903>
-      <MaxReturned>50</MaxReturned>
-      <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
-    </ItemInventoryQueryRq>
-    <ItemSalesTaxQueryRq requestID=12345903>
-      <MaxReturned>50</MaxReturned>
-      <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
-    </ItemSalesTaxQueryRq>
-    <ItemServiceQueryRq requestID=12345903>
-      <MaxReturned>50</MaxReturned>
-      <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
-    </ItemServiceQueryRq>
-  XML
-end
-
-def one_expected_output(time)
-  <<~XML
-    <ItemServiceQueryRq requestID=12345903>
-      <MaxReturned>50</MaxReturned>
-      <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
-    </ItemServiceQueryRq>
-  XML
 end
