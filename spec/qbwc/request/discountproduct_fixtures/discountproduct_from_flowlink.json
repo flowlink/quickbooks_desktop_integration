@@ -1,0 +1,19 @@
+{
+  "id": "test discount product",
+  "sku": "test discount product",
+  "product_id": "test discount product",
+  "qbe_id": "80001019-2039019",
+  "key": "qbe_id",
+  "name": "test discount product",
+  "is_active": true,
+  "barcode_value": "0001910191",
+  "assign_barcode_even_if_used": true,
+  "external_guid": 109389220,
+  "discount_rate": 0.07,
+  "discount_rate_percent": 7,
+  "sales_tax_code_name": "Tax",
+  "apply_account_ref_to_existing_txns": true,
+  "item_type": "discount",
+  "description": "This product is discount",
+  "parent_name": "GermanCars:Mercedes-Benz"
+}
