@@ -5,6 +5,48 @@ require 'qbwc/request/noninventoryproducts'
 require 'qbwc/request/noninventoryproduct_fixtures/add_update_search_xml_fixtures'
 
 RSpec.describe QBWC::Request::Noninventoryproducts do
+  describe "product_identifier method" do
+    let(:noninventoryproduct) {
+      {
+        "product_id" => "product ABC",
+        "sku" => "product 123",
+        "id" => "product XYZ"
+      }
+    }
+    it "is given a product_id field and uses this field" do
+      identifier_value = QBWC::Request::Noninventoryproducts.send(:product_identifier, noninventoryproduct)
+      expect(identifier_value).to eq("product ABC")
+    end
+
+    it "is has no product_id field, but has sku and uses this field" do
+      noninventoryproduct.delete("product_id")
+      identifier_value = QBWC::Request::Noninventoryproducts.send(:product_identifier, noninventoryproduct)
+      expect(identifier_value).to eq("product 123")
+    end
+
+    it "is has no product_id or sku field, but has id and uses this field" do
+      noninventoryproduct.delete("sku")
+      noninventoryproduct.delete("product_id")
+      identifier_value = QBWC::Request::Noninventoryproducts.send(:product_identifier, noninventoryproduct)
+      expect(identifier_value).to eq("product XYZ")
+    end
+    
+    it "is has no product_id, sku, or id field so nil is returned" do
+      noninventoryproduct.delete("sku")
+      noninventoryproduct.delete("product_id")
+      noninventoryproduct.delete("id")
+      identifier_value = QBWC::Request::Noninventoryproducts.send(:product_identifier, noninventoryproduct)
+      expect(identifier_value).to eq(nil)
+    end
+  end
+
+  describe "search xml by name" do
+    it "matches expected xml output" do
+      product = QBWC::Request::Noninventoryproducts.search_xml("My Awesome Product", 12345)
+      expect(product.gsub(/\s+/, "")).to eq(qbe_noninventoryproduct_search_name.gsub(/\s+/, ""))
+    end
+  end
+
   describe "builds xml for adding or updating" do
     let(:flowlink_product) { JSON.parse(File.read('spec/qbwc/request/noninventoryproduct_fixtures/noninvproduct_from_flowlink.json')) }
     config = {
@@ -12,12 +54,12 @@ RSpec.describe QBWC::Request::Noninventoryproducts do
       quickbooks_expense_account: "Expense Account"
     }
     
-    it "it matches expected xml when adding sales and purchase" do
+    it "matches expected xml when adding sales and purchase" do
       product = QBWC::Request::Noninventoryproducts.add_xml_to_send(flowlink_product, nil, 12345, config)
       expect(product.gsub(/\s+/, "")).to eq(add_xml_sandp.gsub(/\s+/, ""))
     end
 
-    it "it matches expected xml when adding sales or purchase with percent field" do
+    it "matches expected xml when adding sales or purchase with percent field" do
       flowlink_product["sale_or_purchase"] = true
       flowlink_product["price"] = nil
 
@@ -25,14 +67,14 @@ RSpec.describe QBWC::Request::Noninventoryproducts do
       expect(product.gsub(/\s+/, "")).to eq(add_xml_sorp_with_percent.gsub(/\s+/, ""))
     end
 
-    it "it matches expected xml when adding sales or purchase without percent field" do
+    it "matches expected xml when adding sales or purchase without percent field" do
       flowlink_product["sale_or_purchase"] = true
 
       product = QBWC::Request::Noninventoryproducts.add_xml_to_send(flowlink_product, nil, 12345, config)
       expect(product.gsub(/\s+/, "")).to eq(add_xml_sorp_without_percent.gsub(/\s+/, ""))
     end
     
-    it "it matches expected xml when updating sales and purchase" do
+    it "matches expected xml when updating sales and purchase" do
       flowlink_product["list_id"] = "test noninv product"
       flowlink_product["edit_sequence"] = "19209j3od-d9292"
 
@@ -40,7 +82,7 @@ RSpec.describe QBWC::Request::Noninventoryproducts do
       expect(product.gsub(/\s+/, "")).to eq(update_xml_sandp.gsub(/\s+/, ""))
     end
 
-    it "it matches expected xml when updating sales or purchase with percent field" do
+    it "matches expected xml when updating sales or purchase with percent field" do
       flowlink_product["sale_or_purchase"] = true
       flowlink_product["list_id"] = "test noninv product"
       flowlink_product["edit_sequence"] = "19209j3od-d9292"
@@ -57,6 +99,15 @@ RSpec.describe QBWC::Request::Noninventoryproducts do
       
       product = QBWC::Request::Noninventoryproducts.update_xml_to_send(flowlink_product, nil, 12345, config)
       expect(product.gsub(/\s+/, "")).to eq(update_xml_sorp_without_percent.gsub(/\s+/, ""))
+    end
+
+    it "it matches expected xml when updating noninventory product with active field" do
+      flowlink_product["list_id"] = "test noninv product"
+      flowlink_product["edit_sequence"] = "19209j3od-d9292"
+      flowlink_product["active"] = true
+      
+      product = QBWC::Request::Noninventoryproducts.update_xml_to_send(flowlink_product, nil, 12345, config)
+      expect(product.gsub(/\s+/, "")).to eq(update_xml_with_active_field.gsub(/\s+/, ""))
     end
   end
 end

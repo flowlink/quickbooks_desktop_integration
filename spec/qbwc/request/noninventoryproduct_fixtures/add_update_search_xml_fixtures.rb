@@ -200,3 +200,16 @@ def update_xml_sorp_with_percent
     </ItemNonInventoryModRq>
   XML
 end
+
+def update_xml_with_active_field
+  <<~XML
+    <ItemNonInventoryModRq requestID="12345">
+      <ItemNonInventoryMod>
+        <ListID>test noninv product</ListID>
+        <EditSequence>19209j3od-d9292</EditSequence>
+        <Name>test noninv product</Name>
+        <IsActive>true</IsActive>
+      </ItemNonInventoryMod>
+    </ItemNonInventoryModRq>
+  XML
+end
