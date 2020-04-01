@@ -56,6 +56,7 @@ module QBWC
           {
             object_type: 'customer',
             email: record['Name'],
+            name: record['Name'],
             object_ref: record['Name'],
             list_id: record['ListID'],
             edit_sequence: record['EditSequence']
