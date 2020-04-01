@@ -153,7 +153,6 @@ module QBWC
                 "connection_id" => "nurelmremote",
                 "flow" => "add_customers",
                 "origin" => "flowlink",
-                "quickbooks_since" => since_date,
               }
             }
           ]
@@ -228,7 +227,7 @@ module QBWC
           }
         ]
 
-        request = subject.process_insert_update(objects)
+        request = subject.send(:process_insert_update, objects)
         expect(request).to include('CustomerAddRq')
       end
     end
