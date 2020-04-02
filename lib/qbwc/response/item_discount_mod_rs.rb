@@ -45,7 +45,11 @@ module QBWC
           arr = [object['ParentRef']]
         end
         
-        arr.map { |item| item['FullName'] + ':' }.join('') + object['Name']
+        arr.map do |item|
+          next unless item['FullName']
+
+          "#{item['FullName']}:"
+        end.join('') + object['Name']
       end
     end
   end

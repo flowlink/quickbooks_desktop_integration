@@ -23,7 +23,7 @@ module QBWC
         records.each do |object|
           products << {
             discountproducts: {
-              id: build_product_id(object),
+              id: build_product_id_or_ref(object),
               product_id: object['Name'],
               list_id: object['ListID'],
               edit_sequence: object['EditSequence']
@@ -36,7 +36,7 @@ module QBWC
 
       private
 
-      def build_product_id(object)
+      def build_product_id_or_ref(object)
         if object['ParentRef'].is_a?(Array)
           arr = object['ParentRef'] 
         elsif object['ParentRef'].nil?

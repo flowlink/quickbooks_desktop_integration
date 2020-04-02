@@ -1,75 +1,92 @@
 require 'rspec'
 require 'json'
-require "active_support/core_ext/hash/indifferent_access"
 require 'qbwc/response/item_discount_mod_rs'
 
 RSpec.describe QBWC::Response::ItemDiscountModRs do
-  let(:qbe_discount_product) { JSON.parse(File.read('spec/qbwc/response/discountproduct_fixtures/product_from_qbe.json')) }
-  let(:expected_object) {
+  let(:expected_output) { "test-discount-product" }
+  let(:empty_input) {
     {
-      object_type: 'discountproduct',
-      object_ref: "test-discount-product",
-      product_id: "test-discount-product",
-      list_id: "80001019-2039019",
-      edit_sequence: "190aMNia90jmdk"
+      "Name" => "test-discount-product",
+      "ParentRef" => {}
     }
   }
-  
-  describe "calls objects_to_update with one product returned" do
-    it "has no parent product names and outputs just the product name" do
-      discount_rs = QBWC::Response::ItemDiscountQueryRs.new([qbe_discount_product])
-      output = discount_rs.send(:objects_to_update).first.with_indifferent_access
-
-      expect(output).to eq(expected_object.with_indifferent_access)
-    end
-
-    it "has one parent product name as an object and outputs the parent name + : + product name" do
-      expected_object[:object_ref] = "Parent Discount:test-discount-product"
-      qbe_discount_product["ParentRef"] = {
-        "FullName" => "Parent Discount"
-      }
-      
-      discount_rs = QBWC::Response::ItemDiscountQueryRs.new([qbe_discount_product])
-      output = discount_rs.send(:objects_to_update).first.with_indifferent_access
-
-      expect(output).to eq(expected_object.with_indifferent_access)
-    end
-
-    it "has one parent product name as an array and outputs the parent name + : + product name" do
-      expected_object[:object_ref] = "Parent Discount:test-discount-product"
-      qbe_discount_product["ParentRef"] = [{
-        "FullName" => "Parent Discount"
-      }]
-      
-      discount_rs = QBWC::Response::ItemDiscountQueryRs.new([qbe_discount_product])
-      output = discount_rs.send(:objects_to_update).first.with_indifferent_access
-
-      expect(output).to eq(expected_object.with_indifferent_access)
-    end
-
-    it "has two parent product names as an object and outputs the parent names and product name correctly" do
-      expected_object[:object_ref] = "Super Parent Discount:Parent Discount:test-discount-product"
-      qbe_discount_product["ParentRef"] = {
-        "FullName" => "Super Parent Discount:Parent Discount"
-      }
-      
-      discount_rs = QBWC::Response::ItemDiscountQueryRs.new([qbe_discount_product])
-      output = discount_rs.send(:objects_to_update).first.with_indifferent_access
-
-      expect(output).to eq(expected_object.with_indifferent_access)
-    end
-
-    it "has two parent product names as an array and outputs the parent names and product name correctly" do
-      expected_object[:object_ref] = "Super Parent Discount:Parent Discount:test-discount-product"
-      qbe_discount_product["ParentRef"] = [
+  let(:single_input_as_object) {
+    {
+      "Name" => "test-discount-product",
+      "ParentRef" => {"FullName" => "Parent Discount"}
+    }
+  }
+  let(:multi_input_as_object) {
+    {
+      "Name" => "test-discount-product",
+      "ParentRef" => {"FullName" => "Super Parent Discount:Parent Discount"}
+    }
+  }
+  let(:single_input_as_array) {
+    {
+      "Name" => "test-discount-product",
+      "ParentRef" => [{"FullName" => "Parent Discount"}]
+    }
+  }
+  let(:multi_input_as_array) {
+    {
+      "Name" => "test-discount-product",
+      "ParentRef" => [
         {"FullName" => "Super Parent Discount"},
         {"FullName" => "Parent Discount"}
       ]
-      
-      discount_rs = QBWC::Response::ItemDiscountQueryRs.new([qbe_discount_product])
-      output = discount_rs.send(:objects_to_update).first.with_indifferent_access
+    }
+  }
+  
+  describe "calls build_product_id_or_ref with one product returned" do
+    it "has no parent product names as nil input and outputs just the product name" do
+      discount_mod_rs = QBWC::Response::ItemDiscountModRs.new([{}])
+      output = discount_mod_rs.send(:build_product_id_or_ref, {"Name" => "test-discount-product"})
 
-      expect(output).to eq(expected_object.with_indifferent_access)
+      expect(output).to eq(expected_output)
+    end
+
+    it "has no parent product names as empty input and outputs just the product name" do
+      discount_mod_rs = QBWC::Response::ItemDiscountModRs.new([{}])
+      output = discount_mod_rs.send(:build_product_id_or_ref, empty_input)
+
+      expect(output).to eq(expected_output)
+    end
+
+    it "has one parent product name as an object and outputs the parent name + : + product name" do
+      new_expected_output = "Parent Discount:#{expected_output}"
+
+      discount_mod_rs = QBWC::Response::ItemDiscountModRs.new([{}])
+      output = discount_mod_rs.send(:build_product_id_or_ref, single_input_as_object)
+
+      expect(output).to eq(new_expected_output)
+    end
+
+    it "has one parent product name as an array and outputs the parent name + : + product name" do
+      new_expected_output = "Super Parent Discount:Parent Discount:#{expected_output}"
+      
+      discount_mod_rs = QBWC::Response::ItemDiscountModRs.new([{}])
+      output = discount_mod_rs.send(:build_product_id_or_ref, multi_input_as_object)
+
+      expect(output).to eq(new_expected_output)
+    end
+
+    it "has two parent product names as an object and outputs the parent names and product name correctly" do
+      new_expected_output = "Parent Discount:#{expected_output}"
+      
+      discount_mod_rs = QBWC::Response::ItemDiscountModRs.new([{}])
+      output = discount_mod_rs.send(:build_product_id_or_ref, single_input_as_array)
+
+      expect(output).to eq(new_expected_output)
+    end
+
+    it "has two parent product names as an array and outputs the parent names and product name correctly" do
+      new_expected_output = "Super Parent Discount:Parent Discount:#{expected_output}"
+      
+      discount_mod_rs = QBWC::Response::ItemDiscountModRs.new([{}])
+      output = discount_mod_rs.send(:build_product_id_or_ref, multi_input_as_array)
+
+      expect(output).to eq(new_expected_output)
     end
   end
 end

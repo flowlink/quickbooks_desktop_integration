@@ -62,7 +62,7 @@ module QBWC
           }
         end
       end
-
+      
       def build_product_id_or_ref(object)
         if object['ParentRef'].is_a?(Array)
           arr = object['ParentRef'] 
@@ -72,7 +72,11 @@ module QBWC
           arr = [object['ParentRef']]
         end
         
-        arr.map { |item| item['FullName'] + ':' }.join('') + object['Name']
+        arr.map do |item|
+          next unless item['FullName']
+
+          "#{item['FullName']}:"
+        end.join('') + object['Name']
       end
 
       def products_to_flowlink
