@@ -64,17 +64,16 @@ module QBWC
       end
       
       def build_product_id_or_ref(object)
+        return object['Name'] if object['ParentRef'].nil?
+        
         if object['ParentRef'].is_a?(Array)
-          arr = object['ParentRef'] 
-        elsif object['ParentRef'].nil?
-            arr = []
+          arr = object['ParentRef']
         else
           arr = [object['ParentRef']]
         end
         
         arr.map do |item|
           next unless item['FullName']
-
           "#{item['FullName']}:"
         end.join('') + object['Name']
       end
