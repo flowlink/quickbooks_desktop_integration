@@ -1,9 +1,9 @@
 require 'rspec'
 require 'json'
 require "active_support/core_ext/hash/indifferent_access"
-require 'qbwc/response/item_discount_query_rs'
+require 'qbwc/response/item_discount_mod_rs'
 
-RSpec.describe QBWC::Response::ItemDiscountQueryRs do
+RSpec.describe QBWC::Response::ItemDiscountModRs do
   let(:qbe_discount_product) { JSON.parse(File.read('spec/qbwc/response/discountproduct_fixtures/product_from_qbe.json')) }
   let(:expected_object) {
     {
