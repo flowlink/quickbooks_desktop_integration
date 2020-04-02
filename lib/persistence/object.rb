@@ -737,18 +737,23 @@ module Persistence
 
       key = object_type.pluralize
       if key == 'customers'
-        object['name']
+        remove_backslash object['name']
       elsif key == 'payments'
-        object['id']
+        remove_backslash object['id']
       elsif key == 'shipments'
-        object['name']
+        remove_backslash object['name']
       elsif key == 'vendors'
-        object['name'] || object['id']
+        remove_backslash(object['name'] || object['id'])
       elsif PLURAL_PRODUCT_OBJECT_TYPES.include?(key)
-        object['product_id']
+        remove_backslash object['product_id']
       else
-        object['id']
+        remove_backslash object['id']
       end
     end
+
+    def remove_backslash(id)
+      id.gsub('/', '-backslash-')
+    end
+
   end
 end
