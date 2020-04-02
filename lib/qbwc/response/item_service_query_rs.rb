@@ -55,11 +55,27 @@ module QBWC
         records.map do |record|
           {
             object_type: 'serviceproduct',
-            object_ref: (record['ParentRef'].is_a?(Array) ? record['ParentRef'] : (record['ParentRef'].nil? ? [] : [record['ParentRef']])).map { |item| item['FullName'] + ':' }.join('') + record['Name'],
+            object_ref: build_product_id_or_ref(record),
+            product_id: record['Name'],
             list_id: record['ListID'],
             edit_sequence: record['EditSequence']
           }
         end
+      end
+
+      def build_product_id_or_ref(object)
+        return object['Name'] if object['ParentRef'].nil?
+        
+        if object['ParentRef'].is_a?(Array)
+          arr = object['ParentRef']
+        else
+          arr = [object['ParentRef']]
+        end
+        
+        arr.map do |item|
+          next unless item['FullName']
+          "#{item['FullName']}:"
+        end.join('') + object['Name']
       end
 
       def products_to_flowlink

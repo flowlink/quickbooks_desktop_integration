@@ -23,7 +23,7 @@ module QBWC
         records.each do |object|
           products << {
             salestaxproducts: {
-              id: build_product_id(object),
+              id: build_product_id_or_ref(object),
               list_id: object['ListID'],
               edit_sequence: object['EditSequence']
             }
@@ -35,7 +35,7 @@ module QBWC
 
       private
 
-      def build_product_id(object)
+      def build_product_id_or_ref(object)
         if object['ParentRef'].is_a?(Array)
           arr = object['ParentRef'] 
         elsif object['ParentRef'].nil?
@@ -44,7 +44,11 @@ module QBWC
           arr = [object['ParentRef']]
         end
         
-        arr.map { |item| item['FullName'] + ':' }.join('') + object['Name']
+        arr.map do |item|
+          next unless item['FullName']
+
+          "#{item['FullName']}:"
+        end.join('') + object['Name']
       end
     end
   end
