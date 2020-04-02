@@ -1,0 +1,16 @@
+{
+  "id": "test salestax product",
+  "sku": "test salestax product",
+  "product_id": "test salestax product",
+  "qbe_id": "80001019-2039019",
+  "key": "qbe_id",
+  "name": "test salestax product",
+  "is_active": true,
+  "barcode_value": "0001910191",
+  "assign_barcode_even_if_used": true,
+  "external_guid": 109389220,
+  "tax_rate": 0.07,
+  "tax_vendor_name": "TaxCloud",
+  "item_type": "salestax",
+  "description": "This product is salestax"
+}

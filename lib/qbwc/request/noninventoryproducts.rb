@@ -33,7 +33,7 @@ module QBWC
         {qbe_name: "PrefVendorRef", flowlink_name: "preferred_vendor_name", is_ref: true}
       ]
 
-      EXTERNAL_GUID_MAP = [{qbe_name: "ExternalGUID", flowlink_name: "external_guid", is_ref: false}]
+      EXTERNAL_GUID_MAP = [{qbe_name: "ExternalGUID", flowlink_name: "external_guid", is_ref: false, add_only: true}]
 
       class << self
         def generate_request_insert_update(objects, params = {})
