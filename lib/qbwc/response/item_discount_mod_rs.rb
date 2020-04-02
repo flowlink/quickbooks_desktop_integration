@@ -24,6 +24,7 @@ module QBWC
           products << {
             discountproducts: {
               id: build_product_id(object),
+              product_id: object['Name'],
               list_id: object['ListID'],
               edit_sequence: object['EditSequence']
             }

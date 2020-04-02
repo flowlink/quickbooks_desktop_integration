@@ -54,13 +54,25 @@ module QBWC
       def objects_to_update
         records.map do |record|
           {
-            object_type: 'product',
+            object_type: 'discountproduct',
             object_ref: (record['ParentRef'].is_a?(Array) ? record['ParentRef'] : (record['ParentRef'].nil? ? [] : [record['ParentRef']])).map { |item| item['FullName'] + ':' }.join('') + record['Name'],
+            # object_ref: build_object_ref(record).map { |item| item['FullName'] + ':' }.join('') + record['Name'],
+            product_id: record['Name'],
             list_id: record['ListID'],
             edit_sequence: record['EditSequence']
           }
         end
       end
+
+      # def build_object_ref(record)
+      #   return [] if record['ParentRef'].nil?
+
+      #   if record['ParentRef'].is_a?(Array)
+      #     record['ParentRef']
+      #   else
+      #     [record['ParentRef']]
+      #   end
+      # end
 
       def products_to_flowlink
         # puts "Product object from QBE: #{records.first}"
