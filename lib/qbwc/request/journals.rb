@@ -1,3 +1,5 @@
+require 'time'
+
 module QBWC
   module Request
     class Journals
