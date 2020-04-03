@@ -5,12 +5,19 @@ def qbe_journal_add
         <TxnDate>2020-03-18</TxnDate>
         <RefNumber>S00009</RefNumber>
         <IsAdjustment>false</IsAdjustment>
+        <IsHomeCurrencyAdjustment >false</IsHomeCurrencyAdjustment>
+        <IsAmountsEnteredInHomeCurrency >true</IsAmountsEnteredInHomeCurrency>
+        <CurrencyRef>
+          <FullName >USD</FullName>
+        </CurrencyRef>
+        <ExchangeRate >1.06</ExchangeRate>
+        <ExternalGUID >1000090000</ExternalGUID>
         <JournalDebitLine>
           <TxnLineID>1</TxnLineID>
           <AccountRef>
               <FullName>NuRelm Commission Receivable</FullName>
           </AccountRef>
-          <Amount>200.00</Amount>
+          <Amount>200.0</Amount>
           <Memo>Testing a journal entry here 1</Memo>
           <EntityRef>
             <FullName>My Customer</FullName>
@@ -18,6 +25,10 @@ def qbe_journal_add
           <ClassRef>
             <FullName>Pittsburghtown</FullName>
           </ClassRef>
+          <ItemSalesTaxRef>
+            <FullName>TAX</FullName>
+          </ItemSalesTaxRef>
+          <BillableStatus>NotBillable</BillableStatus>
         </JournalDebitLine>
         <JournalCreditLine>
           <TxnLineID>2</TxnLineID>
@@ -32,6 +43,10 @@ def qbe_journal_add
           <ClassRef>
             <FullName>Pittsburghtown</FullName>
           </ClassRef>
+          <ItemSalesTaxRef>
+            <FullName>TAX</FullName>
+          </ItemSalesTaxRef>
+          <BillableStatus>Billable</BillableStatus>
         </JournalCreditLine>
         <JournalCreditLine>
           <TxnLineID>3</TxnLineID>
@@ -46,6 +61,10 @@ def qbe_journal_add
           <ClassRef>
             <FullName>Pittsburghtown</FullName>
           </ClassRef>
+          <ItemSalesTaxRef>
+            <FullName>TAX</FullName>
+          </ItemSalesTaxRef>
+          <BillableStatus>HasBeenBilled</BillableStatus>
         </JournalCreditLine>
       </JournalEntryAdd>
     </JournalEntryAddRq>
@@ -61,12 +80,19 @@ def qbe_journal_update
         <TxnDate>2020-03-18</TxnDate>
         <RefNumber>S00009</RefNumber>
         <IsAdjustment>true</IsAdjustment>
+        <IsHomeCurrencyAdjustment >false</IsHomeCurrencyAdjustment>
+        <IsAmountsEnteredInHomeCurrency >true</IsAmountsEnteredInHomeCurrency>
+        <CurrencyRef>
+          <FullName >USD</FullName>
+        </CurrencyRef>
+        <ExchangeRate >1.06</ExchangeRate>
         <JournalDebitLine>
           <TxnLineID>1</TxnLineID>
+          <JournalLineType>Debit</JournalLineType>
           <AccountRef>
               <FullName>NuRelm Commission Receivable</FullName>
           </AccountRef>
-          <Amount>200.00</Amount>
+          <Amount>200.0</Amount>
           <Memo>Testing a journal entry here 1</Memo>
           <EntityRef>
             <FullName>My Customer</FullName>
@@ -74,9 +100,14 @@ def qbe_journal_update
           <ClassRef>
             <FullName>Pittsburghtown</FullName>
           </ClassRef>
+          <ItemSalesTaxRef>
+            <FullName>TAX</FullName>
+          </ItemSalesTaxRef>
+          <BillableStatus>NotBillable</BillableStatus>
         </JournalDebitLine>
         <JournalCreditLine>
           <TxnLineID>2</TxnLineID>
+          <JournalLineType>Credit</JournalLineType>
           <AccountRef>
               <FullName>Fees</FullName>
           </AccountRef>
@@ -88,9 +119,14 @@ def qbe_journal_update
           <ClassRef>
             <FullName>Pittsburghtown</FullName>
           </ClassRef>
+          <ItemSalesTaxRef>
+            <FullName>TAX</FullName>
+          </ItemSalesTaxRef>
+          <BillableStatus>Billable</BillableStatus>
         </JournalCreditLine>
         <JournalCreditLine>
           <TxnLineID>3</TxnLineID>
+          <JournalLineType>Credit</JournalLineType>
           <AccountRef>
               <FullName>Marketing Income</FullName>
           </AccountRef>
@@ -102,6 +138,10 @@ def qbe_journal_update
           <ClassRef>
             <FullName>Pittsburghtown</FullName>
           </ClassRef>
+          <ItemSalesTaxRef>
+            <FullName>TAX</FullName>
+          </ItemSalesTaxRef>
+          <BillableStatus>HasBeenBilled</BillableStatus>
         </JournalCreditLine>
       </JournalEntryMod>
     </JournalEntryModRq>
