@@ -279,13 +279,18 @@ module QBWC
         def pre_mapping_logic(initial_object)
           object = initial_object
 
-          object['is_active'] = object['is_active'] || true
-          object['firstname'] = object['firstname'] || object['name'].split.first
-          object['lastname'] = object['lastname'] || object['name'].split.last
-          object['phone'] = object['billing_address']['phone'] if object['billing_address']
-          if object['mobile'] && object['mobile'] != ''
+          object['is_active'] = true unless object['is_active'] == false
+          object['firstname'] = object['firstname'] || object['name'].to_s.split.first
+          object['lastname'] = object['lastname'] || object['name'].to_s.split.last
+
+          unless object['phone'] || object['phone'] == ''
+            object['phone'] = object['billing_address']['phone'] if object['billing_address']
+          end
+          
+          unless object['mobile'] || object['mobile'] == ''
             object['mobile'] = object['shipping_address']['phone'] if object['shipping_address']
           end
+
           object['preferred_delivery_method'] = nil unless DELIVERY_METHODS.include?(object['preferred_delivery_method'])
           object['job_status'] = nil unless JOB_STATUSES.include?(object['job_status'])
           object['sales_tax_country'] = nil unless SALES_TAX_COUNTRIES.include?(object['sales_tax_country'])
