@@ -13,9 +13,6 @@ RSpec.describe QBWC::Request::Journals do
 
   it 'calls update_xml_to_send and outputs the right data' do
     journal = QBWC::Request::Journals.update_xml_to_send(flowlink_journal, {}, 12345)
-    puts journal.gsub(/\s+/, '')
-    puts "---------------"
-    puts qbe_journal_update.gsub(/\s+/, '')
     expect(journal.gsub(/\s+/, '')).to eq(qbe_journal_update.gsub(/\s+/, ''))
   end
 
