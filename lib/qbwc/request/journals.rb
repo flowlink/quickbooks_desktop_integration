@@ -1,6 +1,34 @@
+require 'time'
+
 module QBWC
   module Request
     class Journals
+
+      MAPPING_ONE = [
+        {qbe_name: "TxnDate", flowlink_name: "transaction_date", is_ref: false},
+        {qbe_name: "RefNumber", flowlink_name: "id", is_ref: false},
+        {qbe_name: "IsAdjustment", flowlink_name: "is_mod", is_ref: false},
+        {qbe_name: "IsHomeCurrencyAdjustment", flowlink_name: "is_home_currency_adjustment", is_ref: false},
+        {qbe_name: "IsAmountsEnteredInHomeCurrency", flowlink_name: "is_amounts_entered_in_home_currency", is_ref: false},
+        {qbe_name: "CurrencyRef", flowlink_name: "currency_name", is_ref: true},
+        {qbe_name: "ExchangeRate", flowlink_name: "exchange_rate", is_ref: false},
+        {qbe_name: "ExternalGUID", flowlink_name: "external_guid", is_ref: false, add_only: true}
+      ]
+
+      LINE_MAPPING = [
+        {qbe_name: "TxnLineID", flowlink_name: "line_id", is_ref: false},
+        {qbe_name: "JournalLineType", flowlink_name: "line_type", is_ref: false, mod_only: true},
+        {qbe_name: "AccountRef", flowlink_name: "account_name", is_ref: true},
+        {qbe_name: "Amount", flowlink_name: "amount", is_ref: false},
+        {qbe_name: "Memo", flowlink_name: "description", is_ref: false},
+        {qbe_name: "EntityRef", flowlink_name: "customer_name", is_ref: true},
+        {qbe_name: "ClassRef", flowlink_name: "class_name", is_ref: true},
+        {qbe_name: "ItemSalesTaxRef", flowlink_name: "item_sales_tax_name", is_ref: true},
+        {qbe_name: "BillableStatus", flowlink_name: "billable_status", is_ref: false}
+      ]
+
+      BILLABLE_STATUS = ["Billable", "NotBillable", "HasBeenBilled"]
+
       class << self
         def generate_request_insert_update(objects, params = {})
           objects.inject('') do |request, object|
@@ -68,8 +96,6 @@ module QBWC
         end
 
         def update_xml_to_send(journal, params, session_id)
-          # You NEED the edit_sequence to update
-          # If you have the wrong edit_sequence (AKA someone manually updated since create/update) it will fail
           <<~XML
             <JournalEntryModRq requestID="#{session_id}">
               <JournalEntryMod>
@@ -84,73 +110,126 @@ module QBWC
         def delete_xml_to_send(journal, session_id)
           <<~XML
             <TxnDelRq requestID="#{session_id}">
-              <TxnDelType >JournalEntry</TxnDelType>
+              <TxnDelType>JournalEntry</TxnDelType>
               <TxnID>#{journal['list_id']}</TxnID>
             </TxnDelRq>
           XML
         end
 
-        def journal_xml(journal, params, isAdjustment)
-          credit_lines, debit_lines = split_lines(journal['line_items'])
+        def journal_xml(journal, config, is_mod)
+          object = pre_mapping_logic(journal, is_mod)
+
           <<~XML
-            <TxnDate>#{Time.parse(journal['journal_date']).to_date}</TxnDate>
-            <RefNumber>#{journal['id']}</RefNumber>
-            <IsAdjustment>#{isAdjustment}</IsAdjustment>
-            #{debit_lines.map { |debit| build_debit_line(debit) }.join('')}
-            #{credit_lines.map { |credit| build_credit_line(credit) }.join('')}
+            #{add_fields(object, MAPPING_ONE, config, is_mod)}
+            #{build_debit_lines(object, config, is_mod)}
+            #{build_credit_lines(object, config, is_mod)}
           XML
         end
 
-        def split_lines(items)
-          credit_items = items.select { |item| item['debit'].to_f == 0.0 }
-          debit_items = items.select { |item| item['credit'].to_f == 0.0 }
-
-          [credit_items, debit_items]
+        def build_debit_lines(object, config, is_mod)
+          object['debit_lines'].map do |debit_line|
+            <<~XML
+              <JournalDebitLine>
+                #{add_fields(debit_line, LINE_MAPPING, config, is_mod)}
+              </JournalDebitLine>
+            XML
+          end.join('')
         end
 
-        def build_debit_line(item)
-          <<~XML
-            <JournalDebitLine>
-              #{fill_line_item(item, item['debit'])}
-            </JournalDebitLine>
-          XML
+        def build_credit_lines(object, config, is_mod)
+          object['credit_lines'].map do |credit_line|
+            <<~XML
+              <JournalCreditLine>
+                #{add_fields(credit_line, LINE_MAPPING, config, is_mod)}
+              </JournalCreditLine>
+            XML
+          end.join('')
         end
 
-        def build_credit_line(item)
-          <<~XML
-            <JournalCreditLine>
-              #{fill_line_item(item, item['credit'])}
-            </JournalCreditLine>
-          XML
+        private
+
+        def pre_mapping_logic(initial_object, is_mod)
+          object = initial_object
+
+          credit_lines, debit_lines = setup_lines(initial_object['line_items'], is_mod)
+          object['credit_lines'] = credit_lines
+          object['debit_lines'] = debit_lines
+          
+          object["transaction_date"] = Time.parse(initial_object['journal_date']).to_date.to_s
+          object["is_mod"] = is_mod
+
+          object
         end
 
-        def fill_line_item(item, amount)
-          <<~XML
-            #{item['line_id'] ? "<TxnLineID>#{item['line_id']}</TxnLineID>" : ''}
-            <AccountRef>
-                <FullName>#{item['account_description']}</FullName>
-            </AccountRef>
-            <Amount>#{'%.2f' % amount.to_f}</Amount>
-            <Memo>#{item['description']}</Memo>
-            #{item['customer'] ? fill_customer(item['customer']) : ''}
-            #{item['class'] ? fill_class(item['class']) : ''}
-          XML
+        def setup_lines(lines, is_mod)
+          credit_lines = []
+          debit_lines = []
+
+          lines.each do |line|
+            line['billable_status'] = nil unless BILLABLE_STATUS.include?(line['billable_status'])
+            line["line_id"] = -1 if is_mod && is_missing_line_id(line)
+            line["account_name"] = line["account_description"] unless line["account_name"]
+            line["class_name"] = line["class"] unless line["class_name"]
+            line["customer_name"] = line["customer"] unless line["customer_name"]
+
+            if line['debit'].to_f == 0.0
+              line["line_type"] = "Credit"
+              line["amount"] = line['credit']
+              credit_lines << line
+            elsif line['credit'].to_f == 0.0
+              line["amount"] = line['debit']
+              line["line_type"] = "Debit"
+              debit_lines << line
+            end
+          end
+
+          [credit_lines, debit_lines]
         end
 
-        def fill_customer(name)
-          <<~XML
-            <EntityRef>
-                <FullName>#{name}</FullName>
-            </EntityRef>
-          XML
+        def is_missing_line_id(line)
+          line["line_id"].nil? || line["line_id"] == ''
         end
 
-        def fill_class(name)
-          <<~XML
-            <ClassRef>
-                <FullName>#{name}</FullName>
-            </ClassRef>
-          XML
+        def add_fields(object, mapping, config, is_mod)
+          fields = ""
+          mapping.each do |map_item|
+            next if map_item[:mod_only] && map_item[:mod_only] != is_mod
+            next if map_item[:add_only] && map_item[:add_only] == is_mod
+
+            if map_item[:is_ref]
+              fields += add_ref_xml(object, map_item, config)
+            else
+              fields += add_basic_xml(object, map_item)
+            end
+          end
+
+          fields
+        end
+
+        def add_basic_xml(object, mapping)
+          flowlink_field = object[mapping[:flowlink_name]]
+          qbe_field_name = mapping[:qbe_name]
+          float_fields = ['price', 'cost']
+
+          return '' if flowlink_field.nil?
+
+          flowlink_field = '%.2f' % flowlink_field.to_f if float_fields.include?(mapping[:flowlink_name])
+
+          "<#{qbe_field_name}>#{flowlink_field}</#{qbe_field_name}>"
+        end
+
+        def add_ref_xml(object, mapping, config)
+          flowlink_field = object[mapping[:flowlink_name]]
+          qbe_field_name = mapping[:qbe_name]
+
+          if flowlink_field.respond_to?(:has_key?) && flowlink_field['list_id']
+            return "<#{qbe_field_name}><ListID>#{flowlink_field['list_id']}</ListID></#{qbe_field_name}>"
+          end
+          full_name = flowlink_field ||
+                                config[mapping[:flowlink_name].to_sym] ||
+                                config["quickbooks_#{mapping[:flowlink_name]}".to_sym]
+
+          full_name.nil? ? "" : "<#{qbe_field_name}><FullName>#{full_name}</FullName></#{qbe_field_name}>"
         end
       end
     end
