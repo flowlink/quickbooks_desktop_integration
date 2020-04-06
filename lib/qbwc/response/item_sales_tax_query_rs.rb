@@ -74,6 +74,7 @@ module QBWC
             modified_at: record['TimeModified'],
             key: 'qbe_id',
             name: record['Name'],
+            fullname: record['Name'],
             barcode_value: record['BarCodeValue'],
             is_active: record['IsActive'],
             description: record['ItemDesc'],

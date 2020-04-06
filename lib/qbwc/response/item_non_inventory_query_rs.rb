@@ -63,7 +63,7 @@ module QBWC
       end
 
       def products_to_flowlink
-        # puts "Product object from QBE: #{records.first}"
+        puts "NON inv Product object from QBE: #{records.first}"
         records.map do |record|
           object = {
             id: record['Name'],
@@ -89,7 +89,7 @@ module QBWC
           }.compact
 
           if record['SalesOrPurchase']
-            object.merge({
+            object.merge!({
               sales_or_purchase: true,
               price: record['SalesOrPurchase']['Price'],
               price_percent: record['SalesOrPurchase']['PricePercent'],
@@ -99,12 +99,14 @@ module QBWC
           end
 
           if record['SalesAndPurchase']
-            object.merge({
+            object.merge!({
               sales_and_purchase: true,
               sales_description: record['SalesAndPurchase']['SalesDesc'],
               sales_price: record['SalesAndPurchase']['SalesPrice'],
+              price: record['SalesAndPurchase']['SalesPrice'],
               purchase_description: record['SalesAndPurchase']['PurchaseDesc'],
               purchase_cost: record['SalesAndPurchase']['PurchaseCost'],
+              cost: record['SalesAndPurchase']['PurchaseCost'],
               purchase_tax_code_name: record['SalesAndPurchase'].dig('PurchaseTaxCodeRef', 'FullName'),
               income_account_name: record['SalesAndPurchase'].dig('IncomeAccountRef', 'FullName'),
               expense_account_name: record['SalesAndPurchase'].dig('ExpenseAccountRef', 'FullName'),

@@ -427,7 +427,7 @@ module QBWC
               order[address_type] = { }
             end
 
-            ['address1', 'address2', 'city', 'state', 'zipcode', 'county'].each do |field|
+            ['address1', 'address2', 'city', 'state', 'zipcode', 'country'].each do |field|
               if !order[address_type][field].nil?
                 order[address_type][field].gsub!(/[^0-9A-Za-z\s]/, '')
               end

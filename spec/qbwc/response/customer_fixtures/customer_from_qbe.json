@@ -1,0 +1,195 @@
+{
+  "ListID": "129388492-91289892",
+  "TimeCreated": "2019-09-24T17:24:16-05:00",
+  "TimeModified": "2019-10-26T17:14:29-05:00",
+  "EditSequence": "90127097019823",
+  "Name": "NuRelm",
+  "FullName": "NuRelm",
+  "IsActive": true,
+  "ClassRef": {
+    "ListID": "11112334",
+    "FullName": "class"
+  },
+  "ParentRef": {
+    "ListID": "9080909",
+    "FullName": "parent name"
+  },
+  "Sublevel": 0,
+  "CompanyName": "NURELM",
+  "Salutation": "Mr.",
+  "FirstName": "NuRelm",
+  "MiddleName": "Senior",
+  "LastName": "Dev",
+  "JobTitle": "Software Develop",
+  "BillAddress": {
+    "Addr1": "124 Main St",
+    "Addr2": "Suite",
+    "Addr3": "1002",
+    "Addr4": "EXT - 1929",
+    "Addr5": "last line",
+    "City": "Pittsburgh",
+    "State": "PA",
+    "PostalCode": "12345",
+    "Country": "USA",
+    "Note": "Billing Note"
+  },
+  "ShipAddress": {
+    "Addr1": "124 Main St",
+    "Addr2": "Suite",
+    "Addr3": "1002",
+    "Addr4": "EXT - 1929",
+    "Addr5": "last line",
+    "City": "Pittsburgh",
+    "State": "PA",
+    "PostalCode": "12345",
+    "Country": "USA",
+    "Note": "Shipping Note"
+  },
+  "ShipToAddress": [
+    {
+      "Name": "Ship to address 1",
+      "Addr1": "124 Main St",
+      "Addr2": "Suite",
+      "Addr3": "1002",
+      "Addr4": "EXT - 1929",
+      "Addr5": "last line",
+      "City": "Pittsburgh",
+      "State": "PA",
+      "PostalCode": "12345",
+      "Country": "USA",
+      "Note": "Ship to Note",
+      "DefaultShipTo": true
+    },
+    {
+      "Name": "Ship to address 2",
+      "Addr1": "124 Main St",
+      "Addr2": "Suite",
+      "Addr3": "1002",
+      "Addr4": "EXT - 1929",
+      "Addr5": "last line",
+      "City": "Pittsburgh",
+      "State": "PA",
+      "PostalCode": "12345",
+      "Country": "USA",
+      "Note": "Ship to Note",
+      "DefaultShipTo": false
+    }
+  ],
+  "Phone": "412-555-0909",
+  "AltPhone": "412-555-0909",
+  "Fax": "412-555-0909",
+  "Email": "development@nurelm.com",
+  "Cc": "support@nurelm.com",
+  "Contact": "CEO Joe",
+  "AltContact": "CFO Jane",
+  "AdditionalContactRef": [
+    {
+      "ContactName": "My buddy",
+      "ContactValue": "my buddy's value"
+    },
+    {
+      "ContactName": "My buddy number 2",
+      "ContactValue": "my buddy's second value"
+    }
+  ],
+  "ContactsRet": [
+    {
+      "ListID": "90000-9290101",
+      "TimeCreated": "2019-09-24T17:24:16-05:00",
+      "TimeModified": "2019-10-26T17:14:29-05:00",
+      "EditSequence": "9121029901209",
+      "Contact": "",
+      "Salutation": "Mr.",
+      "FirstName": "Fred",
+      "MiddleName": "caveman",
+      "LastName": "Flinstone",
+      "JobTitle": "Rock Breaker",
+      "AdditionalContactRef": [
+        {
+          "ContactName": "Barney Rubble",
+          "ContactValue": "Best Friend"
+        },
+        {
+          "ContactName": "WILMAAAA",
+          "ContactValue": "Wife"
+        }
+      ]
+    },
+    {
+      "ListID": "90000-9290102",
+      "TimeCreated": "2019-09-24T10:24:16-05:00",
+      "TimeModified": "2019-10-26T10:14:29-05:00",
+      "EditSequence": "9121029901209",
+      "Contact": "",
+      "Salutation": "Mrs.",
+      "FirstName": "A",
+      "MiddleName": "big",
+      "LastName": "triceratops",
+      "JobTitle": "Dino",
+      "AdditionalContactRef": []
+    }
+  ],
+  "CustomerTypeRef": {
+    "ListID": "22",
+    "FullName": "Returning"
+  },
+  "TermsRef": {
+    "ListID": "30",
+    "FullName": "Net 30"
+  },
+  "SalesRepRef": {
+    "ListID": "1",
+    "FullName": "MS"
+  },
+  "Balance": "1000.00",
+  "TotalBalance": "1200.00",
+  "SalesTaxCodeRef": {
+    "ListID": "99",
+    "FullName": "Tax"
+  },
+  "ItemSalesTaxRef": {
+    "ListID": "100",
+    "FullName": "Out of State"
+  },
+  "SalesTaxCountry": "US",
+  "ResaleNumber": "21-3120012",
+  "AccountNumber": "111111",
+  "CreditLimit": 100000,
+  "PreferredPaymentMethodRef": {
+    "ListID": "2",
+    "FullName": "Credit Card"
+  },
+  "JobStatus": "None",
+  "JobStartDate": "",
+  "JobProjectedEndDate": "",
+  "JobEndDate": "",
+  "JobDesc": "Job Desc",
+  "JobTypeRef": {
+    "ListID": "97272",
+    "FullName": "Commercial"
+  },
+  "Notes": "hi",
+  "AdditionalNotesRet": [
+    {
+      "NoteID": "123",
+      "Date": "2019-09-24T17:24:16-05:00",
+      "Note": "On Create Note"
+    },
+    {
+      "NoteID": "456",
+      "Date": "2019-10-26T17:14:29-05:00",
+      "Note": "On mod Note"
+    }
+  ],
+  "PreferredDeliveryMethod": "Email",
+  "PriceLevelRef": {
+    "ListID": "9000",
+    "FullName": "Price level 9000"
+  },
+  "ExternalGUID": "210182sd1-a091a2d84-0912912-9039023",
+  "TaxRegistrationNumber": "100910991",
+  "CurrencyRef": {
+    "ListID": "12",
+    "FullName": "US Dollars"
+  }
+}

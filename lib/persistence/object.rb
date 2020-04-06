@@ -2,6 +2,15 @@ module Persistence
   class Object
     attr_reader :config, :objects, :payload_key, :amazon_s3, :path, :request_id
 
+    PLURAL_PRODUCT_OBJECT_TYPES = %w(
+      products
+      noninventoryproducts
+      discountproducts
+      inventoryproducts
+      salestaxproducts
+      serviceproducts
+    )
+
     class << self
       def handle_error(config, error_context, object_type, request_id)
         Persistence::Object.new(config, {})
@@ -9,10 +18,8 @@ module Persistence
       end
 
       def update_statuses(config = {}, processed = [], failed = [])
-        puts '-' * 100
-        puts "Processed: " + processed.to_s
-        puts "Failed: " + failed.to_s
-        puts '-' * 100
+        
+        puts({message: "Updating statuses.", config: config, processed: processed, failed: failed})
         Persistence::Object.new(config, {})
           .update_objects_files({ processed: processed, failed: failed }.with_indifferent_access)
       end
@@ -35,6 +42,10 @@ module Persistence
     def initialize(config = {}, payload = {})
       @payload_key = payload[:parameters] ? payload[:parameters][:payload_type] : payload.keys.first
       @objects     = payload[payload_key].is_a?(Hash) ? [payload[payload_key]] : Array(payload[payload_key])
+      begin
+        @payload_key.gsub!('_','')
+      rescue
+      end
       @config      = { origin: 'flowlink' }.merge(config).with_indifferent_access
       @amazon_s3   = S3Util.new
       @path        = Persistence::Path.new(@config)
@@ -107,7 +118,6 @@ module Persistence
       collection.map do |s3_object|
         _, _, filename    = s3_object.key.split('/')
         object_type, _, _ = filename.split('_')
-
 
         content = amazon_s3.convert_download('json', s3_object.get.body.read).first
         s3_object.move_to("#{path.base_name_w_bucket}/#{path.ready}/#{filename}")
@@ -237,38 +247,46 @@ module Persistence
     #   ],
     #   :failed => [] }
     def update_objects_files(statuses_objects)
-      puts "Status objects to be processed: #{statuses_objects}"
+      # puts "Status objects to be processed: #{statuses_objects}"
       return if statuses_objects.nil?
 
       statuses_objects.keys.each do |status_key|
-        puts status_key
+        # puts status_key
         statuses_objects[status_key].each do |types|
-          puts types
+          # puts types
           types.keys.each do |object_type|
-            puts object_type
+            puts({message: "Processing objects", object_type: object_type})
+            # puts object_type
             # NOTE seeing an nil `object` var here sometimes, investigate it
             # happens when you have both add_orders and get_products flows enabled
             begin
-              object = types[object_type].with_indifferent_access
+              object = types[object_type].with_indifferent_access 
 
               filename = "#{path.base_name}/#{path.ready}/#{object_type}_#{id_for_object(object, object_type)}_"
 
-              puts "Looking for file: #{filename}"
+              puts({message: "Filename built and looking in s3 for it", filename: filename})
+
+              # puts "Looking for file: #{filename}"
 
               collection = amazon_s3.bucket.objects(prefix: filename)
               collection.each do |s3_object|
+                puts({ message: "File found", s3_object: s3_object.inspect })
                 # This is for files that end on (n)
-                puts "Working with #{s3_object.inspect}"
+                # puts "Working with #{s3_object.inspect}"
                 _, _, ax_filename = s3_object.key.split('/')
                 _, _, end_of_file, ax_edit_sequence = ax_filename.split('_')
                 end_of_file = '.json' unless ax_edit_sequence.nil?
 
-                puts "AX FIlename: #{ax_filename}"
-                puts "End of File: #{end_of_file}"
+                puts({message: "Building file parts", ax_filename: ax_filename, end_of_file: end_of_file, ax_edit_sequence: ax_edit_sequence})
 
                 status_folder = path.send status_key
+                puts({message: "Status Folder", status_folder: status_folder})
+
                 new_filename = "#{path.base_name_w_bucket}/#{status_folder}/#{object_type}_#{id_for_object(object, object_type)}_"
                 new_filename << "#{object[:list_id]}_#{object[:edit_sequence]}" unless object[:list_id].to_s.empty?
+
+                puts({message:"New filename", new_filename: new_filename, end_of_file: end_of_file})
+
                 s3_object.move_to("#{new_filename}#{end_of_file}")
 
                 new_filename_no_bucket = "#{path.base_name}/#{status_folder}/#{object_type}_#{id_for_object(object, object_type)}_"
@@ -719,18 +737,23 @@ module Persistence
 
       key = object_type.pluralize
       if key == 'customers'
-        object['name']
+        remove_backslash object['name']
       elsif key == 'payments'
-        object['id']
+        remove_backslash object['id']
       elsif key == 'shipments'
-        object['name']
+        remove_backslash object['name']
       elsif key == 'vendors'
-        object['name'] || object['id']
-      elsif key == 'products'
-        object['product_id']
+        remove_backslash(object['name'] || object['id'])
+      elsif PLURAL_PRODUCT_OBJECT_TYPES.include?(key)
+        remove_backslash object['product_id']
       else
-        object['id']
+        remove_backslash object['id']
       end
     end
+
+    def remove_backslash(id)
+      id.gsub('/', '-backslash-')
+    end
+
   end
 end

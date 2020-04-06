@@ -53,7 +53,7 @@ module QBWC
           <<~XML
             <ItemDiscountAddRq requestID="#{session_id}">
                <ItemDiscountAdd>
-                #{product_xml(product, params, config, false)}
+                #{product_xml(product, config, false)}
                </ItemDiscountAdd>
             </ItemDiscountAddRq>
           XML
@@ -65,7 +65,7 @@ module QBWC
                <ItemDiscountMod>
                   <ListID>#{product['list_id']}</ListID>
                   <EditSequence>#{product['edit_sequence']}</EditSequence>
-                  #{product.key?('active') ? product_only_touch_xml(product, params) : product_xml(product, params, config, true)}
+                  #{product.key?('active') ? product_only_touch_xml(product, params) : product_xml(product, config, true)}
                </ItemDiscountMod>
             </ItemDiscountModRq>
           XML
@@ -78,7 +78,7 @@ module QBWC
           XML
         end
 
-        def product_xml(product, params, config, is_mod)
+        def product_xml(product, config, is_mod)
           <<~XML
             <Name>#{product_identifier(product)}</Name>
             #{add_barcode(product)}
@@ -128,10 +128,11 @@ module QBWC
         end
 
         def add_fields(object, mapping, config, is_mod)
+          object = object.with_indifferent_access
           fields = ""
           mapping.each do |map_item|
-            return "" if object[:mod_only] && object[:mod_only] != is_mod
-            return "" if object[:add_only] && object[:add_only] == is_mod
+            next if map_item[:mod_only] && map_item[:mod_only] != is_mod
+            next if map_item[:add_only] && map_item[:add_only] == is_mod
 
             if map_item[:is_ref]
               fields += add_ref_xml(object, map_item, config)
@@ -163,8 +164,8 @@ module QBWC
             return "<#{qbe_field_name}><ListID>#{flowlink_field['list_id']}</ListID></#{qbe_field_name}>"
           end
           full_name = flowlink_field ||
-                                config[mapping[:flowlink_name]] ||
-                                config["quickbooks_#{mapping[:flowlink_name]}"]
+                                config[mapping[:flowlink_name].to_sym] ||
+                                config["quickbooks_#{mapping[:flowlink_name]}".to_sym]
 
           full_name.nil? ? "" : "<#{qbe_field_name}><FullName>#{full_name}</FullName></#{qbe_field_name}>"
         end

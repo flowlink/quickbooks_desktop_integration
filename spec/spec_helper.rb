@@ -2,6 +2,7 @@ require 'simplecov'
 require 'rubygems'
 require 'bundler'
 require 'dotenv'
+require 'aws-sdk'
 
 Dotenv.load
 
@@ -32,7 +33,10 @@ VCR.configure do |c|
   c.filter_sensitive_data('AUTHORIZATION') do |interaction|
     interaction.request.headers['Authorization'][0]
   end
+
 end
+
+Aws.config[:stub_responses] = true
 
 RSpec.configure do |config|
   config.include Rack::Test::Methods

@@ -117,6 +117,8 @@ module QBWC
             created_at: record['TimeCreated'],
             modified_at: record['TimeModified'],
             list_id: record['ListID'],
+            qbe_id: record['ListID'],
+            key: 'qbe_id',
             barcode_value: record['BarCodeValue'],
             sublevel: record['Sublevel'],
             manufacturer_part_number: record['ManufacturerPartNumber'],

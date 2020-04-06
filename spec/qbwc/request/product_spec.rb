@@ -1,4 +1,10 @@
 require 'spec_helper'
+require 'rspec'
+require 'json'
+require "active_support/core_ext/hash/indifferent_access"
+require 'qbwc/request/vendors'
+require 'qbwc/request/product_fixtures/build_polling_from_config_fixtures'
+require 'qbwc/request/product_fixtures/add_and_update_xml_fixtures'
 
 module QBWC
   module Request
@@ -30,6 +36,47 @@ module QBWC
         xml = subject.polling_current_items_xml(time, {})
         expect(xml).to match time.split.first
       end
+    end
+  end
+end
+
+RSpec.describe QBWC::Request::Products do
+  describe "calls build_polling_from_config_param" do
+    config = {since: "2020-03-30 14:25:13 -0400"}.with_indifferent_access
+    time = Time.parse(config[:since]).in_time_zone 'Pacific Time (US & Canada)'
+    session_id = "12345903"
+    
+    it "it matches expected output when given full list of params" do
+      config[:quickbooks_specify_products] = "[\"inventory\", \"assembly\", \"noninventory\", \"salestax\", \"service\", \"discount\"]"
+      response = QBWC::Request::Products.send(:build_polling_from_config_param, config, session_id, time)
+      expect(response.delete!("\n")).to eq(full_expected_output(time).delete!("\n"))
+    end
+
+    it "it matches expected output when given partial list of params" do
+      config[:quickbooks_specify_products] = "[\"inventory\",  \"salestax\", \"service\"]"
+      response = QBWC::Request::Products.send(:build_polling_from_config_param, config, session_id, time)
+      expect(response.delete!("\n")).to eq(partial_expected_output(time).delete!("\n"))
+    end
+
+    it "it matches expected output when given 1 param" do
+      config[:quickbooks_specify_products] = "[\"service\"]"
+      response = QBWC::Request::Products.send(:build_polling_from_config_param, config, session_id, time)
+      expect(response.delete!("\n")).to eq(one_expected_output(time).delete!("\n"))
+    end
+  end
+
+  describe "builds xml for adding or updating" do
+    let(:flowlink_product) { JSON.parse(File.read('spec/qbwc/request/product_fixtures/invproduct_from_flowlink.json')) }
+    config = {quickbooks_cogs_account: "Cost of Goods"}
+
+    it "it matches expected output" do
+      product = QBWC::Request::Products.add_xml_to_send(flowlink_product, nil, 12345, config)
+      expect(product.gsub(/\s+/, "")).to eq(add_xml.gsub(/\s+/, ""))
+    end
+    
+    it "it matches expected output" do
+      product = QBWC::Request::Products.update_xml_to_send(flowlink_product, nil, 12345, config)
+      expect(product.gsub(/\s+/, "")).to eq(update_xml.gsub(/\s+/, ""))
     end
   end
 end

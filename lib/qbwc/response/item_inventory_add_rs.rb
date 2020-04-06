@@ -23,6 +23,7 @@ module QBWC
         records.each do |object|
           products << { products: {
             id: (object['ParentRef'].is_a?(Array) ? object['ParentRef'] : (object['ParentRef'].nil? ? [] : [object['ParentRef']])).map { |item| item['FullName'] + ':' }.join('') + object['Name'],
+            product_id: object['Name'],
             list_id: object['ListID'],
             edit_sequence: object['EditSequence']
           }
