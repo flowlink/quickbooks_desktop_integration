@@ -156,7 +156,7 @@ module QBWC
           map = SALES_AND_PURCHASE_MAP
           tag = is_mod ? "SalesAndPurchaseMod" : "SalesAndPurchase"
           
-          if product['sales_or_purchase']
+          if product['sales_or_purchase'] && product['sales_and_purchase'] != true
             map = SALES_OR_PURCHASE_MAP
             tag = is_mod ? "SalesOrPurchaseMod" : "SalesOrPurchase"
           end

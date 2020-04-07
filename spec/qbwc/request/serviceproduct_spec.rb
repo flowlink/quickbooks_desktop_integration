@@ -83,6 +83,14 @@ RSpec.describe QBWC::Request::Serviceproducts do
       product = QBWC::Request::Serviceproducts.add_xml_to_send(flowlink_product, nil, 12345, config)
       expect(product.gsub(/\s+/, "")).to eq(add_xml_basic_serviceproduct.gsub(/\s+/, ""))
     end
+
+    it "matches expected xml when adding basic product with both sales_or_purchase and sales_and_purchase fields set to true" do
+      flowlink_product["sales_or_purchase"] = true
+      flowlink_product["sales_and_purchase"] = true
+
+      product = QBWC::Request::Serviceproducts.add_xml_to_send(flowlink_product, nil, 12345, config)
+      expect(product.gsub(/\s+/, "")).to eq(add_xml_basic_serviceproduct.gsub(/\s+/, ""))
+    end
     
     it "matches expected xml when updating sales and purchase" do
       flowlink_product["sales_and_purchase"] = true
@@ -120,6 +128,16 @@ RSpec.describe QBWC::Request::Serviceproducts do
 
       product = QBWC::Request::Serviceproducts.update_xml_to_send(flowlink_product, nil, 12345, config)
       expect(product.gsub(/\s+/, "")).to eq(update_xml_basic_serviceproduct.gsub(/\s+/, ""))
+    end
+
+    it "matches expected xml when updating basic product with both sales_or_purchase and sales_and_purchase fields set to true" do
+      flowlink_product["sales_or_purchase"] = true
+      flowlink_product["sales_and_purchase"] = true
+      flowlink_product["list_id"] = "test service product"
+      flowlink_product["edit_sequence"] = "19209j3od-d9292"
+
+      product = QBWC::Request::Serviceproducts.update_xml_to_send(flowlink_product, nil, 12345, config)
+      expect(product.gsub(/\s+/, "")).to eq(update_xml_sandp_serviceproduct.gsub(/\s+/, ""))
     end
 
     it "it matches expected xml when updating service product with active field" do
