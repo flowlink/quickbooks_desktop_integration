@@ -101,6 +101,23 @@ You can also call `/get_products` and specify a config value - see below
   # NOTE: Be sure to escape the string values of each item in the "array"
 ```
 
+### Adding Products
+
+QBE has a few different product types that FlowLink allows you to add/mod/query
+
+* inventory
+* assembly
+* noninventory
+* salestax
+* service
+* discount
+
+When **adding** noninventory or service products, the block of either SalesOrPurchase or SalesAndPurchase is required. To specify which block to use, you'll need to set the field to true. `sales_and_purchase = true` or `sales_or_purchase = true`. If both are set to true or neither are set, SalesAndPurchase is the default block.
+
+When **modifying** noninventory or service products, these blocks are not required. If both `sales_and_purchase` and `sales_or_purchase` are set to true, SalesAndPurchase is still the default. If none are set, these blocks will be ignored.
+
+Some products do not allow modifying of the SalesOrPurchase and SalesAndPurchase block, so be sure you can modify when you send the request.
+
 ## About FlowLink
 
 [FlowLink](http://flowlink.io/) allows you to connect to your own custom integrations.

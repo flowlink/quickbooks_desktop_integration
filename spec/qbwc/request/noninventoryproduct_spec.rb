@@ -55,12 +55,14 @@ RSpec.describe QBWC::Request::Noninventoryproducts do
     }
     
     it "matches expected xml when adding sales and purchase" do
+      flowlink_product["sales_and_purchase"] = true
+
       product = QBWC::Request::Noninventoryproducts.add_xml_to_send(flowlink_product, nil, 12345, config)
       expect(product.gsub(/\s+/, "")).to eq(add_xml_sandp_noninventoryproduct.gsub(/\s+/, ""))
     end
 
     it "matches expected xml when adding sales or purchase with percent field" do
-      flowlink_product["sale_or_purchase"] = true
+      flowlink_product["sales_or_purchase"] = true
       flowlink_product["price"] = nil
 
       product = QBWC::Request::Noninventoryproducts.add_xml_to_send(flowlink_product, nil, 12345, config)
@@ -68,13 +70,30 @@ RSpec.describe QBWC::Request::Noninventoryproducts do
     end
 
     it "matches expected xml when adding sales or purchase without percent field" do
-      flowlink_product["sale_or_purchase"] = true
+      flowlink_product["sales_or_purchase"] = true
 
       product = QBWC::Request::Noninventoryproducts.add_xml_to_send(flowlink_product, nil, 12345, config)
       expect(product.gsub(/\s+/, "")).to eq(add_xml_sorp_without_percent_noninventoryproduct.gsub(/\s+/, ""))
     end
-    
+
+    it "matches expected xml when adding basic product (no sales_or_purchase and no sales_and_purchase)" do
+      flowlink_product["sales_or_purchase"] = nil
+      flowlink_product["sales_and_purchase"] = nil
+
+      product = QBWC::Request::Noninventoryproducts.add_xml_to_send(flowlink_product, nil, 12345, config)
+      expect(product.gsub(/\s+/, "")).to eq(add_xml_basic_noninventoryproduct.gsub(/\s+/, ""))
+    end
+
+    it "matches expected xml when adding basic product with both sales_or_purchase and sales_and_purchase fields set to true" do
+      flowlink_product["sales_or_purchase"] = true
+      flowlink_product["sales_and_purchase"] = true
+
+      product = QBWC::Request::Noninventoryproducts.add_xml_to_send(flowlink_product, nil, 12345, config)
+      expect(product.gsub(/\s+/, "")).to eq(add_xml_basic_noninventoryproduct.gsub(/\s+/, ""))
+    end
+
     it "matches expected xml when updating sales and purchase" do
+      flowlink_product["sales_and_purchase"] = true
       flowlink_product["list_id"] = "test noninv product"
       flowlink_product["edit_sequence"] = "19209j3od-d9292"
 
@@ -83,7 +102,7 @@ RSpec.describe QBWC::Request::Noninventoryproducts do
     end
 
     it "matches expected xml when updating sales or purchase with percent field" do
-      flowlink_product["sale_or_purchase"] = true
+      flowlink_product["sales_or_purchase"] = true
       flowlink_product["list_id"] = "test noninv product"
       flowlink_product["edit_sequence"] = "19209j3od-d9292"
       flowlink_product["price"] = nil
@@ -93,12 +112,32 @@ RSpec.describe QBWC::Request::Noninventoryproducts do
     end
 
     it "it matches expected xml when updating sales or purchase without percent field" do
-      flowlink_product["sale_or_purchase"] = true
+      flowlink_product["sales_or_purchase"] = true
       flowlink_product["list_id"] = "test noninv product"
       flowlink_product["edit_sequence"] = "19209j3od-d9292"
       
       product = QBWC::Request::Noninventoryproducts.update_xml_to_send(flowlink_product, nil, 12345, config)
       expect(product.gsub(/\s+/, "")).to eq(update_xml_sorp_without_percent_noninventoryproduct.gsub(/\s+/, ""))
+    end
+
+    it "matches expected xml when updating basic product (no sales_or_purchase and no sales_and_purchase)" do
+      flowlink_product["sales_or_purchase"] = nil
+      flowlink_product["sales_and_purchase"] = nil
+      flowlink_product["list_id"] = "test noninv product"
+      flowlink_product["edit_sequence"] = "19209j3od-d9292"
+
+      product = QBWC::Request::Noninventoryproducts.update_xml_to_send(flowlink_product, nil, 12345, config)
+      expect(product.gsub(/\s+/, "")).to eq(update_xml_basic_noninventoryproduct.gsub(/\s+/, ""))
+    end
+
+    it "matches expected xml when updating basic product with both sales_or_purchase and sales_and_purchase fields set to true" do
+      flowlink_product["sales_or_purchase"] = true
+      flowlink_product["sales_and_purchase"] = true
+      flowlink_product["list_id"] = "test noninv product"
+      flowlink_product["edit_sequence"] = "19209j3od-d9292"
+
+      product = QBWC::Request::Noninventoryproducts.update_xml_to_send(flowlink_product, nil, 12345, config)
+      expect(product.gsub(/\s+/, "")).to eq(update_xml_sandp_noninventoryproduct.gsub(/\s+/, ""))
     end
 
     it "it matches expected xml when updating noninventory product with active field" do

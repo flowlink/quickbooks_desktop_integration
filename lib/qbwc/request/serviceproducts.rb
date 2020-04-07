@@ -104,7 +104,7 @@ module QBWC
             #{add_barcode(product)}
             <IsActive >#{product['is_active'] || true}</IsActive>
             #{add_fields(product, GENERAL_MAPPING, config, is_mod)}
-            #{sale_or_and_purchase(product, config, is_mod)}
+            #{sales_or_and_purchase(product, config, is_mod)}
             #{add_fields(product, EXTERNAL_GUID_MAP, config, is_mod)}
           XML
         end
@@ -149,16 +149,16 @@ module QBWC
           XML
         end
 
-        def sale_or_and_purchase(product, config, is_mod)
-          map = product['sale_or_purchase'] ? SALES_OR_PURCHASE_MAP : SALES_AND_PURCHASE_MAP
-          tag = "SalesAndPurchase"
-
-          if product['sale_or_purchase'] && is_mod
-            tag = "SalesOrPurchaseMod"
-          elsif product['sale_or_purchase']
-            tag = "SalesOrPurchase"
-          elsif is_mod
-            tag = "SalesAndPurchaseMod"
+        def sales_or_and_purchase(product, config, is_mod)
+          return "" unless !is_mod || product['sales_or_purchase'] || product['sales_and_purchase']
+          
+          # SandP or SorP is required when adding. We default to Sales and Purchase here.
+          map = SALES_AND_PURCHASE_MAP
+          tag = is_mod ? "SalesAndPurchaseMod" : "SalesAndPurchase"
+          
+          if product['sales_or_purchase'] && product['sales_and_purchase'] != true
+            map = SALES_OR_PURCHASE_MAP
+            tag = is_mod ? "SalesOrPurchaseMod" : "SalesOrPurchase"
           end
 
           # We should only have either price OR price_percent, so we default to price here
