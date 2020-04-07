@@ -20,20 +20,20 @@ module QBWC
         return if records.empty?
 
         receive_configs = config[:receive] || []
-        product_params = receive_configs.find { |c| c['products'] }
+        discountproduct_params = receive_configs.find { |c| c['discountproducts'] }
 
-        if product_params
-          payload = { products: products_to_flowlink }
+        if discountproduct_params
+          payload = { discountproducts: discountproducts_to_flowlink }
           config = { origin: 'quickbooks' }.merge config.reject{|k,v| k == :origin || k == "origin"}
           poll_persistence = Persistence::Polling.new(config, payload)
           poll_persistence.save_for_polling
 
-          product_params['products']['quickbooks_since'] = last_time_modified
-          product_params['products']['quickbooks_force_config'] = 'true'
+          discountproduct_params['discountproducts']['quickbooks_since'] = last_time_modified
+          discountproduct_params['discountproducts']['quickbooks_force_config'] = 'true'
 
           # Override configs to update timestamp so it doesn't keep geting the
           # same inventories
-          params = product_params['products']
+          params = discountproduct_params['discountproducts']
           Persistence::Settings.new(params.with_indifferent_access).setup
         end
 
@@ -78,7 +78,7 @@ module QBWC
         end.join('') + object['Name']
       end
 
-      def products_to_flowlink
+      def discountproducts_to_flowlink
         # puts "Product object from QBE: #{records.first}"
         records.map do |record|
           object = {

@@ -4,7 +4,7 @@ require "active_support/core_ext/hash/indifferent_access"
 require 'qbwc/response/item_non_inventory_query_rs'
 
 RSpec.describe QBWC::Response::ItemNonInventoryQueryRs do
-  describe "calls products_to_flowlink" do
+  describe "calls noninventoryproducts_to_flowlink" do
     let(:sandp_qbe_product) { JSON.parse(File.read('spec/qbwc/response/noninventory_product_fixtures/sales_and_purchase_prod_from_qbe.json')) }
     let(:sorp_qbe_product) { JSON.parse(File.read('spec/qbwc/response/noninventory_product_fixtures/sales_or_purchase_prod_from_qbe.json')) }
     
@@ -17,7 +17,7 @@ RSpec.describe QBWC::Response::ItemNonInventoryQueryRs do
       expected_product = base_flowlink_product.merge(fl_sales_and_purchase).compact
 
       non_inv_rs = QBWC::Response::ItemNonInventoryQueryRs.new([sandp_qbe_product])
-      output = non_inv_rs.send(:products_to_flowlink).first.with_indifferent_access
+      output = non_inv_rs.send(:noninventoryproducts_to_flowlink).first.with_indifferent_access
 
       expect(output).to eq(expected_product.with_indifferent_access)
     end
@@ -28,7 +28,7 @@ RSpec.describe QBWC::Response::ItemNonInventoryQueryRs do
         
         sorp_qbe_product["SalesOrPurchase"]["Price"] = 100
         non_inv_rs = QBWC::Response::ItemNonInventoryQueryRs.new([sorp_qbe_product])
-        output = non_inv_rs.send(:products_to_flowlink).first.with_indifferent_access
+        output = non_inv_rs.send(:noninventoryproducts_to_flowlink).first.with_indifferent_access
 
         expect(output).to eq(expected_product.with_indifferent_access)
       end
@@ -38,7 +38,7 @@ RSpec.describe QBWC::Response::ItemNonInventoryQueryRs do
 
         sorp_qbe_product["SalesOrPurchase"]["PricePercent"] = 100
         non_inv_rs = QBWC::Response::ItemNonInventoryQueryRs.new([sorp_qbe_product])
-        output = non_inv_rs.send(:products_to_flowlink).first.with_indifferent_access
+        output = non_inv_rs.send(:noninventoryproducts_to_flowlink).first.with_indifferent_access
 
         puts expected_product
 

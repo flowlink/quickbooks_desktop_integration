@@ -24,6 +24,7 @@ module QBWC
           products << {
             salestaxproducts: {
               id: build_product_id_or_ref(object),
+              product_id: object['Name'],
               list_id: object['ListID'],
               edit_sequence: object['EditSequence']
             }
