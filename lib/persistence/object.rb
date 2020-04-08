@@ -765,7 +765,7 @@ module Persistence
     end
 
     def sanitize_filename(id)
-      id.gsub('/', '-backslash-').gbsub(/\'\'/, "\"")
+      id.gsub('/', '-backslash-')
     end
 
   end
