@@ -24,6 +24,7 @@ module QBWC
           products << {
             noninventoryproducts: {
               id: build_product_id_or_ref(object),
+              product_id: object['Name'],
               list_id: object['ListID'],
               edit_sequence: object['EditSequence']
             }
@@ -37,13 +38,13 @@ module QBWC
 
       def build_product_id_or_ref(object)
         if object['ParentRef'].is_a?(Array)
-          arr = object['ParentRef'] 
+          arr = object['ParentRef']
         elsif object['ParentRef'].nil?
             arr = []
         else
           arr = [object['ParentRef']]
         end
-        
+
         arr.map do |item|
           next unless item['FullName']
 
