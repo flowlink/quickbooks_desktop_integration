@@ -8,7 +8,7 @@ module Persistence
     end
 
     def bucket_name
-      'quickbooks-desktop-integration'
+      'qbe-staging'
     end
 
     def two_phase_pending
