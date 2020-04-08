@@ -749,6 +749,12 @@ module Persistence
       return object['id'] if object_type.nil?
 
       key = object_type.pluralize
+
+      puts "=" * 99
+      puts "Object#id_for_object"
+      puts key.inspect
+      puts object.inspect
+      puts "=" * 99
       if key == 'customers'
         sanitize_filename object['name']
       elsif key == 'payments'
@@ -765,6 +771,10 @@ module Persistence
     end
 
     def sanitize_filename(id)
+      puts "=" * 99
+      puts "Object#sanitize_filename"
+      puts id
+      puts "=" * 99
       id.gsub('/', '-backslash-')
     end
 
