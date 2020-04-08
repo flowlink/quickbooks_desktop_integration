@@ -17,6 +17,10 @@ module QBWC
       end
 
       def process(config)
+        puts "=" * 99
+        puts "CustomerQueryRs#process"
+        puts "records"
+        puts records.inspect
         return if records.empty?
 
         puts "Config for customer query: #{config}"
@@ -30,6 +34,8 @@ module QBWC
 
           poll_persistence = Persistence::Polling.new(config, payload)
           poll_persistence.save_for_polling
+          puts "poll_persistence"
+          puts poll_persistence.inspect
 
           customer_params['customers']['quickbooks_since'] = last_time_modified
           customer_params['customers']['quickbooks_force_config'] = 'true'
@@ -42,9 +48,12 @@ module QBWC
 
         config  = config.merge(origin: 'flowlink', connection_id: config[:connection_id]).with_indifferent_access
         objects_updated = objects_to_update
+        puts "objects_updated"
+        puts objects_updated.inspect
 
         Persistence::Object.new(config, {}).update_objects_with_query_results(objects_updated)
 
+        puts "=" * 99
         nil
       end
 
