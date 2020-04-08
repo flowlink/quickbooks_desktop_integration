@@ -160,20 +160,20 @@ module Persistence
       puts prefix_with_bucket.inspect
 
       # TODO Commenet out bottom block
-       files = amazon_s3.bucket.objects(prefix: prefix)
-      
-       puts "Files in bucket: #{files}"
-       puts "Files in bucket: #{files.first}"
-      
-       unless files.first
-         puts " No Files to be updated at #{prefix}"
-         return
-       end
+       # files = amazon_s3.bucket.objects(prefix: prefix)
+       #
+       # puts "Files in bucket: #{files}"
+       # puts "Files in bucket: #{files.first}"
+       #
+       # unless files.first
+       #   puts " No Files to be updated at #{prefix}"
+       #   return
+       # end
 
       objects_to_be_renamed.to_a.compact.each do |object|
         puts "-" * 99
-        filename     = "#{prefix}/#{object[:object_type].pluralize}_#{object[:object_ref]}_"
-        filename_with_bucket = "#{prefix_with_bucket}/#{object[:object_type].pluralize}_#{object[:object_ref]}_"
+        filename     = "#{prefix}/#{object[:object_type].pluralize}_#{remove_backslash(object[:object_ref])}_"
+        filename_with_bucket = "#{prefix_with_bucket}/#{object[:object_type].pluralize}_#{remove_backslash(object[:object_ref])}_"
 
         puts filename_with_bucket.inspect
         # TODO what if the file is not there? we should probably at least
