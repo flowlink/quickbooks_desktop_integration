@@ -1,6 +1,7 @@
 {
   "shipments": [{
     "id": "12836266231",
+    "name": "12836266231",
     "order_id": "R154085346",
     "email": "spree@example.com",
     "cost": 5,

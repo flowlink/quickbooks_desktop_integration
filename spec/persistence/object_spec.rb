@@ -115,5 +115,62 @@ module Persistence
         subject.save
       end
     end
+
+    describe "#id_for_object" do
+      let(:config) { { origin: 'flowlink', connection_id: '54372cb069702d1f59000000' } }
+
+      it 'orders use the id field' do
+        payload = Factory.orders
+        object_type = 'orders'
+        object = payload[object_type].first
+
+        subject = described_class.new config, payload
+
+        expect(subject.send(:id_for_object, object, object_type)).to eq object['id']
+      end
+
+      it 'products use the product_id field' do
+        payload = Factory.products
+        object_type = 'products'
+        object = payload[object_type].first
+
+        subject = described_class.new config, payload
+
+        expect(subject.send(:id_for_object, object, object_type)).to eq object['product_id']
+      end
+
+      it 'returns use the id field' do
+        payload = Factory.returns
+        object_type = 'returns'
+        object = payload[object_type].first
+
+        subject = described_class.new config, payload
+
+        expect(subject.send(:id_for_object, object, object_type)).to eq object['id']
+      end
+
+      it 'customers use the name field' do
+        payload = Factory.customers
+        object_type = 'customers'
+        object = payload[object_type].first
+
+        subject = described_class.new config, payload
+
+        expect(subject.send(:id_for_object, object, object_type)).to eq object['name']
+      end
+
+      it 'backslashes are filtered but kept in name' do
+        payload = Factory.customers_with_backslashes
+        object_type = 'customers'
+        object = payload[object_type].first
+        original_name = object['name'].dup
+
+        subject = described_class.new config, payload
+
+        expect(subject.send(:id_for_object, object, object_type)).not_to include("/")
+        expect(object['name']).to eq original_name
+      end
+    end
+
   end
 end
