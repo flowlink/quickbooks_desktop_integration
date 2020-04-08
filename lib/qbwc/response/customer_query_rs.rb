@@ -30,8 +30,6 @@ module QBWC
 
           poll_persistence = Persistence::Polling.new(config, payload)
           poll_persistence.save_for_polling
-          puts "poll_persistence"
-          puts poll_persistence.inspect
 
           customer_params['customers']['quickbooks_since'] = last_time_modified
           customer_params['customers']['quickbooks_force_config'] = 'true'
