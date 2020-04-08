@@ -151,23 +151,31 @@ module Persistence
     #                             :extra_data => { ... }, ]
     def update_objects_with_query_results(objects_to_be_renamed)
       # puts "Objects to be renamed: #{objects_to_be_renamed}"
+      puts "=" * 99
+      puts "Persistence::Object#update_objects_with_query_results"
 
       prefix = "#{path.base_name}/#{path.ready}"
       prefix_with_bucket = "#{path.base_name_w_bucket}/#{path.ready}"
-      # files = amazon_s3.bucket.objects(prefix: prefix)
-      #
-      # puts "Files in bucket: #{files}"
-      # puts "Files in bucket: #{files.first}"
-      #
-      # unless files.first
-      #   puts " No Files to be updated at #{prefix}"
-      #   return
-      # end
+      puts "prefix_with_bucket"
+      puts prefix_with_bucket.inspect
+
+      # TODO Commenet out bottom block
+       files = amazon_s3.bucket.objects(prefix: prefix)
+      
+       puts "Files in bucket: #{files}"
+       puts "Files in bucket: #{files.first}"
+      
+       unless files.first
+         puts " No Files to be updated at #{prefix}"
+         return
+       end
 
       objects_to_be_renamed.to_a.compact.each do |object|
+        puts "-" * 99
         filename     = "#{prefix}/#{object[:object_type].pluralize}_#{object[:object_ref]}_"
         filename_with_bucket = "#{prefix_with_bucket}/#{object[:object_type].pluralize}_#{object[:object_ref]}_"
 
+        puts filename_with_bucket.inspect
         # TODO what if the file is not there? we should probably at least
         # rescue / log the exception properly and move on with the others?
         # raises when file is not found:
@@ -180,7 +188,10 @@ module Persistence
           new_file_name = "#{filename}#{object[:list_id]}_#{object[:edit_sequence]}.json"
           s3_object.move_to(new_file_name_with_bucket)
 
+          puts new_file_name_with_bucket.inspect
+
           unless object[:extra_data].to_s.empty?
+            puts "inside unless block"
             contents = amazon_s3.bucket.object(new_file_name).get.body.read
             amazon_s3.bucket.object(new_file_name).delete
 
@@ -191,7 +202,9 @@ module Persistence
           return
           # puts "File not found: #{filename}.json"
         end
+        puts "-" * 99
       end
+      puts "=" * 99
     end
 
     # Get objects from ready folder to insert/update on quickbooks
