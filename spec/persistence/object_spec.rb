@@ -182,7 +182,7 @@ module Persistence
           "context"=>"Updating customers",
           "object"=> object
         }
-        subject = described_class.new(config, notification)
+        subject = described_class.new(config, {})
 
         expect(subject.send(:id_for_object, notification["object"], object_type)).to eq object['name']
       end
