@@ -33,7 +33,8 @@ module QBWC
 
       it 'parses timestamp and return request xml' do
         time = Time.now.utc.to_s
-        xml = subject.polling_current_items_xml(time, {})
+        params = {"quickbooks_since" => time}
+        xml = subject.polling_current_items_xml(params, {})
         expect(xml).to match time.split.first
       end
     end
