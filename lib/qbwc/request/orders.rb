@@ -35,9 +35,9 @@ module QBWC
           ''
         end
 
-        def polling_current_items_xml(timestamp, config)
+        def polling_current_items_xml(params, config)
+          timestamp = params['quickbooks_since']
           session_id = Persistence::Session.save(config, 'polling' => timestamp)
-
           time = Time.parse(timestamp).in_time_zone 'Pacific Time (US & Canada)'
 
           <<~XML
