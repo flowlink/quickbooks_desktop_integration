@@ -93,11 +93,8 @@ module QBWC
         end
 
         def polling_current_items_xml(params, config)
-          timestamp = params
-          timestamp = params['quickbooks_since'] if params['return_all']
-
+          timestamp = params['quickbooks_since']
           session_id = Persistence::Session.save(config, 'polling' => timestamp)
-
           time = Time.parse(timestamp).in_time_zone 'Pacific Time (US & Canada)'
 
           <<~XML
@@ -172,7 +169,7 @@ module QBWC
 
         def query_by_date(config, time)
           puts "Product config for polling: #{config}"
-          return '' if config['return_all']
+          return '' if config['return_all'].to_i == 1
 
           <<~XML
             <FromModifiedDate>#{time.iso8601}</FromModifiedDate>

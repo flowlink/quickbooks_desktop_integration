@@ -1,0 +1,55 @@
+{
+  "id": "S00009",
+  "type": "Commission",
+  "action": "ADD",
+  "is_home_currency_adjustment": false,
+  "is_amounts_entered_in_home_currency": true,
+  "currency_name": "USD",
+  "exchange_rate": 1.06,
+  "external_guid": 1000090000,
+  "line_items": [
+    {
+      "line_id": "1",
+      "class": "Pittsburghtown",
+      "debit": 200.00,
+      "credit": 0.0,
+      "customer": "My Customer",
+      "description": "Testing a journal entry here 1",
+      "account_number": "1-1000",
+      "account_description": "NuRelm Commission Receivable",
+      "item_sales_tax_name": "TAX",
+      "billable_status": "NotBillable"
+    },
+    {
+      "line_id": "2",
+      "class": "Pittsburghtown",
+      "debit": 0.0,
+      "credit": 120.02,
+      "customer": "My Customer credit!",
+      "description": "Testing a journal entry here 2",
+      "account_number": "54321",
+      "account_description": "Fees",
+      "item_sales_tax_name": "TAX",
+      "billable_status": "Billable"
+    },
+    {
+      "line_id": "3",
+      "class": "Pittsburghtown",
+      "debit": 0.0,
+      "credit": 79.98,
+      "customer": "My Customer credit!",
+      "description": "Testing a journal entry here 3",
+      "account_number": "12345",
+      "account_description": "Marketing Income",
+      "item_sales_tax_name": "TAX",
+      "billable_status": "HasBeenBilled"
+    }
+  ],
+  "delete_date": null,
+  "modify_date": "2020-03-18T15:28:45.493",
+  "posted_date": "2020-03-18T15:28:45.493",
+  "journal_date": "2020-03-18T15:28:45.493",
+  "accounttech_id": "S00009",
+  "list_id": "999281771",
+  "edit_sequence": "102930910"
+}

@@ -198,6 +198,64 @@ def update_xml_sorp_with_percent_noninventoryproduct
   XML
 end
 
+def add_xml_basic_noninventoryproduct
+  <<~XML
+    <ItemNonInventoryAddRq requestID="12345">
+      <ItemNonInventoryAdd>
+        <Name>test noninv product</Name>
+        <BarCode>
+          <BarCodeValue>0001910191</BarCodeValue>
+          <AssignEvenIfUsed>true</AssignEvenIfUsed>
+          <AllowOverride>false</AllowOverride>
+        </BarCode>
+        <IsActive>true</IsActive>
+        <ParentRef><FullName>GermanCars:Mercedes-Benz</FullName></ParentRef>
+        <ClassRef><FullName>Class1:Class2</FullName></ClassRef>
+        <ManufacturerPartNumber>partnumber123</ManufacturerPartNumber>
+        <UnitOfMeasureSetRef><FullName>feet</FullName></UnitOfMeasureSetRef>
+        <IsTaxIncluded>false</IsTaxIncluded>
+        <SalesTaxCodeRef><FullName>tax</FullName></SalesTaxCodeRef>
+        <SalesAndPurchase>
+          <SalesDesc>This product is non inventory</SalesDesc>
+          <SalesPrice>20.00</SalesPrice>
+          <IncomeAccountRef><FullName>Income Account</FullName></IncomeAccountRef>
+          <PurchaseDesc>This product is non inventory and available for purchase</PurchaseDesc>
+          <PurchaseCost>5.00</PurchaseCost>
+          <PurchaseTaxCodeRef><FullName>standard tax</FullName></PurchaseTaxCodeRef>
+          <ExpenseAccountRef><FullName>Expense Account</FullName></ExpenseAccountRef>
+          <PrefVendorRef><FullName>Sully's Hot Dog Stand</FullName></PrefVendorRef>
+        </SalesAndPurchase>
+        <ExternalGUID>109389220</ExternalGUID>
+      </ItemNonInventoryAdd>
+    </ItemNonInventoryAddRq>
+  XML
+end
+
+def update_xml_basic_noninventoryproduct
+  <<~XML
+    <ItemNonInventoryModRq requestID="12345">
+      <ItemNonInventoryMod>
+        <ListID>test noninv product</ListID>
+        <EditSequence>19209j3od-d9292</EditSequence>
+        <Name>test noninv product</Name>
+        <BarCode>
+          <BarCodeValue>0001910191</BarCodeValue>
+          <AssignEvenIfUsed>true</AssignEvenIfUsed>
+          <AllowOverride>false</AllowOverride>
+        </BarCode>
+        <IsActive>true</IsActive>
+        <ParentRef><FullName>GermanCars:Mercedes-Benz</FullName></ParentRef>
+        <ClassRef><FullName>Class1:Class2</FullName></ClassRef>
+        <ManufacturerPartNumber>partnumber123</ManufacturerPartNumber>
+        <UnitOfMeasureSetRef><FullName>feet</FullName></UnitOfMeasureSetRef>
+        <ForceUOMChange>true</ForceUOMChange>
+        <IsTaxIncluded>false</IsTaxIncluded>
+        <SalesTaxCodeRef><FullName>tax</FullName></SalesTaxCodeRef>
+      </ItemNonInventoryMod>
+    </ItemNonInventoryModRq>
+  XML
+end
+
 def update_xml_with_active_field_noninventoryproduct
   <<~XML
     <ItemNonInventoryModRq requestID="12345">

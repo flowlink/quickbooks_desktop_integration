@@ -32,6 +32,7 @@ module QBWC
         records.map do |record|
           {
             object_type: 'salesreceipt',
+            id: record['RefNumber'],
             object_ref: record['RefNumber'],
             list_id: record['TxnID'],
             edit_sequence: record['EditSequence']

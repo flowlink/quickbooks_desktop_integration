@@ -44,7 +44,8 @@ module QBWC
           ''
         end
 
-        def polling_current_items_xml(timestamp, config)
+        def polling_current_items_xml(params, config)
+          timestamp = params['quickbooks_since']
           session_id = Persistence::Session.save(config, 'polling' => timestamp)
 
           time = Time.parse(timestamp).in_time_zone 'Pacific Time (US & Canada)'
@@ -130,6 +131,7 @@ module QBWC
             <BillAddress>
               <Addr1>#{record['billing_address']['address1']}</Addr1>
               <Addr2>#{record['billing_address']['address2']}</Addr2>
+              <Addr3>#{record['billing_address']['address3']}</Addr3>
               <City>#{record['billing_address']['city']}</City>
               <State>#{record['billing_address']['state']}</State>
               <PostalCode>#{record['billing_address']['zipcode']}</PostalCode>
@@ -138,6 +140,7 @@ module QBWC
             <ShipAddress>
               <Addr1>#{record['shipping_address']['address1']}</Addr1>
               <Addr2>#{record['shipping_address']['address2']}</Addr2>
+              <Addr3>#{record['shipping_address']['address3']}</Addr3>
               <City>#{record['shipping_address']['city']}</City>
               <State>#{record['shipping_address']['state']}</State>
               <PostalCode>#{record['shipping_address']['zipcode']}</PostalCode>

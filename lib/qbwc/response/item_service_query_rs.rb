@@ -20,20 +20,20 @@ module QBWC
         return if records.empty?
 
         receive_configs = config[:receive] || []
-        product_params = receive_configs.find { |c| c['products'] }
+        serviceproduct_params = receive_configs.find { |c| c['serviceproducts'] }
 
-        if product_params
-          payload = { products: products_to_flowlink }
+        if serviceproduct_params
+          payload = { serviceproducts: serviceproducts_to_flowlink }
           config = { origin: 'quickbooks' }.merge config.reject{|k,v| k == :origin || k == "origin"}
           poll_persistence = Persistence::Polling.new(config, payload)
           poll_persistence.save_for_polling
 
-          product_params['products']['quickbooks_since'] = last_time_modified
-          product_params['products']['quickbooks_force_config'] = 'true'
+          serviceproduct_params['serviceproducts']['quickbooks_since'] = last_time_modified
+          serviceproduct_params['serviceproducts']['quickbooks_force_config'] = 'true'
 
           # Override configs to update timestamp so it doesn't keep geting the
           # same inventories
-          params = product_params['products']
+          params = serviceproduct_params['serviceproducts']
           Persistence::Settings.new(params.with_indifferent_access).setup
         end
 
@@ -55,11 +55,27 @@ module QBWC
         records.map do |record|
           {
             object_type: 'serviceproduct',
-            object_ref: (record['ParentRef'].is_a?(Array) ? record['ParentRef'] : (record['ParentRef'].nil? ? [] : [record['ParentRef']])).map { |item| item['FullName'] + ':' }.join('') + record['Name'],
+            object_ref: build_product_id_or_ref(record),
+            product_id: record['Name'],
             list_id: record['ListID'],
             edit_sequence: record['EditSequence']
           }
         end
+      end
+
+      def build_product_id_or_ref(object)
+        return object['Name'] if object['ParentRef'].nil?
+        
+        if object['ParentRef'].is_a?(Array)
+          arr = object['ParentRef']
+        else
+          arr = [object['ParentRef']]
+        end
+        
+        arr.map do |item|
+          next unless item['FullName']
+          "#{item['FullName']}:"
+        end.join('') + object['Name']
       end
 
       def products_to_flowlink

@@ -192,6 +192,62 @@ def update_xml_sorp_with_percent_serviceproduct
   XML
 end
 
+def add_xml_basic_serviceproduct
+  <<~XML
+    <ItemServiceAddRq requestID="12345">
+      <ItemServiceAdd>
+        <Name>test service product</Name>
+        <BarCode>
+          <BarCodeValue>0001910191</BarCodeValue>
+          <AssignEvenIfUsed>true</AssignEvenIfUsed>
+          <AllowOverride>false</AllowOverride>
+        </BarCode>
+        <IsActive>true</IsActive>
+        <ClassRef><FullName>Class1:Class2</FullName></ClassRef>
+        <ParentRef><FullName>GermanCars:Mercedes-Benz</FullName></ParentRef>
+        <UnitOfMeasureSetRef><FullName>feet</FullName></UnitOfMeasureSetRef>
+        <IsTaxIncluded>false</IsTaxIncluded>
+        <SalesTaxCodeRef><FullName>tax</FullName></SalesTaxCodeRef>
+        <SalesAndPurchase>
+          <SalesDesc>This product is service</SalesDesc>
+          <SalesPrice>20.00</SalesPrice>
+          <IncomeAccountRef><FullName>Income Account</FullName></IncomeAccountRef>
+          <PurchaseDesc>This product is service and available for purchase</PurchaseDesc>
+          <PurchaseCost>5.00</PurchaseCost>
+          <PurchaseTaxCodeRef><FullName>standard tax</FullName></PurchaseTaxCodeRef>
+          <ExpenseAccountRef><FullName>Expense Account</FullName></ExpenseAccountRef>
+          <PrefVendorRef><FullName>Sully's Hot Dog Stand</FullName></PrefVendorRef>
+        </SalesAndPurchase>
+        <ExternalGUID>109389220</ExternalGUID>
+      </ItemServiceAdd>
+    </ItemServiceAddRq>
+  XML
+end
+
+def update_xml_basic_serviceproduct
+  <<~XML
+    <ItemServiceModRq requestID="12345">
+      <ItemServiceMod>
+        <ListID>test service product</ListID>
+        <EditSequence>19209j3od-d9292</EditSequence>
+        <Name>test service product</Name>
+        <BarCode>
+          <BarCodeValue>0001910191</BarCodeValue>
+          <AssignEvenIfUsed>true</AssignEvenIfUsed>
+          <AllowOverride>false</AllowOverride>
+        </BarCode>
+        <IsActive>true</IsActive>
+        <ClassRef><FullName>Class1:Class2</FullName></ClassRef>
+        <ParentRef><FullName>GermanCars:Mercedes-Benz</FullName></ParentRef>
+        <UnitOfMeasureSetRef><FullName>feet</FullName></UnitOfMeasureSetRef>
+        <ForceUOMChange>true</ForceUOMChange>
+        <IsTaxIncluded>false</IsTaxIncluded>
+        <SalesTaxCodeRef><FullName>tax</FullName></SalesTaxCodeRef>
+      </ItemServiceMod>
+    </ItemServiceModRq>
+  XML
+end
+
 def update_xml_with_active_field_serviceproduct
   <<~XML
     <ItemServiceModRq requestID="12345">
