@@ -170,6 +170,38 @@ module Persistence
         expect(subject.send(:id_for_object, object, object_type)).not_to include("/")
         expect(object['name']).to eq original_name
       end
+
+      it 'failed notifications for customers use the name field' do
+        payload = Factory.customers
+        object_type = 'customers'
+        object = payload[object_type].first
+        notification = {
+          "code"=>"3190",
+          "message"=>"Cannot clear the element in the IncomeAccountRef field. ",
+          "request_id"=>"157366a9-7f1e-49ca-aff8-270bd2dc728b",
+          "context"=>"Updating customers",
+          "object"=> object
+        }
+        subject = described_class.new(config, {})
+
+        expect(subject.send(:id_for_object, notification["object"], object_type)).to eq object['name']
+      end
+
+      it 'failed notifications for products use the product_id field' do
+        payload = Factory.products
+        object_type = 'products'
+        object = payload[object_type].first
+        notification = {
+          "code"=>"3190",
+          "message"=>"Cannot clear the element in the IncomeAccountRef field. ",
+          "request_id"=>"157366a9-7f1e-49ca-aff8-270bd2dc728b",
+          "context"=>"Updating products",
+          "object"=> object
+        }
+        subject = described_class.new(config, {})
+
+        expect(subject.send(:id_for_object, notification["object"], object_type)).to eq object['product_id']
+      end
     end
 
   end
