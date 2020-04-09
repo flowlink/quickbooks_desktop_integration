@@ -318,6 +318,7 @@ module Persistence
         # id_for_notifications is marked as 'depricated'
         #object_ref = id_for_notifications(content, object_ref, object_type)
         object_ref = id_for_object(content, object_type)
+        # object_ref = id_for_object(content["object"], object_type)
 
         if content.key?('message')
           notifications[status] << {
