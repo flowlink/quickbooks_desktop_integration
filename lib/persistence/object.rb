@@ -318,8 +318,6 @@ module Persistence
         obj = status == 'processed' ? content : content["object"]
         object_ref = id_for_object(obj, object_type)
 
-        object_ref = id_for_object(awdnnad, object_type)
-
         if content.key?('message')
           notifications[status] << {
             message: "#{object_ref}: #{content['message']}",
