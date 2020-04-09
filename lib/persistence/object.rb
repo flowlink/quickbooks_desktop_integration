@@ -312,7 +312,7 @@ module Persistence
 
       notification_files.inject('processed' => [], 'failed' => []) do |notifications, s3_object|
         _, _, filename  = s3_object.key.split('/')
-        _, status, object_type, _object_ref, _ = filename.split('_')
+        _, status, object_type, _, _ = filename.split('_')
         content = amazon_s3.convert_download('json', s3_object.get.body.read).first
 
         object_ref = id_for_object(content["object"], object_type)
