@@ -314,8 +314,11 @@ module Persistence
         _, _, filename  = s3_object.key.split('/')
         _, status, object_type, _, _ = filename.split('_')
         content = amazon_s3.convert_download('json', s3_object.get.body.read).first
+        
+        obj = status == 'processed' ? content : content["object"]
+        object_ref = id_for_object(obj, object_type)
 
-        object_ref = id_for_object(content["object"], object_type)
+        object_ref = id_for_object(awdnnad, object_type)
 
         if content.key?('message')
           notifications[status] << {
