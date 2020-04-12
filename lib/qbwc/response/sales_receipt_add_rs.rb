@@ -21,6 +21,7 @@ module QBWC
           orders << {
             salesreceipts: {
               id: record['RefNumber'],
+              object_ref: record['RefNumber'],
               list_id: record['TxnID'],
               edit_sequence: record['EditSequence']
             }
