@@ -134,7 +134,7 @@ class QBWCEndpoint < Sinatra::Base
     XML
     @qbxml.gsub!("\n", '').gsub!("&", "&amp;")
 
-    puts @qbxml
+    puts @qbxml.gsub("\n", '')
     erb :'qbwc/send_request_xml'
   end
 
