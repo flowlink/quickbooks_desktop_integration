@@ -141,9 +141,7 @@ module QBWC
           end
 
           inventory_max_returned = nil
-          if params['return_all'] && params['return_all'].to_i == 1
-            inventory_max_returned = 10000
-          end
+          inventory_max_returned = 10000 if params['return_all'].to_i == 1
           if params['quickbooks_max_returned'] && params['quickbooks_max_returned'] != ""
             inventory_max_returned = params['quickbooks_max_returned']
           end
