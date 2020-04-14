@@ -141,6 +141,9 @@ module QBWC
           end
 
           inventory_max_returned = nil
+          if params['return_all'] && params['return_all'].to_i == 1
+            inventory_max_returned = 10000
+          end
           if params['quickbooks_max_returned'] && params['quickbooks_max_returned'] != ""
             inventory_max_returned = params['quickbooks_max_returned']
           end
@@ -151,23 +154,23 @@ module QBWC
               #{query_by_date(params, time)}
             </ItemInventoryQueryRq>
             <ItemInventoryAssemblyQueryRq requestID="#{session_id}">
-              <MaxReturned>50</MaxReturned>
+              <MaxReturned>#{inventory_max_returned || 50}</MaxReturned>
               #{query_by_date(params, time)}
             </ItemInventoryAssemblyQueryRq>
             <ItemNonInventoryQueryRq requestID="#{session_id}">
-              <MaxReturned>50</MaxReturned>
+              <MaxReturned>#{inventory_max_returned || 50}</MaxReturned>
               #{query_by_date(params, time)}
             </ItemNonInventoryQueryRq>
             <ItemSalesTaxQueryRq requestID="#{session_id}">
-              <MaxReturned>50</MaxReturned>
+              <MaxReturned>#{inventory_max_returned || 50}</MaxReturned>
               #{query_by_date(params, time)}
             </ItemSalesTaxQueryRq>
             <ItemServiceQueryRq requestID="#{session_id}">
-              <MaxReturned>50</MaxReturned>
+              <MaxReturned>#{inventory_max_returned || 50}</MaxReturned>
               #{query_by_date(params, time)}
             </ItemServiceQueryRq>
             <ItemDiscountQueryRq requestID="#{session_id}">
-              <MaxReturned>50</MaxReturned>
+              <MaxReturned>#{inventory_max_returned || 50}</MaxReturned>
               #{query_by_date(params, time)}
             </ItemDiscountQueryRq>
           XML
