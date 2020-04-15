@@ -267,7 +267,7 @@ module Persistence
 
               filename = "#{path.base_name}/#{path.ready}/#{object_type}_#{id_for_object(object, object_type)}_"
 
-              puts({connection_id: @config[:connection_id], method: "update_objects_files", message: "Filename built and looking in s3 for it", filename: filename})
+              puts({connection_id: @config[:connection_id], method: "update_objects_files", object: object, filename: filenamemessage: "Filename built and looking in s3 for it", filename: filename})
 
               # puts "Looking for file: #{filename}"
 
