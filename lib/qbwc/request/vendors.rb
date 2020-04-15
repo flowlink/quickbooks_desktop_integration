@@ -212,14 +212,6 @@ module QBWC
           object['firstname'] = object['firstname'] || object['name'].to_s.split.first
           object['lastname'] = object['lastname'] || object['name'].to_s.split.last
 
-          unless object['phone'] && object['phone'] != ""
-            object['phone'] = object['vendor_address']['phone'] if object['vendor_address']
-          end
-
-          unless object['mobile'] && object['mobile'] != ""
-            object['mobile'] = object['ship_from_address']['phone'] if object['ship_from_address']
-          end
-
           object['reporting_period'] = nil unless REPORTING_PERIODS.include?(object['reporting_period'])
           object['sales_tax_country'] = nil unless SALES_TAX_COUNTRIES.include?(object['sales_tax_country'])
 

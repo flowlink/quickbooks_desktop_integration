@@ -104,14 +104,14 @@ RSpec.describe QBWC::Request::Vendors do
         expect(vendor['mobile']).to eq('2')
       end
 
-      it 'has nil for phone and mobile and returns valid address phone fields' do
+      it 'has nil for phone and mobile and returns nil' do
         flowlink_vendor['vendor_address']['phone'] = '123-456-7890'
         flowlink_vendor['ship_from_address']['phone'] = '111-555-9999'
         flowlink_vendor['phone'] = nil
         flowlink_vendor['mobile'] = nil
         vendor = QBWC::Request::Vendors.send(:pre_mapping_logic, flowlink_vendor)
-        expect(vendor['phone']).to eq('123-456-7890')
-        expect(vendor['mobile']).to eq('111-555-9999')
+        expect(vendor['phone']).to be_nil
+        expect(vendor['mobile']).to be_nil
       end
 
       it 'has nil for phone, mobile, and address fields and returns nil' do
