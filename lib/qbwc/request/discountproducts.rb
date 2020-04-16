@@ -52,7 +52,7 @@ module QBWC
         def search_xml_by_name(object_id, session_id)
           <<~XML
             <ItemDiscountQueryRq requestID="#{session_id}">
-              <MaxReturned>50</MaxReturned>
+              <MaxReturned>10000</MaxReturned>
               <NameRangeFilter>
                 <FromName>#{object_id}</FromName>
                 <ToName>#{object_id}</ToName>
