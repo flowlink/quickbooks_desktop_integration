@@ -3,8 +3,8 @@ def qbe_customer_search_name
     <CustomerQueryRq requestID="12345">
       <MaxReturned>50</MaxReturned>
       <NameRangeFilter>
-        <FromName>My ID</FromName>
-        <ToName>My ID</ToName>
+        <FromName>Bruce Wayne</FromName>
+        <ToName>Bruce Wayne</ToName>
       </NameRangeFilter>
     </CustomerQueryRq>
   XML
@@ -13,7 +13,7 @@ end
 def qbe_customer_search_id
   <<~XML
     <CustomerQueryRq requestID="12345">
-      <ListID>My ID</ListID>
+      <ListID>qbe-customer-listid</ListID>
     </CustomerQueryRq>
   XML
 end
@@ -32,7 +32,7 @@ def qbe_customer_update
   <<~XML
     <CustomerModRq requestID="12345">
       <CustomerMod>
-        <ListID>12345</ListID>
+        <ListID>qbe-customer-listid</ListID>
         <EditSequence>1010101</EditSequence>
         #{qbe_customer_innards(true)}
       </CustomerMod>

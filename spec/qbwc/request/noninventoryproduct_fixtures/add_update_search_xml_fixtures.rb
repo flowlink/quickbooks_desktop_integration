@@ -10,6 +10,14 @@ def qbe_noninventoryproduct_search_name
   XML
 end
 
+def qbe_noninventoryproduct_search_id
+  <<~XML
+    <ItemNonInventoryQueryRq requestID="12345">
+      <ListID>test noninv listid</ListID>
+    </ItemNonInventoryQueryRq>
+  XML
+end
+
 def add_xml_sandp_noninventoryproduct
   <<~XML
     <ItemNonInventoryAddRq requestID="12345">
