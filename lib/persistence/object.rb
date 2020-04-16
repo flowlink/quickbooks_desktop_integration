@@ -151,8 +151,14 @@ module Persistence
     #                             :extra_data => { ... }, ]
     def update_objects_with_query_results(objects_to_be_renamed)
       # puts "Objects to be renamed: #{objects_to_be_renamed}"
+
+      puts({connection_id: config[:connection_id], method: "update_objects_with_query_results", objects_to_be_renamed: objects_to_be_renamed})
+
       prefix = "#{path.base_name}/#{path.ready}"
       prefix_with_bucket = "#{path.base_name_w_bucket}/#{path.ready}"
+
+      puts({connection_id: config[:connection_id], method: "update_objects_with_query_results", prefix: prefix, prefix_with_bucket: prefix_with_bucket})
+
 
        # files = amazon_s3.bucket.objects(prefix: prefix)
        #
@@ -168,6 +174,10 @@ module Persistence
         filename     = "#{prefix}/#{object[:object_type].pluralize}_#{sanitize_filename(object[:object_ref])}_"
         filename_with_bucket = "#{prefix_with_bucket}/#{object[:object_type].pluralize}_#{sanitize_filename(object[:object_ref])}_"
 
+
+        puts({connection_id: config[:connection_id], method: "update_objects_with_query_results", object: object, filename: filename, filename: filename_with_bucket})
+
+
         # TODO what if the file is not there? we should probably at least
         # rescue / log the exception properly and move on with the others?
         # raises when file is not found:
@@ -176,9 +186,19 @@ module Persistence
         #
         begin
           s3_object     = amazon_s3.bucket.object("#{filename}.json")
+          puts({connection_id: config[:connection_id], method: "update_objects_with_query_results", object: object, s3_object: s3_object.inspect, filename: filename, filename: filename_with_bucket})
+
           new_file_name_with_bucket = "#{filename_with_bucket}#{object[:list_id]}_#{object[:edit_sequence]}.json"
           new_file_name = "#{filename}#{object[:list_id]}_#{object[:edit_sequence]}.json"
+
+          puts({connection_id: config[:connection_id], method: "update_objects_with_query_results", object: object, new_file_name_with_bucket: new_file_name_with_bucket, new_file_name: new_file_name})
+
+
+
           s3_object.move_to(new_file_name_with_bucket)
+
+          puts({connection_id: config[:connection_id], method: "update_objects_with_query_results", object: object, message: "Moved to new filename with bucket"})
+
 
           unless object[:extra_data].to_s.empty?
             contents = amazon_s3.bucket.object(new_file_name).get.body.read
@@ -188,6 +208,8 @@ module Persistence
             amazon_s3.export file_name: new_file_name, objects: [with_extra_data]
           end
         rescue Aws::S3::Errors::NoSuchKey => e
+          puts({connection_id: config[:connection_id], method: "update_objects_with_query_results", object: object, error: e.inspect})
+
           return
           # puts "File not found: #{filename}.json"
         end
