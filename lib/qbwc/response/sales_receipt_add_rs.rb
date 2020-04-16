@@ -28,6 +28,9 @@ module QBWC
           }
         end
 
+        puts({method: "process", class_based: "SalesReceiptAddRs", to_update: orders, records: records})
+
+
         Persistence::Object.update_statuses(config, orders)
       end
     end

@@ -151,8 +151,14 @@ module Persistence
     #                             :extra_data => { ... }, ]
     def update_objects_with_query_results(objects_to_be_renamed)
       # puts "Objects to be renamed: #{objects_to_be_renamed}"
+
+      puts({connection_id: config[:connection_id], method: "update_objects_with_query_results", objects_to_be_renamed: objects_to_be_renamed})
+
       prefix = "#{path.base_name}/#{path.ready}"
       prefix_with_bucket = "#{path.base_name_w_bucket}/#{path.ready}"
+
+      puts({connection_id: config[:connection_id], method: "update_objects_with_query_results", prefix: prefix, prefix_with_bucket: prefix_with_bucket})
+
 
        # files = amazon_s3.bucket.objects(prefix: prefix)
        #
@@ -168,6 +174,10 @@ module Persistence
         filename     = "#{prefix}/#{object[:object_type].pluralize}_#{sanitize_filename(object[:object_ref])}_"
         filename_with_bucket = "#{prefix_with_bucket}/#{object[:object_type].pluralize}_#{sanitize_filename(object[:object_ref])}_"
 
+
+        puts({connection_id: config[:connection_id], method: "update_objects_with_query_results", object: object, filename: filename, filename: filename_with_bucket})
+
+
         # TODO what if the file is not there? we should probably at least
         # rescue / log the exception properly and move on with the others?
         # raises when file is not found:
@@ -176,9 +186,19 @@ module Persistence
         #
         begin
           s3_object     = amazon_s3.bucket.object("#{filename}.json")
+          puts({connection_id: config[:connection_id], method: "update_objects_with_query_results", object: object, s3_object: s3_object.inspect, filename: filename, filename: filename_with_bucket})
+
           new_file_name_with_bucket = "#{filename_with_bucket}#{object[:list_id]}_#{object[:edit_sequence]}.json"
           new_file_name = "#{filename}#{object[:list_id]}_#{object[:edit_sequence]}.json"
+
+          puts({connection_id: config[:connection_id], method: "update_objects_with_query_results", object: object, new_file_name_with_bucket: new_file_name_with_bucket, new_file_name: new_file_name})
+
+
+
           s3_object.move_to(new_file_name_with_bucket)
+
+          puts({connection_id: config[:connection_id], method: "update_objects_with_query_results", object: object, message: "Moved to new filename with bucket"})
+
 
           unless object[:extra_data].to_s.empty?
             contents = amazon_s3.bucket.object(new_file_name).get.body.read
@@ -188,6 +208,8 @@ module Persistence
             amazon_s3.export file_name: new_file_name, objects: [with_extra_data]
           end
         rescue Aws::S3::Errors::NoSuchKey => e
+          puts({connection_id: config[:connection_id], method: "update_objects_with_query_results", object: object, error: e.inspect})
+
           return
           # puts "File not found: #{filename}.json"
         end
@@ -248,6 +270,9 @@ module Persistence
     #   :failed => [] }
     def update_objects_files(statuses_objects)
       # puts "Status objects to be processed: #{statuses_objects}"
+
+      puts({connection_id: @config[:connection_id], method: "update_objects_files", statuses_objects: statuses_objects})
+
       return if statuses_objects.nil?
 
       statuses_objects.keys.each do |status_key|
@@ -255,7 +280,7 @@ module Persistence
         statuses_objects[status_key].each do |types|
           # puts types
           types.keys.each do |object_type|
-            puts({message: "Processing objects", object_type: object_type})
+            puts({connection_id: @config[:connection_id], method: "update_objects_files", message: "Processing objects", object_type: object_type})
             # puts object_type
             # NOTE seeing an nil `object` var here sometimes, investigate it
             # happens when you have both add_orders and get_products flows enabled
@@ -264,34 +289,35 @@ module Persistence
 
               filename = "#{path.base_name}/#{path.ready}/#{object_type}_#{id_for_object(object, object_type)}_"
 
-              puts({message: "Filename built and looking in s3 for it", filename: filename})
+              puts({connection_id: @config[:connection_id], method: "update_objects_files", object: object, filename: filename, message: "Filename built and looking in s3 for it", filename: filename})
 
               # puts "Looking for file: #{filename}"
 
               collection = amazon_s3.bucket.objects(prefix: filename)
               collection.each do |s3_object|
-                puts({ message: "File found", s3_object: s3_object.inspect })
+                puts({ connection_id: @config[:connection_id], method: "update_objects_files", message: "File found", s3_object: s3_object.inspect })
                 # This is for files that end on (n)
                 # puts "Working with #{s3_object.inspect}"
                 _, _, ax_filename = s3_object.key.split('/')
                 _, _, end_of_file, ax_edit_sequence = ax_filename.split('_')
                 end_of_file = '.json' unless ax_edit_sequence.nil?
 
-                puts({message: "Building file parts", ax_filename: ax_filename, end_of_file: end_of_file, ax_edit_sequence: ax_edit_sequence})
+                puts({connection_id: @config[:connection_id], method: "update_objects_files", message: "Building file parts", ax_filename: ax_filename, end_of_file: end_of_file, ax_edit_sequence: ax_edit_sequence})
 
                 status_folder = path.send status_key
-                puts({message: "Status Folder", status_folder: status_folder})
+                puts({connection_id: @config[:connection_id], method: "update_objects_files", message: "Status Folder", status_folder: status_folder})
 
                 new_filename = "#{path.base_name_w_bucket}/#{status_folder}/#{object_type}_#{id_for_object(object, object_type)}_"
                 new_filename << "#{object[:list_id]}_#{object[:edit_sequence]}" unless object[:list_id].to_s.empty?
 
-                puts({message:"New filename", new_filename: new_filename, end_of_file: end_of_file})
+                puts({connection_id: @config[:connection_id], method: "update_objects_files", message:"New filename", new_filename: new_filename, end_of_file: end_of_file})
 
                 s3_object.move_to("#{new_filename}#{end_of_file}")
 
                 new_filename_no_bucket = "#{path.base_name}/#{status_folder}/#{object_type}_#{id_for_object(object, object_type)}_"
                 new_filename_no_bucket << "#{object[:list_id]}_#{object[:edit_sequence]}" unless object[:list_id].to_s.empty?
 
+                puts({connection_id: @config[:connection_id], method: "update_objects_files", new_filename_no_bucket: new_filename_no_bucket})
                 create_notifications("#{new_filename_no_bucket}#{end_of_file}", status_key) if status_key == 'processed'
               end
             rescue Exception => e
@@ -501,12 +527,17 @@ module Persistence
 
     def create_notifications(objects_filename, status)
       _, _, filename2, filename = objects_filename.split('/')
-      puts "GENERATE NOTIFICATION: #{filename2}:#{filename}"
       filename ||= filename2
+      puts({connection_id: @config[:connection_id], method: "create_notifications", objects_filename: objects_filename, filename: filename, filename2: filename2 })
       s3_object = amazon_s3.bucket.object(objects_filename)
-
+      puts({connection_id: @config[:connection_id], method: "create_notifications", s3_object: s3_object})
+      
       new_filename = "#{path.base_name_w_bucket}/#{path.ready}/notification_#{status}_#{filename}"
+      puts({connection_id: @config[:connection_id], method: "create_notifications", new_filename: new_filename})
+      
       s3_object.copy_to(new_filename)
+      puts({connection_id: @config[:connection_id], method: "create_notifications", message: "Called s3 create object"})
+     
     end
 
     def valid_object?(object)
