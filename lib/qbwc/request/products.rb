@@ -45,11 +45,6 @@ module QBWC
             config = { connection_id: params['connection_id'] }.with_indifferent_access
             session_id = Persistence::Session.save(config, object)
 
-            if params['connection_id'] == "kidmademodern"
-              puts "KMM - kidmademodern"
-              puts add_xml_to_send(object, params, session_id, config).gsub(/\s+/, "")
-            end
-
             request << if object[:list_id].to_s.empty?
                          add_xml_to_send(object, params, session_id, config)
                        else
@@ -187,7 +182,6 @@ module QBWC
         end
 
         def query_by_date(config, time)
-          puts "Product config for polling: #{config}"
           return '' if config['return_all'].to_i == 1
 
           <<~XML

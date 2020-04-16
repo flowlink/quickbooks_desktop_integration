@@ -17,7 +17,6 @@ module QBWC
       end
 
       def process(config = {})
-        puts "processing assembled item response"
         return if records.empty?
 
         receive_configs = config[:receive] || []
@@ -86,7 +85,6 @@ module QBWC
       end
 
       def products_to_flowlink
-        # puts "Product object from QBE: #{records.first}"
         records.map do |record|
           object = {
             id: record['Name'],
