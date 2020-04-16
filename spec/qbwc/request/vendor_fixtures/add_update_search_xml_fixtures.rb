@@ -13,7 +13,7 @@ end
 def qbe_vendor_search_id
   <<~XML
     <VendorQueryRq requestID="12345">
-      <ListID>My ID</ListID>
+      <ListID>qbe-vendor-listid</ListID>
     </VendorQueryRq>
   XML
 end
@@ -32,7 +32,7 @@ def qbe_vendor_update
   <<~XML
     <VendorModRq requestID="12345">
       <VendorMod>
-        <ListID>12345</ListID>
+        <ListID>qbe-vendor-listid</ListID>
         <EditSequence>1010101</EditSequence>
         #{qbe_vendor_innards(true)}
       </VendorMod>

@@ -84,7 +84,7 @@ RSpec.describe QBWC::Request::Products do
   describe "search xml" do
     let(:flowlink_product) { JSON.parse(File.read('spec/qbwc/request/product_fixtures/invproduct_from_flowlink.json')) }
     it "has list_id and calls search_xml_by_id" do
-      flowlink_product[:list_id] = "test discount listid"
+      flowlink_product[:list_id] = "test product listid"
 
       # Call search_xml method with flowlink_product
       pending("expect the search_xml_by_id method to have been called")
