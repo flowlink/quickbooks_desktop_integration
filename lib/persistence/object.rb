@@ -779,6 +779,8 @@ module Persistence
       else
         sanitize_filename object['id']
       end
+    rescue => e
+      raise "#{object_type.singularize} object cannot find specific identifier field. Object ID: #{object['id']}"
     end
 
     def sanitize_filename(id)

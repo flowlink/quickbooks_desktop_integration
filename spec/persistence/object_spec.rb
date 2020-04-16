@@ -202,7 +202,41 @@ module Persistence
 
         expect(subject.send(:id_for_object, notification["object"], object_type)).to eq object['product_id']
       end
-    end
 
+      describe 'error catching' do
+        it 'has valid value for the objects type and does not raise an error' do
+          payload = Factory.customers
+          object_type = 'customers'
+          object = payload[object_type].first
+          object['name'] = "my name"
+
+          subject = described_class.new config, payload
+
+          expect { subject.send(:id_for_object, object, object_type) }.to_not raise_error
+        end
+
+        it 'customer type is missing name and raises an error' do
+          payload = Factory.customers
+          object_type = 'customers'
+          object = payload[object_type].first
+          object.delete(:name)
+
+          subject = described_class.new config, payload
+
+          expect { subject.send(:id_for_object, object, object_type) }.to raise_error("customer object cannot find specific identifier field. Object ID: #{object['id']}")
+        end
+
+        it 'product type is missing product_id and raises an error' do
+          payload = Factory.products
+          object_type = 'products'
+          object = payload[object_type].first
+          object.delete(:product_id)
+
+          subject = described_class.new config, payload
+          
+          expect { subject.send(:id_for_object, object, object_type) }.to raise_error("product object cannot find specific identifier field. Object ID: #{object['id']}")
+        end
+      end
+    end
   end
 end
