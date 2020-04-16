@@ -1,11 +1,19 @@
 def qbe_discountproduct_search_name
   <<~XML
     <ItemDiscountQueryRq requestID="12345">
-      <MaxReturned>10000</MaxReturned>
+      <MaxReturned>50</MaxReturned>
       <NameRangeFilter>
         <FromName>My Awesome Product</FromName>
         <ToName>My Awesome Product</ToName>
       </NameRangeFilter>
+    </ItemDiscountQueryRq>
+  XML
+end
+
+def qbe_discountproduct_search_id
+  <<~XML
+    <ItemDiscountQueryRq requestID="12345">
+      <ListID>test discount listid</ListID>
     </ItemDiscountQueryRq>
   XML
 end
