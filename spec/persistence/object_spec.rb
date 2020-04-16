@@ -202,7 +202,7 @@ module Persistence
 
         expect(subject.send(:id_for_object, notification["object"], object_type)).to eq object['product_id']
       end
-
+      
       describe 'error catching' do
         it 'has valid value for the objects type and does not raise an error' do
           payload = Factory.customers
@@ -223,7 +223,7 @@ module Persistence
 
           subject = described_class.new config, payload
 
-          expect { subject.send(:id_for_object, object, object_type) }.to raise_error("customer object cannot find specific identifier field. Object ID: #{object['id']}")
+          expect { subject.send(:id_for_object, object, object_type) }.to raise_error("customer object is missing name field. Object ID: #{object['id']}")
         end
 
         it 'product type is missing product_id and raises an error' do
@@ -233,9 +233,31 @@ module Persistence
           object.delete(:product_id)
 
           subject = described_class.new config, payload
-          
-          expect { subject.send(:id_for_object, object, object_type) }.to raise_error("product object cannot find specific identifier field. Object ID: #{object['id']}")
+
+          expect { subject.send(:id_for_object, object, object_type) }.to raise_error("product object is missing product_id field. Object ID: #{object['id']}")
         end
+      end
+    end
+
+    describe "#sanitize_filename" do
+      let(:config) { { origin: 'flowlink', connection_id: '54372cb069702d1f59000000' } }
+
+      it 'removes backslashes on a string' do
+        id = "My ID / identifier"
+        subject = described_class.new config, {}
+        expect(subject.send(:sanitize_filename, id)).to eq("My ID -backslash- identifier")
+      end
+
+      it 'returns an integer without raising an error' do
+        id = 123456
+        subject = described_class.new config, {}
+        expect(subject.send(:sanitize_filename, id)).to eq(id)
+      end
+
+      it 'returns nil without raising an error' do
+        id = nil
+        subject = described_class.new config, {}
+        expect(subject.send(:sanitize_filename, id)).to be_nil
       end
     end
   end
