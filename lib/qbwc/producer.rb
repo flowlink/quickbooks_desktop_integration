@@ -39,15 +39,28 @@ module QBWC
     end
 
     def build_polling_request
+      puts '=' * 99
+      puts 'build_polling_request'
       @s3_settings.settings('get_').inject('') do |string, record|
+        puts '-' * 99
+
         object_type = record.keys.first
         params = record.values.first
 
         klass = "QBWC::Request::#{object_type.capitalize}".constantize
 
+        puts 'klass'
+        puts klass.inspect
+        puts 'object_type'
+        puts object_type.inspect
+        puts 'params'
+        puts params.inspect
+        puts '-' * 99
+
         string << klass.polling_others_items_xml(params['quickbooks_since'], @config)
         string << klass.polling_current_items_xml(params, @config)
       end
+      puts '=' * 99
     end
 
     private
