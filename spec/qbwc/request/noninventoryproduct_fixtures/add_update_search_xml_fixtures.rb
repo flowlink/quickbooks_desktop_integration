@@ -31,7 +31,6 @@ def add_xml_sandp_noninventoryproduct
         <IsActive>true</IsActive>
         <ParentRef><FullName>GermanCars:Mercedes-Benz</FullName></ParentRef>
         <ClassRef><FullName>Class1:Class2</FullName></ClassRef>
-        <ManufacturerPartNumber>partnumber123</ManufacturerPartNumber>
         <UnitOfMeasureSetRef><FullName>feet</FullName></UnitOfMeasureSetRef>
         <IsTaxIncluded>false</IsTaxIncluded>
         <SalesTaxCodeRef><FullName>tax</FullName></SalesTaxCodeRef>
@@ -64,7 +63,6 @@ def add_xml_sorp_with_percent_noninventoryproduct
         <IsActive>true</IsActive>
         <ParentRef><FullName>GermanCars:Mercedes-Benz</FullName></ParentRef>
         <ClassRef><FullName>Class1:Class2</FullName></ClassRef>
-        <ManufacturerPartNumber>partnumber123</ManufacturerPartNumber>
         <UnitOfMeasureSetRef><FullName>feet</FullName></UnitOfMeasureSetRef>
         <IsTaxIncluded>false</IsTaxIncluded>
         <SalesTaxCodeRef><FullName>tax</FullName></SalesTaxCodeRef>
@@ -92,7 +90,6 @@ def add_xml_sorp_without_percent_noninventoryproduct
         <IsActive>true</IsActive>
         <ParentRef><FullName>GermanCars:Mercedes-Benz</FullName></ParentRef>
         <ClassRef><FullName>Class1:Class2</FullName></ClassRef>
-        <ManufacturerPartNumber>partnumber123</ManufacturerPartNumber>
         <UnitOfMeasureSetRef><FullName>feet</FullName></UnitOfMeasureSetRef>
         <IsTaxIncluded>false</IsTaxIncluded>
         <SalesTaxCodeRef><FullName>tax</FullName></SalesTaxCodeRef>
@@ -122,7 +119,6 @@ def update_xml_sandp_noninventoryproduct
         <IsActive>true</IsActive>
         <ParentRef><FullName>GermanCars:Mercedes-Benz</FullName></ParentRef>
         <ClassRef><FullName>Class1:Class2</FullName></ClassRef>
-        <ManufacturerPartNumber>partnumber123</ManufacturerPartNumber>
         <UnitOfMeasureSetRef><FullName>feet</FullName></UnitOfMeasureSetRef>
         <ForceUOMChange>true</ForceUOMChange>
         <IsTaxIncluded>false</IsTaxIncluded>
@@ -159,7 +155,6 @@ def update_xml_sorp_without_percent_noninventoryproduct
         <IsActive>true</IsActive>
         <ParentRef><FullName>GermanCars:Mercedes-Benz</FullName></ParentRef>
         <ClassRef><FullName>Class1:Class2</FullName></ClassRef>
-        <ManufacturerPartNumber>partnumber123</ManufacturerPartNumber>
         <UnitOfMeasureSetRef><FullName>feet</FullName></UnitOfMeasureSetRef>
         <ForceUOMChange>true</ForceUOMChange>
         <IsTaxIncluded>false</IsTaxIncluded>
@@ -190,7 +185,6 @@ def update_xml_sorp_with_percent_noninventoryproduct
         <IsActive>true</IsActive>
         <ParentRef><FullName>GermanCars:Mercedes-Benz</FullName></ParentRef>
         <ClassRef><FullName>Class1:Class2</FullName></ClassRef>
-        <ManufacturerPartNumber>partnumber123</ManufacturerPartNumber>
         <UnitOfMeasureSetRef><FullName>feet</FullName></UnitOfMeasureSetRef>
         <ForceUOMChange>true</ForceUOMChange>
         <IsTaxIncluded>false</IsTaxIncluded>
@@ -219,7 +213,6 @@ def add_xml_basic_noninventoryproduct
         <IsActive>true</IsActive>
         <ParentRef><FullName>GermanCars:Mercedes-Benz</FullName></ParentRef>
         <ClassRef><FullName>Class1:Class2</FullName></ClassRef>
-        <ManufacturerPartNumber>partnumber123</ManufacturerPartNumber>
         <UnitOfMeasureSetRef><FullName>feet</FullName></UnitOfMeasureSetRef>
         <IsTaxIncluded>false</IsTaxIncluded>
         <SalesTaxCodeRef><FullName>tax</FullName></SalesTaxCodeRef>
@@ -254,7 +247,6 @@ def update_xml_basic_noninventoryproduct
         <IsActive>true</IsActive>
         <ParentRef><FullName>GermanCars:Mercedes-Benz</FullName></ParentRef>
         <ClassRef><FullName>Class1:Class2</FullName></ClassRef>
-        <ManufacturerPartNumber>partnumber123</ManufacturerPartNumber>
         <UnitOfMeasureSetRef><FullName>feet</FullName></UnitOfMeasureSetRef>
         <ForceUOMChange>true</ForceUOMChange>
         <IsTaxIncluded>false</IsTaxIncluded>

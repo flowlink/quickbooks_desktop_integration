@@ -9,7 +9,7 @@
   "is_active": true,
   "barcode_value": "0001910191",
   "assign_barcode_even_if_used": true,
-  "manufacturer_part_number": "partnumber123",
+  "manufacturer_part_number": "",
   "sales_tax_code_name": "tax",
   "unit_of_measure": "feet",
   "force_uom_change": true,

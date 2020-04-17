@@ -52,7 +52,6 @@ def qbe_vendor_innards(is_mod)
     <CompanyName>some company</CompanyName>
     <Salutation>Mr</Salutation>
     <FirstName>First</FirstName>
-    <MiddleName>middlename</MiddleName>
     <LastName>Last</LastName>
     <JobTitle>Developer</JobTitle>
     <VendorAddress>
@@ -81,7 +80,6 @@ def qbe_vendor_innards(is_mod)
     </ShipAddress>
     <Phone>+1 2345678999</Phone>
     <AltPhone>1234567890</AltPhone>
-    <Fax>1234</Fax>
     <Email>test@aol.com</Email>
     <Cc>some_email@test.com</Cc>
     <Contact>My Contact friend</Contact>
