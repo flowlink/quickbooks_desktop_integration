@@ -17,14 +17,29 @@ module QBWC
         end
 
         def polling_current_items_xml(_timestamp, config)
+          puts '=' * 99
+          puts 'polling_current_items_xml'
           query_later = Persistence::Polling.new({ origin: 'quickbooks' }.merge(config), inventories: {})
                         .process_waiting_query_later_ids
 
-          return '' if query_later.empty?
+          # TODO: Uncomment
+          # return '' if query_later.empty?
+
+          puts '_timestamp'
+          puts _timestamp.inspect
+          puts 'config'
+          puts config.inspect
+          puts 'query_later'
+          puts query_later.inspect
 
           objects = query_later.inject([]) { |all_items, obj| all_items << obj['inventories'] }.flatten
+
+          puts 'objects'
+          puts objects.inspect
+
           config = { origin: 'flowlink' }.merge(config)
           session_id = Persistence::Session.save(config, 'item_inventories_ids' => objects)
+          return get_inventory_adjustments(session_id) if config['quickbooks_inventory_site'] == '1'
 
           codes = objects.inject('') do |codes, object|
             codes << "<FullName>#{object['id']}</FullName>"
@@ -116,6 +131,16 @@ module QBWC
                 <NewQuantity>#{inventory['quantity'].to_f}</NewQuantity>
               </ValueAdjustment>
             </InventoryAdjustmentLineAdd>
+          XML
+        end
+
+        def get_inventory_adjustments(session_id)
+
+          <<~XML
+    <InventoryAdjustmentQueryRq requestID="#{session_id}">
+      <MaxReturned >10000</MaxReturned>
+      <IncludeLineItems >true</IncludeLineItems>
+    </InventoryAdjustmentQueryRq>
           XML
         end
 
