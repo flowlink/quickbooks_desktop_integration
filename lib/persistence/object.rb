@@ -205,6 +205,7 @@ module Persistence
             amazon_s3.bucket.object(new_file_name).delete
 
             with_extra_data = amazon_s3.convert_download('json', contents).first.merge(object[:extra_data])
+            puts({connection_id: config[:connection_id], method: "update_objects_with_query_results", current_object_contents: contents, new_data: with_extra_data})
             amazon_s3.export file_name: new_file_name, objects: [with_extra_data]
           end
         rescue Aws::S3::Errors::NoSuchKey => e
