@@ -182,7 +182,6 @@ module QBWC
         end
 
         def query_by_date(config, time)
-          puts "Product config for polling: #{config}"
           return '' if config['return_all'].to_i == 1
 
           <<~XML

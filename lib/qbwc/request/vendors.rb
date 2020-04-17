@@ -110,7 +110,6 @@ module QBWC
         end
 
         def query_by_date(config, time)
-          puts "Vendor config for polling: #{config}"
           return '' if config['return_all'].to_i == 1
 
           <<~XML
@@ -122,7 +121,6 @@ module QBWC
           puts "Vendor request query for #{objects}, #{params}"
 
           objects.inject('') do |request, object|
-            puts "Inject process #{request}, #{object}"
             sanitize_vendor(object)
 
             config = { connection_id: params['connection_id'] }.with_indifferent_access
@@ -138,8 +136,6 @@ module QBWC
         end
 
         def search_xml_by_id(object_id, session_id)
-          puts "Building vendor xml by list_id #{object_id}, #{session_id}"
-
           <<~XML
             <VendorQueryRq requestID="#{session_id}">
               <ListID>#{object_id}</ListID>
@@ -148,8 +144,6 @@ module QBWC
         end
 
         def search_xml_by_name(object_id, session_id)
-          puts "Building vendor xml by name #{object_id}, #{session_id}"
-
           <<~XML
             <VendorQueryRq requestID="#{session_id}">
               <MaxReturned>50</MaxReturned>
@@ -309,7 +303,6 @@ module QBWC
         end
 
         def sanitize_vendor(vendor)
-          puts "Sanitizing: #{vendor}"
           # vendor['company'].gsub!(/[^0-9A-Za-z\s]/, '') if vendor['company']
           vendor['firstname'].gsub!(/[^0-9A-Za-z\s]/, '') if vendor['firstname']
           # vendor['name'].gsub!(/[^0-9A-Za-z\s]/, '') if vendor['name']
