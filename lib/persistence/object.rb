@@ -158,37 +158,24 @@ module Persistence
       puts({connection_id: config[:connection_id], method: "update_objects_with_query_results", prefix: prefix, prefix_with_bucket: prefix_with_bucket})
 
       objects_to_be_renamed.to_a.compact.each do |object|
-        s3_object = nil
         filename     = "#{prefix}/#{type_and_identifier_filename(object, object[:list_id])}"
         filename_with_bucket = "#{prefix_with_bucket}/#{type_and_identifier_filename(object, object[:list_id])}"
+        s3_object = amazon_s3.bucket.object("#{filename}.json")
+        puts({connection_id: config[:connection_id], method: "update_objects_with_query_results", message: "First try using list_id as filename", object: object, filename: filename, filename_with_bucket: filename_with_bucket})
 
-        puts({connection_id: config[:connection_id], method: "update_objects_with_query_results", object: object, filename: filename, filename: filename_with_bucket})
-
-        begin
-          s3_object     = amazon_s3.bucket.object("#{filename}.json")
-        rescue Aws::S3::Errors::NoSuchKey => e
-
-          # Look for filenames using list_id first, then if not found, we use the object_ref (product_id for products, name for customers and vendors, etc)
-          filename     = "#{prefix}/#{type_and_identifier_filename(object, object[:object_ref])}"
+        unless s3_object.exists?
+          filename = "#{prefix}/#{type_and_identifier_filename(object, object[:object_ref])}"
           filename_with_bucket = "#{prefix_with_bucket}/#{type_and_identifier_filename(object, object[:object_ref])}"
-
-          puts({connection_id: config[:connection_id], method: "update_objects_with_query_results - raised error", object: object, error: e, filename: filename, filename: filename_with_bucket})
+          s3_object = amazon_s3.bucket.object("#{filename}.json")
+          puts({connection_id: config[:connection_id], method: "update_objects_with_query_results", message: "Second try using identifier/object_ref as filename", object: object, filename: filename, filename_with_bucket: filename_with_bucket})
         end
 
+        new_file_name = "#{filename}#{list_id_and_edit_sequence(object)}.json"
+        new_file_name_with_bucket = "#{filename_with_bucket}#{list_id_and_edit_sequence(object)}.json"
+
+        puts({connection_id: config[:connection_id], method: "update_objects_with_query_results", object: object, filename: new_file_name, filename_w_bucket: new_file_name_with_bucket})
         begin
-          s3_object     = amazon_s3.bucket.object("#{filename}.json") unless s3_object
-          puts({connection_id: config[:connection_id], method: "update_objects_with_query_results", object: object, s3_object: s3_object.inspect, filename: filename, filename: filename_with_bucket})
-
-          new_file_name_with_bucket = "#{filename_with_bucket}#{list_id_and_edit_sequence(object)}.json"
-          new_file_name = "#{filename}#{list_id_and_edit_sequence(object)}.json"
-
-          puts({connection_id: config[:connection_id], method: "update_objects_with_query_results", object: object, new_file_name_with_bucket: new_file_name_with_bucket, new_file_name: new_file_name})
-
           s3_object.move_to(new_file_name_with_bucket)
-
-          puts({connection_id: config[:connection_id], method: "update_objects_with_query_results", object: object, message: "Moved to new filename with bucket"})
-
-
           unless object[:extra_data].to_s.empty?
             contents = amazon_s3.bucket.object(new_file_name).get.body.read
             amazon_s3.bucket.object(new_file_name).delete
