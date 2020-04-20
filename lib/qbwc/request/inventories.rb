@@ -23,7 +23,7 @@ module QBWC
                         .process_waiting_query_later_ids
 
           # TODO: Uncomment
-          return '' if query_later.empty?
+          # return '' if query_later.empty?
 
           puts '_timestamp'
           puts _timestamp.inspect

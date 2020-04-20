@@ -57,8 +57,12 @@ module QBWC
         puts params.inspect
         puts '-' * 99
 
-        string << klass.polling_others_items_xml(params['quickbooks_since'], @config)
-        string << klass.polling_current_items_xml(params, @config)
+        if params['quickbooks_inventory_site'] == '1'
+          string << klass.polling_current_items_xml(params, @config)
+        else
+          string << klass.polling_others_items_xml(params['quickbooks_since'], @config)
+          string << klass.polling_current_items_xml(params, @config)
+        end
       end
     end
 
