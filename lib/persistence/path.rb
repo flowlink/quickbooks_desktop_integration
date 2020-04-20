@@ -35,6 +35,10 @@ module Persistence
       "#{@config[:origin]}_pending"
     end
 
+    def in_progress
+      "#{@config[:origin]}_in_progress"
+    end
+
     def ready
       "#{@config[:origin]}_ready"
     end

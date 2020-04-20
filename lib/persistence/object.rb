@@ -244,11 +244,15 @@ module Persistence
         edit_sequence.gsub!('.json', '') unless edit_sequence.nil?
         list_id = nil if edit_sequence.nil? # To fix a problem with multiple files with (n) on it
 
-        { object_type.pluralize =>
+        object = { object_type.pluralize =>
               amazon_s3.convert_download('json', s3_object.get.body.read).first
               .merge({ list_id: list_id, edit_sequence: edit_sequence, object_type: object_type })
               .with_indifferent_access
         }
+
+        s3_object.move_to("#{path.base_name_w_bucket}/#{path.in_progress}/#{filename}")
+
+        object
       end.flatten
     end
 
@@ -287,7 +291,7 @@ module Persistence
             begin
               object = types[object_type].with_indifferent_access 
 
-              filename = "#{path.base_name}/#{path.ready}/#{object_type}_#{id_for_object(object, object_type)}_"
+              filename = "#{path.base_name}/#{path.in_progress}/#{object_type}_#{id_for_object(object, object_type)}_"
 
               puts({connection_id: @config[:connection_id], method: "update_objects_files", object: object, filename: filename, message: "Filename built and looking in s3 for it", filename: filename})
 
