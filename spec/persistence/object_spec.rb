@@ -53,13 +53,41 @@ module Persistence
       end
     end
 
-    it '#update_objects_with_query_results' do
+    describe '#update_objects_with_query_results' do
       objects_to_be_renamed = [Factory.query_results_to_update_objects]
       config = { origin: 'flowlink', connection_id: '54372cb069702d1f59000000' }
+      it 'vcr spec' do
+        VCR.use_cassette 'persistence/update_objects_with_query_results' do
+          subject = described_class.new config, {}
+          subject.update_objects_with_query_results(objects_to_be_renamed)
+        end
+      end
 
-      VCR.use_cassette 'persistence/update_objects_with_query_results' do
-        subject = described_class.new config, {}
+      it 'finds filename using list_id correctly' do
+        # Mock S3 to have 1 file in the specific folder with the filename "products_800000-88888_.json"
+        # Call update_objects_with_query_results
+        # Expect NO errors to be raise/rescued since we should find the file using the list_id first of all
+        # Expect that the new content has the new edit_sequence field equal to '12312312321'
+        existing_file_name = "products_800000-88888_.json"
+        subject = described_class.new(config, {})
         subject.update_objects_with_query_results(objects_to_be_renamed)
+        pending("expect this to not raise any errors")
+        pending("Expect that the new content has the new edit_sequence field equal to '12312312321'")
+        this_should_not_get_executed
+      end
+
+      it 'finds filename using product_id correctly' do
+        # Mock S3 to have 1 file in the specific folder with the filename "products_SPREE-T-SHIRT293178_.json"
+        # Call update_objects_with_query_results
+        # Expect an error to be raised because we SHOULD look for "products_800000-88888_.json" as the filename first
+        # Rescue error and expect that the correct file is found
+        # Expect that the new content has the new edit_sequence field equal to '12312312321'
+        existing_file_name = "products_SPREE-T-SHIRT293178_.json"
+        subject = described_class.new(config, {})
+        subject.update_objects_with_query_results(objects_to_be_renamed)
+        pending("expect this to raise 1 error because it cannot find the file using list_id as our identifier")
+        pending("Expect that the new content has the new edit_sequence field equal to '12312312321'")
+        this_should_not_get_executed
       end
     end
 

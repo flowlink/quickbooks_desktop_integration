@@ -150,8 +150,6 @@ module Persistence
     #                             :edit_sequence => '12312312321'}
     #                             :extra_data => { ... }, ]
     def update_objects_with_query_results(objects_to_be_renamed)
-      # puts "Objects to be renamed: #{objects_to_be_renamed}"
-
       puts({connection_id: config[:connection_id], method: "update_objects_with_query_results", objects_to_be_renamed: objects_to_be_renamed})
 
       prefix = "#{path.base_name}/#{path.ready}"
@@ -159,41 +157,32 @@ module Persistence
 
       puts({connection_id: config[:connection_id], method: "update_objects_with_query_results", prefix: prefix, prefix_with_bucket: prefix_with_bucket})
 
-
-       # files = amazon_s3.bucket.objects(prefix: prefix)
-       #
-       # puts "Files in bucket: #{files}"
-       # puts "Files in bucket: #{files.first}"
-       #
-       # unless files.first
-       #   puts " No Files to be updated at #{prefix}"
-       #   return
-       # end
-
       objects_to_be_renamed.to_a.compact.each do |object|
-        filename     = "#{prefix}/#{object[:object_type].pluralize}_#{sanitize_filename(object[:object_ref])}_"
-        filename_with_bucket = "#{prefix_with_bucket}/#{object[:object_type].pluralize}_#{sanitize_filename(object[:object_ref])}_"
-
+        s3_object = nil
+        filename     = "#{prefix}/#{object[:object_type].pluralize}_#{sanitize_filename(object[:list_id])}_"
+        filename_with_bucket = "#{prefix_with_bucket}/#{object[:object_type].pluralize}_#{sanitize_filename(object[:list_id])}_"
 
         puts({connection_id: config[:connection_id], method: "update_objects_with_query_results", object: object, filename: filename, filename: filename_with_bucket})
 
-
-        # TODO what if the file is not there? we should probably at least
-        # rescue / log the exception properly and move on with the others?
-        # raises when file is not found:
-        #
-        #   Aws::S3::Errors::NoSuchKey - No Such Key:
-        #
         begin
           s3_object     = amazon_s3.bucket.object("#{filename}.json")
+        rescue Aws::S3::Errors::NoSuchKey => e
+
+          # Look for filenames using list_id first, then if not found, we use the object_ref (product_id for products, name for customers and vendors, etc)
+          
+          filename     = "#{prefix}/#{object[:object_type].pluralize}_#{sanitize_filename(object[:object_ref])}_"
+          filename_with_bucket = "#{prefix_with_bucket}/#{object[:object_type].pluralize}_#{sanitize_filename(object[:object_ref])}_"
+          puts({connection_id: config[:connection_id], method: "update_objects_with_query_results - raised error", object: object, error: e, filename: filename, filename: filename_with_bucket})
+        end
+
+        begin
+          s3_object     = amazon_s3.bucket.object("#{filename}.json") unless s3_object
           puts({connection_id: config[:connection_id], method: "update_objects_with_query_results", object: object, s3_object: s3_object.inspect, filename: filename, filename: filename_with_bucket})
 
           new_file_name_with_bucket = "#{filename_with_bucket}#{object[:list_id]}_#{object[:edit_sequence]}.json"
           new_file_name = "#{filename}#{object[:list_id]}_#{object[:edit_sequence]}.json"
 
           puts({connection_id: config[:connection_id], method: "update_objects_with_query_results", object: object, new_file_name_with_bucket: new_file_name_with_bucket, new_file_name: new_file_name})
-
-
 
           s3_object.move_to(new_file_name_with_bucket)
 
@@ -210,9 +199,7 @@ module Persistence
           end
         rescue Aws::S3::Errors::NoSuchKey => e
           puts({connection_id: config[:connection_id], method: "update_objects_with_query_results", object: object, error: e.inspect})
-
-          return
-          # puts "File not found: #{filename}.json"
+          next
         end
       end
     end
@@ -765,6 +752,7 @@ module Persistence
 
     def id_for_object(object, object_type)
       return object['id'] if object_type.nil?
+      return object['list_id'] if object['list_id']
 
       key = object_type.pluralize
       if key == 'customers'
