@@ -39,7 +39,7 @@ module QBWC
 
           config = { origin: 'flowlink' }.merge(config)
           session_id = Persistence::Session.save(config, 'item_inventories_ids' => objects)
-          return get_inventory_adjustments(session_id) if config['quickbooks_inventory_site'] == '1'
+          return get_inventory_adjustments(session_id) if _timestamp['quickbooks_inventory_site'] == '1'
 
           codes = objects.inject('') do |codes, object|
             codes << "<FullName>#{object['id']}</FullName>"
