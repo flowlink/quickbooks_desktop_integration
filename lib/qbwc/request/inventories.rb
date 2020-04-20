@@ -135,6 +135,7 @@ module QBWC
         end
 
         def get_inventory_adjustments(session_id)
+          puts 'get_inventory_adjustments'
 
           <<~XML
     <InventoryAdjustmentQueryRq requestID="#{session_id}">

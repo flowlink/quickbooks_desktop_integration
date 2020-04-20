@@ -60,7 +60,6 @@ module QBWC
         string << klass.polling_others_items_xml(params['quickbooks_since'], @config)
         string << klass.polling_current_items_xml(params, @config)
       end
-      puts '=' * 99
     end
 
     private
