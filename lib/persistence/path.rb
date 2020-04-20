@@ -50,5 +50,13 @@ module Persistence
     def failed
       "#{@config[:origin]}_failed"
     end
+
+    def base_and_ready
+      "#{base_name}/#{ready}"
+    end
+
+    def base_and_bucket_with_ready
+      "#{base_name_w_bucket}/#{ready}"
+    end
   end
 end
