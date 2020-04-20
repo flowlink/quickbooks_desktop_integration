@@ -288,5 +288,28 @@ module Persistence
         expect(subject.send(:sanitize_filename, id)).to be_nil
       end
     end
+
+    describe "#type_and_identifier_filename" do
+      let(:config) { { origin: 'flowlink', connection_id: '54372cb069702d1f59000000' } }
+      identifier = 29103902
+
+      it 'takes a string and works' do
+        object = "customer"
+        subject = described_class.new(config, {})
+        expect(subject.send(:type_and_identifier_filename, object, identifier)).to eq("customers_29103902_")
+      end
+
+      it 'takes a hash and works' do
+        object = {object_type: "customer"}
+        subject = described_class.new(config, {})
+        expect(subject.send(:type_and_identifier_filename, object, identifier)).to eq("customers_29103902_")
+      end
+
+      it 'takes a hash without the right key and error is raised' do
+        object = {invalid_key: "customer"}
+        subject = described_class.new(config, {})
+        expect { subject.send(:type_and_identifier_filename, object, identifier) }.to raise_error(NoMethodError)
+      end
+    end
   end
 end
