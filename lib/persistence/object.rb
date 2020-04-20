@@ -179,8 +179,8 @@ module Persistence
           s3_object     = amazon_s3.bucket.object("#{filename}.json") unless s3_object
           puts({connection_id: config[:connection_id], method: "update_objects_with_query_results", object: object, s3_object: s3_object.inspect, filename: filename, filename: filename_with_bucket})
 
-          new_file_name_with_bucket = "#{filename_with_bucket}# list_id_and_edit_sequence(object)}.json"
-          new_file_name = "#{filename}# list_id_and_edit_sequence(object)}.json"
+          new_file_name_with_bucket = "#{filename_with_bucket}#{list_id_and_edit_sequence(object)}.json"
+          new_file_name = "#{filename}#{list_id_and_edit_sequence(object)}.json"
 
           puts({connection_id: config[:connection_id], method: "update_objects_with_query_results", object: object, new_file_name_with_bucket: new_file_name_with_bucket, new_file_name: new_file_name})
 
