@@ -198,7 +198,7 @@ module Persistence
             amazon_s3.export file_name: new_file_name, objects: [with_extra_data]
           end
         rescue Aws::S3::Errors::NoSuchKey => e
-          puts({connection_id: config[:connection_id], method: "update_objects_with_query_results", object: object, error: e.inspect})
+          puts({connection_id: config[:connection_id], method: "update_objects_with_query_results", object: object, error: e.inspect, backtrace: e.backtrace})
           next
         end
       end
