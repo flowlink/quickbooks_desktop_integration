@@ -112,7 +112,6 @@ module QBWC
         end
 
         def query_by_date(config, time)
-          puts "Customer config for polling: #{config}"
           return '' if config['return_all'].to_i == 1
 
           <<~XML
@@ -127,9 +126,6 @@ module QBWC
             config = { connection_id: params['connection_id'] }.with_indifferent_access
             session_id = Persistence::Session.save(config, object)
 
-            puts "Customer object: #{object}"
-            puts "Customer object list id: #{object['list_id']}"
-
             if object['list_id'].to_s.empty?
               request << search_xml_by_name(object['name'], session_id)
             else
@@ -141,8 +137,6 @@ module QBWC
         end
 
         def search_xml_by_id(object_id, session_id)
-          puts "Building customer xml by list_id #{object_id}, #{session_id}"
-
           <<~XML
             <CustomerQueryRq requestID="#{session_id}">
               <ListID>#{object_id}</ListID>
@@ -151,8 +145,6 @@ module QBWC
         end
 
         def search_xml_by_name(object_id, session_id)
-          puts "Building customer xml by name #{object_id}, #{session_id}"
-
           <<~XML
             <CustomerQueryRq requestID="#{session_id}">
               <MaxReturned>50</MaxReturned>
@@ -316,7 +308,7 @@ module QBWC
           qbe_field_name = mapping[:qbe_name]
           float_fields = ['price', 'cost']
 
-          return '' if flowlink_field.nil?
+          return '' if flowlink_field.nil? || flowlink_field == ""
 
           flowlink_field = '%.2f' % flowlink_field.to_f if float_fields.include?(mapping[:flowlink_name])
 
@@ -334,7 +326,8 @@ module QBWC
                                 config[mapping[:flowlink_name].to_sym] ||
                                 config["quickbooks_#{mapping[:flowlink_name]}".to_sym]
 
-          full_name.nil? ? "" : "<#{qbe_field_name}><FullName>#{full_name}</FullName></#{qbe_field_name}>"
+          return '' if full_name.nil? || full_name == ""
+          "<#{qbe_field_name}><FullName>#{full_name}</FullName></#{qbe_field_name}>"
         end
 
         def sanitize_customer(customer)

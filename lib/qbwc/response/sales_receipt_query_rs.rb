@@ -19,8 +19,6 @@ module QBWC
       def process(config = {})
         return if records.empty?
 
-        puts records.inspect
-
         config  = { origin: 'flowlink', connection_id: config[:connection_id]  }
 
         to_update = objects_to_update

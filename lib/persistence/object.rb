@@ -205,6 +205,7 @@ module Persistence
             amazon_s3.bucket.object(new_file_name).delete
 
             with_extra_data = amazon_s3.convert_download('json', contents).first.merge(object[:extra_data])
+            puts({connection_id: config[:connection_id], method: "update_objects_with_query_results", current_object_contents: contents, new_data: with_extra_data})
             amazon_s3.export file_name: new_file_name, objects: [with_extra_data]
           end
         rescue Aws::S3::Errors::NoSuchKey => e
@@ -771,14 +772,17 @@ module Persistence
 
       key = object_type.pluralize
       if key == 'customers'
+        raise "#{object_type.singularize} object is missing name field. Object ID: #{object['id']}" unless object['name']
         sanitize_filename object['name']
       elsif key == 'payments'
         sanitize_filename object['id']
       elsif key == 'shipments'
+        raise "#{object_type.singularize} object is missing name field. Object ID: #{object['id']}" unless object['name']
         sanitize_filename object['name']
       elsif key == 'vendors'
         sanitize_filename (object['name'] || object['id'])
       elsif PLURAL_PRODUCT_OBJECT_TYPES.include?(key)
+        raise "#{object_type.singularize} object is missing product_id field. Object ID: #{object['id']}" unless object['product_id']
         sanitize_filename object['product_id']
       else
         sanitize_filename object['id']
@@ -786,6 +790,7 @@ module Persistence
     end
 
     def sanitize_filename(id)
+      return id unless id.is_a?(String)
       id.gsub('/', '-backslash-')
     end
 

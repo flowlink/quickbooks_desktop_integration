@@ -4,7 +4,7 @@ require 'json'
 require "active_support/core_ext/hash/indifferent_access"
 require 'qbwc/request/vendors'
 require 'qbwc/request/product_fixtures/build_polling_from_config_fixtures'
-require 'qbwc/request/product_fixtures/add_and_update_xml_fixtures'
+require 'qbwc/request/product_fixtures/add_update_search_xml_fixtures'
 
 module QBWC
   module Request
@@ -78,6 +78,32 @@ RSpec.describe QBWC::Request::Products do
     it "it matches expected output" do
       product = QBWC::Request::Products.update_xml_to_send(flowlink_product, nil, 12345, config)
       expect(product.gsub(/\s+/, "")).to eq(update_xml.gsub(/\s+/, ""))
+    end
+  end
+
+  describe "search xml" do
+    let(:flowlink_product) { JSON.parse(File.read('spec/qbwc/request/product_fixtures/invproduct_from_flowlink.json')) }
+    it "has list_id and calls search_xml_by_id" do
+      flowlink_product[:list_id] = "test product listid"
+
+      # Call search_xml method with flowlink_product
+      pending("expect the search_xml_by_id method to have been called")
+      pending("expect the search_xml_by_name method to NOT have been called")
+      this_should_not_get_executed
+    end
+    it "does not have list_id and calls search_xml_by_name" do
+      # Call search_xml method with flowlink_product
+      pending("expect the search_xml_by_name method to have been called")
+      pending("expect the search_xml_by_id method to NOT have been called")
+      this_should_not_get_executed
+    end
+    it "calls search_xml_by_id and matches expected xml output" do
+      product = QBWC::Request::Products.search_xml_by_id("test product listid", 12345)
+      expect(product.gsub(/\s+/, "")).to eq(qbe_product_search_id.gsub(/\s+/, ""))
+    end
+    it "calls search_xml_by_name and matches expected xml output" do
+      product = QBWC::Request::Products.search_xml_by_name("My Awesome Product", 12345)
+      expect(product.gsub(/\s+/, "")).to eq(qbe_product_search_name.gsub(/\s+/, ""))
     end
   end
 end

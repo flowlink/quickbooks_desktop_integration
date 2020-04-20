@@ -53,9 +53,7 @@ module QBWC
       end
 
       def last_time_modified
-        puts 'SETTING A NEW SINCE DATE FOR INVOICES'
         date = records.sort_by { |r| r['TxnDate'] }.last['TxnDate'].to_s
-        puts Date.parse(date).to_time.in_time_zone('Pacific Time (US & Canada)').iso8601
         Date.parse(date).to_time.in_time_zone('Pacific Time (US & Canada)').iso8601
       end
 
@@ -109,8 +107,6 @@ module QBWC
 
       def invoices_to_flowlink
         records.map do |record|
-          # puts "invoice from qbe: #{record}"
-
           {
             id: record['RefNumber'],
             is_pending: record['IsPending'],

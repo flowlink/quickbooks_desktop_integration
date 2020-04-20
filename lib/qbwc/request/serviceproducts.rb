@@ -53,17 +53,29 @@ module QBWC
             config = { connection_id: params['connection_id'] }.with_indifferent_access
             session_id = Persistence::Session.save(config, object)
 
-            request << search_xml(product_identifier(object), session_id)
+            if object['list_id'].to_s.empty?
+              request << search_xml_by_name(product_identifier(object), session_id)
+            else
+              request << search_xml_by_id(object['list_id'], session_id)
+            end
           end
         end
 
-        def search_xml(product_id, session_id)
+        def search_xml_by_id(object_id, session_id)
+          <<~XML
+            <ItemServiceQueryRq requestID="#{session_id}">
+              <ListID>#{object_id}</ListID>
+            </ItemServiceQueryRq>
+          XML
+        end
+
+        def search_xml_by_name(object_id, session_id)
           <<~XML
             <ItemServiceQueryRq requestID="#{session_id}">
               <MaxReturned>10000</MaxReturned>
               <NameRangeFilter>
-                <FromName>#{product_id}</FromName>
-                <ToName>#{product_id}</ToName>
+                <FromName>#{object_id}</FromName>
+                <ToName>#{object_id}</ToName>
               </NameRangeFilter>
             </ItemServiceQueryRq>
           XML
@@ -194,7 +206,7 @@ module QBWC
           qbe_field_name = mapping[:qbe_name]
           float_fields = ['price', 'cost']
 
-          return '' if flowlink_field.nil?
+          return '' if flowlink_field.nil? || flowlink_field == ""
 
           flowlink_field = '%.2f' % flowlink_field.to_f if float_fields.include?(mapping[:flowlink_name])
 
@@ -212,11 +224,11 @@ module QBWC
                                 config[mapping[:flowlink_name].to_sym] ||
                                 config["quickbooks_#{mapping[:flowlink_name]}".to_sym]
 
-          full_name.nil? ? "" : "<#{qbe_field_name}><FullName>#{full_name}</FullName></#{qbe_field_name}>"
+          return '' if full_name.nil? || full_name == ""
+          "<#{qbe_field_name}><FullName>#{full_name}</FullName></#{qbe_field_name}>"
         end
 
         def query_by_date(config, time)
-          puts "Product config for polling: #{config}"
           return '' if config['return_all'].to_i == 1
 
           <<~XML
