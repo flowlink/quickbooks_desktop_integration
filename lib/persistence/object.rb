@@ -271,9 +271,8 @@ module Persistence
               
 
               collection = amazon_s3.bucket.objects(prefix: filename)
-              puts({connection_id: @config[:connection_id], collection: collection.inspect })
-              puts({connection_id: @config[:connection_id], methods: collection.methods(false) })
-              if collection.size.nil? || collection.size == 0
+              puts({connection_id: @config[:connection_id], first: collection.first })
+              unless collection.first
                 temp_obj = object.clone
                 temp_obj.delete("list_id")
                 temp_obj.delete(:list_id)
