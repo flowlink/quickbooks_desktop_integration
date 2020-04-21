@@ -268,8 +268,10 @@ module Persistence
 
               filename = "#{path.base_name}/#{path.in_progress}/#{object_type}_#{id_for_object(object, object_type)}_"
               puts({connection_id: @config[:connection_id], method: "update_objects_files", object: object, filename: filename, message: "Filename built and looking in s3 for it"})
+              
 
               collection = amazon_s3.bucket.objects(prefix: filename)
+              puts({connection_id: @config[:connection_id], instance_methods: collection.instance_methods(false), methods: collection.methods(false) })
               if collection.size.nil? || collection.size == 0
                 temp_obj = object.clone
                 temp_obj.delete("list_id")
