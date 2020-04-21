@@ -111,7 +111,7 @@ module QBWC
           }.compact
 
           if record['SalesOrPurchase']
-            object.merge({
+            object.merge!({
               sales_or_purchase: true,
               price: record['SalesOrPurchase']['Price'],
               price_percent: record['SalesOrPurchase']['PricePercent'],
@@ -121,7 +121,7 @@ module QBWC
           end
 
           if record['SalesAndPurchase']
-            object.merge({
+            object.merge!({
               sales_and_purchase: true,
               sales_description: record['SalesAndPurchase']['SalesDesc'],
               sales_price: record['SalesAndPurchase']['SalesPrice'],
