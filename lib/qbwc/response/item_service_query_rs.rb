@@ -125,15 +125,22 @@ module QBWC
               sales_and_purchase: true,
               sales_description: record['SalesAndPurchase']['SalesDesc'],
               sales_price: record['SalesAndPurchase']['SalesPrice'],
+              price: record['SalesAndPurchase']['SalesPrice'],
               purchase_description: record['SalesAndPurchase']['PurchaseDesc'],
               purchase_cost: record['SalesAndPurchase']['PurchaseCost'],
+              cost: record['SalesAndPurchase']['PurchaseCost'],
               purchase_tax_code_name: record['SalesAndPurchase'].dig('PurchaseTaxCodeRef', 'FullName'),
               income_account_name: record['SalesAndPurchase'].dig('IncomeAccountRef', 'FullName'),
               expense_account_name: record['SalesAndPurchase'].dig('ExpenseAccountRef', 'FullName'),
-              vendor: {
+              sales_and_purchase_vendor: {
                 name: record['SalesAndPurchase'].dig('PrefVendorRef', 'FullName'),
-                external_id: record['SalesAndPurchase'].dig('PrefVendorRef', 'ListID')
-              }
+                external_id: record['SalesAndPurchase'].dig('PrefVendorRef', 'ListID'),
+                qbe_id: record['SalesAndPurchase'].dig('PrefVendorRef', 'ListID')
+              },
+              relationships: [
+                { object: "vendor", key: "qbe_id" },
+                { object: "sales_and_purchase_vendor", key: "qbe_id" }
+              ],
             }.compact)
           end
 
