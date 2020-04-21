@@ -265,18 +265,17 @@ module Persistence
             # happens when you have both add_orders and get_products flows enabled
             begin
               object = types[object_type].with_indifferent_access 
-
-              filename = "#{path.base_name}/#{path.in_progress}/#{object_type}_#{id_for_object(object, object_type)}_"
+              identifier = id_for_object(object, object_type)
+              filename = "#{path.base_name}/#{path.in_progress}/#{object_type}_#{identifier}_"
               puts({connection_id: @config[:connection_id], method: "update_objects_files", object: object, filename: filename, message: "Filename built and looking in s3 for it"})
-              
 
               collection = amazon_s3.bucket.objects(prefix: filename)
-              puts({connection_id: @config[:connection_id], first: collection.first })
               unless collection.first
                 temp_obj = object.clone
                 temp_obj.delete("list_id")
                 temp_obj.delete(:list_id)
-                filename = "#{path.base_name}/#{path.in_progress}/#{object_type}_#{id_for_object(temp_obj, object_type)}_"
+                identifier = id_for_object(temp_obj, object_type)
+                filename = "#{path.base_name}/#{path.in_progress}/#{object_type}_#{identifier}_"
                 puts({connection_id: @config[:connection_id], method: "update_objects_files", object: object, filename: filename, message: "Filename not found using list_id - trying id_for_object without list_id"})
                 collection = amazon_s3.bucket.objects(prefix: filename)
               end
@@ -292,14 +291,14 @@ module Persistence
                 status_folder = path.send status_key
                 puts({connection_id: @config[:connection_id], method: "update_objects_files", message: "Status Folder", status_folder: status_folder})
 
-                new_filename = "#{path.base_name_w_bucket}/#{status_folder}/#{object_type}_#{id_for_object(object, object_type)}_"
+                new_filename = "#{path.base_name_w_bucket}/#{status_folder}/#{object_type}_#{identifier}_"
                 new_filename << "#{object[:list_id]}_#{object[:edit_sequence]}" unless object[:list_id].to_s.empty?
 
                 puts({connection_id: @config[:connection_id], method: "update_objects_files", message:"New filename", new_filename: new_filename, end_of_file: end_of_file})
 
                 s3_object.move_to("#{new_filename}#{end_of_file}")
 
-                new_filename_no_bucket = "#{path.base_name}/#{status_folder}/#{object_type}_#{id_for_object(object, object_type)}_"
+                new_filename_no_bucket = "#{path.base_name}/#{status_folder}/#{object_type}_#{identifier}_"
                 new_filename_no_bucket << "#{object[:list_id]}_#{object[:edit_sequence]}" unless object[:list_id].to_s.empty?
 
                 puts({connection_id: @config[:connection_id], method: "update_objects_files", new_filename_no_bucket: new_filename_no_bucket})
