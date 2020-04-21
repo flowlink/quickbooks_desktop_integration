@@ -267,16 +267,20 @@ module Persistence
               object = types[object_type].with_indifferent_access 
 
               filename = "#{path.base_name}/#{path.in_progress}/#{object_type}_#{id_for_object(object, object_type)}_"
-
               puts({connection_id: @config[:connection_id], method: "update_objects_files", object: object, filename: filename, message: "Filename built and looking in s3 for it", filename: filename})
 
-              # puts "Looking for file: #{filename}"
-
               collection = amazon_s3.bucket.objects(prefix: filename)
+              if collection.size.nil? || collection.size == 0
+                temp_obj = object.clone
+                temp_obj.delete("list_id")
+                temp_obj.delete(:list_id)
+                filename = "#{path.base_name}/#{path.in_progress}/#{object_type}_#{id_for_object(temp_obj, object_type)}_"
+                puts({connection_id: @config[:connection_id], method: "update_objects_files", object: object, filename: filename, message: "Filename not found using list_id - trying id_for_object without list_id", filename: filename})
+                collection = amazon_s3.bucket.objects(prefix: filename)
+              end
+
               collection.each do |s3_object|
                 puts({ connection_id: @config[:connection_id], method: "update_objects_files", message: "File found", s3_object: s3_object.inspect })
-                # This is for files that end on (n)
-                # puts "Working with #{s3_object.inspect}"
                 _, _, ax_filename = s3_object.key.split('/')
                 _, _, end_of_file, ax_edit_sequence = ax_filename.split('_')
                 end_of_file = '.json' unless ax_edit_sequence.nil?
