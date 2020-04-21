@@ -267,7 +267,7 @@ module Persistence
               object = types[object_type].with_indifferent_access 
 
               filename = "#{path.base_name}/#{path.in_progress}/#{object_type}_#{id_for_object(object, object_type)}_"
-              puts({connection_id: @config[:connection_id], method: "update_objects_files", object: object, filename: filename, message: "Filename built and looking in s3 for it", filename: filename})
+              puts({connection_id: @config[:connection_id], method: "update_objects_files", object: object, filename: filename, message: "Filename built and looking in s3 for it"})
 
               collection = amazon_s3.bucket.objects(prefix: filename)
               if collection.size.nil? || collection.size == 0
@@ -275,7 +275,7 @@ module Persistence
                 temp_obj.delete("list_id")
                 temp_obj.delete(:list_id)
                 filename = "#{path.base_name}/#{path.in_progress}/#{object_type}_#{id_for_object(temp_obj, object_type)}_"
-                puts({connection_id: @config[:connection_id], method: "update_objects_files", object: object, filename: filename, message: "Filename not found using list_id - trying id_for_object without list_id", filename: filename})
+                puts({connection_id: @config[:connection_id], method: "update_objects_files", object: object, filename: filename, message: "Filename not found using list_id - trying id_for_object without list_id"})
                 collection = amazon_s3.bucket.objects(prefix: filename)
               end
 
