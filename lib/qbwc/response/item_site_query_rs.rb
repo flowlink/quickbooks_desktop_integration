@@ -45,6 +45,7 @@ module QBWC
       def inventories_to_flowlink
         records.map do |record|
           {
+            id: full_name(record) + '-site-' + inventory_site(record),
             list_id: record['ListID'],
             created_at: record['TimeCreated'],
             updated_at: record['TimeModified'],

@@ -9,6 +9,7 @@ RSpec.describe QBWC::Response::ItemSitesQueryRs do
     let(:assembly_object) { JSON.parse(File.read('spec/qbwc/response/item_site_fixtures/item_site_assembly.json')) }
     let(:expected_inventory) {
         {
+          "id" => "BOIL-OUT 4-site-DFW",
           "list_id": "",
           "created_at" => "2015-02-04T17:22:56-05:00",
           "updated_at" => "2015-02-04T17:22:56-05:00",
@@ -29,6 +30,7 @@ RSpec.describe QBWC::Response::ItemSitesQueryRs do
     }
     let(:expected_assembly) {
         {
+          "id" => "BOIL-OUT 4-site-DFW",
           "list_id": "",
           "created_at" => "2015-02-04T17:22:56-05:00",
           "updated_at" => "2015-02-04T17:22:56-05:00",
