@@ -44,14 +44,16 @@ module QBWC
 
       def inventories_to_flowlink
         records.map do |record|
-          obj = record['ItemSitesRet']
+          obj = record
           {
             list_id: obj['ListId'],
             created_at: obj['TimeCreated'],
             updated_at: obj['TimeModified'],
             edit_sequence: obj['EditSequence'],
-            full_name: obj['FullName'],
+            full_name: obj['ItemInventoryRef']['FullName'],
             quantity_on_hand: obj['QuantityOnHand'],
+            inventory_site: inventory_site(obj),
+            inventory_site_location: inventory_site_location(obj),
             quantity_on_po: obj['QuantityOnPurchaseOrders'],
             quantity_on_sales_order: obj['QuantityOnSalesOrders'],
             quantity_to_be_assembled: obj['QuantityToBeBuiltByPendingBuildTxns'],
@@ -60,6 +62,18 @@ module QBWC
           }
         end
       end
+
+      def inventory_site(record)
+        return '' if record['InventorySiteRef'] == nil
+        record['InventorySiteRef']['FullName']
+      end
+
+      def inventory_site_location(record)
+        return '' if record['InventorySiteLocationRef'] == nil
+        record['InventorySiteLocationRef']['FullName']
+      end
+
+
     end
   end
 end
