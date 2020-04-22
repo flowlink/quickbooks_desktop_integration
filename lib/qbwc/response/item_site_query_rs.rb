@@ -56,7 +56,7 @@ module QBWC
             created_at: obj['TimeCreated'],
             updated_at: obj['TimeModified'],
             edit_sequence: obj['EditSequence'],
-            full_name: full_name(obj)
+            full_name: full_name(obj),
             quantity_on_hand: obj['QuantityOnHand'],
             inventory_site: inventory_site(obj),
             inventory_site_location: inventory_site_location(obj),
