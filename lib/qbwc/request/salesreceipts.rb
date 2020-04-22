@@ -228,7 +228,7 @@ module QBWC
         def sales_receipt_line_mod(line)
           <<~XML
             <SalesReceiptLineMod>
-              <TxnLineID>-1</TxnLineID>
+              <TxnLineID>#{line['txn_line_id'] || -1}</TxnLineID>
               #{sales_receipt_line(line)}
             </SalesReceiptLineMod>
           XML
