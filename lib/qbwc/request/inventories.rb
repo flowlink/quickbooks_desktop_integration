@@ -138,6 +138,7 @@ module QBWC
           puts 'get_inventory_adjustments'
 
           # TODO: Extract site filter and look for it in the params
+          # <ItemTypeFilter>Inventory</ItemTypeFilter>
           <<~XML
     <ItemSitesQueryRq requestID="#{session_id}">
       <ItemSiteFilter>
@@ -145,7 +146,6 @@ module QBWC
           <FullName>DFW</FullName>
         </SiteFilter>
       </ItemSiteFilter>
-      <ItemTypeFilter>Inventory</ItemTypeFilter>
       <MaxReturned>10000</MaxReturned>
       <ActiveStatus>ActiveOnly</ActiveStatus>
     </ItemSitesQueryRq>
