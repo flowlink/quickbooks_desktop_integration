@@ -76,6 +76,10 @@ module QBWC
         response_hash.map do |key, value|
 
           class_name = "QBWC::Response::#{key}".constantize
+          puts "8" * 100
+          puts 'attempting to process class_name'
+          puts class_name
+          puts "8" * 100
           value = value.is_a?(Hash)? [value] : Array(value)
           #value.map(&:values).flatten.select { |value| value.is_a?(Hash) }
 
