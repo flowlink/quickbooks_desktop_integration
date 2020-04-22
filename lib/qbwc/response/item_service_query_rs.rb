@@ -20,6 +20,7 @@ module QBWC
         return if records.empty?
 
         receive_configs = config[:receive] || []
+        puts({connection_id: @config[:connection_id], method: "ItemServiceQueryRs - process", receive_configs: receive_configs})
         serviceproduct_params = receive_configs.find { |c| c['serviceproducts'] }
 
         if serviceproduct_params
