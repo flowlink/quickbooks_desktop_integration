@@ -142,7 +142,7 @@ module QBWC
     <ItemSitesQueryRq requestID="#{session_id}">
       <ItemSiteFilter>
         <SiteFilter>
-          <FullName >DFW</FullName>
+          <FullName>DFW</FullName>
         </SiteFilter>
       </ItemSiteFilter>
       <ItemTypeFilter>Inventory</ItemTypeFilter>
