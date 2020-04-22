@@ -36,7 +36,7 @@ module QBWC
 
           # Override configs to update timestamp so it doesn't keep geting the
           # same inventories
-          params = vendor_params['vendors']
+          params = inventory_params['inventories']
           Persistence::Settings.new(params.with_indifferent_access).setup
         end
         config  = { origin: 'flowlink', connection_id: config[:connection_id]  }
@@ -56,7 +56,7 @@ module QBWC
             created_at: obj['TimeCreated'],
             updated_at: obj['TimeModified'],
             edit_sequence: obj['EditSequence'],
-            full_name: obj['ItemInventoryRef']['FullName'],
+            full_name: full_name(obj)
             quantity_on_hand: obj['QuantityOnHand'],
             inventory_site: inventory_site(obj),
             inventory_site_location: inventory_site_location(obj),
@@ -66,6 +66,14 @@ module QBWC
             quantity_by_being_assembled: obj['QuantityRequiredByPendingBuildTxns'],
             quantity_by_pending_transfer: obj['QuantityOnPendingTransfers']
           }
+        end
+      end
+
+      def full_name(record)
+        if record['ItemInventoryRef']
+            record['ItemInventoryRef']['FullName'],
+        else
+            record['ItemInventoryAssemblyRef']['FullName'],
         end
       end
 
