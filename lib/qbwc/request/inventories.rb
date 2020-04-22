@@ -138,10 +138,11 @@ module QBWC
           puts 'get_inventory_adjustments'
 
           <<~XML
-    <InventoryAdjustmentQueryRq requestID="#{session_id}">
+    <ItemSitesQueryRq metaData="ENUMTYPE" requestID="#{session_id}">
+      <ItemTypeFilter >Inventory</ItemTypeFilter>
       <MaxReturned >10000</MaxReturned>
-      <IncludeLineItems >true</IncludeLineItems>
-    </InventoryAdjustmentQueryRq>
+      <ActiveStatus >ActiveOnly</ActiveStatus>
+    </ItemSitesQueryRq>
           XML
         end
 
