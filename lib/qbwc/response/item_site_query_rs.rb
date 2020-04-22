@@ -17,26 +17,32 @@ module QBWC
       end
 
       def process(config = {})
-        puts "=" * 99
-        puts 'ItemSitesQueryRs#process'
         return if records.empty?
+        puts 'ItemSitesQueryRs#process'
 
         receive_configs = config[:receive] || []
-        puts 'receive_configs'
-        puts receive_configs
         inventory_params = receive_configs.find { |c| c['inventories'] }
-        puts 'inventory_params'
-        puts inventory_params
 
-        puts 'records'
-        puts records.inspect
 
-        payload = { inventories: inventories_to_flowlink }
-        config = { origin: 'quickbooks' }.merge config
+        if inventory_params
+          payload = { inventories: inventories_to_flowlink }
+          config = { origin: 'quickbooks' }.merge config.reject{|k,v| k == :origin || k == "origin"}
 
-        poll_persistence = Persistence::Polling.new(config, payload)
-        poll_persistence.save_for_query_later
-        puts "=" * 99
+          poll_persistence = Persistence::Polling.new(config, payload)
+          poll_persistence.save_for_polling
+
+          # inventory_params['inventories']['quickbooks_since'] = last_time_modified
+          inventory_params['inventories']['quickbooks_force_config'] = 'true'
+
+          # Override configs to update timestamp so it doesn't keep geting the
+          # same inventories
+          params = vendor_params['vendors']
+          Persistence::Settings.new(params.with_indifferent_access).setup
+        end
+        config  = { origin: 'flowlink', connection_id: config[:connection_id]  }
+
+        Persistence::Object.new(config, {}).update_objects_with_query_results(objects_to_update)
+
         nil
       end
 

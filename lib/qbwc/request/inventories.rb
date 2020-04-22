@@ -23,7 +23,7 @@ module QBWC
                         .process_waiting_query_later_ids
 
           # TODO: Uncomment
-          return '' if query_later.empty?
+          # return '' if query_later.empty?
 
           puts '_timestamp'
           puts _timestamp.inspect
@@ -137,8 +137,14 @@ module QBWC
         def get_inventory_adjustments(session_id)
           puts 'get_inventory_adjustments'
 
+          # TODO: Extract site filter and look for it in the params
           <<~XML
     <ItemSitesQueryRq requestID="#{session_id}">
+      <ItemSiteFilter>
+        <SiteFilter>
+          <FullName >DFW</FullName>
+        </SiteFilter>
+      </ItemSiteFilter>
       <ItemTypeFilter>Inventory</ItemTypeFilter>
       <MaxReturned>10000</MaxReturned>
       <ActiveStatus>ActiveOnly</ActiveStatus>
