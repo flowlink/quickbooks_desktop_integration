@@ -71,9 +71,9 @@ module QBWC
 
       def full_name(record)
         if record['ItemInventoryRef']
-            record['ItemInventoryRef']['FullName'],
+            record['ItemInventoryRef']['FullName']
         else
-            record['ItemInventoryAssemblyRef']['FullName'],
+            record['ItemInventoryAssemblyRef']['FullName']
         end
       end
 
