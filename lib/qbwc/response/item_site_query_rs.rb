@@ -25,7 +25,7 @@ module QBWC
         receive_configs = config[:receive] || []
         puts "receive_configs"
         puts receive_configs.inspect
-        inventory_params = receive_configs.find { |c| c['inventories'] }
+        inventory_params = receive_configs.find { |c| c['inventorywithsites'] }
         puts "inventory_params"
         puts inventory_params.inspect
 
