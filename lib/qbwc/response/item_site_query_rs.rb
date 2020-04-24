@@ -24,7 +24,7 @@ module QBWC
 
 
         if inventory_params
-          payload = { inventories: inventories_to_flowlink }
+          payload = { inventorywithsites: inventories_to_flowlink }
           config = { origin: 'quickbooks' }.merge config.reject{|k,v| k == :origin || k == "origin"}
 
           poll_persistence = Persistence::Polling.new(config, payload)
