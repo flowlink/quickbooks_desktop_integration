@@ -117,6 +117,8 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
  GET_ENDPOINTS.each do |path|
     post "/#{path}" do
       object_type = path.split('_').last.pluralize
+      puts 'object_type'
+      puts object_type.inspect
 
       config = {
         connection_id: request.env['HTTP_X_HUB_STORE'],
@@ -124,17 +126,28 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
         origin: 'quickbooks'
       }.merge(@config).with_indifferent_access
 
+      puts 'config'
+      puts config.inspect
+
       s3_settings = Persistence::Settings.new(config)
       s3_settings.setup
 
       add_parameter 'quickbooks_force_config', false
 
       persistence = Persistence::Polling.new config, @payload, object_type
+      puts 'persistence'
+      puts persistence.inspect
       records = persistence.process_waiting_records
+      puts 'records'
+      puts records.inspect
       integration = Persistence::Object.new config, @payload
+      puts 'integration'
+      puts integration.inspect
 
       notifications = integration.get_notifications
 
+      puts 'notifications'
+      puts notifications.inspect
       add_value 'success', notifications['processed'] if !notifications['processed'].empty?
       add_value 'fail', notifications['failed'] if !notifications['failed'].empty?
       if records.any?

@@ -32,7 +32,7 @@ module QBWC
 
         if inventory_params
           puts 'in if block'
-          payload = { inventories: inventories_to_flowlink }
+          payload = { inventorywithsites: inventories_to_flowlink }
           puts 'payload'
           puts payload.inspect
           config = { origin: 'quickbooks' }.merge config.reject{|k,v| k == :origin || k == "origin"}

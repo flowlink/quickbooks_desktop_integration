@@ -27,9 +27,13 @@ module Persistence
     end
 
     def process_waiting_records
+      puts 'process_waiting_records'
       prefix = "#{path.base_name}/#{path.qb_pending}/#{payload_key}_"
+      puts prefix.inspect
       begin
         collection = amazon_s3.bucket.objects(prefix: prefix)
+        puts 'collection'
+        puts collection.inspect
         collection.map do |s3_object|
           _, _, filename = s3_object.key.split('/')
           object_type    = filename.split('_').first
