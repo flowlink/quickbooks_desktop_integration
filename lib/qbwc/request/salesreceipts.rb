@@ -209,6 +209,7 @@ module QBWC
           }
 
           line['tax_code_id'] = adjustment['tax_code_id'] if adjustment['tax_code_id']
+          line['class_name'] = adjustment['class_name'] if adjustment['class_name']
 
           sales_receipt_line_add line
         end
@@ -267,9 +268,10 @@ module QBWC
             <Desc>#{line['name']}</Desc>
             #{quantity(line)}
             <Rate>#{'%.2f' % line['price'].to_f}</Rate>
-            #{tax_code_line(line)}
-            #{inventory_site(line)}
+            #{class_ref_for_receipt_line(line)}
             #{amount_line(line)}
+            #{inventory_site(line)}
+            #{tax_code_line(line)}
           XML
         end
 
@@ -280,6 +282,16 @@ module QBWC
             <InventorySiteRef>
               <FullName>#{line['inventory_site_name']}</FullName>
             </InventorySiteRef>
+          XML
+        end
+
+        def class_ref_for_receipt_line(line)
+          return '' unless line['class_name']
+
+          <<~XML
+            <ClassRef>
+              <FullName>#{line['class_name']}</FullName>
+            </ClassRef>
           XML
         end
 
