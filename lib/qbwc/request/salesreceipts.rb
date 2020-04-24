@@ -273,11 +273,19 @@ module QBWC
             </ItemRef>
             <Desc>#{line['name']}</Desc>
             #{quantity(line)}
-            <Rate>#{'%.2f' % line['price'].to_f}</Rate>
+            #{rate(line)}
             #{class_ref_for_receipt_line(line)}
             #{amount_line(line)}
             #{inventory_site(line)}
             #{tax_code_line(line)}
+          XML
+        end
+
+        def rate(line)
+          return '' unless line['price']
+
+          <<~XML
+            <Rate>#{'%.2f' % line['price'].to_f}</Rate>
           XML
         end
 
