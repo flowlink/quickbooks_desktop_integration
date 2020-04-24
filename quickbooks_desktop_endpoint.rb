@@ -163,7 +163,7 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
           puts 'first'
           puts collection.values.first.inspect
           if name == 'inventorywithsites'
-            add_or_merge_value 'inventory', collection.values.first
+            add_or_merge_value 'inventories', collection.values.first
           else
             add_or_merge_value name, collection.values.first
           end
