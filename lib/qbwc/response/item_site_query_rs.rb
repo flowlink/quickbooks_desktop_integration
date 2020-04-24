@@ -31,14 +31,22 @@ module QBWC
 
 
         if inventory_params
+          puts 'in if block'
           payload = { inventories: inventories_to_flowlink }
+          puts 'payload'
+          puts payload.inspect
           config = { origin: 'quickbooks' }.merge config.reject{|k,v| k == :origin || k == "origin"}
+          puts "config"
+          puts config.inspect
 
           poll_persistence = Persistence::Polling.new(config, payload)
           poll_persistence.save_for_polling
 
-          inventory_params['inventories']['quickbooks_force_config'] = 'true'
-          params = inventory_params['inventories']
+          inventory_params['inventorywithsites']['quickbooks_force_config'] = 'true'
+          params = inventory_params['inventorywithsites']
+          puts "params"
+          puts params.inspect
+
 
           Persistence::Settings.new(params.with_indifferent_access).setup
         end
