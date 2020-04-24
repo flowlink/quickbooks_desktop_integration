@@ -210,6 +210,7 @@ module QBWC
 
           line['tax_code_id'] = adjustment['tax_code_id'] if adjustment['tax_code_id']
           line['class_name'] = adjustment['class_name'] if adjustment['class_name']
+          line['name'] = adjustment['description'] if adjustment['description']
 
           sales_receipt_line_add line
         end
