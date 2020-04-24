@@ -18,10 +18,9 @@ module QBWC
 
       def process(config = {})
         return if records.empty?
-        puts 'ItemSitesQueryRs#process'
 
         receive_configs = config[:receive] || []
-        inventory_params = receive_configs.find { |c| c['inventories'] }
+        inventory_params = receive_configs.find { |c| c['inventorywithsites'] }
 
 
         if inventory_params
@@ -31,8 +30,8 @@ module QBWC
           poll_persistence = Persistence::Polling.new(config, payload)
           poll_persistence.save_for_polling
 
-          inventory_params['inventories']['quickbooks_force_config'] = 'true'
-          params = inventory_params['inventories']
+          inventory_params['inventorywithsites']['quickbooks_force_config'] = 'true'
+          params = inventory_params['inventorywithsites']
 
           Persistence::Settings.new(params.with_indifferent_access).setup
         end

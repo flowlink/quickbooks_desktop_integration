@@ -16,7 +16,7 @@ module QBWC
             <ItemSitesQueryRq requestID="#{session_id}">
               <ItemSiteFilter>
                 <SiteFilter>
-                  <FullName>#{site_name(config)}</FullName>
+                  <FullName>#{site_name(params)}</FullName>
                 </SiteFilter>
               </ItemSiteFilter>
               <MaxReturned>10000</MaxReturned>
@@ -27,8 +27,8 @@ module QBWC
 
         private
 
-        def site_name(config)
-          config['quickbooks_site']
+        def site_name(obj)
+          obj['quickbooks_site']
         end
 
       end
