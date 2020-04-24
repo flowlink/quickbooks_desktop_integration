@@ -19,9 +19,15 @@ module QBWC
       def process(config = {})
         return if records.empty?
         puts 'ItemSitesQueryRs#process'
+        puts "config"
+        puts config.inspect
 
         receive_configs = config[:receive] || []
+        puts "receive_configs"
+        puts receive_configs.inspect
         inventory_params = receive_configs.find { |c| c['inventories'] }
+        puts "inventory_params"
+        puts inventory_params.inspect
 
 
         if inventory_params
