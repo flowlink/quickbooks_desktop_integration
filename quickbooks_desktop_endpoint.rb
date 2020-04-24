@@ -151,12 +151,22 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
       add_value 'success', notifications['processed'] if !notifications['processed'].empty?
       add_value 'fail', notifications['failed'] if !notifications['failed'].empty?
       if records.any?
+        puts 'has records'
         names = records.inject([]) do |names, collection|
+          puts 'names'
+          puts names.inspect
+          puts 'collection'
+          puts collection.inspect
           name = collection.keys.first
+          puts 'name'
           puts name
+          puts 'first'
           puts collection.values.first.inspect
-          
-          add_or_merge_value name, collection.values.first
+          if name == 'inventorywithsites'
+            add_or_merge_value 'inventory', collection.values.first
+          else
+            add_or_merge_value name, collection.values.first
+          end
 
           names.push name
         end
