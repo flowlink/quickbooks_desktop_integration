@@ -252,12 +252,15 @@ module QBWC
         end
 
         def sales_receipt_line_mod_from_tax_line_item(tax_line_item, params)
+
+
           line = {
-            'product_id' => QBWC::Request::Adjustments.adjustment_product_from_qb('tax', params),
+            'product_id' => QBWC::Request::Adjustments.adjustment_product_from_qb('tax', params, tax_line_item),
             'quantity' => 0,
             'price' => tax_line_item['value'],
-            'txn_line_id' => tax_line_item['txn_line_id'],
-            'name' => tax_line_item['name']
+            'amount' => tax_line_item['amount'],
+            'name' => tax_line_item['name'],
+            'txn_line_id' => tax_line_item['txn_line_id']
           }
 
           sales_receipt_line_mod line
