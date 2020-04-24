@@ -79,7 +79,6 @@ module QBWC
       end
 
       def noninventoryproducts_to_flowlink
-        puts "NON inv Product object from QBE: #{records.first}"
         records.map do |record|
           object = {
             id: record['Name'],
@@ -101,7 +100,7 @@ module QBWC
             parent_name: record.dig('ParentRef', 'FullName'),
             unit_measure: record.dig('UnitOfMeasureSetRef', 'FullName'),
             sales_tax_code_name: record.dig('SalesTaxCodeRef', 'FullName'),
-            item_type: 'non_inventory'
+            qbe_item_type: 'non_inventory'
           }.compact
 
           if record['SalesOrPurchase']

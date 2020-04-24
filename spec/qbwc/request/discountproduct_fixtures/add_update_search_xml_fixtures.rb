@@ -10,6 +10,14 @@ def qbe_discountproduct_search_name
   XML
 end
 
+def qbe_discountproduct_search_id
+  <<~XML
+    <ItemDiscountQueryRq requestID="12345">
+      <ListID>test discount listid</ListID>
+    </ItemDiscountQueryRq>
+  XML
+end
+
 def add_xml_discountproduct
   <<~XML
     <ItemDiscountAddRq requestID="12345">

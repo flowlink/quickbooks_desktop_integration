@@ -63,6 +63,8 @@ require 'qbwc/response/vendor_add_rs'
 require 'qbwc/response/vendor_mod_rs'
 require 'qbwc/response/vendor_query_rs'
 
+require 'qbwc/response/item_site_query_rs'
+
 module QBWC
   module Response
     class All
@@ -83,6 +85,8 @@ module QBWC
                                            .flatten
                                            .map { |sub| sub.merge({ 'request_id' => item['@requestID'] }) }
                               }.flatten
+
+          puts({connection: config[:connection_id], message: "Processing response", records: records})
 
           # NOTE delete in case it's useless
           errors = value.map do |response|

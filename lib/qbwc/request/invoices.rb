@@ -45,11 +45,8 @@ module QBWC
         end
 
         def polling_current_items_xml(params, config)
-          timestamp = params
-          timestamp = params['quickbooks_since'] if params['return_all']
-
+          timestamp = params['quickbooks_since']
           session_id = Persistence::Session.save(config, 'polling' => timestamp)
-
           time = Time.parse(timestamp).in_time_zone 'Pacific Time (US & Canada)'
 
           <<~XML
@@ -64,7 +61,6 @@ module QBWC
         end
 
         def query_by_date(config, time)
-          puts "Invoices config for polling: #{config}"
           return query_by_txn_date(config, time) if config['return_all']
 
           <<~XML
@@ -431,7 +427,7 @@ module QBWC
         # If the quickbooks_use_tax_line_items is set, then don't include tax from the adjustments object, and instead
         # use tax_line_items if it exists.
         def adjustments_add_xml(record, params)
-          puts "record is #{record}"
+          puts "In 'adjustments_add_xml' - record is #{record}"
           final_adjustments = []
           use_tax_line_items = !params['quickbooks_use_tax_line_items'].nil? &&
                                params['quickbooks_use_tax_line_items'] == '1' &&

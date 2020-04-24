@@ -44,7 +44,8 @@ module QBWC
           ''
         end
 
-        def polling_current_items_xml(timestamp, config)
+        def polling_current_items_xml(params, config)
+          timestamp = params['quickbooks_since']
           session_id = Persistence::Session.save(config, 'polling' => timestamp)
 
           time = Time.parse(timestamp).in_time_zone 'Pacific Time (US & Canada)'
@@ -177,6 +178,24 @@ module QBWC
           XML
         end
 
+        def sales_receipt_line_add_optional_rate(line)
+          line['price'].nil? ? rate = '' : rate = "<Rate>#{'%.2f' % line['price'].to_f}</Rate>"
+
+          <<~XML
+            <SalesReceiptLineAdd>
+            <ItemRef>
+              <FullName>#{line['product_id']}</FullName>
+            </ItemRef>
+            <Desc>#{line['name']}</Desc>
+            #{quantity(line)}
+            #{rate}
+            #{tax_code_line(line)}
+            #{inventory_site(line)}
+            #{amount_line(line)}
+            </SalesReceiptLineAdd>
+          XML
+        end
+
         def sales_receipt_line_add_from_adjustment(adjustment, params)
           puts "IN sales sales_receipt PARAMS = #{params}"
 
@@ -196,13 +215,14 @@ module QBWC
 
         def sales_receipt_line_add_from_tax_line_item(tax_line_item, params)
           line = {
-            'product_id' => QBWC::Request::Adjustments.adjustment_product_from_qb('tax', params),
+            'product_id' => QBWC::Request::Adjustments.adjustment_product_from_qb('tax', params, tax_line_item),
             'quantity' => 0,
             'price' => tax_line_item['value'],
+            'amount' => tax_line_item['amount'],
             'name' => tax_line_item['name']
           }
 
-          sales_receipt_line_add line
+          sales_receipt_line_add_optional_rate line
         end
 
         def sales_receipt_line_mod(line)
@@ -265,7 +285,6 @@ module QBWC
 
         def amount_line(line)
           return '' if line['amount'].to_s.empty?
-
           <<~XML
             <Amount>#{'%.2f' % line['amount'].to_f}</Amount>
           XML

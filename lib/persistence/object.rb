@@ -150,46 +150,43 @@ module Persistence
     #                             :edit_sequence => '12312312321'}
     #                             :extra_data => { ... }, ]
     def update_objects_with_query_results(objects_to_be_renamed)
-      # puts "Objects to be renamed: #{objects_to_be_renamed}"
+      puts({connection_id: config[:connection_id], method: "update_objects_with_query_results", objects_to_be_renamed: objects_to_be_renamed})
 
-      prefix = "#{path.base_name}/#{path.ready}"
-      prefix_with_bucket = "#{path.base_name_w_bucket}/#{path.ready}"
-      # files = amazon_s3.bucket.objects(prefix: prefix)
-      #
-      # puts "Files in bucket: #{files}"
-      # puts "Files in bucket: #{files.first}"
-      #
-      # unless files.first
-      #   puts " No Files to be updated at #{prefix}"
-      #   return
-      # end
+      prefix = path.base_and_ready
+      prefix_with_bucket = path.base_and_bucket_with_ready
+
+      puts({connection_id: config[:connection_id], method: "update_objects_with_query_results", prefix: prefix, prefix_with_bucket: prefix_with_bucket})
 
       objects_to_be_renamed.to_a.compact.each do |object|
-        filename     = "#{prefix}/#{object[:object_type].pluralize}_#{object[:object_ref]}_"
-        filename_with_bucket = "#{prefix_with_bucket}/#{object[:object_type].pluralize}_#{object[:object_ref]}_"
+        filename     = "#{prefix}/#{type_and_identifier_filename(object, object[:list_id])}"
+        filename_with_bucket = "#{prefix_with_bucket}/#{type_and_identifier_filename(object, object[:list_id])}"
+        s3_object = amazon_s3.bucket.object("#{filename}.json")
+        puts({connection_id: config[:connection_id], method: "update_objects_with_query_results", message: "First try using list_id as filename", object: object, filename: filename, filename_with_bucket: filename_with_bucket})
 
-        # TODO what if the file is not there? we should probably at least
-        # rescue / log the exception properly and move on with the others?
-        # raises when file is not found:
-        #
-        #   Aws::S3::Errors::NoSuchKey - No Such Key:
-        #
+        unless s3_object.exists?
+          filename = "#{prefix}/#{type_and_identifier_filename(object, object[:object_ref])}"
+          filename_with_bucket = "#{prefix_with_bucket}/#{type_and_identifier_filename(object, object[:object_ref])}"
+          s3_object = amazon_s3.bucket.object("#{filename}.json")
+          puts({connection_id: config[:connection_id], method: "update_objects_with_query_results", message: "Second try using identifier/object_ref as filename", object: object, filename: filename, filename_with_bucket: filename_with_bucket})
+        end
+
+        new_file_name = "#{filename}#{list_id_and_edit_sequence(object)}.json"
+        new_file_name_with_bucket = "#{filename_with_bucket}#{list_id_and_edit_sequence(object)}.json"
+
+        puts({connection_id: config[:connection_id], method: "update_objects_with_query_results", object: object, filename: new_file_name, filename_w_bucket: new_file_name_with_bucket})
         begin
-          s3_object     = amazon_s3.bucket.object("#{filename}.json")
-          new_file_name_with_bucket = "#{filename_with_bucket}#{object[:list_id]}_#{object[:edit_sequence]}.json"
-          new_file_name = "#{filename}#{object[:list_id]}_#{object[:edit_sequence]}.json"
           s3_object.move_to(new_file_name_with_bucket)
-
           unless object[:extra_data].to_s.empty?
             contents = amazon_s3.bucket.object(new_file_name).get.body.read
             amazon_s3.bucket.object(new_file_name).delete
 
             with_extra_data = amazon_s3.convert_download('json', contents).first.merge(object[:extra_data])
+            puts({connection_id: config[:connection_id], method: "update_objects_with_query_results", current_object_contents: contents, new_data: with_extra_data})
             amazon_s3.export file_name: new_file_name, objects: [with_extra_data]
           end
         rescue Aws::S3::Errors::NoSuchKey => e
-          return
-          # puts "File not found: #{filename}.json"
+          puts({connection_id: config[:connection_id], method: "update_objects_with_query_results", object: object, error: e.inspect, backtrace: e.backtrace})
+          next
         end
       end
     end
@@ -208,7 +205,7 @@ module Persistence
     #     }
     #   }]
     def get_ready_objects_to_send
-      prefix = "#{path.base_name}/#{path.ready}"
+      prefix = path.base_and_ready
       collection = amazon_s3.bucket.objects(prefix: prefix)
 
       select_precedence_files(collection).reject { |s3| s3.key.match(/notification/) }.map do |s3_object|
@@ -222,11 +219,15 @@ module Persistence
         edit_sequence.gsub!('.json', '') unless edit_sequence.nil?
         list_id = nil if edit_sequence.nil? # To fix a problem with multiple files with (n) on it
 
-        { object_type.pluralize =>
+        object = { object_type.pluralize =>
               amazon_s3.convert_download('json', s3_object.get.body.read).first
               .merge({ list_id: list_id, edit_sequence: edit_sequence, object_type: object_type })
               .with_indifferent_access
         }
+
+        s3_object.move_to("#{path.base_name_w_bucket}/#{path.in_progress}/#{filename}")
+
+        object
       end.flatten
     end
 
@@ -248,6 +249,9 @@ module Persistence
     #   :failed => [] }
     def update_objects_files(statuses_objects)
       # puts "Status objects to be processed: #{statuses_objects}"
+
+      puts({connection_id: @config[:connection_id], method: "update_objects_files", statuses_objects: statuses_objects})
+
       return if statuses_objects.nil?
 
       statuses_objects.keys.each do |status_key|
@@ -255,43 +259,49 @@ module Persistence
         statuses_objects[status_key].each do |types|
           # puts types
           types.keys.each do |object_type|
-            puts({message: "Processing objects", object_type: object_type})
+            puts({connection_id: @config[:connection_id], method: "update_objects_files", message: "Processing objects", object_type: object_type})
             # puts object_type
             # NOTE seeing an nil `object` var here sometimes, investigate it
             # happens when you have both add_orders and get_products flows enabled
             begin
               object = types[object_type].with_indifferent_access 
-
-              filename = "#{path.base_name}/#{path.ready}/#{object_type}_#{id_for_object(object, object_type)}_"
-
-              puts({message: "Filename built and looking in s3 for it", filename: filename})
-
-              # puts "Looking for file: #{filename}"
+              identifier = id_for_object(object, object_type)
+              filename = "#{path.base_name}/#{path.in_progress}/#{object_type}_#{identifier}_"
+              puts({connection_id: @config[:connection_id], method: "update_objects_files", object: object, filename: filename, message: "Filename built and looking in s3 for it"})
 
               collection = amazon_s3.bucket.objects(prefix: filename)
+              unless collection.first
+                temp_obj = object.clone
+                temp_obj.delete("list_id")
+                temp_obj.delete(:list_id)
+                identifier = id_for_object(temp_obj, object_type)
+                filename = "#{path.base_name}/#{path.in_progress}/#{object_type}_#{identifier}_"
+                puts({connection_id: @config[:connection_id], method: "update_objects_files", object: object, filename: filename, message: "Filename not found using list_id - trying id_for_object without list_id"})
+                collection = amazon_s3.bucket.objects(prefix: filename)
+              end
+
               collection.each do |s3_object|
-                puts({ message: "File found", s3_object: s3_object.inspect })
-                # This is for files that end on (n)
-                # puts "Working with #{s3_object.inspect}"
+                puts({ connection_id: @config[:connection_id], method: "update_objects_files", message: "File found", s3_object: s3_object.inspect })
                 _, _, ax_filename = s3_object.key.split('/')
                 _, _, end_of_file, ax_edit_sequence = ax_filename.split('_')
                 end_of_file = '.json' unless ax_edit_sequence.nil?
 
-                puts({message: "Building file parts", ax_filename: ax_filename, end_of_file: end_of_file, ax_edit_sequence: ax_edit_sequence})
+                puts({connection_id: @config[:connection_id], method: "update_objects_files", message: "Building file parts", ax_filename: ax_filename, end_of_file: end_of_file, ax_edit_sequence: ax_edit_sequence})
 
                 status_folder = path.send status_key
-                puts({message: "Status Folder", status_folder: status_folder})
+                puts({connection_id: @config[:connection_id], method: "update_objects_files", message: "Status Folder", status_folder: status_folder})
 
-                new_filename = "#{path.base_name_w_bucket}/#{status_folder}/#{object_type}_#{id_for_object(object, object_type)}_"
+                new_filename = "#{path.base_name_w_bucket}/#{status_folder}/#{object_type}_#{identifier}_"
                 new_filename << "#{object[:list_id]}_#{object[:edit_sequence]}" unless object[:list_id].to_s.empty?
 
-                puts({message:"New filename", new_filename: new_filename, end_of_file: end_of_file})
+                puts({connection_id: @config[:connection_id], method: "update_objects_files", message:"New filename", new_filename: new_filename, end_of_file: end_of_file})
 
                 s3_object.move_to("#{new_filename}#{end_of_file}")
 
-                new_filename_no_bucket = "#{path.base_name}/#{status_folder}/#{object_type}_#{id_for_object(object, object_type)}_"
+                new_filename_no_bucket = "#{path.base_name}/#{status_folder}/#{object_type}_#{identifier}_"
                 new_filename_no_bucket << "#{object[:list_id]}_#{object[:edit_sequence]}" unless object[:list_id].to_s.empty?
 
+                puts({connection_id: @config[:connection_id], method: "update_objects_files", new_filename_no_bucket: new_filename_no_bucket})
                 create_notifications("#{new_filename_no_bucket}#{end_of_file}", status_key) if status_key == 'processed'
               end
             rescue Exception => e
@@ -312,12 +322,11 @@ module Persistence
 
       notification_files.inject('processed' => [], 'failed' => []) do |notifications, s3_object|
         _, _, filename  = s3_object.key.split('/')
-        _, status, object_type, object_ref, _ = filename.split('_')
+        _, status, object_type, _, _ = filename.split('_')
         content = amazon_s3.convert_download('json', s3_object.get.body.read).first
-
-        # id_for_notifications is marked as 'depricated'
-        #object_ref = id_for_notifications(content, object_ref, object_type)
-        object_ref = id_for_object(content, object_type)
+        
+        obj = status == 'processed' ? content : content["object"]
+        object_ref = id_for_object(obj, object_type)
 
         if content.key?('message')
           notifications[status] << {
@@ -502,12 +511,17 @@ module Persistence
 
     def create_notifications(objects_filename, status)
       _, _, filename2, filename = objects_filename.split('/')
-      puts "GENERATE NOTIFICATION: #{filename2}:#{filename}"
       filename ||= filename2
+      puts({connection_id: @config[:connection_id], method: "create_notifications", objects_filename: objects_filename, filename: filename, filename2: filename2 })
       s3_object = amazon_s3.bucket.object(objects_filename)
-
+      puts({connection_id: @config[:connection_id], method: "create_notifications", s3_object: s3_object})
+      
       new_filename = "#{path.base_name_w_bucket}/#{path.ready}/notification_#{status}_#{filename}"
+      puts({connection_id: @config[:connection_id], method: "create_notifications", new_filename: new_filename})
+      
       s3_object.copy_to(new_filename)
+      puts({connection_id: @config[:connection_id], method: "create_notifications", message: "Called s3 create object"})
+     
     end
 
     def valid_object?(object)
@@ -734,21 +748,39 @@ module Persistence
 
     def id_for_object(object, object_type)
       return object['id'] if object_type.nil?
+      return object['list_id'] if object['list_id']
 
       key = object_type.pluralize
       if key == 'customers'
-        object['name']
+        raise "#{object_type.singularize} object is missing name field. Object ID: #{object['id']}" unless object['name']
+        sanitize_filename object['name']
       elsif key == 'payments'
-        object['id']
+        sanitize_filename object['id']
       elsif key == 'shipments'
-        object['name']
+        raise "#{object_type.singularize} object is missing name field. Object ID: #{object['id']}" unless object['name']
+        sanitize_filename object['name']
       elsif key == 'vendors'
-        object['name'] || object['id']
+        sanitize_filename (object['name'] || object['id'])
       elsif PLURAL_PRODUCT_OBJECT_TYPES.include?(key)
-        object['product_id']
+        raise "#{object_type.singularize} object is missing product_id field. Object ID: #{object['id']}" unless object['product_id']
+        sanitize_filename object['product_id']
       else
-        object['id']
+        sanitize_filename object['id']
       end
+    end
+
+    def sanitize_filename(id)
+      return id unless id.is_a?(String)
+      id.gsub('/', '-backslash-')
+    end
+
+    def type_and_identifier_filename(object, identifier)
+      type = object.is_a?(Hash) ? object[:object_type] : object
+      "#{type.pluralize}_#{sanitize_filename(identifier)}_"
+    end
+
+    def list_id_and_edit_sequence(object)
+      "#{object[:list_id]}_#{object[:edit_sequence]}"
     end
   end
 end

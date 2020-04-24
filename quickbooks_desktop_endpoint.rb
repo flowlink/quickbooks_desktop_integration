@@ -24,6 +24,7 @@ ENDPOINTS = %w(
 
 GET_ENDPOINTS =  %w(
   get_inventory
+  get_inventorywithsites
   get_inventories
   get_products
   get_invoices
