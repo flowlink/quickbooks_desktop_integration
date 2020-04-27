@@ -24,6 +24,7 @@ ENDPOINTS = %w(
 
 GET_ENDPOINTS =  %w(
   get_inventory
+  get_inventorywithsites
   get_inventories
   get_products
   get_invoices
@@ -141,8 +142,14 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
           name = collection.keys.first
           puts name
           puts collection.values.first.inspect
-          
-          add_or_merge_value name, collection.values.first
+
+          # TODO: Remove the metapromming part of this and explicitly set the key we use
+          # for each endpoint
+          if name == 'inventorywithsites'
+            add_or_merge_value 'inventories', collection.values.first
+          else
+            add_or_merge_value name, collection.values.first
+          end
 
           names.push name
         end
