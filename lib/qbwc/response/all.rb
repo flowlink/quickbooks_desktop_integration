@@ -73,6 +73,8 @@ module QBWC
       end
 
       def process(config = {})
+        puts({connection: config[:connection_id], message: "Processing response", response_hash: response_hash})
+
         response_hash.map do |key, value|
 
           class_name = "QBWC::Response::#{key}".constantize
