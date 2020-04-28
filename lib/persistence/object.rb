@@ -11,7 +11,7 @@ module Persistence
       serviceproducts
     )
 
-    IDS_TO_LOG_S3_OBJ_MOVEMENT = ENV.fetch(IDS_TO_LOG, '').split(',')
+    IDS_TO_LOG_S3_OBJ_MOVEMENT = ENV.fetch('IDS_TO_LOG', '').split(',')
 
     class << self
       def handle_error(config, error_context, object_type, request_id)
