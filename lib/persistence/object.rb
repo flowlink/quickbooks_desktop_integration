@@ -11,15 +11,6 @@ module Persistence
       serviceproducts
     )
 
-    # Current FL clients:
-    #   dcdistribution
-    #   oilsolutionsgroup
-    #   unionville
-    #   kidmademodern
-    #   justsprinklers
-
-    CONNECTION_IDS_TO_LOG = %w()
-
     class << self
       def handle_error(config, error_context, object_type, request_id)
         Persistence::Object.new(config, {})
@@ -159,8 +150,8 @@ module Persistence
     #                             :edit_sequence => '12312312321'}
     #                             :extra_data => { ... }, ]
     def update_objects_with_query_results(objects_to_be_renamed)
-      should_log = CONNECTION_IDS_TO_LOG.include?(config[:connection_id])
-      puts({connection_id: config[:connection_id], method: "update_objects_with_query_results", objects_to_be_renamed: objects_to_be_renamed}) if should_log if should_log
+      should_log = IDS_TO_LOG.split(' ').include?(config[:connection_id])
+      puts({connection_id: config[:connection_id], method: "update_objects_with_query_results", objects_to_be_renamed: objects_to_be_renamed}) if should_log
 
       prefix = path.base_and_ready
       prefix_with_bucket = path.base_and_bucket_with_ready
@@ -258,7 +249,7 @@ module Persistence
     #   ],
     #   :failed => [] }
     def update_objects_files(statuses_objects)
-      should_log = CONNECTION_IDS_TO_LOG.include?(config[:connection_id])
+      should_log = IDS_TO_LOG.split(',').include?(config[:connection_id])
       # puts "Status objects to be processed: #{statuses_objects}"
 
       puts({connection_id: @config[:connection_id], method: "update_objects_files", statuses_objects: statuses_objects}) if should_log
