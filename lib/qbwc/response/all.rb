@@ -86,7 +86,7 @@ module QBWC
                                            .map { |sub| sub.merge({ 'request_id' => item['@requestID'] }) }
                               }.flatten
 
-          puts({connection: config[:connection_id], message: "Processing response", records: records})
+          puts({class_name: class_name, connection: config[:connection_id], message: "Processing response", records: records})
 
           # NOTE delete in case it's useless
           errors = value.map do |response|
