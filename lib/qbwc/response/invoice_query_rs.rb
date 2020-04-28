@@ -46,7 +46,11 @@ module QBWC
           Persistence::Object.new(config, {}).update_shipments_with_qb_ids(shipment_id, objects_updated.first)
         else
           # We only need to update files when is not shipments invoice
+          
+          puts({method: "process", class_based: "InvoiceQueryRs", to_update: objects_updated})
+
           Persistence::Object.new(config, {}).update_objects_with_query_results(objects_updated)
+        
         end
 
         nil
