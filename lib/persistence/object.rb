@@ -11,6 +11,8 @@ module Persistence
       serviceproducts
     )
 
+    IDS_TO_LOG_S3_OBJ_MOVEMENT = ENV.fetch(IDS_TO_LOG, '').split(',')
+
     class << self
       def handle_error(config, error_context, object_type, request_id)
         Persistence::Object.new(config, {})
@@ -150,7 +152,7 @@ module Persistence
     #                             :edit_sequence => '12312312321'}
     #                             :extra_data => { ... }, ]
     def update_objects_with_query_results(objects_to_be_renamed)
-      should_log = IDS_TO_LOG.split(' ').include?(config[:connection_id])
+      should_log = should_log_s3_obj_movement?(config[:connection_id])
       puts({connection_id: config[:connection_id], method: "update_objects_with_query_results", objects_to_be_renamed: objects_to_be_renamed}) if should_log
 
       prefix = path.base_and_ready
@@ -249,7 +251,7 @@ module Persistence
     #   ],
     #   :failed => [] }
     def update_objects_files(statuses_objects)
-      should_log = IDS_TO_LOG.split(',').include?(config[:connection_id])
+      should_log = should_log_s3_obj_movement?(config[:connection_id])
       # puts "Status objects to be processed: #{statuses_objects}"
 
       puts({connection_id: @config[:connection_id], method: "update_objects_files", statuses_objects: statuses_objects}) if should_log
@@ -783,6 +785,10 @@ module Persistence
 
     def list_id_and_edit_sequence(object)
       "#{object[:list_id]}_#{object[:edit_sequence]}"
+    end
+
+    def should_log_s3_obj_movement?(id)
+      IDS_TO_LOG_S3_OBJ_MOVEMENT.include?(id)
     end
   end
 end
