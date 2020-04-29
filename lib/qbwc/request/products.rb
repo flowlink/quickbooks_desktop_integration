@@ -143,10 +143,6 @@ module QBWC
           session_id = Persistence::Session.save(config, 'polling' => timestamp)
           time = Time.parse(timestamp).in_time_zone 'Pacific Time (US & Canada)'
 
-          if params['quickbooks_specify_products'] && params['quickbooks_specify_products'] != ""
-            return build_polling_from_config_param(params, session_id, time)
-          end
-
           inventory_max_returned = nil
           inventory_max_returned = 10000 if params['return_all'].to_i == 1
           if params['quickbooks_max_returned'] && params['quickbooks_max_returned'] != ""
@@ -158,26 +154,6 @@ module QBWC
               <MaxReturned>#{inventory_max_returned || 50}</MaxReturned>
               #{query_by_date(params, time)}
             </ItemInventoryQueryRq>
-            <ItemInventoryAssemblyQueryRq requestID="#{session_id}">
-              <MaxReturned>#{inventory_max_returned || 50}</MaxReturned>
-              #{query_by_date(params, time)}
-            </ItemInventoryAssemblyQueryRq>
-            <ItemNonInventoryQueryRq requestID="#{session_id}">
-              <MaxReturned>#{inventory_max_returned || 50}</MaxReturned>
-              #{query_by_date(params, time)}
-            </ItemNonInventoryQueryRq>
-            <ItemSalesTaxQueryRq requestID="#{session_id}">
-              <MaxReturned>#{inventory_max_returned || 50}</MaxReturned>
-              #{query_by_date(params, time)}
-            </ItemSalesTaxQueryRq>
-            <ItemServiceQueryRq requestID="#{session_id}">
-              <MaxReturned>#{inventory_max_returned || 50}</MaxReturned>
-              #{query_by_date(params, time)}
-            </ItemServiceQueryRq>
-            <ItemDiscountQueryRq requestID="#{session_id}">
-              <MaxReturned>#{inventory_max_returned || 50}</MaxReturned>
-              #{query_by_date(params, time)}
-            </ItemDiscountQueryRq>
           XML
         end
 
@@ -190,18 +166,6 @@ module QBWC
         end
 
         private
-
-        def build_polling_from_config_param(params, session_id, time)
-          JSON.parse(params['quickbooks_specify_products']).map do |value|
-            next unless PRODUCT_TYPES.has_key?(value.to_sym)
-            <<~XML
-              <#{PRODUCT_TYPES[value.to_sym]} requestID="#{session_id}">
-                <MaxReturned>50</MaxReturned>
-                #{query_by_date(params, time)}
-              </#{PRODUCT_TYPES[value.to_sym]}>
-            XML
-          end.join
-        end
 
         def product_identifier(object)
           object['product_id'] || object['sku'] || object['id']
