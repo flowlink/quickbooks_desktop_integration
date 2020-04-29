@@ -83,10 +83,14 @@ module QBWC
           value = value.is_a?(Hash)? [value] : Array(value)
           #value.map(&:values).flatten.select { |value| value.is_a?(Hash) }
 
-          records = value.map { |item| item.values.flatten.select { |value| value.is_a?(Hash) }
-                                           .flatten
-                                           .map { |sub| sub.merge({ 'request_id' => item['@requestID'] }) }
-                              }.flatten
+          records = value.map do |item| 
+            item.values.flatten.map do |value|
+              response_hash = nil
+              response_item = value.last if value.is_a?(Array)
+              response_item = value if value.is_a?(Hash)
+              response_item
+            end.compact.flatten.map { |sub| sub.merge({ 'request_id' => item['@requestID'] }) }
+          end.flatten
 
           puts({class_name: class_name, connection: config[:connection_id], message: "Processing response", records: records})
 
