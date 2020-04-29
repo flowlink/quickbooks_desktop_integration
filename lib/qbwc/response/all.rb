@@ -85,7 +85,7 @@ module QBWC
 
           records = value.map do |item| 
             item.values.flatten.map do |value|
-              response_hash = nil
+              response_item = nil
               response_item = value.last if value.is_a?(Array)
               response_item = value if value.is_a?(Hash)
               response_item
