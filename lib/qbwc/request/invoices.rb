@@ -287,7 +287,7 @@ module QBWC
         def invoice_line_mod(line)
           <<~XML
             <InvoiceLineMod>
-              <TxnLineID>#{line['txn_line_id']}</TxnLineID>
+              <TxnLineID>#{line['txn_line_id'] || -1}</TxnLineID>
               #{invoice_line(line)}
             </InvoiceLineMod>
           XML
@@ -327,9 +327,10 @@ module QBWC
             <Desc>#{line['name']}</Desc>
             #{quantity(line)}
             #{rate_line(line)}
+            #{class_ref_for_receipt_line(line)}
             #{amount_line(line)}
-            #{tax_code_line(line)}
             #{inventory_site(line)}
+            #{tax_code_line(line)}
           XML
         end
 
@@ -342,6 +343,18 @@ module QBWC
             </InventorySiteRef>
           XML
         end
+
+        
+        def class_ref_for_receipt_line(line)
+          return '' unless line['class_name']
+
+          <<~XML
+            <ClassRef>
+              <FullName>#{line['class_name']}</FullName>
+            </ClassRef>
+          XML
+        end
+
 
         def quantity(line)
           return '' if line['quantity'].to_f == 0.0
@@ -358,6 +371,8 @@ module QBWC
             </SalesTaxCodeRef>
           XML
         end
+
+
 
         def rate_line(line)
           return '' if !line['amount'].to_s.empty? || line['use_amount'] == true
