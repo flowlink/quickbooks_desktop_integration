@@ -184,57 +184,6 @@ module QBWC
         end
       end
 
-      describe 'noninventory params products' do
-        it 'only returns ItemNonInventoryQueryRq without since date' do
-          subject = described_class.new({connection_id: '54591b3a5869632afc090000'}, {})
-          since_date = "2020-03-01T06:39:43-08:00"
-          allow_any_instance_of(Persistence::Settings).to receive(:settings).and_return(
-            [
-              {
-                products: {
-                  "connection_id" => "nurelmremote",
-                  "quickbooks_since" => since_date,
-                  "flow" => "get_products",
-                  "origin" => "flowlink",
-                  "return_all" => "1",
-                  "quickbooks_force_config" => "1",
-                  "quickbooks_specify_products" => "[\"noninventory\"]"
-                }
-              }
-            ]
-          )
-
-          request = subject.build_polling_request
-          expect(request).to include('ItemNonInventoryQueryRq')
-          expect(request).not_to include('ItemInventoryQueryRq')
-          expect(request).not_to include(since_date)
-        end
-
-        it 'only returns ItemNonInventoryQueryRq and since date' do
-          subject = described_class.new({connection_id: '54591b3a5869632afc090000'}, {})
-          since_date = "2020-03-01T06:39:43-08:00"
-          allow_any_instance_of(Persistence::Settings).to receive(:settings).and_return(
-            [
-              {
-                products: {
-                  "connection_id" => "nurelmremote",
-                  "quickbooks_since" => since_date,
-                  "flow" => "get_products",
-                  "origin" => "flowlink",
-                  "quickbooks_force_config" => "1",
-                  "quickbooks_specify_products" => "[\"noninventory\"]"
-                }
-              }
-            ]
-          )
-
-          request = subject.build_polling_request
-          expect(request).to include('ItemNonInventoryQueryRq')
-          expect(request).not_to include('ItemInventoryQueryRq')
-          expect(request).to include(since_date)
-        end
-      end
-
       describe '/get_vendors' do
         it 'uses given since-date in query' do
           subject = described_class.new({connection_id: '54591b3a5869632afc090000'}, {})

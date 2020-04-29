@@ -9,7 +9,10 @@ module Persistence
       inventoryproducts
       salestaxproducts
       serviceproducts
+      inventoryassemblyproducts
     )
+
+    IDS_TO_LOG_S3_OBJ_MOVEMENT = ENV.fetch('IDS_TO_LOG', '').split(',')
 
     class << self
       def handle_error(config, error_context, object_type, request_id)
@@ -150,30 +153,31 @@ module Persistence
     #                             :edit_sequence => '12312312321'}
     #                             :extra_data => { ... }, ]
     def update_objects_with_query_results(objects_to_be_renamed)
-      puts({connection_id: config[:connection_id], method: "update_objects_with_query_results", objects_to_be_renamed: objects_to_be_renamed})
+      should_log = should_log_s3_obj_movement?(@config[:connection_id])
+      puts({connection_id: config[:connection_id], method: "update_objects_with_query_results", objects_to_be_renamed: objects_to_be_renamed}) if should_log
 
       prefix = path.base_and_ready
       prefix_with_bucket = path.base_and_bucket_with_ready
 
-      puts({connection_id: config[:connection_id], method: "update_objects_with_query_results", prefix: prefix, prefix_with_bucket: prefix_with_bucket})
+      puts({connection_id: config[:connection_id], method: "update_objects_with_query_results", prefix: prefix, prefix_with_bucket: prefix_with_bucket}) if should_log
 
       objects_to_be_renamed.to_a.compact.each do |object|
         filename     = "#{prefix}/#{type_and_identifier_filename(object, object[:list_id])}"
         filename_with_bucket = "#{prefix_with_bucket}/#{type_and_identifier_filename(object, object[:list_id])}"
         s3_object = amazon_s3.bucket.object("#{filename}.json")
-        puts({connection_id: config[:connection_id], method: "update_objects_with_query_results", message: "First try using list_id as filename", object: object, filename: filename, filename_with_bucket: filename_with_bucket})
+        puts({connection_id: config[:connection_id], method: "update_objects_with_query_results", message: "First try using list_id as filename", object: object, filename: filename, filename_with_bucket: filename_with_bucket}) if should_log
 
         unless s3_object.exists?
           filename = "#{prefix}/#{type_and_identifier_filename(object, object[:object_ref])}"
           filename_with_bucket = "#{prefix_with_bucket}/#{type_and_identifier_filename(object, object[:object_ref])}"
           s3_object = amazon_s3.bucket.object("#{filename}.json")
-          puts({connection_id: config[:connection_id], method: "update_objects_with_query_results", message: "Second try using identifier/object_ref as filename", object: object, filename: filename, filename_with_bucket: filename_with_bucket})
+          puts({connection_id: config[:connection_id], method: "update_objects_with_query_results", message: "Second try using identifier/object_ref as filename", object: object, filename: filename, filename_with_bucket: filename_with_bucket}) if should_log
         end
 
         new_file_name = "#{filename}#{list_id_and_edit_sequence(object)}.json"
         new_file_name_with_bucket = "#{filename_with_bucket}#{list_id_and_edit_sequence(object)}.json"
 
-        puts({connection_id: config[:connection_id], method: "update_objects_with_query_results", object: object, filename: new_file_name, filename_w_bucket: new_file_name_with_bucket})
+        puts({connection_id: config[:connection_id], method: "update_objects_with_query_results", object: object, filename: new_file_name, filename_w_bucket: new_file_name_with_bucket}) if should_log
         begin
           s3_object.move_to(new_file_name_with_bucket)
           unless object[:extra_data].to_s.empty?
@@ -181,7 +185,7 @@ module Persistence
             amazon_s3.bucket.object(new_file_name).delete
 
             with_extra_data = amazon_s3.convert_download('json', contents).first.merge(object[:extra_data])
-            puts({connection_id: config[:connection_id], method: "update_objects_with_query_results", current_object_contents: contents, new_data: with_extra_data})
+            puts({connection_id: config[:connection_id], method: "update_objects_with_query_results", current_object_contents: contents, new_data: with_extra_data}) if should_log
             amazon_s3.export file_name: new_file_name, objects: [with_extra_data]
           end
         rescue Aws::S3::Errors::NoSuchKey => e
@@ -248,9 +252,10 @@ module Persistence
     #   ],
     #   :failed => [] }
     def update_objects_files(statuses_objects)
+      should_log = should_log_s3_obj_movement?(@config[:connection_id])
       # puts "Status objects to be processed: #{statuses_objects}"
 
-      puts({connection_id: @config[:connection_id], method: "update_objects_files", statuses_objects: statuses_objects})
+      puts({connection_id: @config[:connection_id], method: "update_objects_files", statuses_objects: statuses_objects}) if should_log
 
       return if statuses_objects.nil?
 
@@ -259,7 +264,7 @@ module Persistence
         statuses_objects[status_key].each do |types|
           # puts types
           types.keys.each do |object_type|
-            puts({connection_id: @config[:connection_id], method: "update_objects_files", message: "Processing objects", object_type: object_type})
+            puts({connection_id: @config[:connection_id], method: "update_objects_files", message: "Processing objects", object_type: object_type}) if should_log
             # puts object_type
             # NOTE seeing an nil `object` var here sometimes, investigate it
             # happens when you have both add_orders and get_products flows enabled
@@ -267,7 +272,7 @@ module Persistence
               object = types[object_type].with_indifferent_access 
               identifier = id_for_object(object, object_type)
               filename = "#{path.base_name}/#{path.in_progress}/#{object_type}_#{identifier}_"
-              puts({connection_id: @config[:connection_id], method: "update_objects_files", object: object, filename: filename, message: "Filename built and looking in s3 for it"})
+              puts({connection_id: @config[:connection_id], method: "update_objects_files", object: object, filename: filename, message: "Filename built and looking in s3 for it"}) if should_log
 
               collection = amazon_s3.bucket.objects(prefix: filename)
               unless collection.first
@@ -276,32 +281,32 @@ module Persistence
                 temp_obj.delete(:list_id)
                 identifier = id_for_object(temp_obj, object_type)
                 filename = "#{path.base_name}/#{path.in_progress}/#{object_type}_#{identifier}_"
-                puts({connection_id: @config[:connection_id], method: "update_objects_files", object: object, filename: filename, message: "Filename not found using list_id - trying id_for_object without list_id"})
+                puts({connection_id: @config[:connection_id], method: "update_objects_files", object: object, filename: filename, message: "Filename not found using list_id - trying id_for_object without list_id"}) if should_log
                 collection = amazon_s3.bucket.objects(prefix: filename)
               end
 
               collection.each do |s3_object|
-                puts({ connection_id: @config[:connection_id], method: "update_objects_files", message: "File found", s3_object: s3_object.inspect })
+                puts({connection_id: @config[:connection_id], method: "update_objects_files", message: "File found", s3_object: s3_object.inspect}) if should_log
                 _, _, ax_filename = s3_object.key.split('/')
                 _, _, end_of_file, ax_edit_sequence = ax_filename.split('_')
                 end_of_file = '.json' unless ax_edit_sequence.nil?
 
-                puts({connection_id: @config[:connection_id], method: "update_objects_files", message: "Building file parts", ax_filename: ax_filename, end_of_file: end_of_file, ax_edit_sequence: ax_edit_sequence})
+                puts({connection_id: @config[:connection_id], method: "update_objects_files", message: "Building file parts", ax_filename: ax_filename, end_of_file: end_of_file, ax_edit_sequence: ax_edit_sequence}) if should_log
 
                 status_folder = path.send status_key
-                puts({connection_id: @config[:connection_id], method: "update_objects_files", message: "Status Folder", status_folder: status_folder})
+                puts({connection_id: @config[:connection_id], method: "update_objects_files", message: "Status Folder", status_folder: status_folder}) if should_log
 
                 new_filename = "#{path.base_name_w_bucket}/#{status_folder}/#{object_type}_#{identifier}_"
                 new_filename << "#{object[:list_id]}_#{object[:edit_sequence]}" unless object[:list_id].to_s.empty?
 
-                puts({connection_id: @config[:connection_id], method: "update_objects_files", message:"New filename", new_filename: new_filename, end_of_file: end_of_file})
+                puts({connection_id: @config[:connection_id], method: "update_objects_files", message:"New filename", new_filename: new_filename, end_of_file: end_of_file}) if should_log
 
                 s3_object.move_to("#{new_filename}#{end_of_file}")
 
                 new_filename_no_bucket = "#{path.base_name}/#{status_folder}/#{object_type}_#{identifier}_"
                 new_filename_no_bucket << "#{object[:list_id]}_#{object[:edit_sequence]}" unless object[:list_id].to_s.empty?
 
-                puts({connection_id: @config[:connection_id], method: "update_objects_files", new_filename_no_bucket: new_filename_no_bucket})
+                puts({connection_id: @config[:connection_id], method: "update_objects_files", new_filename_no_bucket: new_filename_no_bucket}) if should_log
                 create_notifications("#{new_filename_no_bucket}#{end_of_file}", status_key) if status_key == 'processed'
               end
             rescue Exception => e
@@ -781,6 +786,10 @@ module Persistence
 
     def list_id_and_edit_sequence(object)
       "#{object[:list_id]}_#{object[:edit_sequence]}"
+    end
+
+    def should_log_s3_obj_movement?(id)
+      IDS_TO_LOG_S3_OBJ_MOVEMENT.include?(id)
     end
   end
 end
