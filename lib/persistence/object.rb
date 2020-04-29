@@ -9,6 +9,7 @@ module Persistence
       inventoryproducts
       salestaxproducts
       serviceproducts
+      inventoryassemblyproducts
     )
 
     IDS_TO_LOG_S3_OBJ_MOVEMENT = ENV.fetch('IDS_TO_LOG', '').split(',')

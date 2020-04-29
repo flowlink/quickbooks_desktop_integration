@@ -11,7 +11,7 @@ module QBWC
         errors.each do |error|
           Persistence::Object.handle_error(config,
                                            error.merge(context: 'Querying discount products'),
-                                           'products',
+                                           'discountproducts',
                                            error[:request_id])
         end
       end
@@ -23,7 +23,7 @@ module QBWC
         discountproduct_params = receive_configs.find { |c| c['discountproducts'] }
 
         if discountproduct_params
-          payload = { discountproducts: discountproducts_to_flowlink }
+          payload = { products: products_to_flowlink }
           config = { origin: 'quickbooks' }.merge config.reject{|k,v| k == :origin || k == "origin"}
           poll_persistence = Persistence::Polling.new(config, payload)
           poll_persistence.save_for_polling
@@ -78,7 +78,7 @@ module QBWC
         end.join('') + object['Name']
       end
 
-      def discountproducts_to_flowlink
+      def products_to_flowlink
         records.map do |record|
           object = {
             id: record['Name'],
