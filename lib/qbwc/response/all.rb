@@ -77,6 +77,22 @@ module QBWC
       def process(config = {})
         puts({connection: config[:connection_id], message: "Processing response", response_hash: response_hash})
 
+        if response_hash["InvoiceQueryRs"]
+          puts({
+            connection: config[:connection_id],
+            message: "INVOICE_QUERY_RS",
+            invoice_response_hash: response_hash["InvoiceQueryRs"],
+            value_before_mapping: response_hash["InvoiceQueryRs"].is_a?(Hash)? [response_hash["InvoiceQueryRs"]] : Array(response_hash["InvoiceQueryRs"]),
+            invoice_records: (response_hash["InvoiceQueryRs"].is_a?(Hash)? [response_hash["InvoiceQueryRs"]] : Array(response_hash["InvoiceQueryRs"])).map do |item| 
+              item.values.flatten.map do |value|
+                response_item = nil
+                response_item = value.last if value.is_a?(Array)
+                response_item = value if value.is_a?(Hash)
+                response_item
+              end.compact.flatten.map { |sub| sub.merge({ 'request_id' => item['@requestID'] }) }
+            end.flatten
+          }) 
+        end
         response_hash.map do |key, value|
 
           class_name = "QBWC::Response::#{key}".constantize
