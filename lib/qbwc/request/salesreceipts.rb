@@ -288,10 +288,11 @@ module QBWC
         end
 
         def rate(line)
-          return '' unless line['price']
+          return '' if !line['amount'].to_s.empty? || line['use_amount'] == true
+          return '' unless price(line)
 
           <<~XML
-            <Rate>#{'%.2f' % line['price'].to_f}</Rate>
+            <Rate>#{'%.2f' % price(line).to_f}</Rate>
           XML
         end
 
@@ -316,9 +317,13 @@ module QBWC
         end
 
         def amount_line(line)
-          return '' if line['amount'].to_s.empty?
+          return '' if rate_line(line) != ''
+
+          amount = line['amount'] || price(line)
+          return '' unless amount
+
           <<~XML
-            <Amount>#{'%.2f' % line['amount'].to_f}</Amount>
+            <Amount>#{'%.2f' % amount.to_f}</Amount>
           XML
         end
 
@@ -373,6 +378,10 @@ module QBWC
         end
 
         private
+
+        def price(line)
+          line['line_item_price'] || line['price']
+        end
 
         def items(record)
           record['line_items'].to_a.sort_by { |a| a['product_id'] }
