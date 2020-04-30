@@ -304,6 +304,8 @@ module QBWC
           line['tax_code_id'] = adjustment['tax_code_id'] if adjustment['tax_code_id']
           line['amount'] = adjustment['amount'] if adjustment['amount']
 
+          line['use_amount'] = true if params['use_amount_for_tax'].to_s == "1"
+          
           invoice_line_mod line
         end
 

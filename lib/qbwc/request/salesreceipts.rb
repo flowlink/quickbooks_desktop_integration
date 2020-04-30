@@ -211,6 +211,9 @@ module QBWC
           line['tax_code_id'] = adjustment['tax_code_id'] if adjustment['tax_code_id']
           line['class_name'] = adjustment['class_name'] if adjustment['class_name']
           line['name'] = adjustment['description'] if adjustment['description']
+          line['amount'] = adjustment['amount'] if adjustment['amount']
+
+          line['use_amount'] = true if params['use_amount_for_tax'].to_s == "1"
 
           sales_receipt_line_add line
         end
@@ -247,6 +250,9 @@ module QBWC
           line['tax_code_id'] = adjustment['tax_code_id'] if adjustment['tax_code_id']
           line['class_name'] = adjustment['class_name'] if adjustment['class_name']
           line['name'] = adjustment['description'] if adjustment['description']
+          line['amount'] = adjustment['amount'] if adjustment['amount']
+
+          line['use_amount'] = true if params['use_amount_for_tax'].to_s == "1"
 
           sales_receipt_line_mod line
         end
