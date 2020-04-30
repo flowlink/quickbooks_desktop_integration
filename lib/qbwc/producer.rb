@@ -59,6 +59,10 @@ module QBWC
 
         klass = "QBWC::Request::#{object_type.capitalize}".constantize
         records = object_hash.values.flatten
+        puts "=" * 99
+        puts klass.inspect
+        puts records.inspect
+        puts "=" * 99
         result << klass.generate_request_insert_update(
           records,
           config.merge(add_flows_params(object_type) || {})
