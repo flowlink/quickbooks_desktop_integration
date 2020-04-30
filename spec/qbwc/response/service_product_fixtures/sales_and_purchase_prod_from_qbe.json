@@ -1,0 +1,55 @@
+{
+  "ListID": "80001019-2039019",
+  "TimeCreated": "2019-09-24T17:24:16-05:00",
+  "TimeModified": "2019-10-26T17:14:29-05:00",
+  "EditSequence": "123456789",
+  "Name": "test-product",
+  "FullName": "Level1:test-product",
+  "BarCodeValue": "0001910191",
+  "IsActive": true,
+  "ClassRef": {
+    "ListID": "09290192",
+    "FullName": "Class1:Class2"
+  },
+  "ParentRef": {
+    "ListID": "00091818",
+    "FullName": "GermanCars:Mercedes-Benz"
+  },
+  "Sublevel": 1,
+  "IsTaxIncluded": false,
+  "PrefVendorRef": {
+    "ListID": "987987",
+    "FullName": "My Supply"
+  },
+  "UnitOfMeasureSetRef": {
+    "ListID": "129294892",
+    "FullName": "feet"
+  },
+  "SalesTaxCodeRef": {
+    "ListID": "9103902",
+    "FullName": "sales tax code 1"
+  },
+  "SalesAndPurchase": {
+    "SalesDesc": "Sales and Purchase Sales Description",
+    "SalesPrice": 100,
+    "IncomeAccountRef": {
+      "ListID": "1112222",
+      "FullName": "Income Account"
+    },
+    "PurchaseDesc": "Sales and Purchase Purchase Description",
+    "PurchaseCost": 50,
+    "PurchaseTaxCodeRef": {
+      "ListID": "7777463",
+      "FullName": "Purchase Tax Code 123"
+    },
+    "ExpenseAccountRef": {
+      "ListID": "98765",
+      "FullName": "Expense Account"
+    },
+    "PrefVendorRef": {
+      "ListID": "12909402",
+      "FullName": "My SandorP Supply"
+    }
+  },
+  "ExternalGUID": 109389220
+}

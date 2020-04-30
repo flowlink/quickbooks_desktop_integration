@@ -14,13 +14,13 @@ module QBWC
       params = config.merge receive: receive_settings
 
       send_settings = s3_settings.settings('add_')
-      %w(orders shipments invoices customers purchaseorders).each do |object_type|
+      %w(orders shipments invoices customers purchaseorders salesreceipts).each do |object_type|
         send_params = send_settings.find { |s| s[object_type] } || {}
         params = params.merge(send_params[object_type]) if send_params.key?(object_type)
       end
       Response::All.new(response_xml).process(params)
     rescue  Exception => e
-      puts "Exception: digest_response_into_actions: message:#{e.message} backtrace:#{e.backtrace.inspect}"
+      puts({connection_id: config[:connection_id], method: "Exception: digest_response_into_actions", message: e.message, backtrace: e.backtrace.inspect})
     end
   end
 end

@@ -1,0 +1,18 @@
+{
+  "ListID": "",
+  "TimeCreated": "2015-02-04T17:22:56-05:00",
+  "TimeModified": "2015-02-04T17:22:56-05:00",
+  "EditSequence": "1423088576",
+  "ItemInventoryRef": {
+    "FullName": "BOIL-OUT 4"
+  },
+  "QuantityOnHand": "12",
+  "InventorySiteRef": {
+    "FullName": "DFW"
+  },
+  "QuantityOnPurchaseOrders": "0",
+  "QuantityOnSalesOrders": "0",
+  "QuantityToBeBuiltByPendingBuildTxns": "0",
+  "QuantityRequiredByPendingBuildTxns": "0",
+  "QuantityOnPendingTransfers": "0"
+}
