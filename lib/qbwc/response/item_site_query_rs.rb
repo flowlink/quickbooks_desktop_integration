@@ -42,6 +42,8 @@ module QBWC
       private
 
       def inventories_to_flowlink
+        puts "inventories_to_flowlink"
+        puts records.size
         records.map do |record|
           {
             id: full_name(record) + '-site-' + inventory_site(record),
