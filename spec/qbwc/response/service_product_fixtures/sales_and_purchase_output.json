@@ -1,0 +1,26 @@
+{
+  "sales_and_purchase": true,
+  "sales_description": "Sales and Purchase Sales Description",
+  "sales_price": 100,
+  "price": 100,
+  "purchase_description": "Sales and Purchase Purchase Description",
+  "purchase_cost": 50,
+  "cost": 50,
+  "purchase_tax_code_name": "Purchase Tax Code 123",
+  "income_account_name": "Income Account",
+  "expense_account_name": "Expense Account",
+  "vendor": {
+    "name": "My Supply",
+    "external_id": "987987",
+    "qbe_id": "987987"
+  },
+  "sales_and_purchase_vendor": {
+    "name": "My SandorP Supply",
+    "external_id": "12909402",
+    "qbe_id": "12909402"
+  },
+  "relationships": [
+    { "object": "vendor", "key": "qbe_id" },
+    { "object": "sales_and_purchase_vendor", "key": "qbe_id" }
+  ]
+}

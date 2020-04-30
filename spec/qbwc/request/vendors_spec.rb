@@ -4,7 +4,7 @@ require 'qbwc/request/vendors'
 require 'qbwc/request/vendor_fixtures/add_update_search_xml_fixtures'
 
 RSpec.describe QBWC::Request::Vendors do
-  let(:flowlink_vendor) { JSON.parse(File.read('spec/fixtures/vendor_from_flowlink.json')) }
+  let(:flowlink_vendor) { JSON.parse(File.read('spec/qbwc/request/vendor_fixtures/vendor_from_flowlink.json')) }
   let(:config) {
     {
       job_type_name: "job_type_reference",
@@ -23,14 +23,31 @@ RSpec.describe QBWC::Request::Vendors do
     expect(vendor.gsub(/\s+/, "")).to eq(qbe_vendor_update.gsub(/\s+/, ""))
   end
 
-  it "calls search_xml_by_id and outputs the right data" do
-    vendor = described_class.search_xml_by_id("My ID", 12345)
-    expect(vendor.gsub(/\s+/, "")).to eq(qbe_vendor_search_id.gsub(/\s+/, ""))
-  end
+  describe "search xml" do
+    it "has list_id and calls search_xml_by_id" do
+      # Call search_xml method with flowlink_customer
+      pending("expect the search_xml_by_id method to have been called")
+      pending("expect the search_xml_by_name method to NOT have been called")
+      this_should_not_get_executed
+    end
 
-  it "calls search_xml_by_name and outputs the right data" do
-    vendor = described_class.search_xml_by_name("My ID", 12345)
-    expect(vendor.gsub(/\s+/, "")).to eq(qbe_vendor_search_name.gsub(/\s+/, ""))
+    it "does not have list_id and calls search_xml_by_name" do
+      flowlink_vendor.delete(:list_id)
+      # Call search_xml method with flowlink_customer
+      pending("expect the search_xml_by_name method to have been called")
+      pending("expect the search_xml_by_id method to NOT have been called")
+      this_should_not_get_executed
+    end
+
+    it "calls search_xml_by_id and outputs the right data" do
+      vendor = described_class.search_xml_by_id("qbe-vendor-listid", 12345)
+      expect(vendor.gsub(/\s+/, "")).to eq(qbe_vendor_search_id.gsub(/\s+/, ""))
+    end
+  
+    it "calls search_xml_by_name and outputs the right data" do
+      vendor = described_class.search_xml_by_name("My ID", 12345)
+      expect(vendor.gsub(/\s+/, "")).to eq(qbe_vendor_search_name.gsub(/\s+/, ""))
+    end
   end
 
   describe 'calls pre_mapping_logic' do
@@ -104,14 +121,14 @@ RSpec.describe QBWC::Request::Vendors do
         expect(vendor['mobile']).to eq('2')
       end
 
-      it 'has nil for phone and mobile and returns valid address phone fields' do
+      it 'has nil for phone and mobile and returns nil' do
         flowlink_vendor['vendor_address']['phone'] = '123-456-7890'
         flowlink_vendor['ship_from_address']['phone'] = '111-555-9999'
         flowlink_vendor['phone'] = nil
         flowlink_vendor['mobile'] = nil
         vendor = QBWC::Request::Vendors.send(:pre_mapping_logic, flowlink_vendor)
-        expect(vendor['phone']).to eq('123-456-7890')
-        expect(vendor['mobile']).to eq('111-555-9999')
+        expect(vendor['phone']).to be_nil
+        expect(vendor['mobile']).to be_nil
       end
 
       it 'has nil for phone, mobile, and address fields and returns nil' do

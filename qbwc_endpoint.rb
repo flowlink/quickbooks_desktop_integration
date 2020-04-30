@@ -134,13 +134,13 @@ class QBWCEndpoint < Sinatra::Base
     XML
     @qbxml.gsub!("\n", '').gsub!("&", "&amp;")
 
-    puts @qbxml.gsub("\n", '').encode(Encoding.find("US-ASCII"))
+    puts({connection_id: connection_id, message: "Send Request XML", body: @qbxml.gsub("\n", '')})
     erb :'qbwc/send_request_xml'
   end
 
   def receive_response_xml(connection_id, body)
     puts "RECEIVING"
-    puts body.gsub("\n", '')
+    puts({connection_id: connection_id, message: "RECEIVING RESPONSE", body: body.gsub("\n", '')})
     QBWC::Consumer.new(connection_id: connection_id).digest_response_into_actions(body)
 
     erb :'qbwc/receive_response_xml'

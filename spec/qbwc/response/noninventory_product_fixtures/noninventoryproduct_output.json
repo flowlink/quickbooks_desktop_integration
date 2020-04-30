@@ -16,5 +16,5 @@
   "modified_at": "2019-10-26T17:14:29-05:00",
   "class_name": "Class1:Class2",
   "parent_name": "GermanCars:Mercedes-Benz",
-  "item_type": "non_inventory"
+  "qbe_item_type": "non_inventory"
 }
