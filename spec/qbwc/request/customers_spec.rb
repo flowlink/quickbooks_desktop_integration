@@ -4,7 +4,7 @@ require 'qbwc/request/customers'
 require 'qbwc/request/customer_fixtures/add_update_search_xml_fixtures'
 
 RSpec.describe QBWC::Request::Customers do
-  let(:flowlink_customer) { JSON.parse(File.read('spec/fixtures/customer_from_flowlink.json')) }
+  let(:flowlink_customer) { JSON.parse(File.read('spec/qbwc/request/customer_fixtures/customer_from_flowlink.json')) }
   let(:config) {
     {
       job_type_name: 'job_type_reference',
@@ -15,22 +15,39 @@ RSpec.describe QBWC::Request::Customers do
 
   it 'calls add_xml_to_send and outputs the right data' do
     customer = QBWC::Request::Customers.add_xml_to_send(flowlink_customer, 12345, config)
-    expect(customer.gsub(/\s+/, ')).to eq(qbe_customer_add.gsub(/\s+/, '))
+    expect(customer.gsub(/\s+/, "")).to eq(qbe_customer_add.gsub(/\s+/, ""))
   end
 
   it 'calls update_xml_to_send and outputs the right data' do
     customer = QBWC::Request::Customers.update_xml_to_send(flowlink_customer, 12345, config)
-    expect(customer.gsub(/\s+/, ')).to eq(qbe_customer_update.gsub(/\s+/, '))
+    expect(customer.gsub(/\s+/, "")).to eq(qbe_customer_update.gsub(/\s+/, ""))
   end
 
-  it 'calls search_xml_by_id and outputs the right data' do
-    customer = QBWC::Request::Customers.search_xml_by_id('My ID', 12345)
-    expect(customer.gsub(/\s+/, ')).to eq(qbe_customer_search_id.gsub(/\s+/, '))
-  end
+  describe "search xml" do
+    it "has list_id and calls search_xml_by_id" do
+      # Call search_xml method with flowlink_customer
+      pending("expect the search_xml_by_id method to have been called")
+      pending("expect the search_xml_by_name method to NOT have been called")
+      this_should_not_get_executed
+    end
 
-  it 'calls search_xml_by_name and outputs the right data' do
-    customer = QBWC::Request::Customers.search_xml_by_name('My ID', 12345)
-    expect(customer.gsub(/\s+/, ')).to eq(qbe_customer_search_name.gsub(/\s+/, '))
+    it "does not have list_id and calls search_xml_by_name" do
+      flowlink_customer.delete(:list_id)
+      # Call search_xml method with flowlink_customer
+      pending("expect the search_xml_by_name method to have been called")
+      pending("expect the search_xml_by_id method to NOT have been called")
+      this_should_not_get_executed
+    end
+
+    it 'calls search_xml_by_id and outputs the right data' do
+      customer = QBWC::Request::Customers.search_xml_by_id('qbe-customer-listid', 12345)
+      expect(customer.gsub(/\s+/, "")).to eq(qbe_customer_search_id.gsub(/\s+/, ""))
+    end
+  
+    it 'calls search_xml_by_name and outputs the right data' do
+      customer = QBWC::Request::Customers.search_xml_by_name('Bruce Wayne', 12345)
+      expect(customer.gsub(/\s+/, "")).to eq(qbe_customer_search_name.gsub(/\s+/, ""))
+    end
   end
 
   describe 'calls pre_mapping_logic' do

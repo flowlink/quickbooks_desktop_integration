@@ -19,8 +19,6 @@ module QBWC
       def process(config = {})
         return if records.empty?
 
-        puts records.inspect
-
         config = config.merge(origin: 'flowlink')
         object_persistence = Persistence::Object.new config
         object_persistence.update_objects_with_query_results(objects_to_update)

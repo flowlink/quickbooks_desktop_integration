@@ -44,7 +44,8 @@ module QBWC
           ''
         end
 
-        def polling_current_items_xml(timestamp, config)
+        def polling_current_items_xml(params, config)
+          timestamp = params['quickbooks_since']
           session_id = Persistence::Session.save(config, 'polling' => timestamp)
 
           time = Time.parse(timestamp).in_time_zone 'Pacific Time (US & Canada)'
@@ -177,6 +178,24 @@ module QBWC
           XML
         end
 
+        def sales_receipt_line_add_optional_rate(line)
+          line['price'].nil? ? rate = '' : rate = "<Rate>#{'%.2f' % line['price'].to_f}</Rate>"
+
+          <<~XML
+            <SalesReceiptLineAdd>
+            <ItemRef>
+              <FullName>#{line['product_id']}</FullName>
+            </ItemRef>
+            <Desc>#{line['name']}</Desc>
+            #{quantity(line)}
+            #{rate}
+            #{tax_code_line(line)}
+            #{inventory_site(line)}
+            #{amount_line(line)}
+            </SalesReceiptLineAdd>
+          XML
+        end
+
         def sales_receipt_line_add_from_adjustment(adjustment, params)
           puts "IN sales sales_receipt PARAMS = #{params}"
 
@@ -190,25 +209,31 @@ module QBWC
           }
 
           line['tax_code_id'] = adjustment['tax_code_id'] if adjustment['tax_code_id']
+          line['class_name'] = adjustment['class_name'] if adjustment['class_name']
+          line['name'] = adjustment['description'] if adjustment['description']
+          line['amount'] = adjustment['amount'] if adjustment['amount']
+
+          line['use_amount'] = true if params['use_amount_for_tax'].to_s == "1"
 
           sales_receipt_line_add line
         end
 
         def sales_receipt_line_add_from_tax_line_item(tax_line_item, params)
           line = {
-            'product_id' => QBWC::Request::Adjustments.adjustment_product_from_qb('tax', params),
+            'product_id' => QBWC::Request::Adjustments.adjustment_product_from_qb('tax', params, tax_line_item),
             'quantity' => 0,
             'price' => tax_line_item['value'],
+            'amount' => tax_line_item['amount'],
             'name' => tax_line_item['name']
           }
 
-          sales_receipt_line_add line
+          sales_receipt_line_add_optional_rate line
         end
 
         def sales_receipt_line_mod(line)
           <<~XML
             <SalesReceiptLineMod>
-              <TxnLineID>#{line['txn_line_id']}</TxnLineID>
+              <TxnLineID>#{line['txn_line_id'] || -1}</TxnLineID>
               #{sales_receipt_line(line)}
             </SalesReceiptLineMod>
           XML
@@ -223,17 +248,25 @@ module QBWC
           }
 
           line['tax_code_id'] = adjustment['tax_code_id'] if adjustment['tax_code_id']
+          line['class_name'] = adjustment['class_name'] if adjustment['class_name']
+          line['name'] = adjustment['description'] if adjustment['description']
+          line['amount'] = adjustment['amount'] if adjustment['amount']
+
+          line['use_amount'] = true if params['use_amount_for_tax'].to_s == "1"
 
           sales_receipt_line_mod line
         end
 
         def sales_receipt_line_mod_from_tax_line_item(tax_line_item, params)
+
+
           line = {
-            'product_id' => QBWC::Request::Adjustments.adjustment_product_from_qb('tax', params),
+            'product_id' => QBWC::Request::Adjustments.adjustment_product_from_qb('tax', params, tax_line_item),
             'quantity' => 0,
             'price' => tax_line_item['value'],
-            'txn_line_id' => tax_line_item['txn_line_id'],
-            'name' => tax_line_item['name']
+            'amount' => tax_line_item['amount'],
+            'name' => tax_line_item['name'],
+            'txn_line_id' => tax_line_item['txn_line_id']
           }
 
           sales_receipt_line_mod line
@@ -246,10 +279,20 @@ module QBWC
             </ItemRef>
             <Desc>#{line['name']}</Desc>
             #{quantity(line)}
-            <Rate>#{'%.2f' % line['price'].to_f}</Rate>
-            #{tax_code_line(line)}
-            #{inventory_site(line)}
+            #{rate(line)}
+            #{class_ref_for_receipt_line(line)}
             #{amount_line(line)}
+            #{inventory_site(line)}
+            #{tax_code_line(line)}
+          XML
+        end
+
+        def rate(line)
+          return '' if !line['amount'].to_s.empty? || line['use_amount'] == true
+          return '' unless price(line)
+
+          <<~XML
+            <Rate>#{'%.2f' % price(line).to_f}</Rate>
           XML
         end
 
@@ -263,11 +306,24 @@ module QBWC
           XML
         end
 
-        def amount_line(line)
-          return '' if line['amount'].to_s.empty?
+        def class_ref_for_receipt_line(line)
+          return '' unless line['class_name']
 
           <<~XML
-            <Amount>#{'%.2f' % line['amount'].to_f}</Amount>
+            <ClassRef>
+              <FullName>#{line['class_name']}</FullName>
+            </ClassRef>
+          XML
+        end
+
+        def amount_line(line)
+          return '' if rate_line(line) != ''
+
+          amount = line['amount'] || price(line)
+          return '' unless amount
+
+          <<~XML
+            <Amount>#{'%.2f' % amount.to_f}</Amount>
           XML
         end
 
@@ -322,6 +378,10 @@ module QBWC
         end
 
         private
+
+        def price(line)
+          line['line_item_price'] || line['price']
+        end
 
         def items(record)
           record['line_items'].to_a.sort_by { |a| a['product_id'] }

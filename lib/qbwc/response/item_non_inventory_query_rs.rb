@@ -23,7 +23,7 @@ module QBWC
         noninventoryproduct_params = receive_configs.find { |c| c['noninventoryproducts'] }
 
         if noninventoryproduct_params
-          payload = { noninventoryproducts: noninventoryproducts_to_flowlink }
+          payload = { products: products_to_flowlink }
           config = { origin: 'quickbooks' }.merge config.reject{|k,v| k == :origin || k == "origin"}
           poll_persistence = Persistence::Polling.new(config, payload)
           poll_persistence.save_for_polling
@@ -78,8 +78,7 @@ module QBWC
         end.join('') + object['Name']
       end
 
-      def noninventoryproducts_to_flowlink
-        puts "NON inv Product object from QBE: #{records.first}"
+      def products_to_flowlink
         records.map do |record|
           object = {
             id: record['Name'],
@@ -101,7 +100,7 @@ module QBWC
             parent_name: record.dig('ParentRef', 'FullName'),
             unit_measure: record.dig('UnitOfMeasureSetRef', 'FullName'),
             sales_tax_code_name: record.dig('SalesTaxCodeRef', 'FullName'),
-            item_type: 'non_inventory'
+            qbe_item_type: 'non_inventory'
           }.compact
 
           if record['SalesOrPurchase']

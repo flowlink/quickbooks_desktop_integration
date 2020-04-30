@@ -1,0 +1,40 @@
+{
+  "ListID": "80001019-2039019",
+  "TimeCreated": "2019-09-24T17:24:16-05:00",
+  "TimeModified": "2019-10-26T17:14:29-05:00",
+  "EditSequence": "123456789",
+  "Name": "test-product",
+  "FullName": "Level1:test-product",
+  "BarCodeValue": "0001910191",
+  "IsActive": true,
+  "ClassRef": {
+    "ListID": "09290192",
+    "FullName": "Class1:Class2"
+  },
+  "ParentRef": {
+    "ListID": "00091818",
+    "FullName": "GermanCars:Mercedes-Benz"
+  },
+  "Sublevel": 1,
+  "IsTaxIncluded": false,
+  "PrefVendorRef": {
+    "ListID": "987987",
+    "FullName": "Mr Vendor"
+  },
+  "UnitOfMeasureSetRef": {
+    "ListID": "129294892",
+    "FullName": "feet"
+  },
+  "SalesTaxCodeRef": {
+    "ListID": "9103902",
+    "FullName": "sales tax code 1"
+  },
+  "SalesOrPurchase": {
+    "Desc": "Sales or Purchase Description",
+    "AccountRef": {
+      "ListID": "1112222",
+      "FullName": "Income Account"
+    }
+  },
+  "ExternalGUID": 109389220
+}

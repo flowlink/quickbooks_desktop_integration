@@ -19,8 +19,6 @@ module QBWC
       def process(config = {})
         return if records.empty?
 
-        puts records.inspect
-
         receive_configs = config[:receive] || []
         order_params = receive_configs.find { |c| c['orders'] }
 
@@ -109,7 +107,6 @@ module QBWC
 
       def orders_to_flowlink
         records.map do |record|
-          puts "sales order from qbe: #{record}"
           {
             id: record['RefNumber'],
             transaction_id: record['TxnID'],

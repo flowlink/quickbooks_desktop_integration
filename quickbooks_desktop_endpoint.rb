@@ -24,6 +24,7 @@ ENDPOINTS = %w(
 
 GET_ENDPOINTS =  %w(
   get_inventory
+  get_inventorywithsites
   get_inventories
   get_products
   get_invoices
@@ -36,6 +37,7 @@ GET_ENDPOINTS =  %w(
   get_salestaxproducts
   get_discountproducts
   get_inventoryproducts
+  get_inventoryassemblyproducts
 )
 
 class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
@@ -138,11 +140,21 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
       add_value 'fail', notifications['failed'] if !notifications['failed'].empty?
       if records.any?
         names = records.inject([]) do |names, collection|
+          puts "names"
+          puts names.inspect
+          puts "values"
+          puts collection.values.inspect
           name = collection.keys.first
           puts name
           puts collection.values.first.inspect
-          
-          add_or_merge_value name, collection.values.first
+
+          # TODO: Remove the metapromming part of this and explicitly set the key we use
+          # for each endpoint
+          if name == 'inventorywithsites'
+            add_or_merge_value 'inventories', collection.values.first
+          else
+            add_or_merge_value name, collection.values.first
+          end
 
           names.push name
         end
