@@ -12,7 +12,7 @@ module QBWC
           timestamp = params['quickbooks_since']
           session_id = Persistence::Session.save(config, 'polling' => timestamp)
 
-          if site_name(params) == ''
+          if site_name(params) == nil || site_name(params) == ''
             all_sites(session_id)
           else
             site_name_filter(session_id, params)
