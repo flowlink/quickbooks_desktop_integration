@@ -21,6 +21,14 @@ module Persistence
       amazon_s3.export file_name: file, objects: objects
     end
 
+    # This methods makes sure no duplicates are made from the QBWC Response. It'll overwrite
+    # older files ensure the only most recent collection is saved
+    def save_for_polling_without_timestamp
+      polling_path = @config[:origin] == 'quickbooks' ? path.qb_pending : path.pending
+      file = "#{path.base_name}/#{polling_path}/#{payload_key}_.json"
+      amazon_s3.export file_name: file, objects: objects
+    end
+
     def save_for_query_later
       file = "#{path.base_name}/#{path.pending}/query_#{payload_key}_#{current_time}.json"
       amazon_s3.export file_name: file, objects: objects
