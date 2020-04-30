@@ -60,7 +60,8 @@ module QBWC
             quantity_on_sales_order: record['QuantityOnSalesOrders'],
             quantity_to_be_assembled: record['QuantityToBeBuiltByPendingBuildTxns'],
             quantity_by_being_assembled: record['QuantityRequiredByPendingBuildTxns'],
-            quantity_by_pending_transfer: record['QuantityOnPendingTransfers']
+            quantity_by_pending_transfer: record['QuantityOnPendingTransfers'],
+            timestamp: Time.now.to_s
           }
         end
       end
