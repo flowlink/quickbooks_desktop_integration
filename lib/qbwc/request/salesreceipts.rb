@@ -211,6 +211,9 @@ module QBWC
           line['tax_code_id'] = adjustment['tax_code_id'] if adjustment['tax_code_id']
           line['class_name'] = adjustment['class_name'] if adjustment['class_name']
           line['name'] = adjustment['description'] if adjustment['description']
+          line['amount'] = adjustment['amount'] if adjustment['amount']
+
+          line['use_amount'] = true if params['use_amount_for_tax'].to_s == "1"
 
           sales_receipt_line_add line
         end
@@ -247,6 +250,9 @@ module QBWC
           line['tax_code_id'] = adjustment['tax_code_id'] if adjustment['tax_code_id']
           line['class_name'] = adjustment['class_name'] if adjustment['class_name']
           line['name'] = adjustment['description'] if adjustment['description']
+          line['amount'] = adjustment['amount'] if adjustment['amount']
+
+          line['use_amount'] = true if params['use_amount_for_tax'].to_s == "1"
 
           sales_receipt_line_mod line
         end
@@ -282,10 +288,11 @@ module QBWC
         end
 
         def rate(line)
-          return '' unless line['price']
+          return '' if !line['amount'].to_s.empty? || line['use_amount'] == true
+          return '' unless price(line)
 
           <<~XML
-            <Rate>#{'%.2f' % line['price'].to_f}</Rate>
+            <Rate>#{'%.2f' % price(line).to_f}</Rate>
           XML
         end
 
@@ -310,9 +317,13 @@ module QBWC
         end
 
         def amount_line(line)
-          return '' if line['amount'].to_s.empty?
+          return '' if rate_line(line) != ''
+
+          amount = line['amount'] || price(line)
+          return '' unless amount
+
           <<~XML
-            <Amount>#{'%.2f' % line['amount'].to_f}</Amount>
+            <Amount>#{'%.2f' % amount.to_f}</Amount>
           XML
         end
 
@@ -367,6 +378,10 @@ module QBWC
         end
 
         private
+
+        def price(line)
+          line['line_item_price'] || line['price']
+        end
 
         def items(record)
           record['line_items'].to_a.sort_by { |a| a['product_id'] }
