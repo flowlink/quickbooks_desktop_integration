@@ -140,6 +140,10 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
       add_value 'fail', notifications['failed'] if !notifications['failed'].empty?
       if records.any?
         names = records.inject([]) do |names, collection|
+          puts "names"
+          puts names.inspect
+          puts "values"
+          puts collection.values.inspect
           name = collection.keys.first
           puts name
           puts collection.values.first.inspect
