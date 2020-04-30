@@ -76,6 +76,8 @@ module QBWC
 
       def process(config = {})
         puts({connection: config[:connection_id], message: "Processing response", response_hash: response_hash})
+        puts 'config'
+        puts config.inspect
 
         response_hash.map do |key, value|
 

@@ -10,8 +10,13 @@ module QBWC
     end
 
     def digest_response_into_actions(response_xml)
+      puts 'digest_response_into_actions'
       receive_settings = s3_settings.settings 'get_'
+      puts 'receive_settings'
+      puts receive_settings.inspect
       params = config.merge receive: receive_settings
+      puts 'params'
+      puts params.inspect
 
       send_settings = s3_settings.settings('add_')
       %w(orders shipments invoices customers purchaseorders salesreceipts).each do |object_type|

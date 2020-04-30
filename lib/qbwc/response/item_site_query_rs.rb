@@ -17,6 +17,7 @@ module QBWC
       end
 
       def process(config = {})
+        puts 'ItemSitesQueryRs#response'
         return if records.empty?
 
         receive_configs = config[:receive] || []
@@ -26,6 +27,8 @@ module QBWC
         if inventory_params
           payload = { inventorywithsites: inventories_to_flowlink }
           config = { origin: 'quickbooks' }.merge config.reject{|k,v| k == :origin || k == "origin"}
+          puts 'config'
+          puts config.inspect
 
           poll_persistence = Persistence::Polling.new(config, payload)
           poll_persistence.save_for_polling

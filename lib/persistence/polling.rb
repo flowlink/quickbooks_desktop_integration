@@ -16,8 +16,12 @@ module Persistence
     end
 
     def save_for_polling
+      if @config['flow'] == 'get_inventorywithsites'
+        file = "#{path.base_name}/#{polling_path}/#{payload_key}.json"
+      else
+        file = "#{path.base_name}/#{polling_path}/#{payload_key}_#{current_time}.json"
+      end
       polling_path = @config[:origin] == 'quickbooks' ? path.qb_pending : path.pending
-      file = "#{path.base_name}/#{polling_path}/#{payload_key}_#{current_time}.json"
       amazon_s3.export file_name: file, objects: objects
     end
 
