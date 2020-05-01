@@ -212,7 +212,7 @@ module Persistence
       prefix = path.base_and_ready
       collection = amazon_s3.bucket.objects(prefix: prefix)
 
-      select_precedence_files(collection).reject { |s3| s3.key.match(/notification/) }.map do |s3_object|
+      collection.reject { |s3| s3.key.match(/notification/) }.map do |s3_object|
         _, _, filename                         = s3_object.key.split('/')
         object_type, _, list_id, edit_sequence = filename.split('_')
         puts({connection_id: @config[:connection_id], method: "get_ready_objects_to_send", filename: filename, object_type: object_type, list_id: list_id, edit_sequence: edit_sequence})
@@ -460,40 +460,6 @@ module Persistence
       return !@config[:quickbooks_auto_create_payments].nil? &&
              !@config[:quickbooks_auto_create_payments].empty? &&
               @config[:quickbooks_auto_create_payments].to_s == '1'
-    end
-
-    def select_precedence_files(collection)
-      first_precedence_types = %w(customers products adjustments inventories payments)
-      second_precedence_types = %w(orders returns journals)
-
-      has_first_precedence_files = collection.select do |file|
-        _, _, filename    = file.key.split('/')
-        object_type, _, _ = filename.split('_')
-        first_precedence_types.include?(object_type)
-      end.any?
-
-      has_second_precedence_files = collection.select do |file|
-        _, _, filename    = file.key.split('/')
-        object_type, _, _ = filename.split('_')
-        second_precedence_types.include?(object_type)
-      end.any?
-
-      if has_first_precedence_files
-        objects_to_process = collection.select do |file|
-          _, _, filename    = file.key.split('/')
-          object_type, _, _ = filename.split('_')
-          first_precedence_types.include?(object_type)
-        end
-      elsif has_second_precedence_files
-        objects_to_process = collection.select do |file|
-          _, _, filename    = file.key.split('/')
-          object_type, _, _ = filename.split('_')
-          second_precedence_types.include?(object_type)
-        end
-      else
-        objects_to_process = collection
-      end
-      objects_to_process
     end
 
     def success_notification_message(object)
