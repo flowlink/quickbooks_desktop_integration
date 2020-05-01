@@ -9,6 +9,28 @@ module QBWC
         {qbe_name: "SalesTaxCodeRef", flowlink_name: "sales_tax_code_name", is_ref: true},
       ]
 
+      SALES_OR_PURCHASE_MAP = [
+        {qbe_name: "Desc", flowlink_name: "description", is_ref: false},
+        {qbe_name: "Price", flowlink_name: "price", is_ref: false},
+        {qbe_name: "PricePercent", flowlink_name: "price_percent", is_ref: false},
+        {qbe_name: "AccountRef", flowlink_name: "account_name", is_ref: true},
+        {qbe_name: "ApplyAccountRefToExistingTxns", flowlink_name: "apply_account_ref_to_existing_txns", is_ref: false, mod_only: true}
+      ]
+
+      SALES_AND_PURCHASE_MAP = [
+        {qbe_name: "SalesDesc", flowlink_name: "description", is_ref: false},
+        {qbe_name: "SalesPrice", flowlink_name: "price", is_ref: false},
+        {qbe_name: "IncomeAccountRef", flowlink_name: "income_account", is_ref: true},
+        {qbe_name: "ApplyIncomeAccountRefToExistingTxns", flowlink_name: "apply_income_account_ref_to_existing_txns", is_ref: false, mod_only: true},
+        {qbe_name: "PurchaseDesc", flowlink_name: "purchase_description", is_ref: false},
+        {qbe_name: "PurchaseCost", flowlink_name: "cost", is_ref: false},
+        {qbe_name: "PurchaseTaxCodeRef", flowlink_name: "purchase_tax_code_name", is_ref: true},
+        {qbe_name: "ExpenseAccountRef", flowlink_name: "expense_account", is_ref: true},
+        {qbe_name: "ApplyExpenseAccountRefToExistingTxns", flowlink_name: "apply_expense_account_ref_to_existing_txns", is_ref: false, mod_only: true},
+        {qbe_name: "PrefVendorRef", flowlink_name: "preferred_vendor_name", is_ref: true}
+      ]
+
+
       EXTERNAL_GUID_MAP = [{qbe_name: "ExternalGUID", flowlink_name: "external_guid", is_ref: false, add_only: true}]
 
       class << self
@@ -125,6 +147,7 @@ module QBWC
             #{add_barcode(product)}
             <IsActive >#{product['is_active'] || true}</IsActive>
             #{add_fields(product, GENERAL_MAPPING, config, is_mod)}
+            #{sales_or_and_purchase(product, config, is_mod)}
             #{add_fields(product, EXTERNAL_GUID_MAP, config, is_mod)}
           XML
         end
@@ -190,6 +213,26 @@ module QBWC
             <Name>#{product_identifier(product)}</Name>
             <IsActive>true</IsActive>
           XML
+        end
+
+        def sales_or_and_purchase(product, config, is_mod)
+          return "" unless !is_mod || product['sales_or_purchase'] || product['sales_and_purchase']
+          
+          # SandP or SorP is required when adding. We default to Sales and Purchase here.
+          map = SALES_AND_PURCHASE_MAP
+          tag = is_mod ? "SalesAndPurchaseMod" : "SalesAndPurchase"
+          
+          if product['sales_or_purchase'] && product['sales_and_purchase'] != true
+            map = SALES_OR_PURCHASE_MAP
+            tag = is_mod ? "SalesOrPurchaseMod" : "SalesOrPurchase"
+          end
+
+          # We should only have either price OR price_percent, so we default to price here
+          if product["price"] && product["price"] != ""
+            product["price_percent"] = nil
+          end
+
+          "<#{tag}>#{add_fields(product, map, config, is_mod)}</#{tag}>"
         end
 
       end

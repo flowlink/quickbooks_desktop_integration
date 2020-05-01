@@ -170,6 +170,32 @@ module QBWC
               expect(xml).to match(flowlink_product[mapping[:flowlink_name]].to_s)
             end
           end
+
+          it 'returns the XML for add related SALES_OR_PURCHASE_MAP names' do
+            flowlink_product["sales_or_purchase"] = true
+            xml = QBWC::Request::Otherchargeproducts.send(:product_xml, flowlink_product, config, false)
+            QBWC::Request::Otherchargeproducts::SALES_OR_PURCHASE_MAP.each do |mapping|
+              next if mapping[:mod_only] == true
+              # Price percent is nil if a price is given
+              next if mapping[:flowlink_name] == 'price_percent' && flowlink_product['price']
+
+              expect(xml).to match(mapping[:qbe_name])
+              expect(xml).to match(flowlink_product[mapping[:flowlink_name]].to_s)
+            end
+          end
+
+          it 'returns the XML for add related SALES_AND_PURCHASE_MAP names' do
+            flowlink_product["sales_and_purchase"] = true
+            xml = QBWC::Request::Otherchargeproducts.send(:product_xml, flowlink_product, config, false)
+            QBWC::Request::Otherchargeproducts::SALES_AND_PURCHASE_MAP.each do |mapping|
+              next if mapping[:mod_only] == true
+              # Price percent is nil if a price is given
+              next if mapping[:flowlink_name] == 'price_percent' && flowlink_product['price']
+
+              expect(xml).to match(mapping[:qbe_name])
+              expect(xml).to match(flowlink_product[mapping[:flowlink_name]].to_s)
+            end
+          end
         end
 
         context 'mod xml' do
@@ -186,9 +212,27 @@ module QBWC
             end
           end
 
-          it 'returns the XML for all EXTERNAL_GUID_MAP names' do
-            xml = QBWC::Request::Otherchargeproducts.send(:product_xml, flowlink_product, config, false)
-            QBWC::Request::Otherchargeproducts::EXTERNAL_GUID_MAP.each do |mapping|
+          it 'returns the XML for all SALES_OR_PURCHASE_MAP names' do
+            flowlink_product["sales_or_purchase"] = true
+            xml = QBWC::Request::Otherchargeproducts.send(:product_xml, flowlink_product, config, true)
+            QBWC::Request::Otherchargeproducts::SALES_OR_PURCHASE_MAP.each do |mapping|
+
+              # Price percent is nil if a price is given
+              next if mapping[:flowlink_name] == 'price_percent' && flowlink_product['price']
+
+              expect(xml).to match(mapping[:qbe_name])
+              expect(xml).to match(flowlink_product[mapping[:flowlink_name]].to_s)
+            end
+          end
+
+          it 'returns the XML for add related SALES_AND_PURCHASE_MAP names' do
+            flowlink_product["sales_and_purchase"] = true
+            xml = QBWC::Request::Otherchargeproducts.send(:product_xml, flowlink_product, config, true)
+            QBWC::Request::Otherchargeproducts::SALES_AND_PURCHASE_MAP.each do |mapping|
+              next if mapping[:mod_only] == false
+              # Price percent is nil if a price is given
+              next if mapping[:flowlink_name] == 'price_percent' && flowlink_product['price']
+
               expect(xml).to match(mapping[:qbe_name])
               expect(xml).to match(flowlink_product[mapping[:flowlink_name]].to_s)
             end
