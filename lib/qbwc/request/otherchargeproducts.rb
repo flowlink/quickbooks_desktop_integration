@@ -18,7 +18,7 @@ module QBWC
             config = { connection_id: params['connection_id'] }.with_indifferent_access
             session_id = Persistence::Session.save(config, object)
 
-            request << if object[:list_id].to_s.empty?
+            request << if object['list_id'].to_s.empty?
                          add_xml_to_send(object, params, session_id, config)
                        else
                          update_xml_to_send(object, params, session_id, config)
@@ -103,6 +103,18 @@ module QBWC
           XML
         end
 
+        def update_xml_to_send(product, params, session_id, config)
+          <<~XML
+            <ItemOtherChargeModRq requestID="#{session_id}">
+               <ItemOtherChargeMod>
+                  <ListID>#{product['list_id']}</ListID>
+                  <EditSequence>#{product['edit_sequence']}</EditSequence>
+                  #{product.key?('active') ? product_only_touch_xml(product, params) : product_xml(product, config, true)}
+               </ItemOtherChargeMod>
+            </ItemOtherChargeModRq>
+          XML
+        end
+
         def product_identifier(object)
           object['product_id'] || object['sku'] || object['id']
         end
@@ -170,6 +182,13 @@ module QBWC
 
           return '' if full_name.nil? || full_name == ""
           "<#{qbe_field_name}><FullName>#{full_name}</FullName></#{qbe_field_name}>"
+        end
+
+        def product_only_touch_xml(product, _params)
+          <<~XML
+            <Name>#{product_identifier(product)}</Name>
+            <IsActive>true</IsActive>
+          XML
         end
 
       end

@@ -90,28 +90,54 @@ module QBWC
           expect(xml).to match ''
         end
 
-        it 'returns a xml ItemOtherChargeAdd' do
+        it 'returns an xml to add the product' do
           records = [{
             'id' => 123,
             'product_id' => 'product'
           }]
           params = {'quickbooks_since' => '2020-01-10T08:24:55Z', 'quickbooks_max_returned' => '1000'}
           xml = subject.generate_request_insert_update(records, params)
-          puts xml.inspect
           expect(xml).to match 'ItemOtherChargeAdd'
         end
 
-        it 'returns a query searching by list id' do
-          records = [{
-            'id' => 123,
-            'product_id' => 'product',
-            'list_id' => 'list'
-          }]
-          params = {'quickbooks_since' => '2020-01-10T08:24:55Z', 'quickbooks_max_returned' => '1000'}
-          xml = subject.generate_request_insert_update(records, params)
-          expect(xml).to match 'ListID'
-          expect(xml).to match records.first['list_id']
+        context 'updating the product' do
+          let(:records) {
+            [{
+              'id' => 123,
+              'product_id' => 'product',
+              'list_id' => 'list',
+            }]
+          }
+          let(:params) {
+            {'quickbooks_since' => '2020-01-10T08:24:55Z', 'quickbooks_max_returned' => '1000'}
+          }
+          let(:active_records) {
+            [{
+              'id' => 123,
+              'product_id' => 'product',
+              'list_id' => 'list',
+              'active' => true
+            }]
+          }
+
+          it 'returns an xml as a mod' do
+            xml = subject.generate_request_insert_update(records, params)
+            expect(xml).to match 'ItemOtherChargeMod'
+          end
+
+          it 'returns an xml with an edit sequence and given list id' do
+            xml = subject.generate_request_insert_update(records, params)
+            expect(xml).to match 'ListID'
+            expect(xml).to match records.first['list_id']
+            expect(xml).to match 'EditSequence'
+          end
+
+          it 'active products return IsActive' do
+            xml = subject.generate_request_insert_update(active_records, params)
+            expect(xml).to match 'IsActive'
+          end
         end
+
       end
 
     end
