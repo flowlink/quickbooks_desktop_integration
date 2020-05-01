@@ -24,8 +24,9 @@ module QBWC
           puts({connection: params[:connection_id], method: "generate_request_insert_update", message: "Generating insert/update", objects: objects, params: params})
 
           objects.inject('') do |request, object|
+            puts({connection: params[:connection_id], method: "generate_request_insert_update", object: object})
             sanitize_sales_receipt(object)
-
+            puts({connection: params[:connection_id], method: "generate_request_insert_update", object: object, message: "After sanitize"})
             config = { connection_id: params['connection_id'] }.with_indifferent_access
             session_id = Persistence::Session.save(config, object)
 
