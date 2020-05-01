@@ -24,7 +24,7 @@ module QBWC
           puts({connection: params[:connection_id], method: "generate_request_insert_update", message: "Generating insert/update", objects: objects, params: params})
 
           objects.inject('') do |request, object|
-            puts({connection: params[:connection_id], method: "generate_request_insert_update", object: object})
+            puts({connection: params[:connection_id], method: "generate_request_insert_update", object: object, request: request})
             sanitize_sales_receipt(object)
             puts({connection: params[:connection_id], method: "generate_request_insert_update", object: object, message: "After sanitize"})
             config = { connection_id: params['connection_id'] }.with_indifferent_access
@@ -32,11 +32,10 @@ module QBWC
 
             new_string = request.dup
             new_string << if object[:list_id].to_s.empty?
-                         add_xml_to_send(object, params, session_id)
-
-                       else
-                         update_xml_to_send(object, params, session_id)
-                      end
+                            add_xml_to_send(object, params, session_id)
+                          else
+                            update_xml_to_send(object, params, session_id)
+                          end
             puts({connection: params[:connection_id], method: "generate_request_insert_update", request: request, object: object})
             request = new_string
           end
