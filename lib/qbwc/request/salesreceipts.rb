@@ -39,6 +39,8 @@ module QBWC
             puts({connection: params[:connection_id], method: "generate_request_insert_update", request: request, object: object})
             request = new_string
           end
+        rescue Exception => e
+          puts({connection: params[:connection_id], method: "generate_request_insert_update", message: "Exception", exception_message: e.message})
         end
 
         def polling_others_items_xml(_timestamp, _config)
