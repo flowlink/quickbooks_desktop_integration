@@ -331,6 +331,14 @@ module QBWC
           XML
         end
 
+        def rate_line(line)
+          return '' if !line['amount'].to_s.empty? || line['use_amount'] == true
+
+          <<~XML
+            <Rate>#{'%.2f' % price(line).to_f}</Rate>
+          XML
+        end
+
         def quantity(line)
           return '' if line['quantity'].to_f == 0.0
 
