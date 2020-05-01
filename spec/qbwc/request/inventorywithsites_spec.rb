@@ -10,11 +10,12 @@ module QBWC
       subject { described_class }
 
       it 'parses quickbooks_site and return request xml' do
-        params = {'quickbooks_since' => '2020-01-10T08:24:55Z', 'quickbooks_site' => 'PHX'}
-        config = {}
+        params = {'quickbooks_since' => '2020-01-10T08:24:55Z'}
+        config = {'quickbooks_site' => 'PHX'}
         xml = subject.polling_current_items_xml(params, config)
+        puts xml.inspect
         expect(xml).to match 'ItemSitesQueryRq'
-        expect(xml).to match params['quickbooks_site']
+        expect(xml).to match config['quickbooks_site']
       end
     end
   end

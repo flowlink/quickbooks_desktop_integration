@@ -4,12 +4,12 @@ module QBWC
 
       GENERAL_MAPPING = [
         {qbe_name: "ClassRef", flowlink_name: "class_name", is_ref: true},
-        {qbe_name: "ItemDesc", flowlink_name: "description", is_ref: false},
-        {qbe_name: "TaxRate", flowlink_name: "tax_rate", is_ref: false},
-        {qbe_name: "TaxVendorRef", flowlink_name: "tax_vendor_name", is_ref: true},
-        {qbe_name: "SalesTaxReturnLineRef", flowlink_name: "sales_tax_return_line_name", is_ref: true},
-        {qbe_name: "ExternalGUID", flowlink_name: "external_guid", is_ref: false, add_only: true}
+        {qbe_name: "ParentRef", flowlink_name: "parent_name", is_ref: true},
+        {qbe_name: "IsTaxIncluded", flowlink_name: "is_tax_included", is_ref: false},
+        {qbe_name: "SalesTaxCodeRef", flowlink_name: "sales_tax_code_name", is_ref: true},
       ]
+
+      EXTERNAL_GUID_MAP = [{qbe_name: "ExternalGUID", flowlink_name: "external_guid", is_ref: false, add_only: true}]
 
       class << self
 
@@ -125,6 +125,7 @@ module QBWC
             #{add_barcode(product)}
             <IsActive >#{product['is_active'] || true}</IsActive>
             #{add_fields(product, GENERAL_MAPPING, config, is_mod)}
+            #{add_fields(product, EXTERNAL_GUID_MAP, config, is_mod)}
           XML
         end
 

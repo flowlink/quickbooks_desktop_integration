@@ -140,6 +140,48 @@ module QBWC
 
       end
 
+      context '#product_xml' do
+        let(:flowlink_product) { JSON.parse(File.read('spec/qbwc/request/otherchargeproduct_fixtures/otherchargeproduct_from_flowlink.json')) }
+        let(:config) {
+          {
+            class_name: "Class1:Class2",
+            quickbooks_expense_account: "Expense Account"
+          }
+        }
+
+        context 'add xml' do
+          it 'returns the id in the xml' do
+            xml = QBWC::Request::Otherchargeproducts.send(:product_xml, flowlink_product, config, false)
+            expect(xml).to match(flowlink_product['id'])
+          end
+
+          it 'returns the XML for all GENERAL_MAPPING names' do
+            xml = QBWC::Request::Otherchargeproducts.send(:product_xml, flowlink_product, config, false)
+            QBWC::Request::Otherchargeproducts::GENERAL_MAPPING.each do |mapping|
+              expect(xml).to match(mapping[:qbe_name])
+              expect(xml).to match(flowlink_product[mapping[:flowlink_name]].to_s)
+            end
+          end
+        end
+
+        context 'mod xml' do
+          it 'returns the id in the xml' do
+            xml = QBWC::Request::Otherchargeproducts.send(:product_xml, flowlink_product, config, true)
+            expect(xml).to match(flowlink_product['id'])
+          end
+
+          it 'returns the XML for all GENERAL_MAPPING names' do
+            xml = QBWC::Request::Otherchargeproducts.send(:product_xml, flowlink_product, config, true)
+            QBWC::Request::Otherchargeproducts::GENERAL_MAPPING.each do |mapping|
+              expect(xml).to match(mapping[:qbe_name])
+              expect(xml).to match(flowlink_product[mapping[:flowlink_name]].to_s)
+            end
+          end
+        end
+
+
+      end
+
     end
   end
 end
