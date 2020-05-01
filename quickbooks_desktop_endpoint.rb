@@ -20,6 +20,7 @@ ENDPOINTS = %w(
   add_serviceproducts
   add_salestaxproducts
   add_discountproducts
+  add_otherchargeproducts
 )
 
 GET_ENDPOINTS =  %w(
