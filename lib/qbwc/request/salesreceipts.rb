@@ -37,8 +37,8 @@ module QBWC
                        else
                          update_xml_to_send(object, params, session_id)
                       end
-            request = new_string
             puts({connection: params[:connection_id], method: "generate_request_insert_update", request: request, object: object})
+            request = new_string
           end
         end
 
