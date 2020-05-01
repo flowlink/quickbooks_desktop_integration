@@ -33,7 +33,7 @@ module QBWC
 
         @integration.process_two_phase_pending_objects
       rescue  Exception => e
-        puts "Exceptions: #{e.message}, #{e.backtrace}"
+        puts({connection_id: params[:connection_id], exception: e.message, backtrace: e.backtrace})
       end
       request_xml
     end
