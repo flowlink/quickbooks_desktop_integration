@@ -46,16 +46,18 @@ module QBWC
           Persistence::Object.new(config, {}).update_shipments_with_qb_ids(shipment_id, objects_updated.first)
         else
           # We only need to update files when is not shipments invoice
+          
+          puts({method: "process", class_based: "InvoiceQueryRs", to_update: objects_updated})
+
           Persistence::Object.new(config, {}).update_objects_with_query_results(objects_updated)
+        
         end
 
         nil
       end
 
       def last_time_modified
-        puts 'SETTING A NEW SINCE DATE FOR INVOICES'
         date = records.sort_by { |r| r['TxnDate'] }.last['TxnDate'].to_s
-        puts Date.parse(date).to_time.in_time_zone('Pacific Time (US & Canada)').iso8601
         Date.parse(date).to_time.in_time_zone('Pacific Time (US & Canada)').iso8601
       end
 
@@ -109,8 +111,6 @@ module QBWC
 
       def invoices_to_flowlink
         records.map do |record|
-          # puts "invoice from qbe: #{record}"
-
           {
             id: record['RefNumber'],
             is_pending: record['IsPending'],

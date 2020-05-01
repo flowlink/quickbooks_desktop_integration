@@ -19,7 +19,6 @@ module QBWC
       def process(config = {})
         return if records.empty?
 
-        # puts "Processing purchase orders: #{records}"
         receive_configs = config[:receive] || []
         purchaseorder_params = receive_configs.find { |c| c['purchaseorders'] }
 
@@ -60,7 +59,6 @@ module QBWC
 
       def purchaseorders_to_flowlink
         records.map do |record|
-          # puts "Purchase Order from QBE: #{record}"
           if record['PurchaseOrderLineRet'].is_a?(Hash)
             record['PurchaseOrderLineRet'] = [record['PurchaseOrderLineRet']]
           end
@@ -177,7 +175,6 @@ module QBWC
         record['PurchaseOrderLineRet'] = [record['PurchaseOrderLineRet']] if record['PurchaseOrderLineRet'].is_a?(Hash)
 
         record['PurchaseOrderLineRet'].map do |item|
-          puts "purchase order item: #{item}"
           {
             product_id: item.dig('ItemRef', 'FullName'),
             name: item.dig('ItemRef', 'FullName'),

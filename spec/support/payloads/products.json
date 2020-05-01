@@ -4,6 +4,7 @@
       "id": "SPREE-T-SHIRT293178",
       "name": "Spree T-Shirt",
       "sku": "SPREE-T-SHIRT",
+      "product_id": "SPREE-T-SHIRT",
       "description": "Awesome Spree T-Shirt",
       "price": 35,
       "cost_price": 22.33,

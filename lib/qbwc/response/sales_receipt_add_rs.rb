@@ -21,11 +21,15 @@ module QBWC
           orders << {
             salesreceipts: {
               id: record['RefNumber'],
+              object_ref: record['RefNumber'],
               list_id: record['TxnID'],
               edit_sequence: record['EditSequence']
             }
           }
         end
+
+        puts({method: "process", class_based: "SalesReceiptAddRs", to_update: orders, records: records})
+
 
         Persistence::Object.update_statuses(config, orders)
       end
