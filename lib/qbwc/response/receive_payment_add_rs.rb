@@ -24,8 +24,8 @@ module QBWC
         objects = records.map do |object|
           {
             payments: {
-              id: object['Memo'].split("SystumID=").last.split(";").first,
-              object_ref: object['RefNumber'],
+              id: record['RefNumber'],
+              object_ref: record['RefNumber'],
               list_id: object['TxnID'],
               edit_sequence: object['EditSequence']
             }
