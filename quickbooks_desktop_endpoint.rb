@@ -159,8 +159,8 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
           # for each endpoint
           if name == 'inventorywithsites'
             add_or_merge_value 'inventories', collection.values.first
-          # elsif name == 'otherchargeproducts'
-          #   add_or_merge_value 'inventories', collection.values.first
+          elsif name == 'otherchargeproducts'
+            add_or_merge_value 'products', collection.values.first
           else
             add_or_merge_value name, collection.values.first
           end
