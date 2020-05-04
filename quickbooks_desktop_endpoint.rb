@@ -48,7 +48,7 @@ CUSTOM_OBJECT_TYPES = %w(
 )
 
 OBJECT_TYPES_MAPPING_DATA_OBJECT = {
-  'inventorywithsites' => 'inventories'
+  'inventorywithsites' => 'inventories',
   'otherchargeproducts' => 'products'
 }
 
