@@ -152,9 +152,6 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
       persistence = Persistence::Polling.new config, @payload, object_type
       records = persistence.process_waiting_records
       integration = Persistence::Object.new config, @payload
-      puts 'records'
-      puts records.inspect
-
       notifications = integration.get_notifications
 
       add_value 'success', notifications['processed'] if !notifications['processed'].empty?
@@ -165,8 +162,6 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
           puts name
           puts collection.values.first.inspect
 
-          # TODO: Remove the metapromming part of this and explicitly set the key we use
-          # for each endpoint
           if CUSTOM_OBJECT_TYPES.include? name
             add_or_merge_value OBJECT_TYPES_MAPPING_DATA_OBJECT[name], collection.values.first
           else

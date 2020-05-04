@@ -1,6 +1,6 @@
 module QBWC
   module Response
-    class ItemOtherChargeAddRs
+    class ItemOtherChargeModRs
       attr_reader :records
 
       def initialize(records)
@@ -37,13 +37,13 @@ module QBWC
 
       def build_product_id_or_ref(object)
         if object['ParentRef'].is_a?(Array)
-          arr = object['ParentRef']
+          arr = object['ParentRef'] 
         elsif object['ParentRef'].nil?
             arr = []
         else
           arr = [object['ParentRef']]
         end
-
+        
         arr.map do |item|
           next unless item['FullName']
 
