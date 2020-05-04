@@ -67,6 +67,7 @@ module QBWC
             <SalesOrderAddRq requestID="#{session_id}">
               <SalesOrderAdd>
                 #{sales_order record, params}
+                #{external_guid(record)}
                 #{items(record).map { |l| sales_order_line_add l }.join('')}
                 #{adjustments_add_xml record, params}
               </SalesOrderAdd>
@@ -132,6 +133,14 @@ module QBWC
               <Country>#{record['shipping_address']['country']}</Country>
             </ShipAddress>
             #{cancel_order?(record)}
+          XML
+        end
+
+        def external_guid(record)
+          return '' unless record['external_guid']
+
+          <<~XML
+          <ExternalGUID>#{record['external_guid']}</ExternalGUID>
           XML
         end
 

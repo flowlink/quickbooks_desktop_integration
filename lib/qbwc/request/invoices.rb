@@ -92,6 +92,7 @@ module QBWC
             <InvoiceAddRq requestID="#{session_id}">
               <InvoiceAdd>
                 #{invoice record, params}
+                #{external_guid(record)}
                 #{items(record).map { |l| invoice_line_add l }.join('')}
                 #{adjustments_add_xml record, params}
               </InvoiceAdd>
@@ -162,6 +163,14 @@ module QBWC
             #{shipping_method(record)}
             #{is_to_be_printed(record)}
             #{is_to_be_emailed(record)}
+          XML
+        end
+
+        def external_guid(record)
+          return '' unless record['external_guid']
+
+          <<~XML
+          <ExternalGUID>#{record['external_guid']}</ExternalGUID>
           XML
         end
 
