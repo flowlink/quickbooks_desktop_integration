@@ -121,11 +121,18 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
     post "/#{path}" do
       object_type = path.split('_').last.pluralize
 
+      puts '-' * 99
+      puts 'object_type'
+      puts object_type
+
       config = {
         connection_id: request.env['HTTP_X_HUB_STORE'],
         flow: path,
         origin: 'quickbooks'
       }.merge(@config).with_indifferent_access
+
+      puts 'config'
+      puts config.inspect
 
       s3_settings = Persistence::Settings.new(config)
       s3_settings.setup
@@ -135,6 +142,8 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
       persistence = Persistence::Polling.new config, @payload, object_type
       records = persistence.process_waiting_records
       integration = Persistence::Object.new config, @payload
+      puts 'records'
+      puts records.inspect
 
       notifications = integration.get_notifications
 
@@ -150,6 +159,8 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
           # for each endpoint
           if name == 'inventorywithsites'
             add_or_merge_value 'inventories', collection.values.first
+          # elsif name == 'otherchargeproducts'
+          #   add_or_merge_value 'inventories', collection.values.first
           else
             add_or_merge_value name, collection.values.first
           end
