@@ -1,5 +1,6 @@
 require 'endpoint_base'
 require 'sinatra/reloader'
+require 'securerandom'
 
 require File.expand_path(File.dirname(__FILE__) + '/lib/quickbooks_desktop_integration')
 
@@ -66,8 +67,12 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
 
       Persistence::Settings.new(config).setup
 
-      integration = Persistence::Object.new config, @payload
+      generate_and_add_guid
+
+      integration = Persistence::Object.new(config, @payload)
       integration.save
+      
+      add_object integration.payload_key, add_flow_return_payload
 
       object_type = integration.payload_key.capitalize
       result 200, "#{object_type} waiting for Quickbooks Desktop scheduler"
@@ -161,6 +166,20 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
   end
 
   private
+
+  def add_flow_return_payload
+    type = @payload[:parameters][:payload_type]
+
+    {
+      id: @payload[type][:id],
+      external_guid: @payload[type][:external_guid]
+    }
+  end
+
+  def generate_and_add_guid
+    type = @payload[:parameters][:payload_type]
+    @payload[type][:external_guid] = SecureRandom.uuid unless @payload[type][:external_guid]
+  end
 
   # NOTE this lives in endpoint_base. Added here just so it's closer ..
   # once we sure it's stable merge and push to endpoint_base/master
