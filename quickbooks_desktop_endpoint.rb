@@ -42,6 +42,16 @@ GET_ENDPOINTS =  %w(
   get_otherchargeproducts
 )
 
+CUSTOM_OBJECT_TYPES = %w(
+  inventorywithsites
+  otherchargeproducts
+)
+
+OBJECT_TYPES_MAPPING_DATA_OBJECT = {
+  'inventorywithsites' => 'inventories'
+  'otherchargeproducts' => 'products'
+}
+
 class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
   set :logging, true
 
@@ -157,10 +167,8 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
 
           # TODO: Remove the metapromming part of this and explicitly set the key we use
           # for each endpoint
-          if name == 'inventorywithsites'
-            add_or_merge_value 'inventories', collection.values.first
-          elsif name == 'otherchargeproducts'
-            add_or_merge_value 'products', collection.values.first
+          if CUSTOM_OBJECT_TYPES.include? name
+            add_or_merge_value OBJECT_TYPES_MAPPING_DATA_OBJECT[name], collection.values.first
           else
             add_or_merge_value name, collection.values.first
           end
