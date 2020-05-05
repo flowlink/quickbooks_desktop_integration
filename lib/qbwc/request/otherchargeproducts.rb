@@ -43,7 +43,7 @@ module QBWC
 
             puts "Object: #{object}"
 
-            request << if object[:list_id].to_s.empty?
+            request << if object['list_id'].to_s.empty?
                          add_xml_to_send(object, params, session_id, config)
                        else
                          update_xml_to_send(object, params, session_id, config)

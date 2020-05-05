@@ -50,8 +50,9 @@ module QBWC
       def objects_to_update
         records.map do |record|
           {
-            object_type: 'adjustment',
-            object_ref: record['Name'],
+            object_type: 'otherchargeproduct',
+            object_ref: build_product_id_or_ref(record),
+            product_id: record['Name'],
             list_id: record['ListID'],
             edit_sequence: record['EditSequence']
           }
@@ -130,6 +131,22 @@ module QBWC
       def last_time_modified
         time = records.sort_by { |r| r['TimeModified'] }.last['TimeModified'].to_s
         Time.parse(time).in_time_zone('Pacific Time (US & Canada)').iso8601
+      end
+
+      def build_product_id_or_ref(object)
+        if object['ParentRef'].is_a?(Array)
+          arr = object['ParentRef']
+        elsif object['ParentRef'].nil?
+            arr = []
+        else
+          arr = [object['ParentRef']]
+        end
+
+        arr.map do |item|
+          next unless item['FullName']
+
+          "#{item['FullName']}:"
+        end.join('') + object['Name']
       end
 
     end
