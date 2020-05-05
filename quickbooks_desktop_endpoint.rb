@@ -185,7 +185,7 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
   end
 
   def generate_and_add_guid
-    @payload[object_type][:external_guid] = SecureRandom.uuid
+    @payload[object_type][:external_guid] = "{#{SecureRandom.uuid.upcase}}"
   end
 
   def object_type
