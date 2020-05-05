@@ -139,12 +139,15 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
           puts name
           puts collection.values.first.inspect
 
+          record = collection.values.first
+
+          record = allow_only_whitelisted_fields(record)
           # TODO: Remove the metapromming part of this and explicitly set the key we use
           # for each endpoint
           if name == 'inventorywithsites'
-            add_or_merge_value 'inventories', collection.values.first
+            add_or_merge_value 'inventories', record
           else
-            add_or_merge_value name, collection.values.first
+            add_or_merge_value name, record
           end
 
           names.push name
@@ -161,6 +164,18 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
   end
 
   private
+
+  # NOTE: ideally this would live in endpoint_base gem,
+  # but it is the first time it appears
+  # it expects config['fields_whitelist'] to be a string of comma separated attrs
+  # i.e. "id, list_id, external_guid"
+  def allow_only_whitelisted_fields(record)
+    return record unless @config['fields_whitelist'] 
+
+    params_list = @config['fields_whitelist'].split(",").map(&:strip).map(&:to_sym)
+
+    record.slice(*params_list)
+  end
 
   # NOTE this lives in endpoint_base. Added here just so it's closer ..
   # once we sure it's stable merge and push to endpoint_base/master
