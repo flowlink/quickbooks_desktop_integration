@@ -181,7 +181,8 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
 
     {
       id: @payload[type][:id],
-      external_guid: @payload[type][:external_guid]
+      external_guid: @payload[type][:external_guid],
+      key: ['external_guid']
     }
   end
 
