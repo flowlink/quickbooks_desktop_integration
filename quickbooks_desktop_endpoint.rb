@@ -42,6 +42,16 @@ GET_ENDPOINTS =  %w(
   get_otherchargeproducts
 )
 
+# TODO: Add following endpoints
+# get_noninventoryproducts
+# get_serviceproducts
+# get_salestaxproducts
+# get_discountproducts
+# get_inventoryproducts
+# get_inventoryassemblyproducts
+# get_otherchargeproducts
+# get_purchaseorders
+
 CUSTOM_OBJECT_TYPES = %w(
   inventorywithsites
   otherchargeproducts
@@ -161,6 +171,7 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
           name = collection.keys.first
           puts name
           puts collection.values.first.inspect
+          # TODO: Check individual files to see if they merge and what happens with duplicates
 
           if CUSTOM_OBJECT_TYPES.include? name
             add_or_merge_value OBJECT_TYPES_MAPPING_DATA_OBJECT[name], collection.values.first

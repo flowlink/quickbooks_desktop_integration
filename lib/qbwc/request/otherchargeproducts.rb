@@ -36,11 +36,14 @@ module QBWC
       class << self
 
         def generate_request_insert_update(objects, params = {})
+          puts "Otherchargeproducts#generate_request_insert_update"
           objects.inject('') do |request, object|
             config = { connection_id: params['connection_id'] }.with_indifferent_access
             session_id = Persistence::Session.save(config, object)
 
-            request << if object['list_id'].to_s.empty?
+            puts "Object: #{object}"
+
+            request << if object[:list_id].to_s.empty?
                          add_xml_to_send(object, params, session_id, config)
                        else
                          update_xml_to_send(object, params, session_id, config)

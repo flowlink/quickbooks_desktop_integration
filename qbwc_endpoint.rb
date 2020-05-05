@@ -55,6 +55,8 @@ class QBWCEndpoint < Sinatra::Base
 
     body = request.body.read
     doc = Nokogiri::XML(body)
+    puts 'body'
+    puts body.inspect
     # nori = Nori.new
     # hash = nori.parse body
 
