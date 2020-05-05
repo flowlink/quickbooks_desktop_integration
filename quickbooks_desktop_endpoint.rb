@@ -79,12 +79,13 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
 
       Persistence::Settings.new(config).setup
 
-      generate_and_add_guid
+      already_has_guid?
+      generate_and_add_guid unless @already_has_guid
 
       integration = Persistence::Object.new(config, @payload)
       integration.save
       
-      add_object integration.payload_key, add_flow_return_payload
+      add_object integration.payload_key, add_flow_return_payload unless @already_has_guid
 
       object_type = integration.payload_key.capitalize
       result 200, "#{object_type} waiting for Quickbooks Desktop scheduler"
@@ -177,18 +178,22 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
   private
 
   def add_flow_return_payload
-    type = @payload[:parameters][:payload_type]
-
     {
-      id: @payload[type][:id],
-      external_guid: @payload[type][:external_guid],
-      key: ['external_guid']
+      id: @payload[object_type][:id],
+      external_guid: @payload[object_type][:external_guid]
     }
   end
 
   def generate_and_add_guid
-    type = @payload[:parameters][:payload_type]
-    @payload[type][:external_guid] = SecureRandom.uuid unless @payload[type][:external_guid]
+    @payload[object_type][:external_guid] = SecureRandom.uuid
+  end
+
+  def object_type
+    @payload[:parameters][:payload_type]
+  end
+
+  def already_has_guid?
+    @already_has_guid ||= @payload[object_type][:external_guid] && @payload[object_type][:external_guid] != ""
   end
 
   # NOTE this lives in endpoint_base. Added here just so it's closer ..
