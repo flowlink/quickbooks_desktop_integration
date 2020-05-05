@@ -69,7 +69,7 @@ module QBWC
           {
             id: record['ListID'],
             qbe_id: record['ListID'],
-            key: 'qbe_id',
+            key: ['qbe_id', 'external_guid'],
             name: record['Name'],
             created_at: record['TimeCreated'].to_s,
             modified_at: record['TimeModified'].to_s,
@@ -127,7 +127,7 @@ module QBWC
             is_tax_tracked_on_purchases: record['IsTaxTrackedOnPurchases'],
             is_tax_tracked_on_sales: record['IsTaxTrackedOnSales'],
             is_tax_on_tax: record['IsTaxOnTax'],
-            qbe_external_guid: record['ExternalGUID'],
+            external_guid: record['ExternalGUID'],
             additional_notes: additional_notes(record),
             additional_contacts: additional_contacts(record),
             contacts: contacts(record)

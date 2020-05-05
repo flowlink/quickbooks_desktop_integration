@@ -81,6 +81,7 @@ module QBWC
             <SalesReceiptAddRq requestID="#{session_id}">
               <SalesReceiptAdd>
                 #{sales_receipt record, params}
+                #{external_guid(record)}
                 #{items(record).map { |l| sales_receipt_line_add l }.join('')}
                 #{adjustments_add_xml record, params}
               </SalesReceiptAdd>
@@ -151,6 +152,14 @@ module QBWC
               <Country>#{record['shipping_address']['country']}</Country>
             </ShipAddress>
             <Memo>#{record['memo']}</Memo>
+          XML
+        end
+        
+        def external_guid(record)
+          return '' unless record['external_guid']
+
+          <<~XML
+          <ExternalGUID>#{record['external_guid']}</ExternalGUID>
           XML
         end
 
