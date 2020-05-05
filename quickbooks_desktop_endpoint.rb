@@ -43,15 +43,39 @@ GET_ENDPOINTS =  %w(
   get_otherchargeproducts
 )
 
+# TODO: Add custom object type change with POs
+# get_purchaseorders
+
 CUSTOM_OBJECT_TYPES = %w(
   inventorywithsites
+  serviceproducts
+  noninventoryproducts
+  salestaxproducts
+  discountproducts
+  inventoryproducts
+  inventoryassemblyproducts
   otherchargeproducts
 )
 
 OBJECT_TYPES_MAPPING_DATA_OBJECT = {
   'inventorywithsites' => 'inventories',
+  'serviceproducts' => 'products',
+  'noninventoryproducts' => 'products',
+  'salestaxproducts' => 'products',
+  'discountproducts' => 'products',
+  'inventoryproducts' => 'products',
+  'inventoryassemblyproducts' => 'products',
   'otherchargeproducts' => 'products'
 }
+
+
+# TODO: Test following endpoints for OBJECT_TYPES_MAPPING_DATA_OBJECT
+# get_noninventoryproducts
+# get_serviceproducts
+# get_salestaxproducts
+# get_discountproducts
+# get_inventoryproducts
+# get_inventoryassemblyproducts
 
 class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
   set :logging, true
@@ -155,6 +179,7 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
           puts name
           puts collection.values.first.inspect
 
+          # TODO: Check individual files to see if they merge and what happens with duplicates
           if CUSTOM_OBJECT_TYPES.include? name
             add_or_merge_value OBJECT_TYPES_MAPPING_DATA_OBJECT[name], collection.values.first
           else

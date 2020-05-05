@@ -32,7 +32,7 @@ module QBWC
         end
 
         if product_params
-          payload = { products: products_to_flowlink }
+          payload = { inventoryproducts: products_to_flowlink }
           config = { origin: 'quickbooks' }.merge config.reject{|k,v| k == :origin || k == "origin"}
           poll_persistence = Persistence::Polling.new(config, payload)
           poll_persistence.save_for_polling

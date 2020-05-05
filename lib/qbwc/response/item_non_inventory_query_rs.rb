@@ -23,7 +23,7 @@ module QBWC
         noninventoryproduct_params = receive_configs.find { |c| c['noninventoryproducts'] }
 
         if noninventoryproduct_params
-          payload = { products: products_to_flowlink }
+          payload = { noninventoryproducts: products_to_flowlink }
           config = { origin: 'quickbooks' }.merge config.reject{|k,v| k == :origin || k == "origin"}
           poll_persistence = Persistence::Polling.new(config, payload)
           poll_persistence.save_for_polling
