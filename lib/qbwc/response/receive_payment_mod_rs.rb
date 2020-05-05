@@ -22,7 +22,8 @@ module QBWC
         products = []
         records.each do |object|
           products << { payments: {
-            id: object['RefNumber'],
+            object_ref: record['RefNumber'],
+            id: record['RefNumber'],
             list_id: object['TxnID'],
             edit_sequence: object['EditSequence']
           }

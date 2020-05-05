@@ -35,9 +35,9 @@ module QBWC
       def objects_to_update(_config)
         records.map do |record|
           {
+            id: record['RefNumber'],
             object_type: 'payment',
             object_ref: record['RefNumber'],
-            id: record['RefNumber'],
             list_id: record['TxnID'],
             edit_sequence: record['EditSequence']
           }.with_indifferent_access
