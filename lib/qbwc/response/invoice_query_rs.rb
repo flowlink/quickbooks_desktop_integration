@@ -57,7 +57,7 @@ module QBWC
       end
 
       def last_time_modified
-        date = records.sort_by { |r| r['TxnDate'] }.last['TxnDate'].to_s
+        date = records.sort_by { |r| r['TimeModified'] }.last['TimeModified'].to_s
         Date.parse(date).to_time.in_time_zone('Pacific Time (US & Canada)').iso8601
       end
 

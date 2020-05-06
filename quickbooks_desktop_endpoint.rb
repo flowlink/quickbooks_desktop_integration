@@ -43,9 +43,6 @@ GET_ENDPOINTS =  %w(
   get_otherchargeproducts
 )
 
-# TODO: Add custom object type change with POs
-# get_purchaseorders
-
 CUSTOM_OBJECT_TYPES = %w(
   inventorywithsites
   serviceproducts
@@ -59,23 +56,14 @@ CUSTOM_OBJECT_TYPES = %w(
 
 OBJECT_TYPES_MAPPING_DATA_OBJECT = {
   'inventorywithsites' => 'inventories',
+  'otherchargeproducts' => 'products',
   'serviceproducts' => 'products',
-  'noninventoryproducts' => 'products',
   'salestaxproducts' => 'products',
-  'discountproducts' => 'products',
+  'noninventoryproducts' => 'products',
   'inventoryproducts' => 'products',
-  'inventoryassemblyproducts' => 'products',
-  'otherchargeproducts' => 'products'
+  'discountproducts' => 'products',
+  'inventoryassemblyproducts' => 'products'
 }
-
-
-# TODO: Test following endpoints for OBJECT_TYPES_MAPPING_DATA_OBJECT
-# get_noninventoryproducts
-# get_serviceproducts
-# get_salestaxproducts
-# get_discountproducts
-# get_inventoryproducts
-# get_inventoryassemblyproducts
 
 class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
   set :logging, true
@@ -103,12 +91,14 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
 
       Persistence::Settings.new(config).setup
 
-      generate_and_add_guid
+      already_has_guid?
+      generate_and_add_guid unless @already_has_guid
+      return_payload = add_flow_return_payload
 
       integration = Persistence::Object.new(config, @payload)
       integration.save
-      
-      add_object integration.payload_key, add_flow_return_payload
+
+      add_object determine_name(integration.payload_key).singularize, return_payload unless @already_has_guid
 
       object_type = integration.payload_key.capitalize
       result 200, "#{object_type} waiting for Quickbooks Desktop scheduler"
@@ -179,12 +169,11 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
           puts name
           puts collection.values.first.inspect
 
-          # TODO: Check individual files to see if they merge and what happens with duplicates
-          if CUSTOM_OBJECT_TYPES.include? name
-            add_or_merge_value OBJECT_TYPES_MAPPING_DATA_OBJECT[name], collection.values.first
-          else
-            add_or_merge_value name, collection.values.first
-          end
+          record = collection.values.first
+
+          record = allow_only_whitelisted_fields(record)
+
+          add_or_merge_value determine_name(name), record
 
           names.push name
         end
@@ -201,19 +190,45 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
 
   private
 
-  def add_flow_return_payload
-    type = @payload[:parameters][:payload_type]
+  def determine_name(name)
+    plural_name = name.pluralize
+    return name unless CUSTOM_OBJECT_TYPES.include?(plural_name)
+    
+    OBJECT_TYPES_MAPPING_DATA_OBJECT[plural_name]
+  end
 
+  # NOTE: ideally this would live in endpoint_base gem,
+  # but it is the first time it appears
+  # it expects config['fields_whitelist'] to be a string of comma separated attrs
+  # i.e. "id, list_id, external_guid"
+  def allow_only_whitelisted_fields(record)
+    return record unless @config['fields_whitelist'] 
+
+    params_list = @config['fields_whitelist'].split(",").map(&:strip).map(&:to_sym)
+
+    # so id is not forgotten
+    params_list = (params_list << :id).uniq  
+
+    record.slice(*params_list)
+  end
+  
+  def add_flow_return_payload
     {
-      id: @payload[type][:id],
-      external_guid: @payload[type][:external_guid],
-      key: ['external_guid']
+      id: @payload[object_type][:id],
+      external_guid: @payload[object_type][:external_guid]
     }
   end
 
   def generate_and_add_guid
-    type = @payload[:parameters][:payload_type]
-    @payload[type][:external_guid] = SecureRandom.uuid unless @payload[type][:external_guid]
+    @payload[object_type][:external_guid] = "{#{SecureRandom.uuid.upcase}}"
+  end
+
+  def object_type
+    @payload[:parameters][:payload_type]
+  end
+
+  def already_has_guid?
+    @already_has_guid ||= @payload[object_type][:external_guid] && @payload[object_type][:external_guid] != ""
   end
 
   # NOTE this lives in endpoint_base. Added here just so it's closer ..
