@@ -174,6 +174,9 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
 
     params_list = @config['fields_whitelist'].split(",").map(&:strip).map(&:to_sym)
 
+    # so id is not forgotten
+    params_list = (params_list << :id).uniq  
+
     record.slice(*params_list)
   end
 
