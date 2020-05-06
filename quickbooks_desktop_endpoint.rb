@@ -81,11 +81,12 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
 
       already_has_guid?
       generate_and_add_guid unless @already_has_guid
+      return_payload = add_flow_return_payload
 
       integration = Persistence::Object.new(config, @payload)
       integration.save
       
-      add_object integration.payload_key, add_flow_return_payload unless @already_has_guid
+      add_object integration.payload_key, return_payload unless @already_has_guid
 
       object_type = integration.payload_key.capitalize
       result 200, "#{object_type} waiting for Quickbooks Desktop scheduler"
