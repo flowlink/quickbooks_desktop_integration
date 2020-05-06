@@ -203,7 +203,7 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
   # i.e. "id, list_id, external_guid"
   def allow_only_whitelisted_fields(record)
     return record unless @config['fields_whitelist'] 
-    puts({connection_id: @config['connection_id'], whitelisted_fields: @config['fields_whitelist'], flow: @config['flow']})
+    puts({connection_id: @config['connection_id'], whitelisted_fields: @config['fields_whitelist'], flow: @config['flow'], record: record.inspect})
 
     params_list = @config['fields_whitelist'].split(",").map(&:strip).map(&:to_sym)
 
