@@ -19,8 +19,6 @@ module QBWC
       def process(config)
         return if records.empty?
 
-        puts "Config for customer query: #{config}"
-
         receive_configs = config[:receive] || []
         vendor_params = receive_configs.find { |c| c['vendors'] }
 
@@ -58,6 +56,7 @@ module QBWC
           {
             object_type: 'vendor',
             email: record['Name'],
+            name: record['Name'],
             object_ref: record['Name'],
             list_id: record['ListID'],
             edit_sequence: record['EditSequence']
@@ -67,11 +66,10 @@ module QBWC
 
       def to_flowlink
         records.map do |record|
-          puts "Vendor QBE object: #{record}"
           {
             id: record['ListID'],
             qbe_id: record['ListID'],
-            key: 'qbe_id',
+            key: ['qbe_id', 'external_guid'],
             name: record['Name'],
             created_at: record['TimeCreated'].to_s,
             modified_at: record['TimeModified'].to_s,
@@ -129,7 +127,7 @@ module QBWC
             is_tax_tracked_on_purchases: record['IsTaxTrackedOnPurchases'],
             is_tax_tracked_on_sales: record['IsTaxTrackedOnSales'],
             is_tax_on_tax: record['IsTaxOnTax'],
-            qbe_external_guid: record['ExternalGUID'],
+            external_guid: record['ExternalGUID'],
             additional_notes: additional_notes(record),
             additional_contacts: additional_contacts(record),
             contacts: contacts(record)

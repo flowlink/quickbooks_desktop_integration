@@ -1,139 +1,170 @@
 require 'rspec'
 require 'json'
 require 'qbwc/request/vendors'
+require 'qbwc/request/vendor_fixtures/add_update_search_xml_fixtures'
 
 RSpec.describe QBWC::Request::Vendors do
-  let(:flowlink_vendor) { JSON.parse(File.read('spec/fixtures/vendor_from_flowlink.json')) }
+  let(:flowlink_vendor) { JSON.parse(File.read('spec/qbwc/request/vendor_fixtures/vendor_from_flowlink.json')) }
+  let(:config) {
+    {
+      job_type_name: "job_type_reference",
+      price_level_name: "price_level_reference",
+      quickbooks_currency_name: "currency_reference"
+    }
+  }
 
   it "calls add_xml_to_send and outputs the right data" do
-    vendor = described_class.add_xml_to_send(flowlink_vendor, 12345)
+    vendor = described_class.add_xml_to_send(flowlink_vendor, 12345, config)
     expect(vendor.gsub(/\s+/, "")).to eq(qbe_vendor_add.gsub(/\s+/, ""))
   end
 
   it "calls update_xml_to_send and outputs the right data" do
-    vendor = described_class.update_xml_to_send(flowlink_vendor, 12345)
+    vendor = described_class.update_xml_to_send(flowlink_vendor, 12345, config)
     expect(vendor.gsub(/\s+/, "")).to eq(qbe_vendor_update.gsub(/\s+/, ""))
   end
 
-  def qbe_vendor_add
-    <<~XML
-      <VendorAddRq requestID="12345">
-        <VendorAdd>
-        #{qbe_vendor_innards}
-        </VendorAdd>
-      </VendorAddRq>
-    XML
+  describe "search xml" do
+    it "has list_id and calls search_xml_by_id" do
+      # Call search_xml method with flowlink_customer
+      pending("expect the search_xml_by_id method to have been called")
+      pending("expect the search_xml_by_name method to NOT have been called")
+      this_should_not_get_executed
+    end
+
+    it "does not have list_id and calls search_xml_by_name" do
+      flowlink_vendor.delete(:list_id)
+      # Call search_xml method with flowlink_customer
+      pending("expect the search_xml_by_name method to have been called")
+      pending("expect the search_xml_by_id method to NOT have been called")
+      this_should_not_get_executed
+    end
+
+    it "calls search_xml_by_id and outputs the right data" do
+      vendor = described_class.search_xml_by_id("qbe-vendor-listid", 12345)
+      expect(vendor.gsub(/\s+/, "")).to eq(qbe_vendor_search_id.gsub(/\s+/, ""))
+    end
+  
+    it "calls search_xml_by_name and outputs the right data" do
+      vendor = described_class.search_xml_by_name("My ID", 12345)
+      expect(vendor.gsub(/\s+/, "")).to eq(qbe_vendor_search_name.gsub(/\s+/, ""))
+    end
   end
 
-  def qbe_vendor_update
-    <<~XML
-      <VendorModRq requestID="12345">
-        <VendorMod>
-          <ListID>12345</ListID>
-          <EditSequence>1010101</EditSequence>
-          #{qbe_vendor_innards}
-        </VendorMod>
-      </VendorModRq>
-    XML
-  end
+  describe 'calls pre_mapping_logic' do
+    describe 'checks is_active field' do
+      it 'starts as nil and returns true' do
+        flowlink_vendor['is_active'] = nil
+        vendor = QBWC::Request::Vendors.send(:pre_mapping_logic, flowlink_vendor)
+        expect(vendor['is_active']).to be true
+      end
+      it 'starts as true and returns true' do
+        flowlink_vendor['is_active'] = true
+        vendor = QBWC::Request::Vendors.send(:pre_mapping_logic, flowlink_vendor)
+        expect(vendor['is_active']).to be true
+      end
+      it 'starts as false and returns false' do
+        flowlink_vendor['is_active'] = false
+        vendor = QBWC::Request::Vendors.send(:pre_mapping_logic, flowlink_vendor)
+        expect(vendor['is_active']).to be false
+      end
+      it 'starts as a random string and returns true' do
+        flowlink_vendor['is_active'] = 'some other value'
+        vendor = QBWC::Request::Vendors.send(:pre_mapping_logic, flowlink_vendor)
+        expect(vendor['is_active']).to be true
+      end
+    end
+    describe 'checks first and last name fields' do
+      it 'given nil for first and last name field, it returns correct parts of name field' do
+        flowlink_vendor['firstname'] = nil
+        flowlink_vendor['lastname'] = nil
+        flowlink_vendor['name'] = 'Test Customer Name'
+        vendor = QBWC::Request::Vendors.send(:pre_mapping_logic, flowlink_vendor)
+        expect(vendor['firstname']).to eq('Test')
+        expect(vendor['lastname']).to eq('Name')
+      end
 
-  def qbe_vendor_innards
-    <<~XML
-      <Name>First Last</Name>
-      <FirstName>First</FirstName>
-      <LastName>Last</LastName>
-      <Phone>+1 2345678999</Phone>
-      <AltPhone>1234567890</AltPhone>
-      <Email>test@aol.com</Email>
-      <IsActive>true</IsActive>
-      <Salutation>Mr</Salutation>
-      <MiddleName>middlename</MiddleName>
-      <JobTitle>Developer</JobTitle>
-      <Fax>1234</Fax>
-      <Cc>some_email@test.com</Cc>
-      <Contact>My Contact friend</Contact>
-      <AltContact>My Other Contact friend</AltContact>
-      <CreditLimit>10000</CreditLimit>
-      <VendorTaxIdent>1</VendorTaxIdent>
-      <IsVendorEligibleFor1099>false</IsVendorEligibleFor1099>
-      <OpenBalance>2500</OpenBalance>
-      <OpenBalanceDate>2019-11-01T13:22:02.718+00:00</OpenBalanceDate>
-      <ExternalGUID>1234</ExternalGUID>
-      <NameOnCheck>First M Last</NameOnCheck>
-      <AccountNumber>11111</AccountNumber>
-      <Notes>A note here</Notes>
-      <IsSalesTaxAgency>false</IsSalesTaxAgency>
-      <TaxRegistrationNumber>0099</TaxRegistrationNumber>
-      <IsTaxTrackedOnPurchases>false</IsTaxTrackedOnPurchases>
-      <IsTaxTrackedOnSales>false</IsTaxTrackedOnSales>
-      <IsTaxOnTax>false</IsTaxOnTax>
-      <CompanyName>some company</CompanyName>
-      <SalesTaxCountry>US</SalesTaxCountry>
-      <ReportingPeriod>Quarterly</ReportingPeriod>
-      <ClassRef><FullName>class_reference</FullName></ClassRef>
-      <BillingRateRef><FullName>billing_rate_reference</FullName></BillingRateRef>
-      <VendorTypeRef><FullName>vendor_type_reference</FullName></VendorTypeRef>
-      <TermsRef><FullName>terms_reference</FullName></TermsRef>
-      <SalesTaxCodeRef><FullName>sales_tax_code_reference</FullName></SalesTaxCodeRef>
-      <SalesTaxReturnRef><FullName>sales_tax_return_reference</FullName></SalesTaxReturnRef>
-      <TaxOnPurchasesAccountRef><FullName>tax_on_purchases_account_reference</FullName></TaxOnPurchasesAccountRef>
-      <TaxOnSalesAccountRef><FullName>tax_on_sales_account_reference</FullName></TaxOnSalesAccountRef>
-      <CurrencyRef><FullName>currency_reference</FullName></CurrencyRef>
-      <VendorAddress>
-      <Addr1>75 example dr</Addr1>
-      <Addr2>addr line 2</Addr2>
-      <Addr3>addr line 3</Addr3>
-      <Addr4>addr line 4</Addr4>
-      <Addr5>addr line 5</Addr5>
-      <City>Some City</City>
-      <State>California</State>
-      <PostalCode>78456</PostalCode>
-      <Country>United States</Country>
-      <Note>vendor address note</Note>
-      </VendorAddress>
-      <ShipAddress>
-      <Addr1>75 example dr</Addr1>
-      <Addr2>addr line 2</Addr2>
-      <Addr3>addr line 3</Addr3>
-      <Addr4>addr line 4</Addr4>
-      <Addr5>addr line 5</Addr5>
-      <City>Some City</City>
-      <State>California</State>
-      <PostalCode>78456</PostalCode>
-      <Country>United States</Country>
-      <Note>ship address note</Note>
-      </ShipAddress>
-      <AdditionalContactRef>
-      <ContactName>initial contact</ContactName>
-      <ContactValue>initial value</ContactValue>
-      </AdditionalContactRef>
-      <AdditionalContactRef>
-      <ContactName>secondary contact</ContactName>
-      <ContactValue>secondary value</ContactValue>
-      </AdditionalContactRef>
-      <AdditionalNotes><Note>note #1</Note></AdditionalNotes>
-      <Contacts>
-      <Salutation>Miss</Salutation>
-      <FirstName>Lady</FirstName>
-      <MiddleName>middle</MiddleName>
-      <LastName>Surname</LastName>
-      <JobTitle>Thinker</JobTitle>
-      <AdditionalContactRef>
-      <ContactName>initial contact 1</ContactName>
-      <ContactValue>initial value 1</ContactValue>
-      </AdditionalContactRef>
-      <AdditionalContactRef>
-      <ContactName>secondary contact 1</ContactName>
-      <ContactValue>secondary value 1</ContactValue>
-      </AdditionalContactRef>
-      </Contacts>
-      <Contacts>
-      <Salutation>Dr</Salutation>
-      <FirstName>John</FirstName>
-      <MiddleName>F</MiddleName>
-      <LastName>Doe</LastName>
-      <JobTitle>Doctor</JobTitle>
-      </Contacts>
-    XML
+      it 'given valid values for first and last name field, it returns those values' do
+        flowlink_vendor['firstname'] = 'NuRelm'
+        flowlink_vendor['lastname'] = 'Dev'
+        flowlink_vendor['name'] = 'Test Customer Name'
+        vendor = QBWC::Request::Vendors.send(:pre_mapping_logic, flowlink_vendor)
+        expect(vendor['firstname']).to eq('NuRelm')
+        expect(vendor['lastname']).to eq('Dev')
+      end
+
+      it 'given nil for first and last name field and non-splittable string, it returns that string for both first and last name' do
+        flowlink_vendor['firstname'] = nil
+        flowlink_vendor['lastname'] = nil
+        flowlink_vendor['name'] = 'Test'
+        vendor = QBWC::Request::Vendors.send(:pre_mapping_logic, flowlink_vendor)
+        expect(vendor['firstname']).to eq('Test')
+        expect(vendor['lastname']).to eq('Test')
+      end
+
+      it 'given nil for first and last name and name fields, it returns nil for both first and last name' do
+        flowlink_vendor['firstname'] = nil
+        flowlink_vendor['lastname'] = nil
+        flowlink_vendor['name'] = nil
+        vendor = QBWC::Request::Vendors.send(:pre_mapping_logic, flowlink_vendor)
+        expect(vendor['firstname']).to be_nil
+        expect(vendor['lastname']).to be_nil
+      end
+    end
+    describe 'checks phone and mobile fields' do
+      it 'has valid phone and mobile values and returns those values' do
+        flowlink_vendor['vendor_address']['phone'] = '123-456-7890'
+        flowlink_vendor['ship_from_address']['phone'] = '111-555-9999'
+        flowlink_vendor['phone'] = '1'
+        flowlink_vendor['mobile'] = '2'
+        vendor = QBWC::Request::Vendors.send(:pre_mapping_logic, flowlink_vendor)
+        expect(vendor['phone']).to eq('1')
+        expect(vendor['mobile']).to eq('2')
+      end
+
+      it 'has nil for phone and mobile and returns nil' do
+        flowlink_vendor['vendor_address']['phone'] = '123-456-7890'
+        flowlink_vendor['ship_from_address']['phone'] = '111-555-9999'
+        flowlink_vendor['phone'] = nil
+        flowlink_vendor['mobile'] = nil
+        vendor = QBWC::Request::Vendors.send(:pre_mapping_logic, flowlink_vendor)
+        expect(vendor['phone']).to be_nil
+        expect(vendor['mobile']).to be_nil
+      end
+
+      it 'has nil for phone, mobile, and address fields and returns nil' do
+        flowlink_vendor['vendor_address'] = nil
+        flowlink_vendor['ship_from_address'] = nil
+        flowlink_vendor['phone'] = nil
+        flowlink_vendor['mobile'] = nil
+        vendor = QBWC::Request::Vendors.send(:pre_mapping_logic, flowlink_vendor)
+        expect(vendor['phone']).to be_nil
+        expect(vendor['mobile']).to be_nil
+      end
+    end
+    describe 'checks reporting period and sales tax country fields' do
+      it 'given valid values and returns an object with correct fields' do
+        flowlink_vendor['reporting_period'] = 'Monthly'
+        flowlink_vendor['sales_tax_country'] = 'Australia'
+        vendor = QBWC::Request::Vendors.send(:pre_mapping_logic, flowlink_vendor)
+        expect(vendor['reporting_period']).to eq('Monthly')
+        expect(vendor['sales_tax_country']).to eq('Australia')
+      end
+
+      it 'given nil values and returns an object with nil for those fields' do
+        flowlink_vendor['reporting_period'] = nil
+        flowlink_vendor['sales_tax_country'] = nil
+        vendor = QBWC::Request::Vendors.send(:pre_mapping_logic, flowlink_vendor)
+        expect(vendor['reporting_period']).to be_nil
+        expect(vendor['sales_tax_country']).to be_nil
+      end
+      
+      it 'given invalid non-nil values and returns an object with nil for those fields' do
+        flowlink_vendor['reporting_period'] = 'Yearly'
+        flowlink_vendor['sales_tax_country'] = 'India'
+        vendor = QBWC::Request::Vendors.send(:pre_mapping_logic, flowlink_vendor)
+        expect(vendor['reporting_period']).to be_nil
+        expect(vendor['sales_tax_country']).to be_nil
+      end
+    end
   end
 end

@@ -96,11 +96,8 @@ module QBWC
         end
 
         def polling_current_items_xml(params, config)
-          timestamp = params
-          timestamp = params['quickbooks_since'] if params['return_all']
-
+          timestamp = params['quickbooks_since']
           session_id = Persistence::Session.save(config, 'polling' => timestamp)
-
           time = Time.parse(timestamp).in_time_zone 'Pacific Time (US & Canada)'
 
           <<~XML
@@ -113,8 +110,7 @@ module QBWC
         end
 
         def query_by_date(config, time)
-          puts "Vendor config for polling: #{config}"
-          return '' if config['return_all']
+          return '' if config['return_all'].to_i == 1
 
           <<~XML
             <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
@@ -125,7 +121,6 @@ module QBWC
           puts "Vendor request query for #{objects}, #{params}"
 
           objects.inject('') do |request, object|
-            puts "Inject process #{request}, #{object}"
             sanitize_vendor(object)
 
             config = { connection_id: params['connection_id'] }.with_indifferent_access
@@ -141,21 +136,14 @@ module QBWC
         end
 
         def search_xml_by_id(object_id, session_id)
-          puts "Building vendor xml by list_id #{object_id}, #{session_id}"
-
           <<~XML
             <VendorQueryRq requestID="#{session_id}">
-              <MaxReturned>50</MaxReturned>
-              <ListIDList>
-                #{object_id}
-              </ListIDList>
+              <ListID>#{object_id}</ListID>
             </VendorQueryRq>
           XML
         end
 
         def search_xml_by_name(object_id, session_id)
-          puts "Building vendor xml by name #{object_id}, #{session_id}"
-
           <<~XML
             <VendorQueryRq requestID="#{session_id}">
               <MaxReturned>50</MaxReturned>
@@ -204,9 +192,9 @@ module QBWC
             </ShipAddress>
             #{add_fields(object, MAPPING_TWO, config, is_mod)}
             #{additional_contacts(object)}
-            #{contacts(object, is_mod)}
+            #{contacts(object, is_mod, config)}
             #{add_fields(object, MAPPING_THREE, config, is_mod)}
-            #{additional_notes(object)}
+            #{additional_notes(object, is_mod)}
             #{add_fields(object, MAPPING_FOUR, config, is_mod)}
           XML
         end
@@ -214,13 +202,10 @@ module QBWC
         def pre_mapping_logic(initial_object)
           object = initial_object
 
-          object['is_active'] = object['is_active'] || true
-          object['firstname'] = object['firstname'] || object['name'].split.first
-          object['lastname'] = object['lastname'] || object['name'].split.last
-          object['phone'] = object['vendor_address']['phone'] if object['vendor_address']
-          if object['mobile'] && object['mobile'] != ''
-            object['mobile'] = object['ship_from_address']['phone'] if object['ship_from_address']
-          end
+          object['is_active'] = true unless object['is_active'] == false
+          object['firstname'] = object['firstname'] || object['name'].to_s.split.first
+          object['lastname'] = object['lastname'] || object['name'].to_s.split.last
+
           object['reporting_period'] = nil unless REPORTING_PERIODS.include?(object['reporting_period'])
           object['sales_tax_country'] = nil unless SALES_TAX_COUNTRIES.include?(object['sales_tax_country'])
 
@@ -245,29 +230,29 @@ module QBWC
           fields
         end
 
-        def additional_notes(object)
+        def additional_notes(object, is_mod)
           return "" unless object['additional_notes'] && object['additional_notes'].is_a?(Array)
           
           fields = ""
           object['additional_notes'].each do |note|
-            next unless note && note[:note]
+            next unless note && note['note']
 
             fields += is_mod ? "<AdditionalNotesMod>" : "<AdditionalNotes>"
-            fields += "<NoteID>#{note[:id]}</NoteID>" if is_mod
-            fields += "<Note>#{note[:note]}</Note>"
+            fields += "<NoteID>#{note['id']}</NoteID>" if is_mod
+            fields += "<Note>#{note['note']}</Note>"
             fields += is_mod ? "</AdditionalNotesMod>" : "</AdditionalNotes>"
           end
 
           fields
         end
 
-        def contacts(object, is_mod)
+        def contacts(object, is_mod, config)
           return "" unless object['contacts'] && object['contacts'].is_a?(Array)
           
           fields = ""
           object['contacts'].each do |contact|
             fields += is_mod ? "<ContactsMod>" : "<Contacts>"
-            fields += add_fields(contact, CONTACTS_MAP, config)
+            fields += add_fields(contact, CONTACTS_MAP, config, is_mod)
             fields += additional_contacts(contact)
             fields += is_mod ? "</ContactsMod>" : "</Contacts>"
           end
@@ -278,8 +263,8 @@ module QBWC
         def add_fields(object, mapping, config, is_mod)
           fields = ""
           mapping.each do |map_item|
-            return "" if object[:mod_only] && object[:mod_only] != is_mod
-            return "" if object[:add_only] && object[:add_only] == is_mod
+            next if object[:mod_only] && object[:mod_only] != is_mod
+            next if object[:add_only] && object[:add_only] == is_mod
 
             if map_item[:is_ref]
               fields += add_ref_xml(object, map_item, config)
@@ -296,7 +281,7 @@ module QBWC
           qbe_field_name = mapping[:qbe_name]
           float_fields = ['price', 'cost']
 
-          return '' if flowlink_field.nil?
+          return '' if flowlink_field.nil? || flowlink_field == ""
 
           flowlink_field = '%.2f' % flowlink_field.to_f if float_fields.include?(mapping[:flowlink_name])
 
@@ -311,14 +296,14 @@ module QBWC
             return "<#{qbe_field_name}><ListID>#{flowlink_field['list_id']}</ListID></#{qbe_field_name}>"
           end
           full_name = flowlink_field ||
-                                config[mapping[:flowlink_name]] ||
-                                config["quickbooks_#{mapping[:flowlink_name]}"]
+                                config[mapping[:flowlink_name].to_sym] ||
+                                config["quickbooks_#{mapping[:flowlink_name]}".to_sym]
 
-          full_name.nil? ? "" : "<#{qbe_field_name}><FullName>#{full_name}</FullName></#{qbe_field_name}>"
+          return '' if full_name.nil? || full_name == ""
+          "<#{qbe_field_name}><FullName>#{full_name}</FullName></#{qbe_field_name}>"
         end
 
         def sanitize_vendor(vendor)
-          puts "Sanitizing: #{vendor}"
           # vendor['company'].gsub!(/[^0-9A-Za-z\s]/, '') if vendor['company']
           vendor['firstname'].gsub!(/[^0-9A-Za-z\s]/, '') if vendor['firstname']
           # vendor['name'].gsub!(/[^0-9A-Za-z\s]/, '') if vendor['name']

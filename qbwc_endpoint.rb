@@ -124,22 +124,23 @@ class QBWCEndpoint < Sinatra::Base
 
   def send_request_xml(connection_id, _body)
     @qbxml = <<~XML
-<?xml version="1.0" encoding="utf-8"?>
-<?qbxml version="11.0"?>
-<QBXML>
-   <QBXMLMsgsRq onError="continueOnError">
-    #{QBWC::Producer.new(connection_id: connection_id).build_available_actions_to_request}
-   </QBXMLMsgsRq>
-</QBXML>
+      <?xml version="1.0" encoding="utf-8"?>
+      <?qbxml version="11.0"?>
+      <QBXML>
+        <QBXMLMsgsRq onError="continueOnError">
+          #{QBWC::Producer.new(connection_id: connection_id).build_available_actions_to_request}
+        </QBXMLMsgsRq>
+      </QBXML>
     XML
+    @qbxml.gsub!("\n", '').gsub!("&", "&amp;")
 
-    puts @qbxml.gsub("\n", '')
+    puts({connection_id: connection_id, message: "Send Request XML", body: @qbxml.gsub("\n", '')})
     erb :'qbwc/send_request_xml'
   end
 
   def receive_response_xml(connection_id, body)
     puts "RECEIVING"
-    puts body.gsub("\n", '')
+    puts({connection_id: connection_id, message: "RECEIVING RESPONSE", body: body.gsub("\n", '')})
     QBWC::Consumer.new(connection_id: connection_id).digest_response_into_actions(body)
 
     erb :'qbwc/receive_response_xml'

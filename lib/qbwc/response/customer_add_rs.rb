@@ -8,7 +8,6 @@ module QBWC
       end
 
       def handle_error(errors, config)
-        puts "Handling customer add error #{errors}"
         errors.each do |error|
           Persistence::Object.handle_error(config,
                                            error.merge(context: 'Adding Customers'),
@@ -23,6 +22,7 @@ module QBWC
         objects = records.map do |object|
           { customers: {
             email: object['Name'],
+            name: object['Name'],
             id: object['Name'],
             list_id: object['ListID'],
             edit_sequence: object['EditSequence'] } }

@@ -2,6 +2,25 @@ module Persistence
   class Settings
     attr_reader :amazon_s3, :connection_id, :config, :flow, :force_save
 
+    GENERATE_EXTRA_FLOWS_ARRAY = %w(
+      add_products
+      add_customers
+      add_vendors
+      add_noninventoryproducts
+      add_discountproducts
+      add_inventoryproducts
+      add_salestaxproducts
+      add_serviceproducts
+    )
+
+    SETUP_EXTRA_FLOWS_ARRAY = %w(
+      add_purchaseorders
+      add_orders
+      add_shipments
+      add_invoices
+      add_salesreceipts
+    )
+
     def initialize(config = {})
       @amazon_s3 = S3Util.new
 
@@ -23,12 +42,12 @@ module Persistence
       if !s3_object.exists? || force_save
         amazon_s3.export file_name: file, objects: [config], override: true
       end
-      generate_extra_flows if %w(add_purchaseorders add_orders add_shipments add_invoices add_salesreceipts).include?(flow)
+      generate_extra_flows if SETUP_EXTRA_FLOWS_ARRAY.include?(flow)
     end
 
     def generate_extra_flows
       config_aux = config.dup
-      %w(add_products add_customers add_vendors add_noninventoryproducts).each do |extra_flow|
+      GENERATE_EXTRA_FLOWS_ARRAY.each do |extra_flow|
         config_aux['flow'] = extra_flow
         file = "#{base_name}/#{extra_flow}.json"
         s3_object = amazon_s3.bucket.object(file)

@@ -106,6 +106,7 @@ module QBWC
               <FullName>#{params['quickbooks_income_account']}</FullName>
             </AccountRef>
             <RefNumber>#{inventory['id']}</RefNumber>
+            #{inventory_site(inventory, params)}
             <Memo>Inventory Adjustment</Memo>
             <InventoryAdjustmentLineAdd>
               <ItemRef>
@@ -115,6 +116,16 @@ module QBWC
                 <NewQuantity>#{inventory['quantity'].to_f}</NewQuantity>
               </ValueAdjustment>
             </InventoryAdjustmentLineAdd>
+          XML
+        end
+
+        def inventory_site(inventory, params)
+          return unless inventory.dig('site_name') || params.dig('site_name')
+        
+          <<~XML
+            <InventorySiteRef>
+              <FullName>#{inventory['site_name'] || params['site_name']}</FullName>
+            </InventorySiteRef>
           XML
         end
       end

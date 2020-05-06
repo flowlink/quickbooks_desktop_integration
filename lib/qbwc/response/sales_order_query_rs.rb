@@ -19,8 +19,6 @@ module QBWC
       def process(config = {})
         return if records.empty?
 
-        puts records.inspect
-
         receive_configs = config[:receive] || []
         order_params = receive_configs.find { |c| c['orders'] }
 
@@ -109,7 +107,6 @@ module QBWC
 
       def orders_to_flowlink
         records.map do |record|
-          puts "sales order from qbe: #{record}"
           {
             id: record['RefNumber'],
             transaction_id: record['TxnID'],
@@ -192,6 +189,7 @@ module QBWC
             transaction_date: txn['TxnDate'].to_s,
             link_type: txn['LinkType'],
             amount: txn['Amount'],
+            line_item_amount: item['Amount']
           }
         end
       end
@@ -205,6 +203,7 @@ module QBWC
             line_id: group_item['TxnLineID'],
             description: group_item['Desc'],
             quantity: group_item['Quantity'],
+            line_item_quantity: item["Quantity"],
             unit_of_measure: group_item['UnitOfMeasure'],
             is_print_items_in_group: group_item['IsPrintItemsInGroup'],
             total_amount: group_item['TotalAmount'],
@@ -233,12 +232,15 @@ module QBWC
             line_id: item["TxnLineID"],
             description: item["Desc"],
             quantity: item["Quantity"],
+            line_item_quantity: item["Quantity"],
             unit_of_measure: item["UnitOfMeasure"],
             rate: item["Rate"],
+            line_item_rate: item["Rate"],
             rate_percent: item["RatePercent"],
             serial_number: item["SerialNumber"],
             lot_number: item["LotNumber"],
             amount: item["Amount"],
+            line_item_amount: item['Amount'],
             invoiced: item["Invoiced"],
             is_manually_closed: item["IsManuallyClosed"],
             service_date: item['ServiceDate'].to_s,

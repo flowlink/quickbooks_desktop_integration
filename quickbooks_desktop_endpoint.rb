@@ -1,5 +1,6 @@
 require 'endpoint_base'
 require 'sinatra/reloader'
+require 'securerandom'
 
 require File.expand_path(File.dirname(__FILE__) + '/lib/quickbooks_desktop_integration')
 
@@ -20,10 +21,12 @@ ENDPOINTS = %w(
   add_serviceproducts
   add_salestaxproducts
   add_discountproducts
+  add_otherchargeproducts
 )
 
 GET_ENDPOINTS =  %w(
   get_inventory
+  get_inventorywithsites
   get_inventories
   get_products
   get_invoices
@@ -36,7 +39,19 @@ GET_ENDPOINTS =  %w(
   get_salestaxproducts
   get_discountproducts
   get_inventoryproducts
+  get_inventoryassemblyproducts
+  get_otherchargeproducts
 )
+
+CUSTOM_OBJECT_TYPES = %w(
+  inventorywithsites
+  otherchargeproducts
+)
+
+OBJECT_TYPES_MAPPING_DATA_OBJECT = {
+  'inventorywithsites' => 'inventories',
+  'otherchargeproducts' => 'products'
+}
 
 class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
   set :logging, true
@@ -64,13 +79,13 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
 
       Persistence::Settings.new(config).setup
 
-      integration = Persistence::Object.new config, @payload
+      already_has_guid?
+      generate_and_add_guid unless @already_has_guid
+
+      integration = Persistence::Object.new(config, @payload)
       integration.save
-
-      notifications = integration.get_notifications
-
-      add_value 'success', notifications['processed'] if !notifications['processed'].empty?
-      add_value 'fail', notifications['failed'] if !notifications['failed'].empty?
+      
+      add_object integration.payload_key, add_flow_return_payload unless @already_has_guid
 
       object_type = integration.payload_key.capitalize
       result 200, "#{object_type} waiting for Quickbooks Desktop scheduler"
@@ -131,7 +146,6 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
       persistence = Persistence::Polling.new config, @payload, object_type
       records = persistence.process_waiting_records
       integration = Persistence::Object.new config, @payload
-
       notifications = integration.get_notifications
 
       add_value 'success', notifications['processed'] if !notifications['processed'].empty?
@@ -141,8 +155,12 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
           name = collection.keys.first
           puts name
           puts collection.values.first.inspect
-          
-          add_or_merge_value name, collection.values.first
+
+          if CUSTOM_OBJECT_TYPES.include? name
+            add_or_merge_value OBJECT_TYPES_MAPPING_DATA_OBJECT[name], collection.values.first
+          else
+            add_or_merge_value name, collection.values.first
+          end
 
           names.push name
         end
@@ -158,6 +176,25 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
   end
 
   private
+
+  def add_flow_return_payload
+    {
+      id: @payload[object_type][:id],
+      external_guid: @payload[object_type][:external_guid]
+    }
+  end
+
+  def generate_and_add_guid
+    @payload[object_type][:external_guid] = "{#{SecureRandom.uuid.upcase}}"
+  end
+
+  def object_type
+    @payload[:parameters][:payload_type]
+  end
+
+  def already_has_guid?
+    @already_has_guid ||= @payload[object_type][:external_guid] && @payload[object_type][:external_guid] != ""
+  end
 
   # NOTE this lives in endpoint_base. Added here just so it's closer ..
   # once we sure it's stable merge and push to endpoint_base/master

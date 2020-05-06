@@ -33,7 +33,7 @@ module QBWC
         {qbe_name: "PrefVendorRef", flowlink_name: "preferred_vendor_name", is_ref: true}
       ]
 
-      EXTERNAL_GUID_MAP = [{qbe_name: "ExternalGUID", flowlink_name: "external_guid", is_ref: false}]
+      EXTERNAL_GUID_MAP = [{qbe_name: "ExternalGUID", flowlink_name: "external_guid", is_ref: false, add_only: true}]
 
       class << self
         def generate_request_insert_update(objects, params = {})
@@ -54,17 +54,29 @@ module QBWC
             config = { connection_id: params['connection_id'] }.with_indifferent_access
             session_id = Persistence::Session.save(config, object)
 
-            request << search_xml(product_identifier(object), session_id)
+            if object['list_id'].to_s.empty?
+              request << search_xml_by_name(product_identifier(object), session_id)
+            else
+              request << search_xml_by_id(object['list_id'], session_id)
+            end
           end
         end
 
-        def search_xml(product_id, session_id)
+        def search_xml_by_id(object_id, session_id)
+          <<~XML
+            <ItemNonInventoryQueryRq requestID="#{session_id}">
+              <ListID>#{object_id}</ListID>
+            </ItemNonInventoryQueryRq>
+          XML
+        end
+
+        def search_xml_by_name(object_id, session_id)
           <<~XML
             <ItemNonInventoryQueryRq requestID="#{session_id}">
               <MaxReturned>10000</MaxReturned>
               <NameRangeFilter>
-                <FromName>#{product_id}</FromName>
-                <ToName>#{product_id}</ToName>
+                <FromName>#{object_id}</FromName>
+                <ToName>#{object_id}</ToName>
               </NameRangeFilter>
             </ItemNonInventoryQueryRq>
           XML
@@ -74,7 +86,7 @@ module QBWC
           <<~XML
             <ItemNonInventoryAddRq requestID="#{session_id}">
                <ItemNonInventoryAdd>
-                #{product_xml(product, params, config, false)}
+                #{product_xml(product, config, false)}
                </ItemNonInventoryAdd>
             </ItemNonInventoryAddRq>
           XML
@@ -86,7 +98,7 @@ module QBWC
                <ItemNonInventoryMod>
                   <ListID>#{product['list_id']}</ListID>
                   <EditSequence>#{product['edit_sequence']}</EditSequence>
-                  #{product.key?('active') ? product_only_touch_xml(product, params) : product_xml(product, params, config, true)}
+                  #{product.key?('active') ? product_only_touch_xml(product, params) : product_xml(product, config, true)}
                </ItemNonInventoryMod>
             </ItemNonInventoryModRq>
           XML
@@ -99,13 +111,13 @@ module QBWC
           XML
         end
 
-        def product_xml(product, params, config, is_mod)
+        def product_xml(product, config, is_mod)
           <<~XML
             <Name>#{product_identifier(product)}</Name>
             #{add_barcode(product)}
             <IsActive >#{product['is_active'] || true}</IsActive>
             #{add_fields(product, GENERAL_MAPPING, config, is_mod)}
-            #{sale_or_and_purchase(product, config, is_mod)}
+            #{sales_or_and_purchase(product, config, is_mod)}
             #{add_fields(product, EXTERNAL_GUID_MAP, config, is_mod)}
           XML
         end
@@ -116,17 +128,20 @@ module QBWC
         end
 
         def polling_current_items_xml(params, config)
-          timestamp = params
-          timestamp = params['quickbooks_since'] if params['return_all']
-
+          timestamp = params['quickbooks_since']
           session_id = Persistence::Session.save(config, 'polling' => timestamp)
-
           time = Time.parse(timestamp).in_time_zone 'Pacific Time (US & Canada)'
+
+          inventory_max_returned = nil
+          inventory_max_returned = 10000 if params['return_all'].to_i == 1
+          if params['quickbooks_max_returned'] && params['quickbooks_max_returned'] != ""
+            inventory_max_returned = params['quickbooks_max_returned']
+          end
 
           <<~XML
             <!-- polling non inventory products -->
             <ItemNonInventoryQueryRq requestID="#{session_id}">
-              <MaxReturned>100</MaxReturned>
+              <MaxReturned>#{inventory_max_returned || 50}</MaxReturned>
                 #{query_by_date(params, time)}
             </ItemNonInventoryQueryRq>
           XML
@@ -150,30 +165,32 @@ module QBWC
           XML
         end
 
-        def sale_or_and_purchase(product, config, is_mod)
-          map = product['sale_or_purchase'] ? SALES_OR_PURCHASE_MAP : SALES_AND_PURCHASE_MAP
-          tag = "SalesAndPurchase"
-
-          if product['sale_or_purchase'] && is_mod
-            tag = "SalesOrPurchaseMod"
-          elsif product['sale_or_purchase']
-            tag = "SalesOrPurchase"
-          elsif is_mod
-            tag = "SalesAndPurchaseMod"
+        def sales_or_and_purchase(product, config, is_mod)
+          return "" unless !is_mod || product['sales_or_purchase'] || product['sales_and_purchase']
+          
+          # SandP or SorP is required when adding. We default to Sales and Purchase here.
+          map = SALES_AND_PURCHASE_MAP
+          tag = is_mod ? "SalesAndPurchaseMod" : "SalesAndPurchase"
+          
+          if product['sales_or_purchase'] && product['sales_and_purchase'] != true
+            map = SALES_OR_PURCHASE_MAP
+            tag = is_mod ? "SalesOrPurchaseMod" : "SalesOrPurchase"
           end
 
-          <<~XML
-            <"#{tag}">
-              #{add_fields(product, map, config, is_mod)}
-            </"#{tag}">
-          XML
+          # We should only have either price OR price_percent, so we default to price here
+          if product["price"] && product["price"] != ""
+            product["price_percent"] = nil
+          end
+
+          "<#{tag}>#{add_fields(product, map, config, is_mod)}</#{tag}>"
         end
 
         def add_fields(object, mapping, config, is_mod)
+          object = object.with_indifferent_access
           fields = ""
           mapping.each do |map_item|
-            return "" if object[:mod_only] && object[:mod_only] != is_mod
-            return "" if object[:add_only] && object[:add_only] == is_mod
+            next if map_item[:mod_only] && map_item[:mod_only] != is_mod
+            next if map_item[:add_only] && map_item[:add_only] == is_mod
 
             if map_item[:is_ref]
               fields += add_ref_xml(object, map_item, config)
@@ -190,7 +207,7 @@ module QBWC
           qbe_field_name = mapping[:qbe_name]
           float_fields = ['price', 'cost']
 
-          return '' if flowlink_field.nil?
+          return '' if flowlink_field.nil? || flowlink_field == ""
 
           flowlink_field = '%.2f' % flowlink_field.to_f if float_fields.include?(mapping[:flowlink_name])
 
@@ -205,15 +222,15 @@ module QBWC
             return "<#{qbe_field_name}><ListID>#{flowlink_field['list_id']}</ListID></#{qbe_field_name}>"
           end
           full_name = flowlink_field ||
-                                config[mapping[:flowlink_name]] ||
-                                config["quickbooks_#{mapping[:flowlink_name]}"]
+                                config[mapping[:flowlink_name].to_sym] ||
+                                config["quickbooks_#{mapping[:flowlink_name]}".to_sym]
 
-          full_name.nil? ? "" : "<#{qbe_field_name}><FullName>#{full_name}</FullName></#{qbe_field_name}>"
+          return '' if full_name.nil? || full_name == ""
+          "<#{qbe_field_name}><FullName>#{full_name}</FullName></#{qbe_field_name}>"
         end
 
         def query_by_date(config, time)
-          puts "Product config for polling: #{config}"
-          return '' if config['return_all']
+          return '' if config['return_all'].to_i == 1
 
           <<~XML
             <FromModifiedDate>#{time.iso8601}</FromModifiedDate>

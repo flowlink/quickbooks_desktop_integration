@@ -1,170 +1,182 @@
 require 'rspec'
 require 'json'
 require 'qbwc/request/customers'
+require 'qbwc/request/customer_fixtures/add_update_search_xml_fixtures'
 
 RSpec.describe QBWC::Request::Customers do
-  let(:flowlink_customer) { JSON.parse(File.read('spec/fixtures/customer_from_flowlink.json')) }
+  let(:flowlink_customer) { JSON.parse(File.read('spec/qbwc/request/customer_fixtures/customer_from_flowlink.json')) }
+  let(:config) {
+    {
+      job_type_name: 'job_type_reference',
+      price_level_name: 'price_level_reference',
+      quickbooks_currency_name: 'currency_reference'
+    }
+  }
 
-  it "calls add_xml_to_send and outputs the right data" do
-    customer = described_class.add_xml_to_send(flowlink_customer, 12345)
-    puts customer.gsub(/\s+/, "")
-    puts "****************"
-    puts qbe_customer_add.gsub(/\s+/, "")
+  it 'calls add_xml_to_send and outputs the right data' do
+    customer = QBWC::Request::Customers.add_xml_to_send(flowlink_customer, 12345, config)
     expect(customer.gsub(/\s+/, "")).to eq(qbe_customer_add.gsub(/\s+/, ""))
   end
 
-  it "calls update_xml_to_send and outputs the right data" do
-    customer = described_class.update_xml_to_send(flowlink_customer, 12345)
+  it 'calls update_xml_to_send and outputs the right data' do
+    customer = QBWC::Request::Customers.update_xml_to_send(flowlink_customer, 12345, config)
     expect(customer.gsub(/\s+/, "")).to eq(qbe_customer_update.gsub(/\s+/, ""))
   end
 
-  def qbe_customer_add
-    <<~XML
-      <CustomerAddRq requestID="12345">
-        <CustomerAdd>
-        #{qbe_customer_innards}
-        </CustomerAdd>
-      </CustomerAddRq>
-    XML
+  describe "search xml" do
+    it "has list_id and calls search_xml_by_id" do
+      # Call search_xml method with flowlink_customer
+      pending("expect the search_xml_by_id method to have been called")
+      pending("expect the search_xml_by_name method to NOT have been called")
+      this_should_not_get_executed
+    end
+
+    it "does not have list_id and calls search_xml_by_name" do
+      flowlink_customer.delete(:list_id)
+      # Call search_xml method with flowlink_customer
+      pending("expect the search_xml_by_name method to have been called")
+      pending("expect the search_xml_by_id method to NOT have been called")
+      this_should_not_get_executed
+    end
+
+    it 'calls search_xml_by_id and outputs the right data' do
+      customer = QBWC::Request::Customers.search_xml_by_id('qbe-customer-listid', 12345)
+      expect(customer.gsub(/\s+/, "")).to eq(qbe_customer_search_id.gsub(/\s+/, ""))
+    end
+  
+    it 'calls search_xml_by_name and outputs the right data' do
+      customer = QBWC::Request::Customers.search_xml_by_name('Bruce Wayne', 12345)
+      expect(customer.gsub(/\s+/, "")).to eq(qbe_customer_search_name.gsub(/\s+/, ""))
+    end
   end
 
-  def qbe_customer_update
-    <<~XML
-      <CustomerModRq requestID="12345">
-        <CustomerMod>
-          <ListID>12345</ListID>
-          <EditSequence>1010101</EditSequence>
-          #{qbe_customer_innards}
-        </CustomerMod>
-      </CustomerModRq>
-    XML
-  end
+  describe 'calls pre_mapping_logic' do
+    describe 'checks is_active field' do
+      it 'starts as nil and returns true' do
+        flowlink_customer['is_active'] = nil
+        customer = QBWC::Request::Customers.send(:pre_mapping_logic, flowlink_customer)
+        expect(customer['is_active']).to be true
+      end
 
-  def qbe_customer_innards
-    <<~XML
-      <Name>First Last</Name>
-      <FirstName>First</FirstName>
-      <LastName>Last</LastName>
-      <Phone>+1 2345678999</Phone>
-      <AltPhone>1234567890</AltPhone>
-      <Email>test@aol.com</Email>
-      <IsActive>true</IsActive>
-      <CompanyName>some company</CompanyName>
-      <Salutation>Mr</Salutation>
-      <MiddleName>middlename</MiddleName>
-      <JobTitle>Developer</JobTitle>
-      <Fax>1234</Fax>
-      <Cc>some_email@test.com</Cc>
-      <Contact>My Contact friend</Contact>
-      <AltContact>My Other Contact friend</AltContact>
-      <ResaleNumber>300</ResaleNumber>
-      <CreditLimit>10000</CreditLimit>
-      <JobStartDate>2019-11-01T13:22:02.718+00:00</JobStartDate>
-      <JobProjectedEndDate>2019-11-01T13:22:02.718+00:00</JobProjectedEndDate>
-      <JobEndDate>2019-11-01T13:22:02.718+00:00</JobEndDate>
-      <JobDesc>Desc</JobDesc>
-      <Notes>A note here</Notes>
-      <ExternalGUID>1234</ExternalGUID>
-      <TaxRegistrationNumber>0099</TaxRegistrationNumber>
-      <OpenBalance>2500</OpenBalance>
-      <OpenBalanceDate>2019-11-01T13:22:02.718+00:00</OpenBalanceDate>
-      <ClassRef><FullName>class_reference</FullName></ClassRef>
-      <ParentRef><FullName>parent_reference</FullName></ParentRef>
-      <CustomerTypeRef><FullName>customer_type_reference</FullName></CustomerTypeRef>
-      <TermsRef><FullName>terms_reference</FullName></TermsRef>
-      <SalesRepRef><FullName>sales_rep_reference</FullName></SalesRepRef>
-      <SalesTaxCodeRef><FullName>sales_tax_code_reference</FullName></SalesTaxCodeRef>
-      <ItemSalesTaxRef><FullName>item_sales_tax_reference</FullName></ItemSalesTaxRef>
-      <PreferredPaymentMethodRef><FullName>preferred_payment_method_reference</FullName></PreferredPaymentMethodRef>
-      <JobTypeRef><FullName>job_type_reference</FullName></JobTypeRef>
-      <PriceLevelRef><FullName>price_level_reference</FullName></PriceLevelRef>
-      <CurrencyRef><FullName>currency_reference</FullName></CurrencyRef>
-      <SalesTaxCountry>US</SalesTaxCountry>
-      <JobStatus>Awarded</JobStatus>
-      <PreferredDeliveryMethod>Email</PreferredDeliveryMethod>
-      <BillAddress>
-      <Addr1>75 example dr</Addr1>
-      <Addr2>addr line 2</Addr2>
-      <Addr3>addr line 3</Addr3>
-      <Addr4>addr line 4</Addr4>
-      <Addr5>addr line 5</Addr5>
-      <City>Some City</City>
-      <State>California</State>
-      <PostalCode>78456</PostalCode>
-      <Country>United States</Country>
-      <Note>vendor address note</Note>
-      </BillAddress>
-      <ShipAddress>
-      <Addr1>75 example dr</Addr1>
-      <Addr2>addr line 2</Addr2>
-      <Addr3>addr line 3</Addr3>
-      <Addr4>addr line 4</Addr4>
-      <Addr5>addr line 5</Addr5>
-      <City>Some City</City>
-      <State>California</State>
-      <PostalCode>78456</PostalCode>
-      <Country>United States</Country>
-      <Note>ship address note</Note>
-      </ShipAddress>
-      <ShipToAddress>
-      <Name>Ship To Name</Name>
-      <DefaultShipTo>false</DefaultShipTo>
-      <Addr1>75 example dr</Addr1>
-      <Addr2>addr line 2</Addr2>
-      <Addr3>addr line 3</Addr3>
-      <Addr4>addr line 4</Addr4>
-      <Addr5>addr line 5</Addr5>
-      <City>Some City</City>
-      <State>California</State>
-      <PostalCode>78456</PostalCode>
-      <Country>United States</Country>
-      <Note>ship address note</Note>
-      </ShipToAddress>
-      <ShipToAddress>
-      <Name>Ship To Name</Name>
-      <DefaultShipTo>true</DefaultShipTo>
-      <Addr1>75 example dr</Addr1>
-      <Addr2>addr line 2</Addr2>
-      <Addr3>addr line 3</Addr3>
-      <Addr4>addr line 4</Addr4>
-      <Addr5>addr line 5</Addr5>
-      <City>Some City</City>
-      <State>California</State>
-      <PostalCode>78456</PostalCode>
-      <Country>United States</Country>
-      <Note>ship address note</Note>
-      </ShipToAddress>
-      <AdditionalContactRef>
-      <ContactName>initial contact</ContactName>
-      <ContactValue>initial value</ContactValue>
-      </AdditionalContactRef>
-      <AdditionalContactRef>
-      <ContactName>secondary contact</ContactName>
-      <ContactValue>secondary value</ContactValue>
-      </AdditionalContactRef>
-      <AdditionalNotes><Note>note #1</Note></AdditionalNotes>
-      <Contacts>
-      <Salutation>Miss</Salutation>
-      <FirstName>Lady</FirstName>
-      <MiddleName>middle</MiddleName>
-      <LastName>Surname</LastName>
-      <JobTitle>Thinker</JobTitle>
-      <AdditionalContactRef>
-      <ContactName>initial contact 1</ContactName>
-      <ContactValue>initial value 1</ContactValue>
-      </AdditionalContactRef>
-      <AdditionalContactRef>
-      <ContactName>secondary contact 1</ContactName>
-      <ContactValue>secondary value 1</ContactValue>
-      </AdditionalContactRef>
-      </Contacts>
-      <Contacts>
-      <Salutation>Dr</Salutation>
-      <FirstName>John</FirstName>
-      <MiddleName>F</MiddleName>
-      <LastName>Doe</LastName>
-      <JobTitle>Doctor</JobTitle>
-      </Contacts>
-    XML
+      it 'starts as true and returns true' do
+        flowlink_customer['is_active'] = true
+        customer = QBWC::Request::Customers.send(:pre_mapping_logic, flowlink_customer)
+        expect(customer['is_active']).to be true
+      end
+
+      it 'starts as false and returns false' do
+        flowlink_customer['is_active'] = false
+        customer = QBWC::Request::Customers.send(:pre_mapping_logic, flowlink_customer)
+        expect(customer['is_active']).to be false
+      end
+
+      it 'starts as a random string and returns true' do
+        flowlink_customer['is_active'] = 'some other value'
+        customer = QBWC::Request::Customers.send(:pre_mapping_logic, flowlink_customer)
+        expect(customer['is_active']).to be true
+      end
+    end
+
+    describe 'checks first and last name fields' do
+      it 'given nil for first and last name field, it returns correct parts of name field' do
+        flowlink_customer['firstname'] = nil
+        flowlink_customer['lastname'] = nil
+        flowlink_customer['name'] = 'Test Customer Name'
+        customer = QBWC::Request::Customers.send(:pre_mapping_logic, flowlink_customer)
+        expect(customer['firstname']).to eq('Test')
+        expect(customer['lastname']).to eq('Name')
+      end
+
+      it 'given valid values for first and last name field, it returns those values' do
+        flowlink_customer['firstname'] = 'NuRelm'
+        flowlink_customer['lastname'] = 'Dev'
+        flowlink_customer['name'] = 'Test Customer Name'
+        customer = QBWC::Request::Customers.send(:pre_mapping_logic, flowlink_customer)
+        expect(customer['firstname']).to eq('NuRelm')
+        expect(customer['lastname']).to eq('Dev')
+      end
+
+      it 'given nil for first and last name field and non-splittable string, it returns that string for both first and last name' do
+        flowlink_customer['firstname'] = nil
+        flowlink_customer['lastname'] = nil
+        flowlink_customer['name'] = 'Test'
+        customer = QBWC::Request::Customers.send(:pre_mapping_logic, flowlink_customer)
+        expect(customer['firstname']).to eq('Test')
+        expect(customer['lastname']).to eq('Test')
+      end
+
+      it 'given nil for first and last name and name fields, it returns nil for both first and last name' do
+        flowlink_customer['firstname'] = nil
+        flowlink_customer['lastname'] = nil
+        flowlink_customer['name'] = nil
+        customer = QBWC::Request::Customers.send(:pre_mapping_logic, flowlink_customer)
+        expect(customer['firstname']).to be_nil
+        expect(customer['lastname']).to be_nil
+      end
+    end
+
+    describe 'checks phone and mobile fields' do
+      it 'has valid phone and mobile values and returns those values' do
+        flowlink_customer['billing_address']['phone'] = '123-456-7890'
+        flowlink_customer['shipping_address']['phone'] = '111-555-9999'
+        flowlink_customer['phone'] = '1'
+        flowlink_customer['mobile'] = '2'
+        customer = QBWC::Request::Customers.send(:pre_mapping_logic, flowlink_customer)
+        expect(customer['phone']).to eq('1')
+        expect(customer['mobile']).to eq('2')
+      end
+
+      it 'has nil for phone and mobile and returns valid address phone fields' do
+        flowlink_customer['billing_address']['phone'] = '123-456-7890'
+        flowlink_customer['shipping_address']['phone'] = '111-555-9999'
+        flowlink_customer['phone'] = nil
+        flowlink_customer['mobile'] = nil
+        customer = QBWC::Request::Customers.send(:pre_mapping_logic, flowlink_customer)
+        expect(customer['phone']).to eq('123-456-7890')
+        expect(customer['mobile']).to eq('111-555-9999')
+      end
+
+      it 'has nil for phone, mobile, and address fields and returns nil' do
+        flowlink_customer['billing_address'] = nil
+        flowlink_customer['shipping_address'] = nil
+        flowlink_customer['phone'] = nil
+        flowlink_customer['mobile'] = nil
+        customer = QBWC::Request::Customers.send(:pre_mapping_logic, flowlink_customer)
+        expect(customer['phone']).to be_nil
+        expect(customer['mobile']).to be_nil
+      end
+    end
+
+    describe 'checks job status, preferred delivery method and sales tax country fields' do
+      it 'given valid values and returns an object with correct fields' do
+        flowlink_customer['sales_tax_country'] = 'Australia'
+        flowlink_customer['job_status'] = 'Awarded'
+        flowlink_customer['preferred_delivery_method'] = 'Email'
+        customer = QBWC::Request::Customers.send(:pre_mapping_logic, flowlink_customer)
+        expect(customer['sales_tax_country']).to eq('Australia')
+        expect(customer['job_status']).to eq('Awarded')
+        expect(customer['preferred_delivery_method']).to eq('Email')
+      end
+
+      it 'given nil values and returns an object with nil for those fields' do
+        flowlink_customer['sales_tax_country'] = nil
+        flowlink_customer['job_status'] = nil
+        flowlink_customer['preferred_delivery_method'] = nil
+        customer = QBWC::Request::Customers.send(:pre_mapping_logic, flowlink_customer)
+        expect(customer['sales_tax_country']).to be_nil
+        expect(customer['job_status']).to be_nil
+        expect(customer['preferred_delivery_method']).to be_nil
+      end
+
+      it 'given invalid non-nil values and returns an object with nil for those fields' do
+        flowlink_customer['sales_tax_country'] = 'Custom Delivery Method'
+        flowlink_customer['job_status'] = 'Fiired'
+        flowlink_customer['preferred_delivery_method'] = 'Phone'
+        customer = QBWC::Request::Customers.send(:pre_mapping_logic, flowlink_customer)
+        expect(customer['sales_tax_country']).to be_nil
+        expect(customer['job_status']).to be_nil
+        expect(customer['preferred_delivery_method']).to be_nil
+      end
+    end
   end
 end

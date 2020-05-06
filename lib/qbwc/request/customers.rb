@@ -88,11 +88,6 @@ module QBWC
             config = { connection_id: params['connection_id'] }.with_indifferent_access
             session_id = Persistence::Session.save(config, object)
 
-            if params['connection_id'] == "systum1"
-              puts "systum1"
-              puts add_xml_to_send(object, session_id, config).gsub(/\s+/, "")
-            end
-
             request << (object[:list_id].to_s.empty? ? add_xml_to_send(object, session_id, config) : update_xml_to_send(object, session_id, config))
           end
         end
@@ -103,11 +98,8 @@ module QBWC
         end
 
         def polling_current_items_xml(params, config)
-          timestamp = params
-          timestamp = params['quickbooks_since'] if params['return_all']
-
+          timestamp = params['quickbooks_since']
           session_id = Persistence::Session.save(config, 'polling' => timestamp) 
-
           time = Time.parse(timestamp).in_time_zone 'Pacific Time (US & Canada)'
 
           <<~XML
@@ -120,8 +112,7 @@ module QBWC
         end
 
         def query_by_date(config, time)
-          puts "Customer config for polling: #{config}"
-          return '' if config['return_all']
+          return '' if config['return_all'].to_i == 1
 
           <<~XML
             <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
@@ -135,9 +126,6 @@ module QBWC
             config = { connection_id: params['connection_id'] }.with_indifferent_access
             session_id = Persistence::Session.save(config, object)
 
-            puts "Customer object: #{object}"
-            puts "Customer object list id: #{object['list_id']}"
-
             if object['list_id'].to_s.empty?
               request << search_xml_by_name(object['name'], session_id)
             else
@@ -149,21 +137,14 @@ module QBWC
         end
 
         def search_xml_by_id(object_id, session_id)
-          puts "Building customer xml by list_id #{object_id}, #{session_id}"
-
           <<~XML
             <CustomerQueryRq requestID="#{session_id}">
-              <MaxReturned>50</MaxReturned>
-              <ListIDList>
-                #{object_id}
-              </ListIDList>
+              <ListID>#{object_id}</ListID>
             </CustomerQueryRq>
           XML
         end
 
         def search_xml_by_name(object_id, session_id)
-          puts "Building customer xml by name #{object_id}, #{session_id}"
-
           <<~XML
             <CustomerQueryRq requestID="#{session_id}">
               <MaxReturned>50</MaxReturned>
@@ -210,26 +191,28 @@ module QBWC
             <ShipAddress>
               #{add_fields(object['shipping_address'], ADDRESS_MAP, config, is_mod) if object['shipping_address']}
             </ShipAddress>
-            #{ship_to_address(object)}
+            #{ship_to_address(object, config, is_mod)}
             #{add_fields(object, MAPPING_TWO, config, is_mod)}
             #{additional_contacts(object)}
-            #{contacts(object, is_mod)}
+            #{contacts(object, config, is_mod)}
             #{add_fields(object, MAPPING_THREE, config, is_mod)}
-            #{additional_notes(object)}
+            #{additional_notes(object, is_mod)}
             #{add_fields(object, MAPPING_FOUR, config, is_mod)}
           XML
         end
 
-        def ship_to_address(object)
+        def ship_to_address(object, config, is_mod)
           return "" unless object['ship_to_address'] && object['ship_to_address'].is_a?(Array)
 
           object['ship_to_address'] = object['ship_to_address'][0...50] if object['ship_to_address'].length > 50
           fields = ""
           object['ship_to_address'].each do |addr|
+            default_ship_to = addr['default_ship_to'] == true ? true : false
+
             fields += "<ShipToAddress>"
             fields += "<Name>#{addr['name']}</Name>" if addr['name']
-            fields += add_fields(addr, ADDRESS_MAP, config)
-            fields += "<DefaultShipTo>#{addr['default_ship_to']}</DefaultShipTo>" if addr['default_ship_to']
+            fields += add_fields(addr, ADDRESS_MAP, config, is_mod)
+            fields += "<DefaultShipTo>#{default_ship_to}</DefaultShipTo>"
             fields += "</ShipToAddress>"
           end
           
@@ -243,40 +226,38 @@ module QBWC
           object['additional_contacts'].each do |contact|
             # Both name and value required
             next unless contact['name'] && contact['value']
-            fields += <<~XML
-                              <AdditionalContactRef>
-                                <ContactName >#{contact['name']}</ContactName>
-                                <ContactValue >#{contact['value']}</ContactValue>
-                              </AdditionalContactRef>
-                            XML
+              fields += "<AdditionalContactRef>"
+              fields += "<ContactName >#{contact['name']}</ContactName>"
+              fields += "<ContactValue >#{contact['value']}</ContactValue>"
+              fields += "</AdditionalContactRef>"
           end
 
           fields
         end
 
-        def additional_notes(object)
+        def additional_notes(object, is_mod)
           return "" unless object['additional_notes'] && object['additional_notes'].is_a?(Array)
           
           fields = ""
           object['additional_notes'].each do |note|
-            next unless note && note[:note]
+            next unless note && note['note']
 
             fields += is_mod ? "<AdditionalNotesMod>" : "<AdditionalNotes>"
-            fields += "<NoteID>#{note[:id]}</NoteID>" if is_mod
-            fields += "<Note>#{note[:note]}</Note>"
+            fields += "<NoteID>#{note['id']}</NoteID>" if is_mod
+            fields += "<Note>#{note['note']}</Note>"
             fields += is_mod ? "</AdditionalNotesMod>" : "</AdditionalNotes>"
           end
 
           fields
         end
 
-        def contacts(object, is_mod)
+        def contacts(object, config, is_mod)
           return "" unless object['contacts'] && object['contacts'].is_a?(Array)
           
           fields = ""
           object['contacts'].each do |contact|
             fields += is_mod ? "<ContactsMod>" : "<Contacts>"
-            fields += add_fields(contact, CONTACTS_MAP, config)
+            fields += add_fields(contact, CONTACTS_MAP, config, is_mod)
             fields += additional_contacts(contact)
             fields += is_mod ? "</ContactsMod>" : "</Contacts>"
           end
@@ -287,13 +268,18 @@ module QBWC
         def pre_mapping_logic(initial_object)
           object = initial_object
 
-          object['is_active'] = object['is_active'] || true
-          object['firstname'] = object['firstname'] || object['name'].split.first
-          object['lastname'] = object['lastname'] || object['name'].split.last
-          object['phone'] = object['billing_address']['phone'] if object['billing_address']
-          if object['mobile'] && object['mobile'] != ''
+          object['is_active'] = true unless object['is_active'] == false
+          object['firstname'] = object['firstname'] || object['name'].to_s.split.first
+          object['lastname'] = object['lastname'] || object['name'].to_s.split.last
+
+          unless object['phone'] || object['phone'] == ''
+            object['phone'] = object['billing_address']['phone'] if object['billing_address']
+          end
+          
+          unless object['mobile'] || object['mobile'] == ''
             object['mobile'] = object['shipping_address']['phone'] if object['shipping_address']
           end
+
           object['preferred_delivery_method'] = nil unless DELIVERY_METHODS.include?(object['preferred_delivery_method'])
           object['job_status'] = nil unless JOB_STATUSES.include?(object['job_status'])
           object['sales_tax_country'] = nil unless SALES_TAX_COUNTRIES.include?(object['sales_tax_country'])
@@ -304,8 +290,8 @@ module QBWC
         def add_fields(object, mapping, config, is_mod)
           fields = ""
           mapping.each do |map_item|
-            return "" if object[:mod_only] && object[:mod_only] != is_mod
-            return "" if object[:add_only] && object[:add_only] == is_mod
+            next if map_item[:mod_only] && map_item[:mod_only] != is_mod
+            next if map_item[:add_only] && map_item[:add_only] == is_mod
 
             if map_item[:is_ref]
               fields += add_ref_xml(object, map_item, config)
@@ -322,7 +308,7 @@ module QBWC
           qbe_field_name = mapping[:qbe_name]
           float_fields = ['price', 'cost']
 
-          return '' if flowlink_field.nil?
+          return '' if flowlink_field.nil? || flowlink_field == ""
 
           flowlink_field = '%.2f' % flowlink_field.to_f if float_fields.include?(mapping[:flowlink_name])
 
@@ -337,10 +323,11 @@ module QBWC
             return "<#{qbe_field_name}><ListID>#{flowlink_field['list_id']}</ListID></#{qbe_field_name}>"
           end
           full_name = flowlink_field ||
-                                config[mapping[:flowlink_name]] ||
-                                config["quickbooks_#{mapping[:flowlink_name]}"]
+                                config[mapping[:flowlink_name].to_sym] ||
+                                config["quickbooks_#{mapping[:flowlink_name]}".to_sym]
 
-          full_name.nil? ? "" : "<#{qbe_field_name}><FullName>#{full_name}</FullName></#{qbe_field_name}>"
+          return '' if full_name.nil? || full_name == ""
+          "<#{qbe_field_name}><FullName>#{full_name}</FullName></#{qbe_field_name}>"
         end
 
         def sanitize_customer(customer)

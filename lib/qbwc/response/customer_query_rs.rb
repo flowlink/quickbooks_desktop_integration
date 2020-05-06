@@ -19,8 +19,6 @@ module QBWC
       def process(config)
         return if records.empty?
 
-        puts "Config for customer query: #{config}"
-
         receive_configs = config[:receive] || []
         customer_params = receive_configs.find { |c| c['customers'] }
 
@@ -51,11 +49,11 @@ module QBWC
       private
 
       def objects_to_update
-        # puts "Objects to update: #{records}"
         records.map do |record|
           {
             object_type: 'customer',
             email: record['Name'],
+            name: record['Name'],
             object_ref: record['Name'],
             list_id: record['ListID'],
             edit_sequence: record['EditSequence']
@@ -71,12 +69,11 @@ module QBWC
 
       def to_flowlink
         records.map do |record|
-          # puts "Customer QBE object: #{record}"
           {
             id: record['ListID'],
             list_id: record['ListID'],
             qbe_id: record['ListID'],
-            key: 'qbe_id',
+            key: ['qbe_id', 'external_guid'],
             external_id: record['ListID'],
             created_at: record['TimeCreated'].to_s,
             modified_at: record['TimeModified'].to_s,
@@ -93,7 +90,7 @@ module QBWC
               state: record.dig('BillAddress', 'State'),
               country: record.dig('BillAddress', 'Country'),
               zip_code: record.dig('BillAddress', 'PostalCode'),
-              note: record.dig('ShipAddress', 'Note')
+              note: record.dig('BillAddress', 'Note')
             }.compact,
             balance: record['Balance'],
             total_balance: record['TotalBalance'],
@@ -110,19 +107,7 @@ module QBWC
               zip_code: record.dig('ShipAddress', 'PostalCode'),
               note: record.dig('ShipAddress', 'Note')
             }.compact,
-            ship_to_address: {
-              address1: record.dig('ShipAddress', 'Addr1'),
-              address2: record.dig('ShipAddress', 'Addr2'),
-              address3: record.dig('ShipAddress', 'Addr3'),
-              address4: record.dig('ShipAddress', 'Addr4'),
-              address5: record.dig('ShipAddress', 'Addr5'),
-              city: record.dig('ShipAddress', 'City'),
-              state: record.dig('ShipAddress', 'State'),
-              country: record.dig('ShipAddress', 'Country'),
-              zip_code: record.dig('ShipAddress', 'PostalCode'),
-              note: record.dig('ShipAddress', 'Note'),
-              default_ship_to: record.dig('ShipAddress', 'DefaultShipTo')
-            }.compact,
+            ship_to_addresses: ship_to_addresses(record),
             class_name: record.dig('ClassRef', 'FullName'),
             sales_rep: record.dig('SalesRepRef', 'FullName'),
             is_active: record['IsActive'],
@@ -167,12 +152,32 @@ module QBWC
         end
       end
 
+      def ship_to_addresses(record)
+        record['ShipToAddress'].to_a.map do |obj|
+          {
+            name: obj['Name'],
+            address1: obj['Addr1'],
+            address2: obj['Addr2'],
+            address3: obj['Addr3'],
+            address4: obj['Addr4'],
+            address5: obj['Addr5'],
+            city: obj['City'],
+            state: obj['State'],
+            country: obj['Country'],
+            zip_code: obj['PostalCode'],
+            note: obj['Note'],
+            default_ship_to: obj['DefaultShipTo']
+          }.compact
+        end
+      end
+
       def additional_notes(record)
         return unless record['AdditionalNotesRet']
         record['AdditionalNotesRet'] = [record['AdditionalNotesRet']] if record['AdditionalNotesRet'].is_a?(Hash)
 
         record['AdditionalNotesRet'].to_a.map do |note|
           {
+            id: note['NoteID'],
             date: note['Date'],
             note: note['Note']
           }

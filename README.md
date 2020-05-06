@@ -7,12 +7,20 @@
 This is a fully hosted and supported integration for use with the [FlowLink](http://flowlink.io/)
 product. With this integration you can perform the following functions:
 
-* Send orders to Quickbooks
+* Send/Receive orders to Quickbooks
+* Send/Receive invoices to Quickbooks
+* Send/Receive sales receipts to Quickbooks
+* Send/Receive customers to Quickbooks
+* Send/Receive vendors to Quickbooks
+* Send/Receives products (Inventory, NonInventory, Service, Discount, Sales Tax types) to Quickbooks
+* Receives Inventory Assembly product types from Quickbooks
+* Send/Receive purchase orders to Quickbooks
+* Send payments to Quickbooks
+* Send journal entries to Quickbooks
 * Send returns to Quickbooks
 * Send shipments to Quickbooks
-* Send customers to Quickbooks
-* Send/Receives products to Quickbooks
 * Set/Receives inventories to Quicbooks
+* Receives inventories by site from Quicbooks
 
 ## Connection Parameters
 
@@ -27,14 +35,37 @@ The following parameters must be setup within [Flowlink](http://flowlink.io):
 
 The following webhooks are implemented:
 
-* **add_orders**: Adds orders to QuickBooks
+* **add_orders**: Adds and Updates sales orders in QuickBooks
+* **add_invoices**: Adds and Updates invoices in QuickBooks
+* **add_salesreceipts**: Adds and Updates sales receipts in QuickBooks
+* **add_customers**: Adds and Updates customers in QuickBooks
+* **add_vendors**: Adds and Updates vendors in QuickBooks
+* **add_products**: Adds and Updates products of type Inventory in QuickBooks
+* **add_noninventoryproducts**: Adds and Updates products of type NonInventory in QuickBooks
+* **add_serviceproducts**: Adds and Updates products of type Service in QuickBooks
+* **add_discountproducts**: Adds and Updates products of type Discount in QuickBooks
+* **add_salestaxproducts**: Adds and Updates products of type SalesTax in QuickBooks
+* **add_purchaseorders**: Adds and Updates purchase orders in QuickBooks
+* **add_payments**: Adds payments to QuickBooks
+* **add_journals**: Adds and Updates journal entries in QuickBooks
+* **add_inventories**: Adds inventories to QuickBooks
 * **add_returns**: Adds returns to QuickBooks
 * **add_shipments**: Adds shipments to QuickBooks
-* **add_customers**: Adds customers to QuickBooks
-* **add_products**: Adds products to QuickBooks
-* **add_inventories**: Adds inventories to QuickBooks
-* **get_products**: Gets products from QuickBooks
+
+* **get_orders**: Gets orders from QuickBooks
+* **get_invoices**: Gets invoices from QuickBooks
+* **get_customers**: Gets customers from QuickBooks
+* **get_vendors**: Gets vendors from QuickBooks
+* **get_products**: Gets products of type Inventory from QuickBooks
+* **get_inventoryproducts**: Gets products of type Inventory from QuickBooks
+* **get_noninventoryproducts**: Gets products of type NonInventory from QuickBooks
+* **get_serviceproducts**: Gets products of type Service from QuickBooks
+* **get_discountproducts**: Gets products of type Discount from QuickBooks
+* **get_salestaxproducts**: Gets products of type SalesTax from QuickBooks
+* **get_inventoryassemblyproducts**: Gets products of type InventoryAssembly from QuickBooks
+* **get_purchaseorders**: Gets purchase orders from QuickBooks
 * **get_inventories**: Gets inventories from QuickBooks
+* **get_inventorywithsites**: Gets inventories by Site from QuickBooks
 
 ### add_orders
 
@@ -52,6 +83,7 @@ The following parameters are required when setting up a Flow with this webhook:
 | quickbooks_use_tax_line_items   | If true, uses broken out taxes (if available) |
 | quickbooks_customer_email       | If present, uses given email for all customers |
 | quickbooks_auto_create_products | If checked, automatically create products for orders and shipments |
+| use_amount_for_tax | If set to "1" then we use the "Amount" QBE field rather than "Rate" (used in Invoices too) |
 
 ## QBE Config and Refs
 
@@ -73,32 +105,31 @@ The following parameters are required when setting up a Flow with this webhook:
 
 ### Getting Products
 
-You can retrieve products from QBE in a couple different ways.
-
 You can retrieve specific product types by calling any of the following endpoints:
 
+* /get_products (alias for /get_inventoryproducts)
 * /get_noninventoryproducts
 * /get_serviceproducts
 * /get_salestaxproducts
 * /get_discountproducts
-* /get_inventoryproducts
+* /get_inventoryassemblyproducts
 
----
+### Adding Products
 
-You can also get all products by calling `/get_products` and it will return all possible types (inventory, non-inventory, assembly, service, sales tax, discount)
+QBE has a few different product types that FlowLink allows you to add/mod/query
 
----
+* inventory
+* assembly
+* noninventory
+* salestax
+* service
+* discount
 
-You can also call `/get_products` and specify a config value - see below
+When **adding** noninventory or service products, the block of either SalesOrPurchase or SalesAndPurchase is required. To specify which block to use, you'll need to set the field to true. `sales_and_purchase = true` or `sales_or_purchase = true`. If both are set to true or neither are set, SalesAndPurchase is the default block.
 
-  ```ruby
-  # Accepted values in the array are shown below
-  # Non valid inputs will be ignored
+When **modifying** noninventory or service products, these blocks are not required. If both `sales_and_purchase` and `sales_or_purchase` are set to true, SalesAndPurchase is still the default. If none are set, these blocks will be ignored.
 
-  config[:quickbooks_specify_products] = "[\"inventory\", \"assembly\", \"noninventory\", \"salestax\", \"service\", \"discount\"]"
-
-  # NOTE: Be sure to escape the string values of each item in the "array"
-```
+Some products do not allow modifying of the SalesOrPurchase and SalesAndPurchase block, so be sure you can modify when you send the request.
 
 ## About FlowLink
 

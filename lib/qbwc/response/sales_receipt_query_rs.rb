@@ -19,19 +19,25 @@ module QBWC
       def process(config = {})
         return if records.empty?
 
-        puts records.inspect
-
         config  = { origin: 'flowlink', connection_id: config[:connection_id]  }
 
-        Persistence::Object.new(config, {}).update_objects_with_query_results(objects_to_update)
+        to_update = objects_to_update
+
+        puts({method: "process", class_based: "SalesReceiptQueryRs", to_update: to_update})
+
+
+        Persistence::Object.new(config, {}).update_objects_with_query_results(to_update)
 
         nil
       end
 
       def objects_to_update
+        puts({method: "objects_to_update", class_based: "SalesReceiptQueryRs", records: records})
+
         records.map do |record|
           {
             object_type: 'salesreceipt',
+            id: record['RefNumber'],
             object_ref: record['RefNumber'],
             list_id: record['TxnID'],
             edit_sequence: record['EditSequence']
@@ -51,7 +57,8 @@ module QBWC
             is_pending: record['IsPending'],
             transaction_id: record['TxnID'],
             qbe_transaction_id: record['TxnID'],
-            key: 'qbe_transaction_id',
+            qbe_id: record['TxnID'],
+            key: ['qbe_id', 'qbe_transaction_id', 'external_guid'],
             created_at: record['TimeCreated'].to_s,
             modified_at: record['TimeModified'].to_s,
             transaction_number: record['TxnNumber'],
@@ -142,12 +149,15 @@ module QBWC
             line_id: item["TxnLineID"],
             description: item["Desc"],
             quantity: item["Quantity"],
+            line_item_quantity: item["Quantity"],
             unit_of_measure: item["UnitOfMeasure"],
             rate: item["Rate"],
+            line_item_rate: item["Rate"],
             rate_percent: item["RatePercent"],
             serial_number: item["SerialNumber"],
             lot_number: item["LotNumber"],
             amount: item["Amount"],
+            line_item_amount: item["Amount"],
             invoiced: item["Invoiced"],
             is_manually_closed: item["IsManuallyClosed"],
             service_date: item['ServiceDate'].to_s,
@@ -166,6 +176,7 @@ module QBWC
             line_id: group_item['TxnLineID'],
             description: group_item['Desc'],
             quantity: group_item['Quantity'],
+            line_item_quantity: item["Quantity"],
             unit_of_measure: group_item['UnitOfMeasure'],
             is_print_items_in_group: group_item['IsPrintItemsInGroup'],
             total_amount: group_item['TotalAmount'],
