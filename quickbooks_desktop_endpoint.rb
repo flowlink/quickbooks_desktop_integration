@@ -46,11 +46,23 @@ GET_ENDPOINTS =  %w(
 CUSTOM_OBJECT_TYPES = %w(
   inventorywithsites
   otherchargeproducts
+  serviceproducts
+  salestaxproducts
+  noninventoryproducts
+  inventoryproducts
+  discountproducts
+  inventoryassemblyproducts
 )
 
 OBJECT_TYPES_MAPPING_DATA_OBJECT = {
   'inventorywithsites' => 'inventories',
-  'otherchargeproducts' => 'products'
+  'otherchargeproducts' => 'products',
+  'serviceproducts' => 'products',
+  'salestaxproducts' => 'products',
+  'noninventoryproducts' => 'products',
+  'inventoryproducts' => 'products',
+  'discountproducts' => 'products',
+  'inventoryassemblyproducts' => 'products'
 }
 
 class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
@@ -85,8 +97,8 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
 
       integration = Persistence::Object.new(config, @payload)
       integration.save
-      
-      add_object integration.payload_key, return_payload unless @already_has_guid
+
+      add_object determine_name(integration.payload_key).singularize, return_payload unless @already_has_guid
 
       object_type = integration.payload_key.capitalize
       result 200, "#{object_type} waiting for Quickbooks Desktop scheduler"
@@ -157,11 +169,7 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
           puts name
           puts collection.values.first.inspect
 
-          if CUSTOM_OBJECT_TYPES.include? name
-            add_or_merge_value OBJECT_TYPES_MAPPING_DATA_OBJECT[name], collection.values.first
-          else
-            add_or_merge_value name, collection.values.first
-          end
+          add_or_merge_value determine_name(name), collection.values.first
 
           names.push name
         end
@@ -177,6 +185,13 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
   end
 
   private
+
+  def determine_name(name)
+    plural_name = name.pluralize
+    return name unless CUSTOM_OBJECT_TYPES.include?(plural_name)
+    
+    OBJECT_TYPES_MAPPING_DATA_OBJECT[plural_name]
+  end
 
   def add_flow_return_payload
     {
