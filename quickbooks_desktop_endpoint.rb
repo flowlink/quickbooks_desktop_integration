@@ -46,11 +46,23 @@ GET_ENDPOINTS =  %w(
 CUSTOM_OBJECT_TYPES = %w(
   inventorywithsites
   otherchargeproducts
+  serviceproducts
+  salestaxproducts
+  noninventoryproducts
+  inventoryproducts
+  discountproducts
+  inventoryassemblyproducts
 )
 
 OBJECT_TYPES_MAPPING_DATA_OBJECT = {
   'inventorywithsites' => 'inventories',
-  'otherchargeproducts' => 'products'
+  'otherchargeproducts' => 'products',
+  'serviceproducts' => 'products',
+  'salestaxproducts' => 'products',
+  'noninventoryproducts' => 'products',
+  'inventoryproducts' => 'products',
+  'discountproducts' => 'products',
+  'inventoryassemblyproducts' => 'products'
 }
 
 class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
@@ -81,11 +93,12 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
 
       already_has_guid?
       generate_and_add_guid unless @already_has_guid
+      return_payload = add_flow_return_payload
 
       integration = Persistence::Object.new(config, @payload)
       integration.save
-      
-      add_object integration.payload_key, add_flow_return_payload unless @already_has_guid
+
+      add_object determine_name(integration.payload_key).singularize, return_payload unless @already_has_guid
 
       object_type = integration.payload_key.capitalize
       result 200, "#{object_type} waiting for Quickbooks Desktop scheduler"
@@ -158,13 +171,11 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
 
           record = collection.values.first
 
-          record = allow_only_whitelisted_fields(record)
 
-          if CUSTOM_OBJECT_TYPES.include? name
-            add_or_merge_value OBJECT_TYPES_MAPPING_DATA_OBJECT[name], record
-          else
-            add_or_merge_value name, record
-          end
+          puts({connection_id: @config['connection_id'], flow: @config['flow'], record: record.inspect})
+          record = allow_only_whitelisted_fields(record.first.with_indifferent_access)
+
+          add_or_merge_value determine_name(name), record
 
           names.push name
         end
@@ -181,19 +192,33 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
 
   private
 
+  def determine_name(name)
+    plural_name = name.pluralize
+    return name unless CUSTOM_OBJECT_TYPES.include?(plural_name)
+    
+    OBJECT_TYPES_MAPPING_DATA_OBJECT[plural_name]
+  end
+
   # NOTE: ideally this would live in endpoint_base gem,
   # but it is the first time it appears
   # it expects config['fields_whitelist'] to be a string of comma separated attrs
   # i.e. "id, list_id, external_guid"
   def allow_only_whitelisted_fields(record)
     return record unless @config['fields_whitelist'] 
+    puts({connection_id: @config['connection_id'], whitelisted_fields: @config['fields_whitelist'], flow: @config['flow'], record: record.inspect})
 
     params_list = @config['fields_whitelist'].split(",").map(&:strip).map(&:to_sym)
 
     # so id is not forgotten
-    params_list = (params_list << :id).uniq  
+    params_list = (params_list << :id).uniq
 
-    record.slice(*params_list)
+    new_record = {}
+
+    params_list.each do |param|
+      new_record[param] = record[param]
+    end
+
+    new_record
   end
   
   def add_flow_return_payload
