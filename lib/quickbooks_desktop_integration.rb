@@ -28,6 +28,7 @@ require 'qbwc/request/returns'
 require 'qbwc/request/salesreceipts'
 require 'qbwc/request/salestaxproducts'
 require 'qbwc/request/serviceproducts'
+require 'qbwc/request/otherchargeproducts'
 require 'qbwc/request/shipments'
 require 'qbwc/request/vendors'
 

@@ -88,7 +88,7 @@ module QBWC
             qbe_id: record['ListID'],
             created_at: record['TimeCreated'],
             modified_at: record['TimeModified'],
-            key: 'qbe_id',
+            key: ['qbe_id', 'external_guid'],
             name: record['Name'],
             fullname: record['Name'],
             barcode_value: record['BarCodeValue'],

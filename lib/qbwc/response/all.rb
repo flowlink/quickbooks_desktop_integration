@@ -25,6 +25,7 @@ require 'qbwc/response/item_non_inventory_mod_rs'
 require 'qbwc/response/item_non_inventory_query_rs'
 
 require 'qbwc/response/item_other_charge_add_rs'
+require 'qbwc/response/item_other_charge_mod_rs'
 require 'qbwc/response/item_other_charge_query_rs'
 
 require 'qbwc/response/item_receipt_query_rs'
