@@ -1,8 +1,10 @@
 require 'rspec'
 require 'time'
+require 'json'
 require 'active_support/core_ext/hash/indifferent_access'
 require 'qbwc/request/salesreceipts'
 require 'qbwc/request/adjustments'
+require 'qbwc/request/salesreceipt_fixtures/add_update_search_xml_fixtures'
 
 RSpec.describe QBWC::Request::Salesreceipts do
   describe "add_xml_to_send" do
@@ -125,6 +127,39 @@ RSpec.describe QBWC::Request::Salesreceipts do
     it "use_tax_line_items dont use rate if not given" do
       request_xml = QBWC::Request::Salesreceipts.add_xml_to_send(sales_receipt.with_indifferent_access, configs.with_indifferent_access, session_id)
       expect(request_xml).to include("<FullName>CA State Tax</FullName>\n</ItemRef>\n<Desc></Desc>\n\n\n\n\n<Amount>4.87</Amount>")
+    end
+  end
+
+  describe "add update and search xml" do
+    let(:flowlink_salesreceipt) { JSON.parse(File.read('spec/qbwc/request/salesreceipt_fixtures/salesreceipt_from_flowlink.json')).with_indifferent_access }
+    config = {
+      class_name: "class name here"
+    }
+
+    it "matches expected xml when calling add_xml_to_send" do
+      request_xml = QBWC::Request::Salesreceipts.add_xml_to_send(flowlink_salesreceipt, config, 12345)
+      expect(request_xml.gsub(/\s+/, "")).to eq(qbe_salesreceipt_add.gsub(/\s+/, ""))
+    end
+
+    it "uses object value over config value to set certain fields" do
+      flowlink_salesreceipt[:class_name] = "a different class name"
+      expected_string = "<ClassRef><FullName>adifferentclassname</FullName></ClassRef>"
+
+      request_xml = QBWC::Request::Salesreceipts.add_xml_to_send(flowlink_salesreceipt, config, 12345)
+      expect(request_xml.gsub(/\s+/, "")).to include(expected_string)
+    end
+
+    it "matches expected xml when calling update_xml_to_send" do
+      flowlink_salesreceipt[:list_id] = "qbe-salesreceipt-listid-for-update"
+      flowlink_salesreceipt[:edit_sequence] = "1010101"
+      
+      request_xml = QBWC::Request::Salesreceipts.update_xml_to_send(flowlink_salesreceipt, config, 12345)
+      expect(request_xml.gsub(/\s+/, "")).to eq(qbe_salesreceipt_update.gsub(/\s+/, ""))
+    end
+
+    it 'calls search_xml_by_id and outputs the right data' do
+      search_xml = QBWC::Request::Salesreceipts.search_xml('qbe-salesreceipt-listid', 12345)
+      expect(search_xml.gsub(/\s+/, "")).to eq(qbe_salesreceipt_search_id.gsub(/\s+/, ""))
     end
   end
 end

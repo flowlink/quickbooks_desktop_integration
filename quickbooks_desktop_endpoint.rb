@@ -156,10 +156,14 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
           puts name
           puts collection.values.first.inspect
 
+          record = collection.values.first
+
+          record = allow_only_whitelisted_fields(record)
+
           if CUSTOM_OBJECT_TYPES.include? name
-            add_or_merge_value OBJECT_TYPES_MAPPING_DATA_OBJECT[name], collection.values.first
+            add_or_merge_value OBJECT_TYPES_MAPPING_DATA_OBJECT[name], record
           else
-            add_or_merge_value name, collection.values.first
+            add_or_merge_value name, record
           end
 
           names.push name
@@ -177,6 +181,21 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
 
   private
 
+  # NOTE: ideally this would live in endpoint_base gem,
+  # but it is the first time it appears
+  # it expects config['fields_whitelist'] to be a string of comma separated attrs
+  # i.e. "id, list_id, external_guid"
+  def allow_only_whitelisted_fields(record)
+    return record unless @config['fields_whitelist'] 
+
+    params_list = @config['fields_whitelist'].split(",").map(&:strip).map(&:to_sym)
+
+    # so id is not forgotten
+    params_list = (params_list << :id).uniq  
+
+    record.slice(*params_list)
+  end
+  
   def add_flow_return_payload
     {
       id: @payload[object_type][:id],
