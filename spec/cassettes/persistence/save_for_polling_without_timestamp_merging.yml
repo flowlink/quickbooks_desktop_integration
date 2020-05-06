@@ -14,7 +14,7 @@ http_interactions:
       User-Agent:
       - aws-sdk-ruby2/2.10.22 ruby/2.4.2 x86_64-linux resources
       X-Amz-Date:
-      - 20200506T192246Z
+      - 20200506T191855Z
       Host:
       - quickbooks-desktop-integration.s3.amazonaws.com
       X-Amz-Content-Sha256:
@@ -31,11 +31,11 @@ http_interactions:
       message: OK
     headers:
       X-Amz-Id-2:
-      - m6BGaIjps0/M7E0LbwmDGDA2C7fci0LDbb8U3zWaD9MM3R7GlurPqb/8VA084dLfFT8tVfgRJrA=
+      - cIvgdrTfV04ctt8Y6+K5Ewgg5+jJF6U0i8FEPslU1I6ZLVTpoyuO9cT+YB/pB4hMRzeeQ6hbC3s=
       X-Amz-Request-Id:
-      - 9519187502673C4E
+      - 8A4DBB68AE93E958
       Date:
-      - Wed, 06 May 2020 19:22:47 GMT
+      - Wed, 06 May 2020 19:18:57 GMT
       X-Amz-Bucket-Region:
       - us-east-1
       Content-Type:
@@ -48,7 +48,7 @@ http_interactions:
       encoding: UTF-8
       string: ''
     http_version: 
-  recorded_at: Wed, 06 May 2020 19:22:46 GMT
+  recorded_at: Wed, 06 May 2020 19:18:56 GMT
 - request:
     method: head
     uri: https://quickbooks-desktop-integration.s3.amazonaws.com/nurelmremote/quickbooks_pending/products_.json
@@ -63,7 +63,7 @@ http_interactions:
       User-Agent:
       - aws-sdk-ruby2/2.10.22 ruby/2.4.2 x86_64-linux resources
       X-Amz-Date:
-      - 20200506T192246Z
+      - 20200506T191856Z
       Host:
       - quickbooks-desktop-integration.s3.amazonaws.com
       X-Amz-Content-Sha256:
@@ -80,28 +80,28 @@ http_interactions:
       message: OK
     headers:
       X-Amz-Id-2:
-      - GCyz+hc4PvdqPc+B2RQjGBOuw7Wd3CLPfCMgx95lPpBCoiRcm1T3GVoLBDp3GWb/elYXQDoEoQk=
+      - bcBAoMOsh/jIaLJlpxKZY69iABxZQamQthmPvhiL4lwyO8jye8KhtYAAs5OiCqV5as7pgpCsCWM=
       X-Amz-Request-Id:
-      - CF8D3987F9E1BADC
+      - 556C62544B692F0F
       Date:
-      - Wed, 06 May 2020 19:22:48 GMT
+      - Wed, 06 May 2020 19:18:57 GMT
       Last-Modified:
-      - Wed, 06 May 2020 19:19:27 GMT
+      - Wed, 06 May 2020 19:10:07 GMT
       Etag:
-      - '"2793a94a19ee5e1d6c6e82acdc26340c"'
+      - '"d33c485bcf74493076f125801f2ffa24"'
       Accept-Ranges:
       - bytes
       Content-Type:
       - ''
       Content-Length:
-      - '1275'
+      - '1003'
       Server:
       - AmazonS3
     body:
       encoding: UTF-8
       string: ''
     http_version: 
-  recorded_at: Wed, 06 May 2020 19:22:47 GMT
+  recorded_at: Wed, 06 May 2020 19:18:56 GMT
 - request:
     method: get
     uri: https://quickbooks-desktop-integration.s3.amazonaws.com/nurelmremote/quickbooks_pending/products_.json
@@ -116,7 +116,7 @@ http_interactions:
       User-Agent:
       - aws-sdk-ruby2/2.10.22 ruby/2.4.2 x86_64-linux resources
       X-Amz-Date:
-      - 20200506T192247Z
+      - 20200506T191856Z
       Host:
       - quickbooks-desktop-integration.s3.amazonaws.com
       X-Amz-Content-Sha256:
@@ -133,35 +133,33 @@ http_interactions:
       message: OK
     headers:
       X-Amz-Id-2:
-      - 7lt9iAIBcEw3cpPqDxu4bsczrvGiyyP0VviVpU26HzGocD0O/wJI3IdmMXcesH3Khn9GNNd6gDY=
+      - ZDvC6RzSenvEHvaO0RnTR+o93yV86PgzHQ/f1hibWrfcS38QHbtgDujzv6CUChrsrbbfQ1tXYWI=
       X-Amz-Request-Id:
-      - BAA2EBE6A45504D2
+      - 07FE9D6DF6AF6645
       Date:
-      - Wed, 06 May 2020 19:22:48 GMT
+      - Wed, 06 May 2020 19:18:58 GMT
       Last-Modified:
-      - Wed, 06 May 2020 19:19:27 GMT
+      - Wed, 06 May 2020 19:10:07 GMT
       Etag:
-      - '"2793a94a19ee5e1d6c6e82acdc26340c"'
+      - '"d33c485bcf74493076f125801f2ffa24"'
       Accept-Ranges:
       - bytes
       Content-Type:
       - ''
       Content-Length:
-      - '1275'
+      - '1003'
       Server:
       - AmazonS3
     body:
       encoding: UTF-8
-      string: '[{"id":"the internets","name":"the internets","sku":"the internets","description":"the
-        internets","price":35,"cost_price":22.33,"available_on":"2014-01-29T14:01:28.000Z","permalink":"spree-tshirt","meta_description":null,"meta_keywords":null,"shipping_category":"Default"},{"id":"SPREE-T-SHIRT293178","name":"Spree
-        T-Shirt","sku":"SPREE-T-SHIRT","product_id":"SPREE-T-SHIRT","description":"Awesome
+      string: '[{"id":"SPREE-T-SHIRT293178","name":"Spree T-Shirt","sku":"SPREE-T-SHIRT","product_id":"SPREE-T-SHIRT","description":"Awesome
         Spree T-Shirt","price":35,"cost_price":22.33,"available_on":"2014-01-29T14:01:28.000Z","permalink":"spree-tshirt","meta_description":null,"meta_keywords":null,"shipping_category":"Default","taxons":[["Categories","Clothes","T-Shirts"],["Brands","Spree"],["Brands","Open
         Source"]],"options":["color","size"],"properties":{"material":"cotton","fit":"smart
         fit"},"images":[{"url":"http://dummyimage.com/600x400/000/fff.jpg&text=Spree
         T-Shirt","position":1,"title":"Spree T-Shirt - Grey Small","type":"thumbnail","dimensions":{"height":220,"width":100}}],"variants":[{"sku":"SPREE-T-SHIRT-S","price":39.99,"cost_price":22.33,"quantity":1,"options":{"color":"GREY","size":"S"},"images":[{"url":"http://dummyimage.com/600x400/000/fff.jpg&text=Spree
         T-Shirt Grey Small","position":1,"title":"Spree T-Shirt - Grey Small","type":"thumbnail","dimensions":{"height":220,"width":100}}]}]}]'
     http_version: 
-  recorded_at: Wed, 06 May 2020 19:22:47 GMT
+  recorded_at: Wed, 06 May 2020 19:18:57 GMT
 - request:
     method: head
     uri: https://quickbooks-desktop-integration.s3.amazonaws.com/
@@ -176,7 +174,7 @@ http_interactions:
       User-Agent:
       - aws-sdk-ruby2/2.10.22 ruby/2.4.2 x86_64-linux resources
       X-Amz-Date:
-      - 20200506T192247Z
+      - 20200506T191925Z
       Host:
       - quickbooks-desktop-integration.s3.amazonaws.com
       X-Amz-Content-Sha256:
@@ -193,11 +191,11 @@ http_interactions:
       message: OK
     headers:
       X-Amz-Id-2:
-      - a7NvrJRGy04kiOjVAlO9e8TBJa0GXkTmXk3T2TJcgUXBzXOlkL7wdGn0lwMdGYWGGcho6CjGRrg=
+      - d20qzSSuuGcM5jwYjRrxb3r2ZP6pbcHUYwhiHy6k3TL+sAHNt/7qyFGQWLDe9/gTTdXzvwgA7Rk=
       X-Amz-Request-Id:
-      - 53C9FA8C1A5EB4EF
+      - C268AA6B4350A99C
       Date:
-      - Wed, 06 May 2020 19:22:49 GMT
+      - Wed, 06 May 2020 19:19:27 GMT
       X-Amz-Bucket-Region:
       - us-east-1
       Content-Type:
@@ -210,7 +208,7 @@ http_interactions:
       encoding: UTF-8
       string: ''
     http_version: 
-  recorded_at: Wed, 06 May 2020 19:22:48 GMT
+  recorded_at: Wed, 06 May 2020 19:19:26 GMT
 - request:
     method: put
     uri: https://quickbooks-desktop-integration.s3.amazonaws.com/nurelmremote/quickbooks_pending/products_.json
@@ -236,7 +234,7 @@ http_interactions:
       Content-Md5:
       - J5OpShnuXh1sboKs3CY0DA==
       X-Amz-Date:
-      - 20200506T192248Z
+      - 20200506T191926Z
       Host:
       - quickbooks-desktop-integration.s3.amazonaws.com
       X-Amz-Content-Sha256:
@@ -253,11 +251,11 @@ http_interactions:
       message: OK
     headers:
       X-Amz-Id-2:
-      - cPCEEsvhS5jvFrsFV1KalkKIdIG4lOsNSguKgrulQx+iWZlWGLl9SffJs5XjDrG4xhsujI+Biy8=
+      - NwbemoZK0NbZDme2gX0X5NlOgrJuicGKXAGveqn2G9MN7q+7SvSy43BFakLtaAWcdak+2MqkanQ=
       X-Amz-Request-Id:
-      - FF4730D255AA6FC5
+      - E592C87AC385E5A7
       Date:
-      - Wed, 06 May 2020 19:22:49 GMT
+      - Wed, 06 May 2020 19:19:27 GMT
       Etag:
       - '"2793a94a19ee5e1d6c6e82acdc26340c"'
       Content-Length:
@@ -268,5 +266,65 @@ http_interactions:
       encoding: UTF-8
       string: ''
     http_version: 
-  recorded_at: Wed, 06 May 2020 19:22:48 GMT
+  recorded_at: Wed, 06 May 2020 19:19:26 GMT
+- request:
+    method: get
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/nurelmremote/quickbooks_pending/products_.json
+    body:
+      encoding: ASCII-8BIT
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby2/2.10.22 ruby/2.4.2 x86_64-linux resources
+      X-Amz-Date:
+      - 20200506T191928Z
+      Host:
+      - quickbooks-desktop-integration.s3.amazonaws.com
+      X-Amz-Content-Sha256:
+      - e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+      Authorization:
+      - AUTHORIZATION
+      Content-Length:
+      - '0'
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amz-Id-2:
+      - UatP2ZsYu3GjmGv+IgEzJWA8TrGoYvYuqbX4Gob8dg7+Tfos8SM3YDVv/BjASqstniQ8CqYRnVg=
+      X-Amz-Request-Id:
+      - 58359C7081AE1B35
+      Date:
+      - Wed, 06 May 2020 19:19:30 GMT
+      Last-Modified:
+      - Wed, 06 May 2020 19:19:27 GMT
+      Etag:
+      - '"2793a94a19ee5e1d6c6e82acdc26340c"'
+      Accept-Ranges:
+      - bytes
+      Content-Type:
+      - ''
+      Content-Length:
+      - '1275'
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: '[{"id":"the internets","name":"the internets","sku":"the internets","description":"the
+        internets","price":35,"cost_price":22.33,"available_on":"2014-01-29T14:01:28.000Z","permalink":"spree-tshirt","meta_description":null,"meta_keywords":null,"shipping_category":"Default"},{"id":"SPREE-T-SHIRT293178","name":"Spree
+        T-Shirt","sku":"SPREE-T-SHIRT","product_id":"SPREE-T-SHIRT","description":"Awesome
+        Spree T-Shirt","price":35,"cost_price":22.33,"available_on":"2014-01-29T14:01:28.000Z","permalink":"spree-tshirt","meta_description":null,"meta_keywords":null,"shipping_category":"Default","taxons":[["Categories","Clothes","T-Shirts"],["Brands","Spree"],["Brands","Open
+        Source"]],"options":["color","size"],"properties":{"material":"cotton","fit":"smart
+        fit"},"images":[{"url":"http://dummyimage.com/600x400/000/fff.jpg&text=Spree
+        T-Shirt","position":1,"title":"Spree T-Shirt - Grey Small","type":"thumbnail","dimensions":{"height":220,"width":100}}],"variants":[{"sku":"SPREE-T-SHIRT-S","price":39.99,"cost_price":22.33,"quantity":1,"options":{"color":"GREY","size":"S"},"images":[{"url":"http://dummyimage.com/600x400/000/fff.jpg&text=Spree
+        T-Shirt Grey Small","position":1,"title":"Spree T-Shirt - Grey Small","type":"thumbnail","dimensions":{"height":220,"width":100}}]}]}]'
+    http_version: 
+  recorded_at: Wed, 06 May 2020 19:19:29 GMT
 recorded_with: VCR 3.0.3
