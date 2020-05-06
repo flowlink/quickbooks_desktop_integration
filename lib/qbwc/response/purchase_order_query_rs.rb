@@ -64,10 +64,12 @@ module QBWC
           end
           {
             id: record['RefNumber'],
-            transaction_id: record['TxnId'],
+            ref_number: record['RefNumber'],
+            transaction_id: record['TxnID'],
             is_fully_received: record['IsFullyReceived'],
             qbe_transaction_id: record['TxnID'],
-            key: 'qbe_transaction_id',
+            qbe_id: record['TxnID'],
+            key: ['qbe_id', 'qbe_transaction_id', 'external_guid'],
             created_at: record['TimeCreated'].to_s,
             modified_at: record['TimeModified'].to_s,
             transaction_number: record['TxnNumber'],

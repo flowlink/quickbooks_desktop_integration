@@ -85,7 +85,7 @@ module QBWC
             sku: record['Name'],
             product_id: record['Name'],
             qbe_id: record['ListID'],
-            key: 'qbe_id',
+            key: ['qbe_id', 'external_guid'],
             name: record['Name'],
             fullname: record['FullName'],
             is_active: record['IsActive'],

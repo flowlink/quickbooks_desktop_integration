@@ -49,7 +49,7 @@ def qbe_customer_innards(is_mod)
 
   open_balance_items = is_mod ? "" : "<OpenBalance>2500</OpenBalance><OpenBalanceDate>2019-11-01T13:22:02.718+00:00</OpenBalanceDate>"
 
-  guid = is_mod ? "" : "<ExternalGUID>1234</ExternalGUID>"
+  guid = is_mod ? "" : "<ExternalGUID>35cb4e30-54e1-49f9-b5ce-4134799eb2c0</ExternalGUID>"
 
   <<~XML
     <Name>First Last</Name>

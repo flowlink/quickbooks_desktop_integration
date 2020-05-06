@@ -57,7 +57,7 @@ module QBWC
       end
 
       def last_time_modified
-        date = records.sort_by { |r| r['TxnDate'] }.last['TxnDate'].to_s
+        date = records.sort_by { |r| r['TimeModified'] }.last['TimeModified'].to_s
         Date.parse(date).to_time.in_time_zone('Pacific Time (US & Canada)').iso8601
       end
 
@@ -118,7 +118,8 @@ module QBWC
             is_paid: record['IsPaid'],
             transaction_id: record['TxnID'],
             qbe_transaction_id: record['TxnID'],
-            key: 'qbe_transaction_id',
+            qbe_id: record['TxnID'],
+            key: ['qbe_transaction_id', 'qbe_id', 'external_guid'],
             created_at: record['TimeCreated'].to_s,
             modified_at: record['TimeModified'].to_s,
             transaction_number: record['TxnNumber'],
@@ -130,7 +131,7 @@ module QBWC
             },
             class_ref: record.dig('ClassRef', 'FullName'),
             class_name: record.dig('ClassRef', 'FullName'),
-            ara_account: record.dig('ARAccountRef', 'FullName'),
+            ar_account: record.dig('ARAccountRef', 'FullName'),
             customer_tax_code: record.dig('CustomerSalesTaxCodeRef', 'FullName'),
             billing_address: {
               address1: record.dig('BillAddress', 'Addr1'),

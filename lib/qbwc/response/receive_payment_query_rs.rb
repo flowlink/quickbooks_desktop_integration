@@ -45,13 +45,79 @@ module QBWC
       end
 
       def to_flowlink
-        # TODO finish the map
         records.map do |record|
-          object = {
-            id: record['RefNumber']
+          {
+            id: record['RefNumber'],
+            ref_number: record['RefNumber'],
+            qbe_transaction_id: record['TxnID'],
+            qbe_id: record['TxnID'],
+            transaction_id: record['TxnID'],
+            key: ['external_guid'],
+            created_at: record['TimeCreated'].to_s,
+            modified_at: record['TimeModified'].to_s,
+            transaction_number: record['TxnNumber'],
+            customer: {
+              name: record.dig('CustomerRef','FullName'),
+              external_id: record.dig('CustomerRef','ListID'),
+              qbe_id: record.dig('CustomerRef', 'ListID')
+            },
+            ar_account: record.dig('ARAccountRef','FullName'),
+            transaction_date: record['Txndate'],
+            total: record['TotalAmount'],
+            currency_name: record.dig('CurrencyRef','FullName'),
+            exchange_rate: record['ExchangeRate'],
+            total_amount_in_home_currency: record['TotalAmountInHomeCurrency'],
+            payment_method: record.dig('PaymentMethodRef', 'FullName'),
+            memo: record['Memo'],
+            deposit_to_account_name: record.dig('DepositToAccountRef', 'FullName'),
+            unused_payment: record['UnusedPayment'],
+            unused_credits: record['UnusedCredits'],
+            external_guid: record['ExternalGUID'],
+            transactions_applied_to: build_transactions(record),
+            relationships: [
+              { object: 'customer', key: 'qbe_id' }
+            ],
           }
+        end
+      end
 
-          object
+      def build_transactions(record)
+        return unless record['AppliedToTxnRet']
+        record['AppliedToTxnRet'] = [record['AppliedToTxnRet']] if record['AppliedToTxnRet'].is_a?(Hash)
+
+        record['AppliedToTxnRet'].map do |txn|
+          {
+            id: txn['TxnID'],
+            transaction_id: txn['TxnId'],
+            transaction_type: txn['TxnType'],
+            transaction_date: txn['TxnDate'],
+            ref_number: txn['RefNumber'],
+            balance_remaining: txn['BalanceRemaining'],
+            amount: txn['Amount'],
+            transaction_amount: txn['Amount'],
+            discount: txn['DiscountAmount'],
+            transaction_discount: txn['DiscountAmount'],
+            discount_account_name: txn.dig('DiscountAccountRef', 'FullName'),
+            discount_class_name: txn.dig('DiscountClassRef', 'FullName'),
+            linked_transactions: build_linked_txns(txn)
+          }.compact
+        end
+      end
+
+      def build_linked_txns(record)
+        return unless record['LinkedTxn']
+        record['LinkedTxn'] = [record['LinkedTxn']] if record['LinkedTxn'].is_a?(Hash)
+
+        record['LinkedTxn'].map do |txn|
+          {
+            id: txn['TxnID'],
+            transaction_id: txn['TxnId'],
+            transaction_type: txn['TxnType'],
+            transaction_date: txn['TxnDate'],
+            ref_number: txn['RefNumber'],
+            link_type: txn['LinkType'],
+            amount: txn['Amount']
+          }
         end
       end
     end

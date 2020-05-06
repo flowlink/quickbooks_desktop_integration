@@ -3,6 +3,52 @@
 module QBWC
   module Request
     class Salesreceipts
+
+      MAPPING_ONE = [
+        {qbe_name: "CustomerRef", flowlink_name: "customer_name", is_ref: true},
+        {qbe_name: "ClassRef", flowlink_name: "class_name", is_ref: true},
+        {qbe_name: "TemplateRef", flowlink_name: "template_name", is_ref: true},
+        {qbe_name: "TxnDate", flowlink_name: "placed_on", is_ref: false},
+        {qbe_name: "RefNumber", flowlink_name: "id", is_ref: false}
+      ]
+
+      MAPPING_TWO = [
+        {qbe_name: "IsPending", flowlink_name: "is_pending", is_ref: false},
+        {qbe_name: "CheckNumber", flowlink_name: "check_number", is_ref: false},
+        {qbe_name: "PaymentMethodRef", flowlink_name: "payment_method_name", is_ref: true},
+        {qbe_name: "DueDate", flowlink_name: "due_date", is_ref: false},
+        {qbe_name: "SalesRepRef", flowlink_name: "sales_rep_name", is_ref: true},
+        {qbe_name: "ShipDate", flowlink_name: "ship_date", is_ref: false},
+        {qbe_name: "ShipMethodRef", flowlink_name: "shipping_method_name", is_ref: true},
+        {qbe_name: "FOB", flowlink_name: "fob", is_ref: false},
+        {qbe_name: "ItemSalesTaxRef", flowlink_name: "item_sales_tax_name", is_ref: true},
+        {qbe_name: "Memo", flowlink_name: "memo", is_ref: false},
+        {qbe_name: "CustomerMsgRef", flowlink_name: "customer_message_name", is_ref: true},
+        {qbe_name: "IsToBePrinted", flowlink_name: "is_to_be_printed", is_ref: false},
+        {qbe_name: "IsToBeEmailed", flowlink_name: "is_to_be_emailed", is_ref: false},
+        {qbe_name: "IsTaxIncluded", flowlink_name: "is_tax_included", is_ref: false},
+        {qbe_name: "CustomerSalesTaxCodeRef", flowlink_name: "customer_sales_tax_code_name", is_ref: true},
+        {qbe_name: "DepositToAccountRef", flowlink_name: "deposit_to_account_name", is_ref: true},
+        {qbe_name: "Other", flowlink_name: "other", is_ref: false},
+        {qbe_name: "ExchangeRate", flowlink_name: "exchange_rate", is_ref: false},
+        {qbe_name: "ExternalGUID", flowlink_name: "external_guid", is_ref: false, add_only: true}
+      ]
+      
+      ADDRESS_MAP = [
+        {qbe_name: "Addr1", flowlink_name: "address1", is_ref: false},
+        {qbe_name: "Addr2", flowlink_name: "address2", is_ref: false},
+        {qbe_name: "Addr3", flowlink_name: "address3", is_ref: false},
+        {qbe_name: "Addr4", flowlink_name: "address4", is_ref: false},
+        {qbe_name: "Addr5", flowlink_name: "address5", is_ref: false},
+        {qbe_name: "City", flowlink_name: "city", is_ref: false},
+        {qbe_name: "State", flowlink_name: "state", is_ref: false},
+        {qbe_name: "PostalCode", flowlink_name: "zipcode", is_ref: false},
+        {qbe_name: "Country", flowlink_name: "country", is_ref: false},
+        {qbe_name: "Note", flowlink_name: "note", is_ref: false}
+      ]
+      
+      # TODO: Map line items to a mapping here - lots of parsing for adjustments however...
+
       class << self
         def generate_request_queries(objects, params)
           puts "Generating request queries for objects: #{objects}, params: #{params}"
@@ -80,9 +126,7 @@ module QBWC
           <<~XML
             <SalesReceiptAddRq requestID="#{session_id}">
               <SalesReceiptAdd>
-                #{sales_receipt record, params}
-                #{items(record).map { |l| sales_receipt_line_add l }.join('')}
-                #{adjustments_add_xml record, params}
+                #{sales_receipt_xml(record, params, false)}
               </SalesReceiptAdd>
             </SalesReceiptAddRq>
           XML
@@ -94,9 +138,7 @@ module QBWC
               <SalesReceiptMod>
                 <TxnID>#{record['list_id']}</TxnID>
                 <EditSequence>#{record['edit_sequence']}</EditSequence>
-                #{sales_receipt record, params}
-                #{items(record).map { |l| sales_receipt_line_mod l }.join('')}
-                #{adjustments_mod_xml record, params}
+                #{sales_receipt_xml(record, params, true)}
               </SalesReceiptMod>
             </SalesReceiptModRq>
           XML
@@ -119,59 +161,41 @@ module QBWC
         # 'placed_on' needs to be a valid date string otherwise an exception
         # will be raised
         #
-        def sales_receipt(record, _params)
-          puts "Building sales_receipt XML for #{record}"
-          if record['placed_on'].nil? || record['placed_on'].empty?
-            record['placed_on'] = Time.now.to_s
-          end
+        def sales_receipt_xml(initial_object, config, is_mod)
+          object = pre_mapping_logic(initial_object)
 
+          if is_mod
+            line_xml = items(object).map { |line| sales_receipt_line_mod(line) }.join('')
+            adj_line_xml = adjustments_mod_xml(object, config)
+          else
+            line_xml = items(object).map { |line| sales_receipt_line_add(line) }.join('')
+            adj_line_xml = adjustments_add_xml(object, config)
+          end
+          
           <<~XML
-            <CustomerRef>
-              <FullName>#{record['customer']['name']}</FullName>
-            </CustomerRef>
-            #{class_ref_for_sales_receipt(record)}
-            <TxnDate>#{Time.parse(record['placed_on']).to_date}</TxnDate>
-            <RefNumber>#{record['id']}</RefNumber>
+            #{add_fields(object, MAPPING_ONE, config, is_mod)}
             <BillAddress>
-              <Addr1>#{record['billing_address']['address1']}</Addr1>
-              <Addr2>#{record['billing_address']['address2']}</Addr2>
-              <Addr3>#{record['billing_address']['address3']}</Addr3>
-              <City>#{record['billing_address']['city']}</City>
-              <State>#{record['billing_address']['state']}</State>
-              <PostalCode>#{record['billing_address']['zipcode']}</PostalCode>
-              <Country>#{record['billing_address']['country']}</Country>
+              #{add_fields(object['billing_address'], ADDRESS_MAP, config, is_mod) if object['billing_address']}
             </BillAddress>
             <ShipAddress>
-              <Addr1>#{record['shipping_address']['address1']}</Addr1>
-              <Addr2>#{record['shipping_address']['address2']}</Addr2>
-              <Addr3>#{record['shipping_address']['address3']}</Addr3>
-              <City>#{record['shipping_address']['city']}</City>
-              <State>#{record['shipping_address']['state']}</State>
-              <PostalCode>#{record['shipping_address']['zipcode']}</PostalCode>
-              <Country>#{record['shipping_address']['country']}</Country>
+              #{add_fields(object['shipping_address'], ADDRESS_MAP, config, is_mod) if object['shipping_address']}
             </ShipAddress>
-            <Memo>#{record['memo']}</Memo>
+            #{add_fields(object, MAPPING_TWO, config, is_mod)}
+            #{line_xml}
+            #{adj_line_xml}
           XML
         end
 
-        def class_ref_for_sales_receipt(record)
-          return '' unless record['class_name']
+        def pre_mapping_logic(initial_object)
+          object = initial_object
 
-          <<~XML
-            <ClassRef>
-              <FullName>#{record['class_name']}</FullName>
-            </ClassRef>
-          XML
-        end
+          if object['placed_on'].nil? || object['placed_on'].empty?
+            object['placed_on'] = Time.now.to_s
+          end
 
-        def class_ref_for_sales_receipt_line(line)
-          return '' unless line['class_name']
+          object['customer_name'] = object['customer']['name'] unless object['customer_name']
 
-          <<~XML
-            <ClassRef>
-              <FullName>#{line['class_name']}</FullName>
-            </ClassRef>
-          XML
+          object
         end
 
         def sales_receipt_line_add(line)
@@ -470,6 +494,50 @@ module QBWC
               sales_receipt[address_type][field]&.gsub!(/[^0-9A-Za-z\s]/, '')
             end
           end
+        end
+
+        def add_fields(object, mapping, config, is_mod)
+          object = object.with_indifferent_access
+          fields = ""
+          mapping.each do |map_item|
+            next if map_item[:mod_only] && map_item[:mod_only] != is_mod
+            next if map_item[:add_only] && map_item[:add_only] == is_mod
+
+            if map_item[:is_ref]
+              fields += add_ref_xml(object, map_item, config)
+            else
+              fields += add_basic_xml(object, map_item)
+            end
+          end
+
+          fields
+        end
+
+        def add_basic_xml(object, mapping)
+          flowlink_field = object[mapping[:flowlink_name]]
+          qbe_field_name = mapping[:qbe_name]
+          float_fields = ['price', 'cost']
+
+          return '' if flowlink_field.nil? || flowlink_field == ""
+
+          flowlink_field = '%.2f' % flowlink_field.to_f if float_fields.include?(mapping[:flowlink_name])
+
+          "<#{qbe_field_name}>#{flowlink_field}</#{qbe_field_name}>"
+        end
+
+        def add_ref_xml(object, mapping, config)
+          flowlink_field = object[mapping[:flowlink_name]]
+          qbe_field_name = mapping[:qbe_name]
+
+          if flowlink_field.respond_to?(:has_key?) && flowlink_field['list_id']
+            return "<#{qbe_field_name}><ListID>#{flowlink_field['list_id']}</ListID></#{qbe_field_name}>"
+          end
+          full_name = flowlink_field ||
+                                config[mapping[:flowlink_name].to_sym] ||
+                                config["quickbooks_#{mapping[:flowlink_name]}".to_sym]
+
+          return '' if full_name.nil? || full_name == ""
+          "<#{qbe_field_name}><FullName>#{full_name}</FullName></#{qbe_field_name}>"
         end
       end
     end
