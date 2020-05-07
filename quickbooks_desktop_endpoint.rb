@@ -91,14 +91,13 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
 
       Persistence::Settings.new(config).setup
 
-      already_has_guid?
-      generate_and_add_guid unless @already_has_guid
-      return_payload = add_flow_return_payload
+      unless already_has_guid?
+        generate_and_add_guid
+        add_flow_return_payload
+      end
 
       integration = Persistence::Object.new(config, @payload)
       integration.save
-
-      add_object determine_name(integration.payload_key).singularize, return_payload unless @already_has_guid
 
       object_type = integration.payload_key.capitalize
       result 200, "#{object_type} waiting for Quickbooks Desktop scheduler"
@@ -222,10 +221,11 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
   end
   
   def add_flow_return_payload
-    {
+    payload = {
       id: @payload[object_type][:id],
       external_guid: @payload[object_type][:external_guid]
     }
+    add_object determine_name(object_type).singularize, payload
   end
 
   def generate_and_add_guid
@@ -237,7 +237,11 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
   end
 
   def already_has_guid?
-    @already_has_guid ||= @payload[object_type][:external_guid] && @payload[object_type][:external_guid] != ""
+    # We need to tie the object in FL to the external ID
+    # UNLESS the object originated in QBE!
+    # You can't MOD an external_guid, so we don't set if the object has a QBE ID
+    (@payload[object_type][:external_guid] && @payload[object_type][:external_guid] != "") ||
+    (@payload[object_type][:qbe_id] && @payload[object_type][:qbe_id] != "")
   end
 
   # NOTE this lives in endpoint_base. Added here just so it's closer ..
