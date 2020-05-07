@@ -42,7 +42,7 @@ module QBWC
             <ReceivePaymentAddRq requestID="#{session_id}">
               <ReceivePaymentAdd>
                 #{payment_xml(payment, params)}
-                #{external_guid(record)}
+                #{external_guid(payment)}
                 #{payment.key?('invoice_txn_id') ? payment_apply_transaction_xml(payment) : auto_apply }
               </ReceivePaymentAdd>
             </ReceivePaymentAddRq>
