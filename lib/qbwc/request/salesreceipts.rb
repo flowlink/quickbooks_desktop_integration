@@ -194,7 +194,20 @@ module QBWC
           end
           object['placed_on'] = Time.parse(object['placed_on']).to_date
 
-          object['customer_name'] = object['customer']['name'] unless object['customer_name']
+          # We determine refs in different ways in the code.
+          # Setting up the object correctly here to use other ways of setting up refs
+          unless object['customer_name']
+            object['customer_name'] = object['customer']['name'] if object['customer']
+          end
+          unless object['sales_rep_name']
+            object['sales_rep_name'] = object['sales_rep']['name'] if object['sales_rep']
+          end
+          unless object['shipping_method_name']
+            object['shipping_method_name'] = object['shipping_method']['name'] if object['shipping_method']
+          end
+          unless object['payment_method_name']
+            object['payment_method_name'] = object['payment_method']['name'] if object['payment_method']
+          end
 
           object
         end
