@@ -45,13 +45,13 @@ GET_ENDPOINTS =  %w(
 
 CUSTOM_OBJECT_TYPES = %w(
   inventorywithsites
-  otherchargeproducts
   serviceproducts
-  salestaxproducts
   noninventoryproducts
-  inventoryproducts
+  salestaxproducts
   discountproducts
+  inventoryproducts
   inventoryassemblyproducts
+  otherchargeproducts
 )
 
 OBJECT_TYPES_MAPPING_DATA_OBJECT = {
