@@ -171,7 +171,9 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
 
           record = collection.values.first
 
-          record = allow_only_whitelisted_fields(record)
+
+          puts({connection_id: @config['connection_id'], flow: @config['flow'], record: record.inspect})
+          record = allow_only_whitelisted_fields(record.first.with_indifferent_access)
 
           add_or_merge_value determine_name(name), record
 
@@ -203,13 +205,20 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
   # i.e. "id, list_id, external_guid"
   def allow_only_whitelisted_fields(record)
     return record unless @config['fields_whitelist'] 
+    puts({connection_id: @config['connection_id'], whitelisted_fields: @config['fields_whitelist'], flow: @config['flow'], record: record.inspect})
 
     params_list = @config['fields_whitelist'].split(",").map(&:strip).map(&:to_sym)
 
     # so id is not forgotten
-    params_list = (params_list << :id).uniq  
+    params_list = (params_list << :id).uniq
 
-    record.slice(*params_list)
+    new_record = {}
+
+    params_list.each do |param|
+      new_record[param] = record[param]
+    end
+
+    new_record
   end
   
   def add_flow_return_payload

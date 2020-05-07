@@ -192,6 +192,7 @@ module QBWC
           if object['placed_on'].nil? || object['placed_on'].empty?
             object['placed_on'] = Time.now.to_s
           end
+          object['placed_on'] = Time.parse(object['placed_on']).to_date
 
           object['customer_name'] = object['customer']['name'] unless object['customer_name']
 
