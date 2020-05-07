@@ -173,7 +173,7 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
 
 
           puts({connection_id: @config['connection_id'], flow: @config['flow'], records: records.inspect})
-          records = records.map{|record| llow_only_whitelisted_fields(record.with_indifferent_access) }
+          records = records.map{|record| allow_only_whitelisted_fields(record.with_indifferent_access) }
 
           add_or_merge_value determine_name(name), records
 
