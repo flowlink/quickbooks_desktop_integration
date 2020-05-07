@@ -10,6 +10,14 @@ def qbe_salestaxproduct_search_name
   XML
 end
 
+def qbe_salestaxproduct_search_id
+  <<~XML
+    <ItemSalesTaxQueryRq requestID="12345">
+      <ListID>test salestax listid</ListID>
+    </ItemSalesTaxQueryRq>
+  XML
+end
+
 def add_xml_salestaxproduct
   <<~XML
     <ItemSalesTaxAddRq requestID="12345">

@@ -33,7 +33,7 @@ module QBWC
 
         @integration.process_two_phase_pending_objects
       rescue  Exception => e
-        puts "Exceptions: #{e.message}, #{e.backtrace}"
+        puts({connection_id: params[:connection_id], exception: e.message, backtrace: e.backtrace})
       end
       request_xml
     end
@@ -44,11 +44,9 @@ module QBWC
         params = record.values.first
 
         klass = "QBWC::Request::#{object_type.capitalize}".constantize
-        string << klass.polling_others_items_xml(params['quickbooks_since'], @config)
 
-        params_to_send = params['quickbooks_since']
-        params_to_send = params if params['return_all']
-        string << klass.polling_current_items_xml(params_to_send, @config)
+        string << klass.polling_others_items_xml(params['quickbooks_since'], @config)
+        string << klass.polling_current_items_xml(params, @config)
       end
     end
 

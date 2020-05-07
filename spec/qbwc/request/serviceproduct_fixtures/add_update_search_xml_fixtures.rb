@@ -10,6 +10,16 @@ def qbe_serviceproduct_search_name
   XML
 end
 
+def qbe_serviceproduct_search_id
+  <<~XML
+    <ItemServiceQueryRq requestID="12345">
+      <ListID>test service listid</ListID>
+    </ItemServiceQueryRq>
+  XML
+end
+
+
+
 def add_xml_sandp_serviceproduct
   <<~XML
     <ItemServiceAddRq requestID="12345">

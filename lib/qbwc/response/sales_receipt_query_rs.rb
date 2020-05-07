@@ -19,16 +19,21 @@ module QBWC
       def process(config = {})
         return if records.empty?
 
-        puts records.inspect
-
         config  = { origin: 'flowlink', connection_id: config[:connection_id]  }
 
-        Persistence::Object.new(config, {}).update_objects_with_query_results(objects_to_update)
+        to_update = objects_to_update
+
+        puts({method: "process", class_based: "SalesReceiptQueryRs", to_update: to_update})
+
+
+        Persistence::Object.new(config, {}).update_objects_with_query_results(to_update)
 
         nil
       end
 
       def objects_to_update
+        puts({method: "objects_to_update", class_based: "SalesReceiptQueryRs", records: records})
+
         records.map do |record|
           {
             object_type: 'salesreceipt',
@@ -52,7 +57,8 @@ module QBWC
             is_pending: record['IsPending'],
             transaction_id: record['TxnID'],
             qbe_transaction_id: record['TxnID'],
-            key: 'qbe_transaction_id',
+            qbe_id: record['TxnID'],
+            key: ['qbe_id', 'qbe_transaction_id', 'external_guid'],
             created_at: record['TimeCreated'].to_s,
             modified_at: record['TimeModified'].to_s,
             transaction_number: record['TxnNumber'],

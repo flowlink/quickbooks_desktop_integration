@@ -96,11 +96,8 @@ module QBWC
         end
 
         def polling_current_items_xml(params, config)
-          timestamp = params
-          timestamp = params['quickbooks_since'] if params['return_all']
-
+          timestamp = params['quickbooks_since']
           session_id = Persistence::Session.save(config, 'polling' => timestamp)
-
           time = Time.parse(timestamp).in_time_zone 'Pacific Time (US & Canada)'
 
           <<~XML
@@ -113,8 +110,7 @@ module QBWC
         end
 
         def query_by_date(config, time)
-          puts "Vendor config for polling: #{config}"
-          return '' if config['return_all']
+          return '' if config['return_all'].to_i == 1
 
           <<~XML
             <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
@@ -125,7 +121,6 @@ module QBWC
           puts "Vendor request query for #{objects}, #{params}"
 
           objects.inject('') do |request, object|
-            puts "Inject process #{request}, #{object}"
             sanitize_vendor(object)
 
             config = { connection_id: params['connection_id'] }.with_indifferent_access
@@ -141,8 +136,6 @@ module QBWC
         end
 
         def search_xml_by_id(object_id, session_id)
-          puts "Building vendor xml by list_id #{object_id}, #{session_id}"
-
           <<~XML
             <VendorQueryRq requestID="#{session_id}">
               <ListID>#{object_id}</ListID>
@@ -151,8 +144,6 @@ module QBWC
         end
 
         def search_xml_by_name(object_id, session_id)
-          puts "Building vendor xml by name #{object_id}, #{session_id}"
-
           <<~XML
             <VendorQueryRq requestID="#{session_id}">
               <MaxReturned>50</MaxReturned>
@@ -214,14 +205,6 @@ module QBWC
           object['is_active'] = true unless object['is_active'] == false
           object['firstname'] = object['firstname'] || object['name'].to_s.split.first
           object['lastname'] = object['lastname'] || object['name'].to_s.split.last
-
-          unless object['phone'] && object['phone'] != ""
-            object['phone'] = object['vendor_address']['phone'] if object['vendor_address']
-          end
-
-          unless object['mobile'] && object['mobile'] != ""
-            object['mobile'] = object['ship_from_address']['phone'] if object['ship_from_address']
-          end
 
           object['reporting_period'] = nil unless REPORTING_PERIODS.include?(object['reporting_period'])
           object['sales_tax_country'] = nil unless SALES_TAX_COUNTRIES.include?(object['sales_tax_country'])
@@ -298,7 +281,7 @@ module QBWC
           qbe_field_name = mapping[:qbe_name]
           float_fields = ['price', 'cost']
 
-          return '' if flowlink_field.nil?
+          return '' if flowlink_field.nil? || flowlink_field == ""
 
           flowlink_field = '%.2f' % flowlink_field.to_f if float_fields.include?(mapping[:flowlink_name])
 
@@ -316,11 +299,11 @@ module QBWC
                                 config[mapping[:flowlink_name].to_sym] ||
                                 config["quickbooks_#{mapping[:flowlink_name]}".to_sym]
 
-          full_name.nil? ? "" : "<#{qbe_field_name}><FullName>#{full_name}</FullName></#{qbe_field_name}>"
+          return '' if full_name.nil? || full_name == ""
+          "<#{qbe_field_name}><FullName>#{full_name}</FullName></#{qbe_field_name}>"
         end
 
         def sanitize_vendor(vendor)
-          puts "Sanitizing: #{vendor}"
           # vendor['company'].gsub!(/[^0-9A-Za-z\s]/, '') if vendor['company']
           vendor['firstname'].gsub!(/[^0-9A-Za-z\s]/, '') if vendor['firstname']
           # vendor['name'].gsub!(/[^0-9A-Za-z\s]/, '') if vendor['name']
