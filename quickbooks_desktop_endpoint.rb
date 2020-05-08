@@ -91,10 +91,15 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
 
       Persistence::Settings.new(config).setup
 
+      @return_payload = nil
+
+      add_return_attributes_to_return_payload
+
       unless already_has_guid?
         generate_and_add_guid
-        add_flow_return_payload
       end
+      
+      add_flow_return_payload if @return_payload
 
       integration = Persistence::Object.new(config, @payload)
       integration.save
@@ -221,15 +226,19 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
   end
   
   def add_flow_return_payload
-    payload = {
-      id: @payload[object_type][:id],
-      external_guid: @payload[object_type][:external_guid]
-    }
+    payload = @return_payload.merge({
+      id: @payload[object_type][:id]
+    })
     add_object determine_name(object_type).singularize, payload
   end
 
   def generate_and_add_guid
-    @payload[object_type][:external_guid] = "{#{SecureRandom.uuid.upcase}}"
+    @return_payload ||= {}
+    @return_payload[:external_guid] = "{#{SecureRandom.uuid.upcase}}"
+  end
+
+  def add_return_attributes_to_return_payload
+    @return_payload = @payload[object_type][:return_to_fl] if @payload[object_type][:return_to_fl].is_a?(Hash)
   end
 
   def object_type
