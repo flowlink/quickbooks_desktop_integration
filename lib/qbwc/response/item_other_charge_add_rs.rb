@@ -21,8 +21,9 @@ module QBWC
 
         products = []
         records.each do |object|
-          products << { adjustments: {
-            id: object['Name'],
+          products << { otherchargeproducts: {
+            id: build_product_id_or_ref(object),
+            product_id: object['Name'],
             list_id: object['ListID'],
             edit_sequence: object['EditSequence']
           }
@@ -31,6 +32,25 @@ module QBWC
 
         Persistence::Object.update_statuses(config, products)
       end
+
+      private
+
+      def build_product_id_or_ref(object)
+        if object['ParentRef'].is_a?(Array)
+          arr = object['ParentRef']
+        elsif object['ParentRef'].nil?
+            arr = []
+        else
+          arr = [object['ParentRef']]
+        end
+
+        arr.map do |item|
+          next unless item['FullName']
+
+          "#{item['FullName']}:"
+        end.join('') + object['Name']
+      end
+
     end
   end
 end

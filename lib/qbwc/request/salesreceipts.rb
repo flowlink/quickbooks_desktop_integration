@@ -3,6 +3,52 @@
 module QBWC
   module Request
     class Salesreceipts
+
+      MAPPING_ONE = [
+        {qbe_name: "CustomerRef", flowlink_name: "customer_name", is_ref: true},
+        {qbe_name: "ClassRef", flowlink_name: "class_name", is_ref: true},
+        {qbe_name: "TemplateRef", flowlink_name: "template_name", is_ref: true},
+        {qbe_name: "TxnDate", flowlink_name: "placed_on", is_ref: false},
+        {qbe_name: "RefNumber", flowlink_name: "id", is_ref: false}
+      ]
+
+      MAPPING_TWO = [
+        {qbe_name: "IsPending", flowlink_name: "is_pending", is_ref: false},
+        {qbe_name: "CheckNumber", flowlink_name: "check_number", is_ref: false},
+        {qbe_name: "PaymentMethodRef", flowlink_name: "payment_method_name", is_ref: true},
+        {qbe_name: "DueDate", flowlink_name: "due_date", is_ref: false},
+        {qbe_name: "SalesRepRef", flowlink_name: "sales_rep_name", is_ref: true},
+        {qbe_name: "ShipDate", flowlink_name: "ship_date", is_ref: false},
+        {qbe_name: "ShipMethodRef", flowlink_name: "shipping_method_name", is_ref: true},
+        {qbe_name: "FOB", flowlink_name: "fob", is_ref: false},
+        {qbe_name: "ItemSalesTaxRef", flowlink_name: "item_sales_tax_name", is_ref: true},
+        {qbe_name: "Memo", flowlink_name: "memo", is_ref: false},
+        {qbe_name: "CustomerMsgRef", flowlink_name: "customer_message_name", is_ref: true},
+        {qbe_name: "IsToBePrinted", flowlink_name: "is_to_be_printed", is_ref: false},
+        {qbe_name: "IsToBeEmailed", flowlink_name: "is_to_be_emailed", is_ref: false},
+        {qbe_name: "IsTaxIncluded", flowlink_name: "is_tax_included", is_ref: false},
+        {qbe_name: "CustomerSalesTaxCodeRef", flowlink_name: "customer_sales_tax_code_name", is_ref: true},
+        {qbe_name: "DepositToAccountRef", flowlink_name: "deposit_to_account_name", is_ref: true},
+        {qbe_name: "Other", flowlink_name: "other", is_ref: false},
+        {qbe_name: "ExchangeRate", flowlink_name: "exchange_rate", is_ref: false},
+        {qbe_name: "ExternalGUID", flowlink_name: "external_guid", is_ref: false, add_only: true}
+      ]
+      
+      ADDRESS_MAP = [
+        {qbe_name: "Addr1", flowlink_name: "address1", is_ref: false},
+        {qbe_name: "Addr2", flowlink_name: "address2", is_ref: false},
+        {qbe_name: "Addr3", flowlink_name: "address3", is_ref: false},
+        {qbe_name: "Addr4", flowlink_name: "address4", is_ref: false},
+        {qbe_name: "Addr5", flowlink_name: "address5", is_ref: false},
+        {qbe_name: "City", flowlink_name: "city", is_ref: false},
+        {qbe_name: "State", flowlink_name: "state", is_ref: false},
+        {qbe_name: "PostalCode", flowlink_name: "zipcode", is_ref: false},
+        {qbe_name: "Country", flowlink_name: "country", is_ref: false},
+        {qbe_name: "Note", flowlink_name: "note", is_ref: false}
+      ]
+      
+      # TODO: Map line items to a mapping here - lots of parsing for adjustments however...
+
       class << self
         def generate_request_queries(objects, params)
           puts "Generating request queries for objects: #{objects}, params: #{params}"
@@ -21,22 +67,26 @@ module QBWC
         end
 
         def generate_request_insert_update(objects, params = {})
-          puts "Generating insert/update for objects: #{objects}, params: #{params}"
-          objects.inject('') do |request, object|
-            sanitize_sales_receipt(object)
+          puts({connection: params[:connection_id], method: "generate_request_insert_update", message: "Generating insert/update", objects: objects, params: params})
 
+          objects.inject('') do |request, object|
+            puts({connection: params[:connection_id], method: "generate_request_insert_update", object: object, request: request})
+            sanitize_sales_receipt(object)
+            puts({connection: params[:connection_id], method: "generate_request_insert_update", object: object, message: "After sanitize"})
             config = { connection_id: params['connection_id'] }.with_indifferent_access
             session_id = Persistence::Session.save(config, object)
 
             new_string = request.dup
             new_string << if object[:list_id].to_s.empty?
-                         add_xml_to_send(object, params, session_id)
-
-                       else
-                         update_xml_to_send(object, params, session_id)
-                      end
+                            add_xml_to_send(object, params, session_id)
+                          else
+                            update_xml_to_send(object, params, session_id)
+                          end
+            puts({connection: params[:connection_id], method: "generate_request_insert_update", request: request, object: object})
             request = new_string
           end
+        rescue Exception => e
+          puts({connection: params[:connection_id], method: "generate_request_insert_update", message: "Exception", exception_message: e.message})
         end
 
         def polling_others_items_xml(_timestamp, _config)
@@ -44,7 +94,8 @@ module QBWC
           ''
         end
 
-        def polling_current_items_xml(timestamp, config)
+        def polling_current_items_xml(params, config)
+          timestamp = params['quickbooks_since']
           session_id = Persistence::Session.save(config, 'polling' => timestamp)
 
           time = Time.parse(timestamp).in_time_zone 'Pacific Time (US & Canada)'
@@ -75,9 +126,7 @@ module QBWC
           <<~XML
             <SalesReceiptAddRq requestID="#{session_id}">
               <SalesReceiptAdd>
-                #{sales_receipt record, params}
-                #{items(record).map { |l| sales_receipt_line_add l }.join('')}
-                #{adjustments_add_xml record, params}
+                #{sales_receipt_xml(record, params, false)}
               </SalesReceiptAdd>
             </SalesReceiptAddRq>
           XML
@@ -89,9 +138,7 @@ module QBWC
               <SalesReceiptMod>
                 <TxnID>#{record['list_id']}</TxnID>
                 <EditSequence>#{record['edit_sequence']}</EditSequence>
-                #{sales_receipt record, params}
-                #{items(record).map { |l| sales_receipt_line_mod l }.join('')}
-                #{adjustments_mod_xml record, params}
+                #{sales_receipt_xml(record, params, true)}
               </SalesReceiptMod>
             </SalesReceiptModRq>
           XML
@@ -114,65 +161,79 @@ module QBWC
         # 'placed_on' needs to be a valid date string otherwise an exception
         # will be raised
         #
-        def sales_receipt(record, _params)
-          puts "Building sales_receipt XML for #{record}"
-          if record['placed_on'].nil? || record['placed_on'].empty?
-            record['placed_on'] = Time.now.to_s
-          end
+        def sales_receipt_xml(initial_object, config, is_mod)
+          object = pre_mapping_logic(initial_object)
 
+          if is_mod
+            line_xml = items(object).map { |line| sales_receipt_line_mod(line) }.join('')
+            adj_line_xml = adjustments_mod_xml(object, config)
+          else
+            line_xml = items(object).map { |line| sales_receipt_line_add(line) }.join('')
+            adj_line_xml = adjustments_add_xml(object, config)
+          end
+          
           <<~XML
-            <CustomerRef>
-              <FullName>#{record['customer']['name']}</FullName>
-            </CustomerRef>
-            #{class_ref_for_sales_receipt(record)}
-            <TxnDate>#{Time.parse(record['placed_on']).to_date}</TxnDate>
-            <RefNumber>#{record['id']}</RefNumber>
+            #{add_fields(object, MAPPING_ONE, config, is_mod)}
             <BillAddress>
-              <Addr1>#{record['billing_address']['address1']}</Addr1>
-              <Addr2>#{record['billing_address']['address2']}</Addr2>
-              <Addr3>#{record['billing_address']['address3']}</Addr3>
-              <City>#{record['billing_address']['city']}</City>
-              <State>#{record['billing_address']['state']}</State>
-              <PostalCode>#{record['billing_address']['zipcode']}</PostalCode>
-              <Country>#{record['billing_address']['country']}</Country>
+              #{add_fields(object['billing_address'], ADDRESS_MAP, config, is_mod) if object['billing_address']}
             </BillAddress>
             <ShipAddress>
-              <Addr1>#{record['shipping_address']['address1']}</Addr1>
-              <Addr2>#{record['shipping_address']['address2']}</Addr2>
-              <Addr3>#{record['shipping_address']['address3']}</Addr3>
-              <City>#{record['shipping_address']['city']}</City>
-              <State>#{record['shipping_address']['state']}</State>
-              <PostalCode>#{record['shipping_address']['zipcode']}</PostalCode>
-              <Country>#{record['shipping_address']['country']}</Country>
+              #{add_fields(object['shipping_address'], ADDRESS_MAP, config, is_mod) if object['shipping_address']}
             </ShipAddress>
-            <Memo>#{record['memo']}</Memo>
+            #{add_fields(object, MAPPING_TWO, config, is_mod)}
+            #{line_xml}
+            #{adj_line_xml}
           XML
         end
 
-        def class_ref_for_sales_receipt(record)
-          return '' unless record['class_name']
+        def pre_mapping_logic(initial_object)
+          object = initial_object
 
-          <<~XML
-            <ClassRef>
-              <FullName>#{record['class_name']}</FullName>
-            </ClassRef>
-          XML
-        end
+          if object['placed_on'].nil? || object['placed_on'].empty?
+            object['placed_on'] = Time.now.to_s
+          end
+          object['placed_on'] = Time.parse(object['placed_on']).to_date
 
-        def class_ref_for_sales_receipt_line(line)
-          return '' unless line['class_name']
+          # We determine refs in different ways in the code.
+          # Setting up the object correctly here to use other ways of setting up refs
+          unless object['customer_name']
+            object['customer_name'] = object['customer']['name'] if object['customer']
+          end
+          unless object['sales_rep_name']
+            object['sales_rep_name'] = object['sales_rep']['name'] if object['sales_rep']
+          end
+          unless object['shipping_method_name']
+            object['shipping_method_name'] = object['shipping_method']['name'] if object['shipping_method']
+          end
+          unless object['payment_method_name']
+            object['payment_method_name'] = object['payment_method']['name'] if object['payment_method']
+          end
 
-          <<~XML
-            <ClassRef>
-              <FullName>#{line['class_name']}</FullName>
-            </ClassRef>
-          XML
+          object
         end
 
         def sales_receipt_line_add(line)
           <<~XML
             <SalesReceiptLineAdd>
               #{sales_receipt_line(line)}
+            </SalesReceiptLineAdd>
+          XML
+        end
+
+        def sales_receipt_line_add_optional_rate(line)
+          line['price'].nil? ? rate = '' : rate = "<Rate>#{'%.2f' % line['price'].to_f}</Rate>"
+
+          <<~XML
+            <SalesReceiptLineAdd>
+            <ItemRef>
+              <FullName>#{line['product_id']}</FullName>
+            </ItemRef>
+            <Desc>#{line['name']}</Desc>
+            #{quantity(line)}
+            #{rate}
+            #{tax_code_line(line)}
+            #{inventory_site(line)}
+            #{amount_line(line)}
             </SalesReceiptLineAdd>
           XML
         end
@@ -190,50 +251,66 @@ module QBWC
           }
 
           line['tax_code_id'] = adjustment['tax_code_id'] if adjustment['tax_code_id']
+          line['class_name'] = adjustment['class_name'] if adjustment['class_name']
+          line['name'] = adjustment['description'] if adjustment['description']
+          line['amount'] = adjustment['amount'] if adjustment['amount']
+
+          line['use_amount'] = true if params['use_amount_for_tax'].to_s == "1"
 
           sales_receipt_line_add line
         end
 
         def sales_receipt_line_add_from_tax_line_item(tax_line_item, params)
           line = {
-            'product_id' => QBWC::Request::Adjustments.adjustment_product_from_qb('tax', params),
+            'product_id' => QBWC::Request::Adjustments.adjustment_product_from_qb('tax', params, tax_line_item),
             'quantity' => 0,
             'price' => tax_line_item['value'],
+            'amount' => tax_line_item['amount'],
             'name' => tax_line_item['name']
           }
 
-          sales_receipt_line_add line
+          sales_receipt_line_add_optional_rate line
         end
 
         def sales_receipt_line_mod(line)
           <<~XML
             <SalesReceiptLineMod>
-              <TxnLineID>#{line['txn_line_id']}</TxnLineID>
+              <TxnLineID>#{line['txn_line_id'] || -1}</TxnLineID>
               #{sales_receipt_line(line)}
             </SalesReceiptLineMod>
           XML
         end
 
         def sales_receipt_line_mod_from_adjustment(adjustment, params)
+          
+          multiplier = QBWC::Request::Adjustments.is_adjustment_discount?(adjustment['name']) ? -1 : 1
           line = {
             'product_id' => QBWC::Request::Adjustments.adjustment_product_from_qb(adjustment['name'], params),
             'quantity' => 0,
-            'price' => adjustment['value'],
+            'price' => (adjustment['value'].to_f * multiplier).to_s,
             'txn_line_id' => adjustment['txn_line_id']
           }
 
           line['tax_code_id'] = adjustment['tax_code_id'] if adjustment['tax_code_id']
+          line['class_name'] = adjustment['class_name'] if adjustment['class_name']
+          line['name'] = adjustment['description'] if adjustment['description']
+          line['amount'] = adjustment['amount'] if adjustment['amount']
+
+          line['use_amount'] = true if params['use_amount_for_tax'].to_s == "1"
 
           sales_receipt_line_mod line
         end
 
         def sales_receipt_line_mod_from_tax_line_item(tax_line_item, params)
+
+
           line = {
-            'product_id' => QBWC::Request::Adjustments.adjustment_product_from_qb('tax', params),
+            'product_id' => QBWC::Request::Adjustments.adjustment_product_from_qb('tax', params, tax_line_item),
             'quantity' => 0,
             'price' => tax_line_item['value'],
-            'txn_line_id' => tax_line_item['txn_line_id'],
-            'name' => tax_line_item['name']
+            'amount' => tax_line_item['amount'],
+            'name' => tax_line_item['name'],
+            'txn_line_id' => tax_line_item['txn_line_id']
           }
 
           sales_receipt_line_mod line
@@ -246,10 +323,20 @@ module QBWC
             </ItemRef>
             <Desc>#{line['name']}</Desc>
             #{quantity(line)}
-            <Rate>#{'%.2f' % line['price'].to_f}</Rate>
-            #{tax_code_line(line)}
-            #{inventory_site(line)}
+            #{rate(line)}
+            #{class_ref_for_receipt_line(line)}
             #{amount_line(line)}
+            #{inventory_site(line)}
+            #{tax_code_line(line)}
+          XML
+        end
+
+        def rate(line)
+          return '' if !line['amount'].to_s.empty? || line['use_amount'] == true
+          return '' unless price(line)
+
+          <<~XML
+            <Rate>#{'%.2f' % price(line).to_f}</Rate>
           XML
         end
 
@@ -263,11 +350,32 @@ module QBWC
           XML
         end
 
-        def amount_line(line)
-          return '' if line['amount'].to_s.empty?
+        def class_ref_for_receipt_line(line)
+          return '' unless line['class_name']
 
           <<~XML
-            <Amount>#{'%.2f' % line['amount'].to_f}</Amount>
+            <ClassRef>
+              <FullName>#{line['class_name']}</FullName>
+            </ClassRef>
+          XML
+        end
+
+        def amount_line(line)
+          return '' if rate_line(line) != ''
+
+          amount = line['amount'] || price(line)
+          return '' unless amount
+
+          <<~XML
+            <Amount>#{'%.2f' % amount.to_f}</Amount>
+          XML
+        end
+
+        def rate_line(line)
+          return '' if !line['amount'].to_s.empty? || line['use_amount'] == true
+
+          <<~XML
+            <Rate>#{'%.2f' % price(line).to_f}</Rate>
           XML
         end
 
@@ -322,6 +430,10 @@ module QBWC
         end
 
         private
+
+        def price(line)
+          line['line_item_price'] || line['price']
+        end
 
         def items(record)
           record['line_items'].to_a.sort_by { |a| a['product_id'] }
@@ -398,6 +510,50 @@ module QBWC
               sales_receipt[address_type][field]&.gsub!(/[^0-9A-Za-z\s]/, '')
             end
           end
+        end
+
+        def add_fields(object, mapping, config, is_mod)
+          object = object.with_indifferent_access
+          fields = ""
+          mapping.each do |map_item|
+            next if map_item[:mod_only] && map_item[:mod_only] != is_mod
+            next if map_item[:add_only] && map_item[:add_only] == is_mod
+
+            if map_item[:is_ref]
+              fields += add_ref_xml(object, map_item, config)
+            else
+              fields += add_basic_xml(object, map_item)
+            end
+          end
+
+          fields
+        end
+
+        def add_basic_xml(object, mapping)
+          flowlink_field = object[mapping[:flowlink_name]]
+          qbe_field_name = mapping[:qbe_name]
+          float_fields = ['price', 'cost']
+
+          return '' if flowlink_field.nil? || flowlink_field == ""
+
+          flowlink_field = '%.2f' % flowlink_field.to_f if float_fields.include?(mapping[:flowlink_name])
+
+          "<#{qbe_field_name}>#{flowlink_field}</#{qbe_field_name}>"
+        end
+
+        def add_ref_xml(object, mapping, config)
+          flowlink_field = object[mapping[:flowlink_name]]
+          qbe_field_name = mapping[:qbe_name]
+
+          if flowlink_field.respond_to?(:has_key?) && flowlink_field['list_id']
+            return "<#{qbe_field_name}><ListID>#{flowlink_field['list_id']}</ListID></#{qbe_field_name}>"
+          end
+          full_name = flowlink_field ||
+                                config[mapping[:flowlink_name].to_sym] ||
+                                config["quickbooks_#{mapping[:flowlink_name]}".to_sym]
+
+          return '' if full_name.nil? || full_name == ""
+          "<#{qbe_field_name}><FullName>#{full_name}</FullName></#{qbe_field_name}>"
         end
       end
     end

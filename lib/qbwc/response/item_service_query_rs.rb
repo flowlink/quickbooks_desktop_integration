@@ -20,13 +20,14 @@ module QBWC
         return if records.empty?
 
         receive_configs = config[:receive] || []
+        puts({connection_id: config[:connection_id], method: "ItemServiceQueryRs - process", receive_configs: receive_configs, records: records})
         serviceproduct_params = receive_configs.find { |c| c['serviceproducts'] }
 
         if serviceproduct_params
-          payload = { serviceproducts: serviceproducts_to_flowlink }
+          payload = { serviceproducts: products_to_flowlink }
           config = { origin: 'quickbooks' }.merge config.reject{|k,v| k == :origin || k == "origin"}
           poll_persistence = Persistence::Polling.new(config, payload)
-          poll_persistence.save_for_polling
+          poll_persistence.save_for_polling_without_timestamp
 
           serviceproduct_params['serviceproducts']['quickbooks_since'] = last_time_modified
           serviceproduct_params['serviceproducts']['quickbooks_force_config'] = 'true'
@@ -79,14 +80,13 @@ module QBWC
       end
 
       def products_to_flowlink
-        # puts "Product object from QBE: #{records.first}"
         records.map do |record|
           object = {
             id: record['Name'],
             sku: record['Name'],
             product_id: record['Name'],
             qbe_id: record['ListID'],
-            key: 'qbe_id',
+            key: ['qbe_id', 'external_guid'],
             name: record['Name'],
             fullname: record['FullName'],
             created_at: record['TimeCreated'],
@@ -112,7 +112,7 @@ module QBWC
           }.compact
 
           if record['SalesOrPurchase']
-            object.merge({
+            object.merge!({
               sales_or_purchase: true,
               price: record['SalesOrPurchase']['Price'],
               price_percent: record['SalesOrPurchase']['PricePercent'],
@@ -122,19 +122,26 @@ module QBWC
           end
 
           if record['SalesAndPurchase']
-            object.merge({
+            object.merge!({
               sales_and_purchase: true,
               sales_description: record['SalesAndPurchase']['SalesDesc'],
               sales_price: record['SalesAndPurchase']['SalesPrice'],
+              price: record['SalesAndPurchase']['SalesPrice'],
               purchase_description: record['SalesAndPurchase']['PurchaseDesc'],
               purchase_cost: record['SalesAndPurchase']['PurchaseCost'],
+              cost: record['SalesAndPurchase']['PurchaseCost'],
               purchase_tax_code_name: record['SalesAndPurchase'].dig('PurchaseTaxCodeRef', 'FullName'),
               income_account_name: record['SalesAndPurchase'].dig('IncomeAccountRef', 'FullName'),
               expense_account_name: record['SalesAndPurchase'].dig('ExpenseAccountRef', 'FullName'),
-              vendor: {
+              sales_and_purchase_vendor: {
                 name: record['SalesAndPurchase'].dig('PrefVendorRef', 'FullName'),
-                external_id: record['SalesAndPurchase'].dig('PrefVendorRef', 'ListID')
-              }
+                external_id: record['SalesAndPurchase'].dig('PrefVendorRef', 'ListID'),
+                qbe_id: record['SalesAndPurchase'].dig('PrefVendorRef', 'ListID')
+              },
+              relationships: [
+                { object: "vendor", key: "qbe_id" },
+                { object: "sales_and_purchase_vendor", key: "qbe_id" }
+              ],
             }.compact)
           end
 

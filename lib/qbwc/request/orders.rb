@@ -35,9 +35,9 @@ module QBWC
           ''
         end
 
-        def polling_current_items_xml(timestamp, config)
+        def polling_current_items_xml(params, config)
+          timestamp = params['quickbooks_since']
           session_id = Persistence::Session.save(config, 'polling' => timestamp)
-
           time = Time.parse(timestamp).in_time_zone 'Pacific Time (US & Canada)'
 
           <<~XML
@@ -67,6 +67,7 @@ module QBWC
             <SalesOrderAddRq requestID="#{session_id}">
               <SalesOrderAdd>
                 #{sales_order record, params}
+                #{external_guid(record)}
                 #{items(record).map { |l| sales_order_line_add l }.join('')}
                 #{adjustments_add_xml record, params}
               </SalesOrderAdd>
@@ -132,6 +133,14 @@ module QBWC
               <Country>#{record['shipping_address']['country']}</Country>
             </ShipAddress>
             #{cancel_order?(record)}
+          XML
+        end
+
+        def external_guid(record)
+          return '' unless record['external_guid']
+
+          <<~XML
+          <ExternalGUID>#{record['external_guid']}</ExternalGUID>
           XML
         end
 
@@ -427,7 +436,7 @@ module QBWC
               order[address_type] = { }
             end
 
-            ['address1', 'address2', 'city', 'state', 'zipcode', 'county'].each do |field|
+            ['address1', 'address2', 'city', 'state', 'zipcode', 'country'].each do |field|
               if !order[address_type][field].nil?
                 order[address_type][field].gsub!(/[^0-9A-Za-z\s]/, '')
               end
