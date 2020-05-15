@@ -101,9 +101,6 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
       
       add_flow_return_payload if @return_payload
 
-      puts  "HERE 1"
-      puts @payload
-
       integration = Persistence::Object.new(config, @payload)
       integration.save
 
@@ -238,7 +235,7 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
   def generate_and_add_guid
     @return_payload ||= {}
     guid = "{#{SecureRandom.uuid.upcase}}"
-    
+
     @payload[object_type][:external_guid] = guid
     @return_payload[:external_guid] = guid
   end
