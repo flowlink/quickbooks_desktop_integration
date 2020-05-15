@@ -12,6 +12,7 @@ gem 'nori'
 gem 'aws-sdk'
 gem 'fast_xs'
 gem 'nokogiri'
+gem 'honeybadger', '~> 4.0'
 
 group :development do
   gem 'pry'
