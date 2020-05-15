@@ -3,6 +3,7 @@ services:
   quickbooks-desktop-integration:
     container_name: quickbooks-desktop-integration-container
     environment:
+      - HONEYBADGER_API_KEY
       - VIRTUAL_HOST=quickbooks_desktop_integration.flowlink.io
     volumes:
       - .:/app
