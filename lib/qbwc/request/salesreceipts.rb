@@ -282,10 +282,12 @@ module QBWC
         end
 
         def sales_receipt_line_mod_from_adjustment(adjustment, params)
+          
+          multiplier = QBWC::Request::Adjustments.is_adjustment_discount?(adjustment['name']) ? -1 : 1
           line = {
             'product_id' => QBWC::Request::Adjustments.adjustment_product_from_qb(adjustment['name'], params),
             'quantity' => 0,
-            'price' => adjustment['value'],
+            'price' => (adjustment['value'].to_f * multiplier).to_s,
             'txn_line_id' => adjustment['txn_line_id']
           }
 

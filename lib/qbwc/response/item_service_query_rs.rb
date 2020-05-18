@@ -24,10 +24,10 @@ module QBWC
         serviceproduct_params = receive_configs.find { |c| c['serviceproducts'] }
 
         if serviceproduct_params
-          payload = { products: products_to_flowlink }
+          payload = { serviceproducts: products_to_flowlink }
           config = { origin: 'quickbooks' }.merge config.reject{|k,v| k == :origin || k == "origin"}
           poll_persistence = Persistence::Polling.new(config, payload)
-          poll_persistence.save_for_polling
+          poll_persistence.save_for_polling_without_timestamp
 
           serviceproduct_params['serviceproducts']['quickbooks_since'] = last_time_modified
           serviceproduct_params['serviceproducts']['quickbooks_force_config'] = 'true'

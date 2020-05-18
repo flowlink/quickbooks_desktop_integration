@@ -32,10 +32,10 @@ module QBWC
         end
 
         if inventoryassemblyproduct_params
-          payload = { products: products_to_flowlink }
+          payload = { inventoryassemblyproducts: products_to_flowlink }
           config = { origin: 'quickbooks' }.merge config.reject{|k,v| k == :origin || k == "origin"}
           poll_persistence = Persistence::Polling.new(config, payload)
-          poll_persistence.save_for_polling
+          poll_persistence.save_for_polling_without_timestamp
 
           inventoryassemblyproduct_params['products']['quickbooks_since'] = last_time_modified
           inventoryassemblyproduct_params['products']['quickbooks_force_config'] = 'true'
