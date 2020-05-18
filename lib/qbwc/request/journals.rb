@@ -155,7 +155,11 @@ module QBWC
           object['credit_lines'] = credit_lines
           object['debit_lines'] = debit_lines
           
-          object["transaction_date"] = Time.parse(initial_object['journal_date']).to_date.to_s
+          object["transaction_date"] = nil
+          if initial_object['journal_date'] && initial_object['journal_date'] != ""
+            Time.parse(initial_object['journal_date']).to_date.to_s
+          end
+          
           object["is_mod"] = is_mod
 
           object
