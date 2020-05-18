@@ -263,8 +263,8 @@ module QBWC
         def add_fields(object, mapping, config, is_mod)
           fields = ""
           mapping.each do |map_item|
-            next if object[:mod_only] && object[:mod_only] != is_mod
-            next if object[:add_only] && object[:add_only] == is_mod
+            next if map_item[:mod_only] && map_item[:mod_only] != is_mod
+            next if map_item[:add_only] && map_item[:add_only] == is_mod
 
             if map_item[:is_ref]
               fields += add_ref_xml(object, map_item, config)

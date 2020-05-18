@@ -23,6 +23,12 @@ RSpec.describe QBWC::Request::Vendors do
     expect(vendor.gsub(/\s+/, "")).to eq(qbe_vendor_update.gsub(/\s+/, ""))
   end
 
+  it "calls update_xml_to_send with an external_guid and outputs data without the external_guid field" do
+    vendor = described_class.update_xml_to_send(flowlink_vendor, 12345, config)
+    expect(vendor.gsub(/\s+/, "")).not_to include("{71562455-3E41-42CA-9377-9A26597C1BD0}")
+    expect(vendor.gsub(/\s+/, "")).not_to include("<ExternalGUID>")
+  end
+
   describe "search xml" do
     it "has list_id and calls search_xml_by_id" do
       # Call search_xml method with flowlink_customer
