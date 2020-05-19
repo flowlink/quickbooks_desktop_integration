@@ -13,14 +13,106 @@ RSpec.describe QBWC::Request::Customers do
     }
   }
 
-  it 'calls add_xml_to_send and outputs the right data' do
-    customer = QBWC::Request::Customers.add_xml_to_send(flowlink_customer, 12345, config)
-    expect(customer.gsub(/\s+/, "")).to eq(qbe_customer_add.gsub(/\s+/, ""))
+  context '#add_xml_to_send' do
+    it 'outputs the right data' do
+      customer = QBWC::Request::Customers.add_xml_to_send(flowlink_customer, 12345, config)
+      expect(customer.gsub(/\s+/, "")).to eq(qbe_customer_add.gsub(/\s+/, ""))
+    end
+
+    describe 'test blank values' do
+      it 'outputs basic field blank correctly' do
+        object = flowlink_customer
+        object['firstname'] = ''
+
+        customer = QBWC::Request::Customers.add_xml_to_send(object, 12345, config)
+        expect(customer.gsub(/\s+/, "")).to include("<FirstName></FirstName>")
+      end
+
+      it 'outputs ref field blank correctly when using string field' do
+        object = flowlink_customer
+        object['class_name'] = ''
+
+        customer = QBWC::Request::Customers.add_xml_to_send(object, 12345, config)
+        expect(customer.gsub(/\s+/, "")).to include("<ClassRef/>")
+      end
+
+      it 'outputs ref field blank correctly when using an object' do
+        object = flowlink_customer
+        object['class_name'] = {'list_id' => ''}
+
+        customer = QBWC::Request::Customers.add_xml_to_send(object, 12345, config)
+        expect(customer.gsub(/\s+/, "")).to include("<ClassRef><ListID></ListID></ClassRef>")
+      end
+
+      it 'outputs aggregate field blank correctly' do
+        object = flowlink_customer
+        object['shipping_address'] = {}
+
+        customer = QBWC::Request::Customers.add_xml_to_send(object, 12345, config)
+        expect(customer.gsub(/\s+/, "")).to include("<ShippingAddress/>")
+      end
+    end
+
+    describe 'test nil values' do
+      it 'outputs basic field blank correctly' do
+        object = flowlink_customer
+        object['firstname'] = nil
+
+        customer = QBWC::Request::Customers.add_xml_to_send(object, 12345, config)
+        expect(customer.gsub(/\s+/, "")).not_to include("<FirstName>")
+      end
+    end
   end
 
-  it 'calls update_xml_to_send and outputs the right data' do
-    customer = QBWC::Request::Customers.update_xml_to_send(flowlink_customer, 12345, config)
-    expect(customer.gsub(/\s+/, "")).to eq(qbe_customer_update.gsub(/\s+/, ""))
+  context '#update_xml_to_send' do
+    it 'outputs the right data' do
+      customer = QBWC::Request::Customers.update_xml_to_send(object, 12345, config)
+      expect(customer.gsub(/\s+/, "")).to eq(qbe_customer_update.gsub(/\s+/, ""))
+    end
+
+    describe 'test blank values' do
+      it 'outputs basic field blank correctly' do
+        object = flowlink_customer
+        object['firstname'] = ''
+
+        customer = QBWC::Request::Customers.update_xml_to_send(object, 12345, config)
+        expect(customer.gsub(/\s+/, "")).to include("<FirstName></FirstName>")
+      end
+
+      it 'outputs ref field blank correctly when using string field' do
+        object = flowlink_customer
+        object['class_name'] = ''
+
+        customer = QBWC::Request::Customers.update_xml_to_send(object, 12345, config)
+        expect(customer.gsub(/\s+/, "")).to include("<ClassRef/>")
+      end
+
+      it 'outputs ref field blank correctly when using an object' do
+        object = flowlink_customer
+        object['class_name'] = {'list_id' => ''}
+
+        customer = QBWC::Request::Customers.update_xml_to_send(object, 12345, config)
+        expect(customer.gsub(/\s+/, "")).to include("<ClassRef><ListID></ListID></ClassRef>")
+      end
+
+      it 'outputs aggregate field blank correctly' do
+        object = flowlink_customer
+        object['shipping_address'] = {}
+
+        customer = QBWC::Request::Customers.update_xml_to_send(object, 12345, config)
+        expect(customer.gsub(/\s+/, "")).to include("<ShippingAddress/>")
+      end
+    end
+
+    describe 'test nil values' do
+      it 'outputs basic field blank correctly' do
+        object = flowlink_customer
+        object['firstname'] = nil
+
+        customer = QBWC::Request::Customers.update_xml_to_send(object, 12345, config)
+        expect(customer.gsub(/\s+/, "")).not_to include("<FirstName>")
+      end
+    end
   end
 
   describe "search xml" do
