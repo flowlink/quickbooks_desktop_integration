@@ -59,6 +59,7 @@ def qbe_vendor_innards(is_mod)
     <CompanyName>some company</CompanyName>
     <Salutation>Mr</Salutation>
     <FirstName>First</FirstName>
+    <MiddleName></MiddleName>
     <LastName>Last</LastName>
     <JobTitle>Developer</JobTitle>
     <VendorAddress>
@@ -120,6 +121,7 @@ def qbe_vendor_innards(is_mod)
     <MiddleName>F</MiddleName>
     <LastName>Doe</LastName>
     <JobTitle>Doctor</JobTitle>
+    <AdditionalContactRef />
     #{contact_closed}
     <NameOnCheck>First M Last</NameOnCheck>
     <AccountNumber>11111</AccountNumber>

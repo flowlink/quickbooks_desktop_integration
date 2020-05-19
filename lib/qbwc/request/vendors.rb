@@ -184,17 +184,13 @@ module QBWC
 
           <<~XML
             #{add_fields(object, MAPPING_ONE, config, is_mod)}
-            <VendorAddress>
-              #{add_fields(object['vendor_address'], ADDRESS_MAP, config, is_mod) if object['vendor_address']}
-            </VendorAddress>
-            <ShipAddress>
-              #{add_fields(object['ship_from_address'], ADDRESS_MAP, config, is_mod) if object['ship_from_address']}
-            </ShipAddress>
+            #{address(object['vendor_address'], config, is_mod, "VendorAddress")}
+            #{address(object['ship_from_address'], config, is_mod, "ShipAddress")}
             #{add_fields(object, MAPPING_TWO, config, is_mod)}
-            #{additional_contacts(object)}
-            #{contacts(object, is_mod, config)}
+            #{additional_contacts(object['additional_contacts'])}
+            #{contacts(object['contacts'], config, is_mod)}
             #{add_fields(object, MAPPING_THREE, config, is_mod)}
-            #{additional_notes(object, is_mod)}
+            #{additional_notes(object['additional_notes'], is_mod)}
             #{add_fields(object, MAPPING_FOUR, config, is_mod)}
           XML
         end
@@ -203,8 +199,6 @@ module QBWC
           object = initial_object
 
           object['is_active'] = true unless object['is_active'] == false
-          object['firstname'] = object['firstname'] || object['name'].to_s.split.first
-          object['lastname'] = object['lastname'] || object['name'].to_s.split.last
 
           object['reporting_period'] = nil unless REPORTING_PERIODS.include?(object['reporting_period'])
           object['sales_tax_country'] = nil unless SALES_TAX_COUNTRIES.include?(object['sales_tax_country'])
@@ -212,29 +206,40 @@ module QBWC
           object
         end
 
-        def additional_contacts(object)
-          return "" unless object['additional_contacts'] && object['additional_contacts'].is_a?(Array)
-          
+        def address(addr, config, is_mod, address_name)
+          return "" if addr.nil?
+          return "<#{address_name} />" unless addr.is_a?(Hash) && !addr.empty?
+
+          <<~XML
+            <#{address_name}>
+              #{add_fields(addr, ADDRESS_MAP, config, is_mod)}
+            </#{address_name}>
+          XML
+        end
+
+        def additional_contacts(contacts)
+          return "" if contacts.nil?
+          return "<AdditionalContactRef />" unless contacts.is_a?(Array) && !contacts.empty?
+
           fields = ""
-          object['additional_contacts'].each do |contact|
+          contacts.each do |contact|
             # Both name and value required
             next unless contact['name'] && contact['value']
-            fields += <<~XML
-                              <AdditionalContactRef>
-                                <ContactName >#{contact['name']}</ContactName>
-                                <ContactValue >#{contact['value']}</ContactValue>
-                              </AdditionalContactRef>
-                            XML
+              fields += "<AdditionalContactRef>"
+              fields += "<ContactName >#{contact['name']}</ContactName>"
+              fields += "<ContactValue >#{contact['value']}</ContactValue>"
+              fields += "</AdditionalContactRef>"
           end
 
           fields
         end
 
-        def additional_notes(object, is_mod)
-          return "" unless object['additional_notes'] && object['additional_notes'].is_a?(Array)
+        def additional_notes(notes, is_mod)
+          return "" if notes.nil?
+          return is_mod ? "<AdditionalNotesMod />" : "<AdditionalNotes />" unless notes.is_a?(Array) && !notes.empty?
           
           fields = ""
-          object['additional_notes'].each do |note|
+          notes.each do |note|
             next unless note && note['note']
 
             fields += is_mod ? "<AdditionalNotesMod>" : "<AdditionalNotes>"
@@ -246,14 +251,15 @@ module QBWC
           fields
         end
 
-        def contacts(object, is_mod, config)
-          return "" unless object['contacts'] && object['contacts'].is_a?(Array)
+        def contacts(contacts, config, is_mod)
+          return "" if contacts.nil?
+          return is_mod ? "<ContactsMod />" : "<Contacts />" unless contacts.is_a?(Array) && !contacts.empty?
           
           fields = ""
-          object['contacts'].each do |contact|
+          contacts.each do |contact|
             fields += is_mod ? "<ContactsMod>" : "<Contacts>"
             fields += add_fields(contact, CONTACTS_MAP, config, is_mod)
-            fields += additional_contacts(contact)
+            fields += additional_contacts(contact['additional_contacts'])
             fields += is_mod ? "</ContactsMod>" : "</Contacts>"
           end
 
@@ -281,9 +287,11 @@ module QBWC
           qbe_field_name = mapping[:qbe_name]
           float_fields = ['price', 'cost']
 
-          return '' if flowlink_field.nil? || flowlink_field == ""
+          return '' if flowlink_field.nil?
 
-          flowlink_field = '%.2f' % flowlink_field.to_f if float_fields.include?(mapping[:flowlink_name])
+          if flowlink_field != "" && float_fields.include?(mapping[:flowlink_name])
+            flowlink_field = '%.2f' % flowlink_field.to_f
+          end
 
           "<#{qbe_field_name}>#{flowlink_field}</#{qbe_field_name}>"
         end
@@ -299,7 +307,7 @@ module QBWC
                                 config[mapping[:flowlink_name].to_sym] ||
                                 config["quickbooks_#{mapping[:flowlink_name]}".to_sym]
 
-          return '' if full_name.nil? || full_name == ""
+          return '' if full_name.nil?
           "<#{qbe_field_name}><FullName>#{full_name}</FullName></#{qbe_field_name}>"
         end
 
