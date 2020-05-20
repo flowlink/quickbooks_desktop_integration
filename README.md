@@ -84,9 +84,9 @@ The following parameters are required when setting up a Flow with this webhook:
 | quickbooks_customer_email       | If present, uses given email for all customers |
 | quickbooks_auto_create_products | If checked, automatically create products for orders and shipments |
 | use_amount_for_tax | If set to "1" then we use the "Amount" QBE field rather than "Rate" (used in Invoices too) |
-| quickbooks_use_customer_object | If set to "1" then we use the `customer` key on the parent object (must be a hash) rather than letting the qbe integration build the hash |
-| quickbooks_use_vendor_object | If set to "1" then we use the `vendor` key on the parent object (must be a hash) rather than letting the qbe integration build the hash |
-| quickbooks_use_product_objects | If set to "1" then we use the `products` key on the parent object (must be an array of hashes) rather than letting the qbe integration build the array |
+| quickbooks_use_customer_object | If set to "1" then we use the `customer` key (must be a hash) on the parent object rather than letting the qbe integration build the hash |
+| quickbooks_use_vendor_object | If set to "1" then we use the `vendor` key (must be a hash) on the parent object rather than letting the qbe integration build the hash |
+| quickbooks_use_product_objects | If set to "1" then we use the `products` key (must be an array of hashes) on the parent object rather than letting the qbe integration build the array |
 
 ## QBE Config and Refs
 
