@@ -463,6 +463,18 @@ module Persistence
               @config[:quickbooks_auto_create_payments].to_s == '1'
     end
 
+    def use_customer_object?
+      @config[:quickbooks_use_customer_object].to_s == '1'
+    end
+
+    def use_vendor_object?
+      @config[:quickbooks_use_vendor_object].to_s == '1'
+    end
+
+    def use_product_objects?
+      @config[:quickbooks_use_product_objects].to_s == '1'
+    end
+
     def success_notification_message(object)
       "#{object.singularize.capitalize} successfully sent to Quickbooks Desktop"
     end
@@ -571,10 +583,15 @@ module Persistence
     end
 
     def generate_inserts_for_two_phase(object, use_customer_email_param)
-      # TODO Create a better way to choose between types
+
       if payload_key.pluralize == 'inventories'
         if auto_create_products
-          products = QBWC::Request::Orders.build_products_from_order(objects)
+          if use_product_objects?
+            products = object['products']
+          else
+            products = QBWC::Request::Orders.build_products_from_order(object)
+          end
+
           products.flatten.each do |product|
             save_pending_file(product['id'], 'products', product)
           end
@@ -587,12 +604,22 @@ module Persistence
       elsif payload_key.pluralize == 'orders'
 
         if !use_customer_email_param
-          customer = QBWC::Request::Orders.build_customer_from_order(object)
+          if use_customer_object?
+            customer = object['customer']
+          else
+            customer = QBWC::Request::Orders.build_customer_from_order(object)
+          end
+          
           save_pending_file(customer['name'], 'customers', customer)
         end
 
         if auto_create_products
-          products = QBWC::Request::Orders.build_products_from_order(objects)
+          if use_product_objects?
+            products = object['products']
+          else
+            products = QBWC::Request::Orders.build_products_from_order(object)
+          end
+
           products.flatten.each do |product|
             save_pending_file(product['id'], 'products', product)
           end
@@ -606,22 +633,30 @@ module Persistence
       elsif payload_key.pluralize == 'invoices'
 
         if !use_customer_email_param
-          customer = QBWC::Request::Orders.build_customer_from_order(object)
+          if use_customer_object?
+            customer = object['customer']
+          else
+            customer = QBWC::Request::Orders.build_customer_from_order(object)
+          end
+          
           save_pending_file(customer['name'], 'customers', customer)
         end
 
         if auto_create_products
-          products = QBWC::Request::Orders.build_products_from_order(objects)
+          if use_product_objects?
+            products = object['products']
+          else
+            products = QBWC::Request::Orders.build_products_from_order(object)
+          end
+
           products.flatten.each do |product|
             save_pending_file(product['id'], 'products', product)
           end
         end
 
         if auto_create_payments
-          # puts "BUILDING PAYMENTS FOR INVOICES"
           payments = QBWC::Request::Orders.build_payments_from_order(object)
           payments.each do |payment|
-            # puts payment
             next unless (payment[:id] && payment[:customer] && payment[:amount] && payment[:payment_method])
             file = "#{path.base_name}/#{path.two_phase_pending}/payments_#{payment[:id]}_.json"
             amazon_s3.export file_name: file, objects: [payment]
@@ -638,12 +673,22 @@ module Persistence
       elsif payload_key.pluralize == 'purchaseorders'
 
         if !use_customer_email_param
-          vendor = QBWC::Request::Purchaseorders.build_vendor_from_purchaseorder(object)
+          if use_vendor_object?
+            vendor = object['vendor']
+          else
+            vendor = QBWC::Request::Purchaseorders.build_vendor_from_purchaseorder(object)
+          end
+
           save_pending_file(vendor['name'], 'vendors', vendor)
         end
 
         if auto_create_products
-          products = QBWC::Request::Orders.build_products_from_order(objects)
+          if use_product_objects?
+            products = object['products']
+          else
+            products = QBWC::Request::Orders.build_products_from_order(object)
+          end
+          
           products.flatten.each do |product|
             save_pending_file(product['id'], 'products', product)
           end
@@ -657,12 +702,22 @@ module Persistence
       elsif payload_key.pluralize == 'salesreceipts'
 
         if !use_customer_email_param
-          customer = QBWC::Request::Orders.build_customer_from_order(object)
+          if use_customer_object?
+            customer = object['customer']
+          else
+            customer = QBWC::Request::Orders.build_customer_from_order(object)
+          end
+          
           save_pending_file(customer['name'], 'customers', customer)
         end
 
         if auto_create_products
-          products = QBWC::Request::Orders.build_products_from_order(objects)
+          if use_product_objects?
+            products = object['products']
+          else
+            products = QBWC::Request::Orders.build_products_from_order(object)
+          end
+
           products.flatten.each do |product|
             save_pending_file(product['id'], 'products', product)
           end
