@@ -4,6 +4,8 @@ require 'nokogiri'
 require 'fast_xs'
 require 'sinatra/reloader'
 
+require 'honeybadger'
+
 require 'active_support/core_ext/date/calculations'
 require 'active_support/core_ext/numeric/time'
 
