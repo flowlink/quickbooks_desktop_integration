@@ -2,6 +2,8 @@ require 'endpoint_base'
 require 'sinatra/reloader'
 require 'securerandom'
 
+require 'honeybadger'
+
 require File.expand_path(File.dirname(__FILE__) + '/lib/quickbooks_desktop_integration')
 
 ENDPOINTS = %w(
