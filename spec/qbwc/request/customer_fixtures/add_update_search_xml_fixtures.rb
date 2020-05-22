@@ -149,6 +149,7 @@ def qbe_customer_innards(is_mod)
     <MiddleName>F</MiddleName>
     <LastName>Doe</LastName>
     <JobTitle>Doctor</JobTitle>
+    <AdditionalContactRef />
     #{contact_closed}
     <CustomerTypeRef><FullName>customer_type_reference</FullName></CustomerTypeRef>
     <TermsRef><FullName>terms_reference</FullName></TermsRef>
@@ -172,6 +173,7 @@ def qbe_customer_innards(is_mod)
     <PreferredDeliveryMethod>Email</PreferredDeliveryMethod>
     <PriceLevelRef><FullName>price_level_reference</FullName></PriceLevelRef>
     #{guid}
+    <TaxRegistrationNumber></TaxRegistrationNumber>
     <CurrencyRef><FullName>currency_reference</FullName></CurrencyRef>
   XML
 end

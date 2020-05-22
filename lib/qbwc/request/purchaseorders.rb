@@ -117,6 +117,7 @@ module QBWC
               <FullName>#{record['supplier']['name']}</FullName>
             </VendorRef>
             #{class_ref_for_order(record)}
+            #{inventory_site_ref(record)}
             <TxnDate>#{Time.parse(record['placed_on']).to_date}</TxnDate>
             <RefNumber>#{record['id']}</RefNumber>
             <VendorAddress>
@@ -154,6 +155,16 @@ module QBWC
             <ClassRef>
               <FullName>#{record['class_name']}</FullName>
             </ClassRef>
+          XML
+        end
+
+        def inventory_site_ref(record)
+          return '' unless record['inventory_site_name']
+
+          <<~XML
+            <InventorySiteRef>
+              <FullName>#{record['inventory_site_name']}</FullName>
+            </InventorySiteRef>
           XML
         end
 

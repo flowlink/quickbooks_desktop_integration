@@ -21,13 +21,13 @@ module QBWC
       def process(config = {})
         return { statuses_objects: nil }.with_indifferent_access if records.empty?
 
-        objects = records.map do |object|
+        objects = records.map do |record|
           {
             payments: {
               id: record['RefNumber'],
               object_ref: record['RefNumber'],
-              list_id: object['TxnID'],
-              edit_sequence: object['EditSequence']
+              list_id: record['TxnID'],
+              edit_sequence: record['EditSequence']
             }
           }
         end
