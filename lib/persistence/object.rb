@@ -674,7 +674,7 @@ module Persistence
 
         if !use_customer_email_param
           if use_vendor_object?
-            vendor = object['vendor']
+            vendor = object['supplier']
           else
             vendor = QBWC::Request::Purchaseorders.build_vendor_from_purchaseorder(object)
           end
