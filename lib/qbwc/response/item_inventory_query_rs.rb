@@ -25,16 +25,16 @@ module QBWC
 
         if inventory_params
           payload = { inventories: inventories_to_flowlink }
-          config = { origin: 'quickbooks' }.merge config.reject{|k,v| k == :origin || k == "origin"}
+          @config = { origin: 'quickbooks' }.merge config.reject{|k,v| k == :origin || k == "origin"}
 
-          poll_persistence = Persistence::Polling.new(config, payload)
+          poll_persistence = Persistence::Polling.new(@config, payload)
           poll_persistence.save_for_polling
         end
 
         if product_params
+          @config = { origin: 'quickbooks' }.merge config.reject{|k,v| k == :origin || k == "origin"}
           payload = { products: products_to_flowlink }
-          config = { origin: 'quickbooks' }.merge config.reject{|k,v| k == :origin || k == "origin"}
-          poll_persistence = Persistence::Polling.new(config, payload)
+          poll_persistence = Persistence::Polling.new(@config, payload)
           poll_persistence.save_for_polling_without_timestamp
 
           product_params['products']['quickbooks_since'] = last_time_modified
@@ -46,8 +46,8 @@ module QBWC
           Persistence::Settings.new(params.with_indifferent_access).setup
         end
 
-        config = config.merge(origin: 'flowlink')
-        object_persistence = Persistence::Object.new config
+        @config = config.merge(origin: 'flowlink')
+        object_persistence = Persistence::Object.new @config
         object_persistence.update_objects_with_query_results(objects_to_update)
 
         nil
@@ -89,13 +89,13 @@ module QBWC
 
       def build_product_id_or_ref(object)
         return object['Name'] if object['ParentRef'].nil?
-        
+
         if object['ParentRef'].is_a?(Array)
           arr = object['ParentRef']
         else
           arr = [object['ParentRef']]
         end
-        
+
         arr.map do |item|
           next unless item['FullName']
           "#{item['FullName']}:"
@@ -104,6 +104,8 @@ module QBWC
 
       def products_to_flowlink
         records.map do |record|
+          puts({connection: @connection_id, method: "products_to_flowlink", class: "ItemInventoryQueryRs", record: record})
+
           object = {
             id: record['Name'],
             sku: record['Name'],
