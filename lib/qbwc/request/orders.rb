@@ -329,6 +329,8 @@ module QBWC
         end
 
         def build_products_from_order(object)
+          puts "Building products from #{object}"
+
           object.first['line_items'].reject { |line| line['quantity'].to_f == 0.0 }.map do |item|
             {
               'id'          => item['product_id'],
