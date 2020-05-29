@@ -589,7 +589,7 @@ module Persistence
           if use_product_objects?
             products = object['products']
           else
-            products = QBWC::Request::Orders.build_products_from_order(object)
+            products = QBWC::Request::Orders.build_products_from_order(objects)
           end
 
           products.flatten.each do |product|
@@ -617,7 +617,7 @@ module Persistence
           if use_product_objects?
             products = object['products']
           else
-            products = QBWC::Request::Orders.build_products_from_order(object)
+            products = QBWC::Request::Orders.build_products_from_order(objects)
           end
 
           products.flatten.each do |product|
@@ -646,7 +646,7 @@ module Persistence
           if use_product_objects?
             products = object['products']
           else
-            products = QBWC::Request::Orders.build_products_from_order(object)
+            products = QBWC::Request::Orders.build_products_from_order(objects)
           end
 
           products.flatten.each do |product|
@@ -686,7 +686,7 @@ module Persistence
           if use_product_objects?
             products = object['products']
           else
-            products = QBWC::Request::Orders.build_products_from_order(object)
+            products = QBWC::Request::Orders.build_products_from_order(objects)
           end
           
           products.flatten.each do |product|
@@ -715,7 +715,7 @@ module Persistence
           if use_product_objects?
             products = object['products']
           else
-            products = QBWC::Request::Orders.build_products_from_order(object)
+            products = QBWC::Request::Orders.build_products_from_order(objects)
           end
 
           products.flatten.each do |product|
