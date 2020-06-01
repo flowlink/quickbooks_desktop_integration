@@ -387,9 +387,15 @@ module QBWC
 
         def tax_code_line(line)
           return '' if line['tax_code_id'].to_s.empty?
+          if line['tax_list_id']
+            list_id = "<ListID>#{line['tax_list_id']}</ListID>"
+          else
+            list_id = ''
+          end
 
           <<~XML
             <SalesTaxCodeRef>
+              #{list_id}
               <FullName>#{line['tax_code_id']}</FullName>
             </SalesTaxCodeRef>
           XML
