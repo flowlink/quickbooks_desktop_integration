@@ -51,6 +51,7 @@ module QBWC
           {
             object_type: 'purchaseorder',
             object_ref: record['RefNumber'],
+            id: record['RefNumber'],
             list_id: record['TxnID'],
             edit_sequence: record['EditSequence']
           }.with_indifferent_access
