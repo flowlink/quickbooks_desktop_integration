@@ -114,6 +114,7 @@ module QBWC
           <<~XML
             #{customer_ref_for_order(record)}
             #{class_ref_for_order(record)}
+            #{terms_ref_for_order(record)}
             <TxnDate>#{Time.parse(record['placed_on']).to_date}</TxnDate>
             <RefNumber>#{record['id']}</RefNumber>
             <BillAddress>
@@ -169,6 +170,16 @@ module QBWC
             <ClassRef>
               <FullName>#{record['class_name']}</FullName>
             </ClassRef>
+          XML
+        end
+
+        def terms_ref_for_order(record)
+          return '' unless record['terms_name']
+
+          <<~XML
+            <TermsRef>
+              <FullName>#{record['terms_name']}</FullName>
+            </TermsRef>
           XML
         end
 
