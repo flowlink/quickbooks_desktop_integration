@@ -114,7 +114,6 @@ module QBWC
           <<~XML
             #{customer_ref_for_order(record)}
             #{class_ref_for_order(record)}
-            #{terms_ref_for_order(record)}
             <TxnDate>#{Time.parse(record['placed_on']).to_date}</TxnDate>
             <RefNumber>#{record['id']}</RefNumber>
             <BillAddress>
@@ -133,6 +132,9 @@ module QBWC
               <PostalCode>#{record['shipping_address']['zipcode']}</PostalCode>
               <Country>#{record['shipping_address']['country']}</Country>
             </ShipAddress>
+            #{po_number(record)}
+            #{terms_ref_for_order(record)}
+            #{ship_date(record)}
             #{cancel_order?(record)}
           XML
         end
@@ -180,6 +182,26 @@ module QBWC
             <TermsRef>
               <FullName>#{record['terms_name']}</FullName>
             </TermsRef>
+          XML
+        end
+
+        def po_number(record)
+          return '' unless record['purchase_order_number']
+
+          <<~XML
+            <PONumber>
+              #{record['purchase_order_number']}
+            </PONumber>
+          XML
+        end
+
+        def ship_date(record)
+          return '' unless record['ship_date']
+
+          <<~XML
+            <ShipDate>
+              #{record['ship_date']}
+            </ShipDate>
           XML
         end
 
