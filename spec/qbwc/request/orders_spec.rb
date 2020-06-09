@@ -53,6 +53,30 @@ module QBWC
         expect(xml).to match /SalesOrderLineAdd/
         expect(xml.match(/ª/)).to be_nil
       end
+
+      context 'optional fields' do
+        it 'builds PONumber request from purchase_order_number' do
+          orders = Factory.orders['orders']
+          orders.first['purchase_order_number'] = '824'
+
+          VCR.use_cassette 'requests/insert_update_orders' do
+            xml = subject.generate_request_insert_update orders
+            expect(xml).to match /PONumber/
+            expect(xml).to match /824/
+          end
+        end
+
+        it 'builds ShipDate request from ship_date' do
+          orders = Factory.orders['orders']
+          orders.first['ship_date'] = '06-09-2020'
+
+          VCR.use_cassette 'requests/insert_update_orders' do
+            xml = subject.generate_request_insert_update orders
+            expect(xml).to match /ShipDate/
+            expect(xml).to match /06-09-2020/
+          end
+        end
+      end
     end
   end
 end
