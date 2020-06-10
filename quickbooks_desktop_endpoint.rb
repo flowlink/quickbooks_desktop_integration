@@ -54,6 +54,8 @@ CUSTOM_OBJECT_TYPES = %w(
   inventoryproducts
   inventoryassemblyproducts
   otherchargeproducts
+  purchaseorders
+  salesreceipts
 )
 
 OBJECT_TYPES_MAPPING_DATA_OBJECT = {
@@ -64,7 +66,9 @@ OBJECT_TYPES_MAPPING_DATA_OBJECT = {
   'noninventoryproducts' => 'products',
   'inventoryproducts' => 'products',
   'discountproducts' => 'products',
-  'inventoryassemblyproducts' => 'products'
+  'inventoryassemblyproducts' => 'products',
+  'purchaseorders' => 'purchase_orders',
+  'salesreceipts' => 'sales_receipts'
 }
 
 class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
