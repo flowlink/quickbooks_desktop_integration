@@ -190,9 +190,13 @@ module QBWC
             suggested_discount_date: record['SuggestedDiscountDate'].to_s,
             other: record['Other'],
             external_guid: record['ExternalGUID'],
+            sales_order: {
+              title: record['PONumber']
+            },
             relationships: [
               { object: 'customer', key: 'qbe_id' },
-              { object: 'product', key: 'qbe_id', location: 'line_items' }
+              { object: 'product', key: 'qbe_id', location: 'line_items' },
+              { object: 'order', key: 'title', location: 'sales_order' }
             ],
             linked_qbe_transactions: linked_qbe_transactions(record)
           }.compact
