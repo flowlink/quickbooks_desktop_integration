@@ -24,6 +24,7 @@ ENDPOINTS = %w(
   add_salestaxproducts
   add_discountproducts
   add_otherchargeproducts
+  add_creditmemos
 )
 
 GET_ENDPOINTS =  %w(
@@ -43,6 +44,7 @@ GET_ENDPOINTS =  %w(
   get_inventoryproducts
   get_inventoryassemblyproducts
   get_otherchargeproducts
+  get_creditmemos
 )
 
 CUSTOM_OBJECT_TYPES = %w(
@@ -56,6 +58,7 @@ CUSTOM_OBJECT_TYPES = %w(
   otherchargeproducts
   purchaseorders
   salesreceipts
+  creditmemos
 )
 
 OBJECT_TYPES_MAPPING_DATA_OBJECT = {
@@ -69,6 +72,7 @@ OBJECT_TYPES_MAPPING_DATA_OBJECT = {
   'inventoryassemblyproducts' => 'products',
   'purchaseorders' => 'purchase_orders',
   'salesreceipts' => 'sales_receipts'
+  'creditmemos' => 'credit_memos'
 }
 
 class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
