@@ -217,7 +217,7 @@ module QBWC
         def purchaseorder_line_mod(line)
           <<~XML
             <PurchaseOrderLineMod>
-              <TxnLineID>#{line['txn_line_id']}</TxnLineID>
+              <TxnLineID>#{line['txn_line_id'] || -1}</TxnLineID>
               #{purchaseorder_line(line)}
             </PurchaseOrderLineMod>
           XML
