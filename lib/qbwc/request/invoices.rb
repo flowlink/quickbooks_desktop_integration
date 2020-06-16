@@ -158,7 +158,8 @@ module QBWC
               <PostalCode>#{record['shipping_address']['zipcode']}</PostalCode>
               <Country>#{record['shipping_address']['country']}</Country>
             </ShipAddress>
-            #{po_number(record)}
+						#{po_number(record)}
+						#{terms_ref_for_invoice(record)}
             #{sales_rep(record)}
             #{shipping_method(record)}
             #{is_to_be_printed(record)}
@@ -207,6 +208,16 @@ module QBWC
             <SalesRepRef>
               <FullName>#{record['sales_rep']['name']}</FullName>
             </SalesRepRef>
+          XML
+				end
+				
+				def terms_ref_for_invoice(record)
+          return '' unless record['terms_name']
+
+          <<~XML
+            <TermsRef>
+              <FullName>#{record['terms_name']}</FullName>
+            </TermsRef>
           XML
         end
 
