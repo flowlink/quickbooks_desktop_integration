@@ -670,6 +670,13 @@ module Persistence
           save_pending_file(customer['name'], 'customers', customer)
         end
 
+      elsif payload_key.pluralize == 'creditmemos'
+
+        if !use_customer_email_param
+          customer = QBWC::Request::Orders.build_customer_from_order(object)
+          save_pending_file(customer['name'], 'customers', customer)
+        end
+
       elsif payload_key.pluralize == 'purchaseorders'
 
         if !use_customer_email_param
@@ -758,7 +765,7 @@ module Persistence
     end
 
     def two_phase?
-      %w(orders shipments invoices salesreceipts purchaseorders payments inventories).include?(payload_key.pluralize)
+      %w(orders shipments invoices salesreceipts purchaseorders payments inventories creditmemos).include?(payload_key.pluralize)
     end
 
 
