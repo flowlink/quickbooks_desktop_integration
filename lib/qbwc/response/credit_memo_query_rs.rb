@@ -103,13 +103,13 @@ module QBWC
             }.compact,
             class_name: record.dig('ClassRef', 'FullName'),
             customer: record.dig('CustomerRef', 'FullName'),
-            ar_account: record.dig('ARAccountRef', 'FullName')
-            template: record.dig('TemplateRef', 'FullName')
+            ar_account: record.dig('ARAccountRef', 'FullName'),
+            template: record.dig('TemplateRef', 'FullName'),
             is_pending: record['IsPending'],
             fob: record['FOB'],
             ship_date: record['ShipDate'].to_s,
-            ship_method: record.dig('ShipMethodRef', 'FullName')
-            item_sales_tax: record.dig('ItemSalesTaxRef', 'FullName')
+            ship_method: record.dig('ShipMethodRef', 'FullName'),
+            item_sales_tax: record.dig('ItemSalesTaxRef', 'FullName'),
             sales_tax_total: record['SalesTaxTotal'],
             sales_tax_percentage: record['SalesTaxPercentage'],
             memo: record['Memo'],

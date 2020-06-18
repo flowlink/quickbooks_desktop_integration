@@ -30,7 +30,7 @@ module QBWC
             session_id = Persistence::Session.save(config, object)
 
             if object['list_id'].to_s.empty?
-              request << search_xml_by_name(object['name']), session_id)
+              request << search_xml_by_name(object['name'], session_id)
             else
               request << search_xml_by_id(object['id'], session_id)
             end

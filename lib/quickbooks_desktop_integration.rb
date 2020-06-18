@@ -31,6 +31,7 @@ require 'qbwc/request/serviceproducts'
 require 'qbwc/request/otherchargeproducts'
 require 'qbwc/request/shipments'
 require 'qbwc/request/vendors'
+require 'qbwc/request/creditmemos'
 
 require 'qbwc/consumer'
 require 'qbwc/producer'
