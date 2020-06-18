@@ -31,6 +31,19 @@ module QBWC
         end
 
         Persistence::Object.update_statuses(config, products)
+
+        # TODO: Do I trigger a receive payment request from here?
+        # <ReceivePaymentAddRq requestID="#{session_id}">
+          # <ReceivePaymentAdd>
+        # <AppliedToTxnAdd> <!-- optional, may repeat -->
+        #   <TxnID  useMacro="MACROTYPE">IDTYPE</TxnID> <!-- required -->
+        #   <PaymentAmount >AMTTYPE</PaymentAmount> <!-- optional -->
+        #   <SetCredit> <!-- optional, may repeat -->
+        #           <CreditTxnID  useMacro="MACROTYPE">IDTYPE</CreditTxnID> <!-- required -->
+        #           <AppliedAmount >AMTTYPE</AppliedAmount> <!-- required -->
+        #           <Override >BOOLTYPE</Override> <!-- optional -->
+        #   </SetCredit>
+
       end
 
 

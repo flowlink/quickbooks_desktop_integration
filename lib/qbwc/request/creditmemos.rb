@@ -32,7 +32,7 @@ module QBWC
             if object['list_id'].to_s.empty?
               request << search_xml_by_name(object['name']), session_id)
             else
-              request << search_xml_by_id(object['list_id'], session_id)
+              request << search_xml_by_id(object['id'], session_id)
             end
           end
         end
@@ -73,6 +73,13 @@ module QBWC
         end
 
         def search_xml_by_id(list_id, session_id)
+          <<~XML
+            <CreditMemoQueryRq requestID="#{session_id}">
+              <RefNumberCaseSensitive>#{list_id}</RefNumberCaseSensitive>
+              <IncludeLineItems>true</IncludeLineItems>
+              <IncludeLinkedTxns>true</IncludeLinkedTxns>
+            </CreditMemoQueryRq>
+          XML
         end
 
       end

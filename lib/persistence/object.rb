@@ -677,6 +677,8 @@ module Persistence
           save_pending_file(customer['name'], 'customers', customer)
         end
 
+        ## TODO: Look for the invoice?
+
       elsif payload_key.pluralize == 'purchaseorders'
 
         if !use_customer_email_param
