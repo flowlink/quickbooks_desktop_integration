@@ -19,8 +19,6 @@ module QBWC
       def process(config)
         return if records.empty?
 
-        puts "Config for customer query: #{config}"
-
         receive_configs = config[:receive] || []
         customer_params = receive_configs.find { |c| c['customers'] }
 
@@ -51,7 +49,6 @@ module QBWC
       private
 
       def objects_to_update
-        # puts "Objects to update: #{records}"
         records.map do |record|
           {
             object_type: 'customer',
@@ -72,12 +69,11 @@ module QBWC
 
       def to_flowlink
         records.map do |record|
-          puts "Customer QBE object: #{record}"
           {
             id: record['ListID'],
             list_id: record['ListID'],
             qbe_id: record['ListID'],
-            key: 'qbe_id',
+            key: ['qbe_id', 'external_guid'],
             external_id: record['ListID'],
             created_at: record['TimeCreated'].to_s,
             modified_at: record['TimeModified'].to_s,

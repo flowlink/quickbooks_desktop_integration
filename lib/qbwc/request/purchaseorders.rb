@@ -35,7 +35,8 @@ module QBWC
           ''
         end
 
-        def polling_current_items_xml(timestamp, config)
+        def polling_current_items_xml(params, config)
+          timestamp = params['quickbooks_since']
           session_id = Persistence::Session.save(config, 'polling' => timestamp)
 
           time = Time.parse(timestamp).in_time_zone 'Pacific Time (US & Canada)'
@@ -67,6 +68,7 @@ module QBWC
             <PurchaseOrderAddRq requestID="#{session_id}">
               <PurchaseOrderAdd>
                 #{purchaseorder record, params}
+                #{external_guid(record)}
                 #{items(record).map { |l| purchaseorder_line_add l }.join('')}
                 #{adjustments_add_xml record, params}
               </PurchaseOrderAdd>
@@ -115,6 +117,7 @@ module QBWC
               <FullName>#{record['supplier']['name']}</FullName>
             </VendorRef>
             #{class_ref_for_order(record)}
+            #{inventory_site_ref(record)}
             <TxnDate>#{Time.parse(record['placed_on']).to_date}</TxnDate>
             <RefNumber>#{record['id']}</RefNumber>
             <VendorAddress>
@@ -137,6 +140,14 @@ module QBWC
           XML
         end
 
+        def external_guid(record)
+          return '' unless record['external_guid']
+
+          <<~XML
+          <ExternalGUID>#{record['external_guid']}</ExternalGUID>
+          XML
+        end
+
         def class_ref_for_order(record)
           return '' unless record['class_name']
 
@@ -144,6 +155,16 @@ module QBWC
             <ClassRef>
               <FullName>#{record['class_name']}</FullName>
             </ClassRef>
+          XML
+        end
+
+        def inventory_site_ref(record)
+          return '' unless record['inventory_site_name']
+
+          <<~XML
+            <InventorySiteRef>
+              <FullName>#{record['inventory_site_name']}</FullName>
+            </InventorySiteRef>
           XML
         end
 

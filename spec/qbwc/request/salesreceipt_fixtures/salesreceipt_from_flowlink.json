@@ -1,0 +1,69 @@
+{
+  "id": "1999",
+  "customer": {
+    "name": "Mr Rich Guy"
+  },
+  "template_name": "my template 1",
+  "placed_on": "12/26/2019",
+  "billing_address": {
+    "address3": "addr line 3",
+    "address4": "addr line 4",
+    "address5": "addr line 5",
+    "city": "Some City",
+    "state": "California",
+    "country": "United States",
+    "address1": "75 example dr",
+    "address2": "addr line 2",
+    "zipcode": "78456",
+    "note": "vendor address note",
+    "phone":"+1 2345678999"
+},
+"shipping_address": {
+    "address3": "addr line 3",
+    "address4": "addr line 4",
+    "address5": "addr line 5",
+    "city": "Some City",
+    "state": "California",
+    "country": "United States",
+    "address1": "75 example dr",
+    "address2": "addr line 2",
+    "zipcode": "78456",
+    "note": "ship address note",
+    "phone": "1234567890"
+},
+  "is_pending": "false",
+  "check_number": "90",
+  "payment_method_name": "CASH",
+  "due_date": "12/31/2019",
+  "sales_rep_name": "FlowLink Admin",
+  "ship_date": "01/20/2020",
+  "shipping_method_name": "Fedex",
+  "fob": "what",
+  "item_sales_tax_name": "sales tax 10",
+  "memo": "Hi",
+  "customer_message_name": "Thanks",
+  "is_to_be_printed": "true",
+  "is_to_be_emailed": "true",
+  "is_tax_included": "false",
+  "customer_sales_tax_code_name": "555",
+  "deposit_to_account_name": "Undeposited Funds",
+  "other": "some value",
+  "exchange_rate": "0.1",
+  "external_guid": "35cb4e30-54e1-49f9-b5ce-4134799eb2c0",
+  "line_items": [
+    {
+      "product_id": "ABC Product",
+      "name": "description for ABC",
+      "quantity": 10,
+      "price": 110.00,
+      "inventory_site_name": "Site number one"
+    },
+    {
+      "product_id": "XYZ Product",
+      "name": "description for XYZ",
+      "quantity": 1,
+      "price": 49.00,
+      "inventory_site_name": "Site number two"
+    }
+  ]
+}

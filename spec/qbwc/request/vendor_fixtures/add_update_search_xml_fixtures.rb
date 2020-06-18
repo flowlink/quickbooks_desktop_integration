@@ -13,7 +13,7 @@ end
 def qbe_vendor_search_id
   <<~XML
     <VendorQueryRq requestID="12345">
-      <ListID>My ID</ListID>
+      <ListID>qbe-vendor-listid</ListID>
     </VendorQueryRq>
   XML
 end
@@ -32,7 +32,7 @@ def qbe_vendor_update
   <<~XML
     <VendorModRq requestID="12345">
       <VendorMod>
-        <ListID>12345</ListID>
+        <ListID>qbe-vendor-listid</ListID>
         <EditSequence>1010101</EditSequence>
         #{qbe_vendor_innards(true)}
       </VendorMod>
@@ -41,10 +41,17 @@ def qbe_vendor_update
 end
 
 def qbe_vendor_innards(is_mod)
+  external_guid = is_mod ? "" : "<ExternalGUID>{71562455-3E41-42CA-9377-9A26597C1BD0}</ExternalGUID>"
+
   contact_open = is_mod ? "<ContactsMod>" : "<Contacts>"
   contact_closed = is_mod ? "</ContactsMod>" : "</Contacts>"
+
   add_notes_open = is_mod ? "<AdditionalNotesMod><NoteID>1</NoteID>" : "<AdditionalNotes>"
   add_notes_closed = is_mod ? "</AdditionalNotesMod>" : "</AdditionalNotes>"
+
+  open_balance = is_mod ? "" : "<OpenBalance>2500</OpenBalance>"
+  open_balance_date = is_mod ? "" : "<OpenBalanceDate>2019-11-01T13:22:02.718+00:00</OpenBalanceDate>"
+
   <<~XML
     <Name>First Last</Name>
     <IsActive>true</IsActive>
@@ -52,7 +59,7 @@ def qbe_vendor_innards(is_mod)
     <CompanyName>some company</CompanyName>
     <Salutation>Mr</Salutation>
     <FirstName>First</FirstName>
-    <MiddleName>middlename</MiddleName>
+    <MiddleName></MiddleName>
     <LastName>Last</LastName>
     <JobTitle>Developer</JobTitle>
     <VendorAddress>
@@ -81,7 +88,6 @@ def qbe_vendor_innards(is_mod)
     </ShipAddress>
     <Phone>+1 2345678999</Phone>
     <AltPhone>1234567890</AltPhone>
-    <Fax>1234</Fax>
     <Email>test@aol.com</Email>
     <Cc>some_email@test.com</Cc>
     <Contact>My Contact friend</Contact>
@@ -115,6 +121,7 @@ def qbe_vendor_innards(is_mod)
     <MiddleName>F</MiddleName>
     <LastName>Doe</LastName>
     <JobTitle>Doctor</JobTitle>
+    <AdditionalContactRef />
     #{contact_closed}
     <NameOnCheck>First M Last</NameOnCheck>
     <AccountNumber>11111</AccountNumber>
@@ -125,10 +132,10 @@ def qbe_vendor_innards(is_mod)
     <CreditLimit>10000</CreditLimit>
     <VendorTaxIdent>1</VendorTaxIdent>
     <IsVendorEligibleFor1099>false</IsVendorEligibleFor1099>
-    <OpenBalance>2500</OpenBalance>
-    <OpenBalanceDate>2019-11-01T13:22:02.718+00:00</OpenBalanceDate>
+    #{open_balance}
+    #{open_balance_date}
     <BillingRateRef><FullName>billing_rate_reference</FullName></BillingRateRef>
-    <ExternalGUID>1234</ExternalGUID>
+    #{external_guid}
     <SalesTaxCodeRef><FullName>sales_tax_code_reference</FullName></SalesTaxCodeRef>
     <SalesTaxCountry>US</SalesTaxCountry>
     <IsSalesTaxAgency>false</IsSalesTaxAgency>

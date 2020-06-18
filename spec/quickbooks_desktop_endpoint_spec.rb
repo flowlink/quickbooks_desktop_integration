@@ -1,21 +1,23 @@
 require 'spec_helper'
+require 'pp'
 
 describe QuickbooksDesktopEndpoint do
   it 'sends product to be persisted in s3' do
     headers = auth.merge('HTTP_X_HUB_STORE' => '54591b3a5869632afc090000')
     request = {
-      product: Factory.product_single,
-      parameters: {
+      'product' => Factory.product_single,
+      'parameters' => {
         'quickbooks_income_account'    => 'Inventory Asset',
         'quickbooks_cogs_account'      => 'Inventory Asset',
-        'quickbooks_inventory_account' => 'Inventory Asset'
+        'quickbooks_inventory_account' => 'Inventory Asset',
+        'payload_type'      => 'products'
       }
     }
 
     VCR.use_cassette 'products/32425454354353' do
       post '/add_products', request.to_json, headers
-      expect(json_response[:summary]).to match 'waiting for'
       expect(last_response.status).to be 200
+      expect(body['summary']).to eq 'Products waiting for Quickbooks Desktop scheduler'
     end
   end
 

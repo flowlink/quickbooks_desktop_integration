@@ -155,7 +155,11 @@ module QBWC
           object['credit_lines'] = credit_lines
           object['debit_lines'] = debit_lines
           
-          object["transaction_date"] = Time.parse(initial_object['journal_date']).to_date.to_s
+          object["transaction_date"] = nil
+          if initial_object['journal_date'] && initial_object['journal_date'] != ""
+            object["transaction_date"] = Time.parse(initial_object['journal_date']).to_date.to_s
+          end
+          
           object["is_mod"] = is_mod
 
           object
@@ -209,14 +213,17 @@ module QBWC
         def add_basic_xml(object, mapping)
           flowlink_field = object[mapping[:flowlink_name]]
           qbe_field_name = mapping[:qbe_name]
-          float_fields = ['price', 'cost']
+          float_fields = ['price', 'cost', 'amount']
 
           return '' if flowlink_field.nil?
 
-          flowlink_field = '%.2f' % flowlink_field.to_f if float_fields.include?(mapping[:flowlink_name])
+          if flowlink_field != "" && float_fields.include?(mapping[:flowlink_name])
+            flowlink_field = '%.2f' % flowlink_field.to_f
+          end
 
           "<#{qbe_field_name}>#{flowlink_field}</#{qbe_field_name}>"
         end
+
 
         def add_ref_xml(object, mapping, config)
           flowlink_field = object[mapping[:flowlink_name]]
@@ -229,7 +236,8 @@ module QBWC
                                 config[mapping[:flowlink_name].to_sym] ||
                                 config["quickbooks_#{mapping[:flowlink_name]}".to_sym]
 
-          full_name.nil? ? "" : "<#{qbe_field_name}><FullName>#{full_name}</FullName></#{qbe_field_name}>"
+          return '' if full_name.nil?
+          "<#{qbe_field_name}><FullName>#{full_name}</FullName></#{qbe_field_name}>"
         end
       end
     end

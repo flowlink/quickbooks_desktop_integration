@@ -1,3 +1,23 @@
+def qbe_product_search_name
+  <<~XML
+    <ItemInventoryQueryRq requestID="12345">
+      <MaxReturned>10000</MaxReturned>
+      <NameRangeFilter>
+        <FromName>My Awesome Product</FromName>
+        <ToName>My Awesome Product</ToName>
+      </NameRangeFilter>
+    </ItemInventoryQueryRq>
+  XML
+end
+
+def qbe_product_search_id
+  <<~XML
+    <ItemInventoryQueryRq requestID="12345">
+      <ListID>test product listid</ListID>
+    </ItemInventoryQueryRq>
+  XML
+end
+
 def add_xml
   <<~XML
     <ItemInventoryAddRq requestID="12345">

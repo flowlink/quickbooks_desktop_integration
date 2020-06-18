@@ -98,11 +98,8 @@ module QBWC
         end
 
         def polling_current_items_xml(params, config)
-          timestamp = params
-          timestamp = params['quickbooks_since'] if params['return_all']
-
+          timestamp = params['quickbooks_since']
           session_id = Persistence::Session.save(config, 'polling' => timestamp) 
-
           time = Time.parse(timestamp).in_time_zone 'Pacific Time (US & Canada)'
 
           <<~XML
@@ -115,8 +112,7 @@ module QBWC
         end
 
         def query_by_date(config, time)
-          puts "Customer config for polling: #{config}"
-          return '' if config['return_all']
+          return '' if config['return_all'].to_i == 1
 
           <<~XML
             <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
@@ -130,9 +126,6 @@ module QBWC
             config = { connection_id: params['connection_id'] }.with_indifferent_access
             session_id = Persistence::Session.save(config, object)
 
-            puts "Customer object: #{object}"
-            puts "Customer object list id: #{object['list_id']}"
-
             if object['list_id'].to_s.empty?
               request << search_xml_by_name(object['name'], session_id)
             else
@@ -144,8 +137,6 @@ module QBWC
         end
 
         def search_xml_by_id(object_id, session_id)
-          puts "Building customer xml by list_id #{object_id}, #{session_id}"
-
           <<~XML
             <CustomerQueryRq requestID="#{session_id}">
               <ListID>#{object_id}</ListID>
@@ -154,8 +145,6 @@ module QBWC
         end
 
         def search_xml_by_name(object_id, session_id)
-          puts "Building customer xml by name #{object_id}, #{session_id}"
-
           <<~XML
             <CustomerQueryRq requestID="#{session_id}">
               <MaxReturned>50</MaxReturned>
@@ -196,28 +185,36 @@ module QBWC
 
           <<~XML
             #{add_fields(object, MAPPING_ONE, config, is_mod)}
-            <BillAddress>
-              #{add_fields(object['billing_address'], ADDRESS_MAP, config, is_mod) if object['billing_address']}
-            </BillAddress>
-            <ShipAddress>
-              #{add_fields(object['shipping_address'], ADDRESS_MAP, config, is_mod) if object['shipping_address']}
-            </ShipAddress>
-            #{ship_to_address(object, config, is_mod)}
+            #{address(object['billing_address'], config, is_mod, "BillAddress")}
+            #{address(object['shipping_address'], config, is_mod, "ShipAddress")}
+            #{ship_to_address(object['ship_to_address'], config, is_mod)}
             #{add_fields(object, MAPPING_TWO, config, is_mod)}
-            #{additional_contacts(object)}
-            #{contacts(object, config, is_mod)}
+            #{additional_contacts(object['additional_contacts'])}
+            #{contacts(object['contacts'], config, is_mod)}
             #{add_fields(object, MAPPING_THREE, config, is_mod)}
-            #{additional_notes(object, is_mod)}
+            #{additional_notes(object['additional_notes'], is_mod)}
             #{add_fields(object, MAPPING_FOUR, config, is_mod)}
           XML
         end
 
-        def ship_to_address(object, config, is_mod)
-          return "" unless object['ship_to_address'] && object['ship_to_address'].is_a?(Array)
+        def address(addr, config, is_mod, address_name)
+          return "" if addr.nil?
+          return "<#{address_name} />" unless addr.is_a?(Hash) && !addr.empty?
 
-          object['ship_to_address'] = object['ship_to_address'][0...50] if object['ship_to_address'].length > 50
+          <<~XML
+            <#{address_name}>
+              #{add_fields(addr, ADDRESS_MAP, config, is_mod)}
+            </#{address_name}>
+          XML
+        end
+
+        def ship_to_address(ship_to, config, is_mod)
+          return "" if ship_to.nil?
+          return "<ShipToAddress />" unless ship_to.is_a?(Array) && !ship_to.empty?
+
+          ship_to = ship_to[0...50] if ship_to.length > 50
           fields = ""
-          object['ship_to_address'].each do |addr|
+          ship_to.each do |addr|
             default_ship_to = addr['default_ship_to'] == true ? true : false
 
             fields += "<ShipToAddress>"
@@ -230,11 +227,12 @@ module QBWC
           fields
         end
 
-        def additional_contacts(object)
-          return "" unless object['additional_contacts'] && object['additional_contacts'].is_a?(Array)
-          
+        def additional_contacts(contacts)
+          return "" if contacts.nil?
+          return "<AdditionalContactRef />" unless contacts.is_a?(Array) && !contacts.empty?
+
           fields = ""
-          object['additional_contacts'].each do |contact|
+          contacts.each do |contact|
             # Both name and value required
             next unless contact['name'] && contact['value']
               fields += "<AdditionalContactRef>"
@@ -246,11 +244,12 @@ module QBWC
           fields
         end
 
-        def additional_notes(object, is_mod)
-          return "" unless object['additional_notes'] && object['additional_notes'].is_a?(Array)
+        def additional_notes(notes, is_mod)
+          return "" if notes.nil?
+          return is_mod ? "<AdditionalNotesMod />" : "<AdditionalNotes />" unless notes.is_a?(Array) && !notes.empty?
           
           fields = ""
-          object['additional_notes'].each do |note|
+          notes.each do |note|
             next unless note && note['note']
 
             fields += is_mod ? "<AdditionalNotesMod>" : "<AdditionalNotes>"
@@ -262,14 +261,15 @@ module QBWC
           fields
         end
 
-        def contacts(object, config, is_mod)
-          return "" unless object['contacts'] && object['contacts'].is_a?(Array)
+        def contacts(contacts, config, is_mod)
+          return "" if contacts.nil?
+          return is_mod ? "<ContactsMod />" : "<Contacts />" unless contacts.is_a?(Array) && !contacts.empty?
           
           fields = ""
-          object['contacts'].each do |contact|
+          contacts.each do |contact|
             fields += is_mod ? "<ContactsMod>" : "<Contacts>"
             fields += add_fields(contact, CONTACTS_MAP, config, is_mod)
-            fields += additional_contacts(contact)
+            fields += additional_contacts(contact['additional_contacts'])
             fields += is_mod ? "</ContactsMod>" : "</Contacts>"
           end
 
@@ -280,16 +280,6 @@ module QBWC
           object = initial_object
 
           object['is_active'] = true unless object['is_active'] == false
-          object['firstname'] = object['firstname'] || object['name'].to_s.split.first
-          object['lastname'] = object['lastname'] || object['name'].to_s.split.last
-
-          unless object['phone'] || object['phone'] == ''
-            object['phone'] = object['billing_address']['phone'] if object['billing_address']
-          end
-          
-          unless object['mobile'] || object['mobile'] == ''
-            object['mobile'] = object['shipping_address']['phone'] if object['shipping_address']
-          end
 
           object['preferred_delivery_method'] = nil unless DELIVERY_METHODS.include?(object['preferred_delivery_method'])
           object['job_status'] = nil unless JOB_STATUSES.include?(object['job_status'])
@@ -321,7 +311,9 @@ module QBWC
 
           return '' if flowlink_field.nil?
 
-          flowlink_field = '%.2f' % flowlink_field.to_f if float_fields.include?(mapping[:flowlink_name])
+          if flowlink_field != "" && float_fields.include?(mapping[:flowlink_name])
+            flowlink_field = '%.2f' % flowlink_field.to_f
+          end
 
           "<#{qbe_field_name}>#{flowlink_field}</#{qbe_field_name}>"
         end
@@ -337,7 +329,8 @@ module QBWC
                                 config[mapping[:flowlink_name].to_sym] ||
                                 config["quickbooks_#{mapping[:flowlink_name]}".to_sym]
 
-          full_name.nil? ? "" : "<#{qbe_field_name}><FullName>#{full_name}</FullName></#{qbe_field_name}>"
+          return '' if full_name.nil?
+          "<#{qbe_field_name}><FullName>#{full_name}</FullName></#{qbe_field_name}>"
         end
 
         def sanitize_customer(customer)

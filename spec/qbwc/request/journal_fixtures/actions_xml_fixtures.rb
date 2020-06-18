@@ -17,7 +17,7 @@ def qbe_journal_add
           <AccountRef>
               <FullName>NuRelm Commission Receivable</FullName>
           </AccountRef>
-          <Amount>200.0</Amount>
+          <Amount>200.00</Amount>
           <Memo>Testing a journal entry here 1</Memo>
           <EntityRef>
             <FullName>My Customer</FullName>
@@ -92,7 +92,7 @@ def qbe_journal_update
           <AccountRef>
               <FullName>NuRelm Commission Receivable</FullName>
           </AccountRef>
-          <Amount>200.0</Amount>
+          <Amount>200.00</Amount>
           <Memo>Testing a journal entry here 1</Memo>
           <EntityRef>
             <FullName>My Customer</FullName>

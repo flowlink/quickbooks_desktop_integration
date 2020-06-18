@@ -45,11 +45,8 @@ module QBWC
         end
 
         def polling_current_items_xml(params, config)
-          timestamp = params
-          timestamp = params['quickbooks_since'] if params['return_all']
-
+          timestamp = params['quickbooks_since']
           session_id = Persistence::Session.save(config, 'polling' => timestamp)
-
           time = Time.parse(timestamp).in_time_zone 'Pacific Time (US & Canada)'
 
           <<~XML
@@ -64,7 +61,6 @@ module QBWC
         end
 
         def query_by_date(config, time)
-          puts "Invoices config for polling: #{config}"
           return query_by_txn_date(config, time) if config['return_all']
 
           <<~XML
@@ -96,6 +92,7 @@ module QBWC
             <InvoiceAddRq requestID="#{session_id}">
               <InvoiceAdd>
                 #{invoice record, params}
+                #{external_guid(record)}
                 #{items(record).map { |l| invoice_line_add l }.join('')}
                 #{adjustments_add_xml record, params}
               </InvoiceAdd>
@@ -166,6 +163,14 @@ module QBWC
             #{shipping_method(record)}
             #{is_to_be_printed(record)}
             #{is_to_be_emailed(record)}
+          XML
+        end
+
+        def external_guid(record)
+          return '' unless record['external_guid']
+
+          <<~XML
+          <ExternalGUID>#{record['external_guid']}</ExternalGUID>
           XML
         end
 
@@ -291,7 +296,7 @@ module QBWC
         def invoice_line_mod(line)
           <<~XML
             <InvoiceLineMod>
-              <TxnLineID>#{line['txn_line_id']}</TxnLineID>
+              <TxnLineID>#{line['txn_line_id'] || -1}</TxnLineID>
               #{invoice_line(line)}
             </InvoiceLineMod>
           XML
@@ -308,6 +313,8 @@ module QBWC
           line['tax_code_id'] = adjustment['tax_code_id'] if adjustment['tax_code_id']
           line['amount'] = adjustment['amount'] if adjustment['amount']
 
+          line['use_amount'] = true if params['use_amount_for_tax'].to_s == "1"
+          
           invoice_line_mod line
         end
 
@@ -331,9 +338,10 @@ module QBWC
             <Desc>#{line['name']}</Desc>
             #{quantity(line)}
             #{rate_line(line)}
+            #{class_ref_for_receipt_line(line)}
             #{amount_line(line)}
-            #{tax_code_line(line)}
             #{inventory_site(line)}
+            #{tax_code_line(line)}
           XML
         end
 
@@ -346,6 +354,18 @@ module QBWC
             </InventorySiteRef>
           XML
         end
+
+        
+        def class_ref_for_receipt_line(line)
+          return '' unless line['class_name']
+
+          <<~XML
+            <ClassRef>
+              <FullName>#{line['class_name']}</FullName>
+            </ClassRef>
+          XML
+        end
+
 
         def quantity(line)
           return '' if line['quantity'].to_f == 0.0
@@ -362,6 +382,8 @@ module QBWC
             </SalesTaxCodeRef>
           XML
         end
+
+
 
         def rate_line(line)
           return '' if !line['amount'].to_s.empty? || line['use_amount'] == true
@@ -431,7 +453,7 @@ module QBWC
         # If the quickbooks_use_tax_line_items is set, then don't include tax from the adjustments object, and instead
         # use tax_line_items if it exists.
         def adjustments_add_xml(record, params)
-          puts "record is #{record}"
+          puts "In 'adjustments_add_xml' - record is #{record}"
           final_adjustments = []
           use_tax_line_items = !params['quickbooks_use_tax_line_items'].nil? &&
                                params['quickbooks_use_tax_line_items'] == '1' &&
