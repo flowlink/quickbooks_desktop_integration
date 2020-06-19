@@ -251,6 +251,13 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
   end
 
   def add_return_attributes_to_return_payload
+    puts "*" * 81
+    puts 'add_return_attributes_to_return_payload'
+    puts "*" * 81
+    puts @payload.inspect
+    puts "*" * 81
+    puts object_type
+    puts "*" * 81
     @return_payload = @payload[object_type][:return_to_fl] if @payload[object_type][:return_to_fl].is_a?(Hash)
   end
 
