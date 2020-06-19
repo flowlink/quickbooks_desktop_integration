@@ -44,6 +44,9 @@ module QBWC
         params = record.values.first
 
         klass = "QBWC::Request::#{object_type.capitalize}".constantize
+        puts "*" * 81
+        puts klass.inspect
+        puts "*" * 81
 
         string << klass.polling_others_items_xml(params['quickbooks_since'], @config)
         string << klass.polling_current_items_xml(params, @config)
