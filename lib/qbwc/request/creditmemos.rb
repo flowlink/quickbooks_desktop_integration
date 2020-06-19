@@ -63,6 +63,15 @@ module QBWC
 
         private
 
+        def query_by_date(config, time)
+          return '' if config['return_all'].to_i == 1
+
+          <<~XML
+            <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
+          XML
+        end
+
+
         def add_xml_to_send(object, params, session_id, config)
         end
 
