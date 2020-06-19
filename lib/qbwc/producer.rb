@@ -43,6 +43,7 @@ module QBWC
         object_type = record.keys.first
         params = record.values.first
 
+        puts 'in build_polling_request'
         klass = "QBWC::Request::#{object_type.capitalize}".constantize
         puts "*" * 81
         puts klass.inspect

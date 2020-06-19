@@ -1,6 +1,6 @@
 module QBWC
   module Request
-    class Creditmemo
+    class Creditmemos
       GENERAL_MAPPING = [
         {qbe_name: "ClassRef", flowlink_name: "class_name", is_ref: true},
         {qbe_name: "ParentRef", flowlink_name: "parent_name", is_ref: true},
