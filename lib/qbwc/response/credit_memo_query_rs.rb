@@ -102,7 +102,7 @@ module QBWC
               note: record.dig('ShipAddress', 'Note')
             }.compact,
             class_name: record.dig('ClassRef', 'FullName'),
-            customer: record.dig('CustomerRef', 'FullName'),
+            customer_name: record.dig('CustomerRef', 'FullName'),
             ar_account: record.dig('ARAccountRef', 'FullName'),
             template: record.dig('TemplateRef', 'FullName'),
             is_pending: record['IsPending'],
