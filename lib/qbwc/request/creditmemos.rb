@@ -69,6 +69,7 @@ module QBWC
               <CreditMemoAdd>
                 #{creditmemo object, params, false}
                 #{external_guid(object)}
+                #{items(object).map { |l| credit_memo_line_add l }.join('')}
               </CreditMemoAdd>
             </CreditMemoAddRq>
           XML
@@ -82,6 +83,7 @@ module QBWC
                 <EditSequence>#{object['edit_sequence']}</EditSequence>
                 #{creditmemo object, params, false}
                 #{external_guid(object)}
+                #{items(object).map { |l| credit_memo_line_mod l }.join('')}
               </CreditMemoMod>
             </CreditMemoModRq>
           XML
@@ -146,6 +148,10 @@ module QBWC
           fields
         end
 
+        def items(record)
+          record['line_items'].to_a.sort_by { |a| a['product_id'] }
+        end
+
         def add_basic_xml(object, mapping)
           flowlink_field = object[mapping[:flowlink_name]]
           qbe_field_name = mapping[:qbe_name]
@@ -171,6 +177,97 @@ module QBWC
 
           return '' if full_name.nil? || full_name == ""
           "<#{qbe_field_name}><FullName>#{full_name}</FullName></#{qbe_field_name}>"
+        end
+
+        def credit_memo_line_add(line)
+          <<~XML
+            <CreditMemoLineAdd>
+              #{credit_memo_line(line)}
+            </CreditMemoLineAdd>
+          XML
+        end
+
+        def credit_memo_line_mod(line)
+          <<~XML
+            <CreditMemoLineMod>
+              <TxnLineID>#{line['txn_line_id'] || -1}</TxnLineID>
+              #{credit_memo_line(line)}
+            </CreditMemoLineMod>
+          XML
+        end
+
+        def credit_memo_line(line)
+          <<~XML
+            <ItemRef>
+              <FullName>#{line['product_id']}</FullName>
+            </ItemRef>
+            <Desc>#{line['name']}</Desc>
+            #{quantity(line)}
+            #{rate_line(line)}
+            #{class_ref_for_credit_memo_line(line)}
+            #{amount_line(line)}
+            #{inventory_site(line)}
+            #{tax_code_line(line)}
+          XML
+        end
+
+        def quantity(line)
+          return '' if line['quantity'].to_f == 0.0
+
+          "<Quantity>#{line['quantity']}</Quantity>"
+        end
+
+        def rate_line(line)
+          return '' if !line['amount'].to_s.empty? || line['use_amount'] == true
+
+          <<~XML
+            <Rate>#{'%.2f' % price(line).to_f}</Rate>
+          XML
+        end
+
+        def class_ref_for_credit_memo_line(line)
+          return '' unless line['class_name']
+
+          <<~XML
+            <ClassRef>
+              <FullName>#{line['class_name']}</FullName>
+            </ClassRef>
+          XML
+        end
+
+        def amount_line(line)
+          return '' if rate_line(line) != ''
+
+          amount = line['amount'] || price(line)
+          return '' unless amount
+
+          <<~XML
+            <Amount>#{'%.2f' % amount.to_f}</Amount>
+          XML
+        end
+
+        def inventory_site(line)
+          return '' unless line['inventory_site_name']
+
+          <<~XML
+            <InventorySiteRef>
+              <FullName>#{line['inventory_site_name']}</FullName>
+            </InventorySiteRef>
+          XML
+        end
+
+        def tax_code_line(line)
+          return '' if line['tax_code_id'].to_s.empty?
+
+          <<~XML
+            <SalesTaxCodeRef>
+              <FullName>#{line['tax_code_id']}</FullName>
+            </SalesTaxCodeRef>
+          XML
+        end
+
+        def price(line)
+          line['line_item_price'] || line['price']
         end
 
       end

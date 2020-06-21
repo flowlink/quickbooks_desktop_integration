@@ -60,5 +60,32 @@
     "phone": "555-555-1212"
   },
   "list_id": "list-1234",
+  "line_items": [
+    {
+      "sku": "cold-brew",
+      "product_id": "cold-brew",
+      "cost": 0.0,
+      "name": "Cold brew",
+      "image": null,
+      "price": 0.0,
+      "promo": 0,
+      "sysid": 172713,
+      "status": "ACTIVE",
+      "costMAP": 0.0,
+      "costMSRP": 0.0,
+      "discount": 0,
+      "quantity": 2,
+      "subtotal": 7,
+      "childItems": [
+
+      ],
+      "isArchived": false,
+      "unitWeight": 0.8,
+      "dateCreated": 1580841865.488999,
+      "customFields": "[]",
+      "dateModified": 1580841865.490677,
+      "weightMeasure": "oz"
+    }
+  ],
   "object_type": "creditmemos"
 }
