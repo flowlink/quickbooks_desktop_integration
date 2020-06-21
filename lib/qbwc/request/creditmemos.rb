@@ -37,11 +37,11 @@ module QBWC
             puts 'object'
             puts object.inspect
             puts '*' * 81
-            # if object['list_id'].to_s.empty?
-            #   request << search_xml_by_name(object['name'], session_id)
-            # else
+            if object['list_id'] && object['list_id'].to_s.empty?
+              request << search_xml_by_name(object['id'], session_id)
+            else
               request << search_xml_by_id(object['list_id'], session_id)
-            # end
+            end
           end
         end
 
