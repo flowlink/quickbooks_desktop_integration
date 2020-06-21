@@ -30,11 +30,18 @@ module QBWC
             config = { connection_id: params['connection_id'] }.with_indifferent_access
             session_id = Persistence::Session.save(config, object)
 
-            if object['list_id'].to_s.empty?
-              request << search_xml_by_name(object['name'], session_id)
-            else
+            puts '*' * 81
+            puts "#generate_request_queries"
+            puts 'params'
+            puts params.inspect
+            puts 'object'
+            puts object.inspect
+            puts '*' * 81
+            # if object['list_id'].to_s.empty?
+            #   request << search_xml_by_name(object['name'], session_id)
+            # else
               request << search_xml_by_id(object['id'], session_id)
-            end
+            # end
           end
         end
 
