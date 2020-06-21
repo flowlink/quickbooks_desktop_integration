@@ -24,6 +24,16 @@ module QBWC
         receive_configs = config[:receive] || []
         credit_params = receive_configs.find { |c| c['creditmemos'] }
 
+        puts '*' * 81
+        puts 'config'
+        puts config.inspect
+        puts '*' * 81
+        puts 'receive_configs'
+        puts receive_configs.inspect
+        puts '*' * 81
+        puts 'credit_params'
+        puts credit_params.inspect
+
         if credit_params
           payload = { creditmemos: to_flowlink }
           config = { origin: 'quickbooks' }.merge config.reject{|k,v| k == :origin || k == 'origin'}
