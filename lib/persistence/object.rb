@@ -673,7 +673,9 @@ module Persistence
       elsif payload_key.pluralize == 'creditmemos'
 
         if !use_customer_email_param
-          customer = QBWC::Request::Orders.build_customer_from_order(object)
+          object_dup = object.dup
+          object_dup['list_id'] = nil
+          customer = QBWC::Request::Orders.build_customer_from_order(object_dup)
           save_pending_file(customer['name'], 'customers', customer)
         end
 
