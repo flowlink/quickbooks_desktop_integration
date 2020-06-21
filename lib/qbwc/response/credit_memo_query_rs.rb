@@ -70,7 +70,9 @@ module QBWC
         records.map do |record|
           {
             object_type: 'creditmemos',
+            id: record['TxnID'],
             transaction_id: record['TxnID'],
+            list_id: record['TxnID'],
             transaction_number: record['TxnNumber'],
             edit_sequence: record['EditSequence']
           }
