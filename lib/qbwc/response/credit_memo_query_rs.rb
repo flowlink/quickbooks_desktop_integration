@@ -17,6 +17,8 @@ module QBWC
       end
 
       def process(config)
+        puts '*' * 81
+        puts 'CreditMemoQueryRs#process'
         return if records.empty?
 
         receive_configs = config[:receive] || []
@@ -38,10 +40,16 @@ module QBWC
           Persistence::Settings.new(params.with_indifferent_access).setup
         end
 
+        puts '*' * 81
         config  = config.merge(origin: 'flowlink', connection_id: config[:connection_id]).with_indifferent_access
+        puts 'config'
+        puts config.inspect
         objects_updated = objects_to_update
+        puts 'objects_updated'
+        puts objects_updated.inspect
 
         Persistence::Object.new(config, {}).update_objects_with_query_results(objects_updated)
+        puts '*' * 81
 
         nil
       end
