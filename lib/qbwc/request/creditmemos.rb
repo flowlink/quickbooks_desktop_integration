@@ -2,6 +2,7 @@ module QBWC
   module Request
     class Creditmemos
       GENERAL_MAPPING = [
+        {qbe_name: "CustomerRef", flowlink_name: "customer_name", is_ref: true},
         {qbe_name: "ClassRef", flowlink_name: "class_name", is_ref: true},
         {qbe_name: "ParentRef", flowlink_name: "parent_name", is_ref: true},
         {qbe_name: "IsTaxIncluded", flowlink_name: "is_tax_included", is_ref: false},
@@ -61,21 +62,29 @@ module QBWC
 
         end
 
-        private
 
-        def query_by_date(config, time)
-          return '' if config['return_all'].to_i == 1
-
+        def add_xml_to_send(object, params, session_id, config)
           <<~XML
-            <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
+            <CreditMemoAddRq requestID="#{session_id}">
+              <CreditMemoAdd>
+                #{creditmemo object, params, false}
+                #{external_guid(object)}
+              </CreditMemoAdd>
+            </CreditMemoAddRq>
           XML
         end
 
-
-        def add_xml_to_send(object, params, session_id, config)
-        end
-
         def update_xml_to_send(object, params, session_id, config)
+          <<~XML
+            <CreditMemoModRq requestID="#{session_id}">
+              <CreditMemoMod>
+                <TxnID>#{object['list_id']}</TxnID>
+                <EditSequence>#{object['edit_sequence']}</EditSequence>
+                #{creditmemo object, params, false}
+                #{external_guid(object)}
+              </CreditMemoMod>
+            </CreditMemoModRq>
+          XML
         end
 
         def search_xml_by_name(identifier, session_id)
@@ -89,6 +98,79 @@ module QBWC
               <IncludeLinkedTxns>true</IncludeLinkedTxns>
             </CreditMemoQueryRq>
           XML
+        end
+
+        private
+
+        def external_guid(record)
+          return '' unless record['external_guid']
+
+          <<~XML
+          <ExternalGUID>#{record['external_guid']}</ExternalGUID>
+          XML
+        end
+
+        def query_by_date(config, time)
+          return '' if config['return_all'].to_i == 1
+
+          <<~XML
+            <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
+          XML
+        end
+
+        def creditmemo(record, params, is_mod)
+          puts "Building creditmemo XML for #{record}"
+          if record['placed_on'].nil? || record['placed_on'].empty?
+            record['placed_on'] = Time.now.to_s
+          end
+
+          <<~XML
+            #{add_fields(record, GENERAL_MAPPING, params, is_mod)}
+          XML
+        end
+
+        def add_fields(object, mapping, config, is_mod)
+          object = object.with_indifferent_access
+          fields = ""
+          mapping.each do |map_item|
+            next if map_item[:mod_only] && map_item[:mod_only] != is_mod
+            next if map_item[:add_only] && map_item[:add_only] == is_mod
+
+            if map_item[:is_ref]
+              fields += add_ref_xml(object, map_item, config)
+            else
+              fields += add_basic_xml(object, map_item)
+            end
+          end
+
+          fields
+        end
+
+        def add_basic_xml(object, mapping)
+          flowlink_field = object[mapping[:flowlink_name]]
+          qbe_field_name = mapping[:qbe_name]
+          float_fields = ['price', 'cost']
+
+          return '' if flowlink_field.nil? || flowlink_field == ""
+
+          flowlink_field = '%.2f' % flowlink_field.to_f if float_fields.include?(mapping[:flowlink_name])
+
+          "<#{qbe_field_name}>#{flowlink_field}</#{qbe_field_name}>"
+        end
+
+        def add_ref_xml(object, mapping, config)
+          flowlink_field = object[mapping[:flowlink_name]]
+          qbe_field_name = mapping[:qbe_name]
+
+          if flowlink_field.respond_to?(:has_key?) && flowlink_field['list_id']
+            return "<#{qbe_field_name}><ListID>#{flowlink_field['list_id']}</ListID></#{qbe_field_name}>"
+          end
+          full_name = flowlink_field ||
+                                config[mapping[:flowlink_name].to_sym] ||
+                                config["quickbooks_#{mapping[:flowlink_name]}".to_sym]
+
+          return '' if full_name.nil? || full_name == ""
+          "<#{qbe_field_name}><FullName>#{full_name}</FullName></#{qbe_field_name}>"
         end
 
       end
