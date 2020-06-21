@@ -17,6 +17,22 @@ module QBWC
             config = { connection_id: params['connection_id'] }.with_indifferent_access
             session_id = Persistence::Session.save(config, object)
 
+            puts '*' * 81
+            puts "#generate_request_insert_update"
+            puts 'session_id'
+            puts session_id.inspect
+            puts 'params'
+            puts params.inspect
+            puts 'config'
+            puts config.inspect
+            puts 'object'
+            puts object.inspect
+            puts 'if list_id'
+            puts object['list_id']
+            puts object['list_id'].to_s
+            puts object['list_id'].to_s.empty?
+            puts '*' * 81
+
             request << if object['list_id'].to_s.empty?
                          add_xml_to_send(object, params, session_id, config)
                        else
@@ -29,14 +45,6 @@ module QBWC
           objects.inject('') do |request, object|
             config = { connection_id: params['connection_id'] }.with_indifferent_access
             session_id = Persistence::Session.save(config, object)
-
-            puts '*' * 81
-            puts "#generate_request_queries"
-            puts 'params'
-            puts params.inspect
-            puts 'object'
-            puts object.inspect
-            puts '*' * 81
             if object['list_id'] && object['list_id'].to_s.empty?
               request << search_xml_by_name(object['id'], session_id)
             else
