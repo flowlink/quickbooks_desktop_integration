@@ -97,12 +97,19 @@ module QBWC
         end
 
         def search_xml_by_name(identifier, session_id)
+          <<~XML
+            <CreditMemoQueryRq requestID="#{session_id}">
+              <RefNumberCaseSensitive>#{list_id}</RefNumberCaseSensitive>
+              <IncludeLineItems>true</IncludeLineItems>
+              <IncludeLinkedTxns>true</IncludeLinkedTxns>
+            </CreditMemoQueryRq>
+          XML
         end
 
         def search_xml_by_id(list_id, session_id)
           <<~XML
             <CreditMemoQueryRq requestID="#{session_id}">
-              <RefNumberCaseSensitive>#{list_id}</RefNumberCaseSensitive>
+              <TxnID>#{list_id}</TxnID>
               <IncludeLineItems>true</IncludeLineItems>
               <IncludeLinkedTxns>true</IncludeLinkedTxns>
             </CreditMemoQueryRq>
