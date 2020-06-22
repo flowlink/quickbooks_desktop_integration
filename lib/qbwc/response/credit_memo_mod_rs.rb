@@ -21,10 +21,6 @@ module QBWC
 
         memos = []
         records.each do |object|
-          puts "*" * 81
-          puts "object in process"
-          puts object.inspect
-          puts "*" * 81
           memos << { 
             creditmemos: {
               id: object['TxnId'],
@@ -32,23 +28,33 @@ module QBWC
               edit_sequence: object['EditSequence']
             }
           }
+          check_receive_payment(object)
         end
 
         Persistence::Object.update_statuses(config, memos)
+      end
 
-        # payment_config = {
-        # }
-        # payment_payload = {
-        #   parameters: {
-        #     payload_type: 'payment'
-        #   },
-        #   payment: {
-        #     invoice_txn_id: ''
-        #     amount: 1.4
-        #   }
-        # }
-        # integration = Persistence::Object.new(payment_config, payment_payload)
-        # integration.save
+      def check_receive_payment(obj)
+        # return '' unless obj['Other']
+        payment_config = {
+        }
+        payment_payload = {
+          parameters: {
+            payload_type: 'payment'
+          },
+          payment: {
+            id: "Memo-#{obj['RefNumber']}",
+            customer: {
+              name: obj['CustomerRef']['FullName']
+            },
+            invoice_txn_id: obj['TxnId'],
+            amount: obj['Amount'],
+            credit_amount: obj['Amount'],
+            credit_txn_id: obj['Other']
+          }
+        }
+        integration = Persistence::Object.new(payment_config, payment_payload)
+        integration.save
       end
 
 
