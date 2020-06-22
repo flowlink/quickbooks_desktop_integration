@@ -10,7 +10,6 @@ module QBWC
         {qbe_name: "PONumber", flowlink_name: "po_number", is_ref: false},
         {qbe_name: "Other", flowlink_name: "other", is_ref: false},
       ]
-      EXTERNAL_GUID_MAP = [{qbe_name: "ExternalGUID", flowlink_name: "external_guid", is_ref: false, add_only: true}]
 
       class << self
 
