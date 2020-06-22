@@ -41,6 +41,8 @@ module QBWC
         puts "*" * 81
         # return '' unless obj['Other']
         payment_config = {
+          quickbooks_customer_email: '1',
+          'quickbooks_customer_email' => '1'
         }
         payment_payload = {
           parameters: {
