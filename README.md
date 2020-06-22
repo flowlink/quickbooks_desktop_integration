@@ -51,6 +51,7 @@ The following webhooks are implemented:
 * **add_inventories**: Adds inventories to QuickBooks
 * **add_returns**: Adds returns to QuickBooks
 * **add_shipments**: Adds shipments to QuickBooks
+* **add_creditmemos**: Adds credit memos to QuickBooks (and apply them to an invoice)
 
 * **get_orders**: Gets orders from QuickBooks
 * **get_invoices**: Gets invoices from QuickBooks
@@ -133,6 +134,27 @@ When **adding** noninventory or service products, the block of either SalesOrPur
 When **modifying** noninventory or service products, these blocks are not required. If both `sales_and_purchase` and `sales_or_purchase` are set to true, SalesAndPurchase is still the default. If none are set, these blocks will be ignored.
 
 Some products do not allow modifying of the SalesOrPurchase and SalesAndPurchase block, so be sure you can modify when you send the request.
+
+### Adding Credit Memos
+
+You can add a credit memo easily by using the /add_creditmemos endpoint. This will create the credit memo, but won't apply it.
+
+You can automatically apply it to an invoice in QBE by utilizing the `other` field in the QBXML. `other` is used for:
+
+* Storing the invoice ID
+* Storing a dynamic payment method (If not given, defaults to "CASH")
+
+These values should be separated by 3 colons (:::)
+
+If you had a credit memo to be applied to the invoice with the ID: 192839 and you wanted the payment method to be "Credit Card", the payload should be:
+
+```ruby
+creditmemo: {
+  id: 1209102912,
+  other: "192839:::Credit Card",
+  # More fields...
+}
+```
 
 ## About FlowLink
 

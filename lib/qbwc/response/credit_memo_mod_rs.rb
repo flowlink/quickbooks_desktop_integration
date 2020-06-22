@@ -35,7 +35,9 @@ module QBWC
       end
 
       def check_receive_payment(obj, conf)
-        return '' unless obj['Other']
+				return '' unless obj['Other']
+				invoice_txn_id, payment_method = obj['Other'].split(':::')
+
         payment_config = conf.dup
         payment_config[:quickbooks_customer_email] = obj['CustomerRef']['FullName']
         payment_payload = {
@@ -48,9 +50,9 @@ module QBWC
             'customer' => {
               'name' => obj['CustomerRef']['FullName']
             },
-            'invoice_txn_id' => obj['Other'],
+            'invoice_txn_id' => invoice_txn_id,
             'amount' => obj['Subtotal'],
-            'payment_method' => 'CASH',
+            'payment_method' => payment_method || 'CASH',
             'credit_amount' => obj['Subtotal'],
             'credit_txn_id' => obj['TxnID']
           }
