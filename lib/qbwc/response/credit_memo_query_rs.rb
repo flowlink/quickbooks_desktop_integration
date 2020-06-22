@@ -52,7 +52,9 @@ module QBWC
         records.map do |record|
           {
             object_type: 'creditmemos',
+            id: record['TxnID'],
             transaction_id: record['TxnID'],
+            list_id: record['TxnID'],
             transaction_number: record['TxnNumber'],
             edit_sequence: record['EditSequence']
           }
@@ -102,14 +104,14 @@ module QBWC
               note: record.dig('ShipAddress', 'Note')
             }.compact,
             class_name: record.dig('ClassRef', 'FullName'),
-            customer: record.dig('CustomerRef', 'FullName'),
-            ar_account: record.dig('ARAccountRef', 'FullName')
-            template: record.dig('TemplateRef', 'FullName')
+            customer_name: record.dig('CustomerRef', 'FullName'),
+            ar_account: record.dig('ARAccountRef', 'FullName'),
+            template: record.dig('TemplateRef', 'FullName'),
             is_pending: record['IsPending'],
             fob: record['FOB'],
             ship_date: record['ShipDate'].to_s,
-            ship_method: record.dig('ShipMethodRef', 'FullName')
-            item_sales_tax: record.dig('ItemSalesTaxRef', 'FullName')
+            ship_method: record.dig('ShipMethodRef', 'FullName'),
+            item_sales_tax: record.dig('ItemSalesTaxRef', 'FullName'),
             sales_tax_total: record['SalesTaxTotal'],
             sales_tax_percentage: record['SalesTaxPercentage'],
             memo: record['Memo'],
