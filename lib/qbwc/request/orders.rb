@@ -348,7 +348,7 @@ module QBWC
           billing_address = object['billing_address']
 
           {
-            'list_id'          => object['list_id'],
+            'list_id'          => object['customer']['list_id'],
             'id'               => object['customer']['name'],
             'firstname'        => billing_address['firstname'],
             'lastname'         => billing_address['lastname'],

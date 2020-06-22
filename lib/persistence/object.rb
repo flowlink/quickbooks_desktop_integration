@@ -676,9 +676,7 @@ module Persistence
           if use_customer_object?
             customer = object['customer']
           else
-            object_dup = object.dup
-            object_dup['list_id'] = nil
-            customer = QBWC::Request::Orders.build_customer_from_order(object_dup)
+            customer = QBWC::Request::Orders.build_customer_from_order(object)
           end
           save_pending_file(customer['name'], 'customers', customer)
         end
