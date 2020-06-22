@@ -28,22 +28,36 @@ module QBWC
               edit_sequence: object['EditSequence']
             }
           }
+          check_receive_payment(object, config)
         end
 
         Persistence::Object.update_statuses(config, memos)
 
-        # TODO: Do I trigger a receive payment request from here?
-        # <ReceivePaymentAddRq requestID="#{session_id}">
-          # <ReceivePaymentAdd>
-        # <AppliedToTxnAdd> <!-- optional, may repeat -->
-        #   <TxnID  useMacro="MACROTYPE">IDTYPE</TxnID> <!-- required -->
-        #   <PaymentAmount >AMTTYPE</PaymentAmount> <!-- optional -->
-        #   <SetCredit> <!-- optional, may repeat -->
-        #           <CreditTxnID  useMacro="MACROTYPE">IDTYPE</CreditTxnID> <!-- required -->
-        #           <AppliedAmount >AMTTYPE</AppliedAmount> <!-- required -->
-        #           <Override >BOOLTYPE</Override> <!-- optional -->
-        #   </SetCredit>
+      end
 
+      def check_receive_payment(obj, conf)
+        return '' unless obj['Other']
+        payment_config = conf.dup
+        payment_config[:quickbooks_customer_email] = obj['CustomerRef']['FullName']
+        payment_payload = {
+          parameters: {
+            payload_type: 'payment'
+          },
+          request_id: obj['request_id'],
+          'payment' => {
+            'id' => "Memo-#{obj['RefNumber']}",
+            'customer' => {
+              'name' => obj['CustomerRef']['FullName']
+            },
+            'invoice_txn_id' => obj['Other'],
+            'amount' => obj['Subtotal'],
+            'payment_method' => 'CASH',
+            'credit_amount' => obj['Subtotal'],
+            'credit_txn_id' => obj['TxnID']
+          }
+        }
+        integration = Persistence::Object.new(payment_config, payment_payload)
+        integration.save
       end
 
 
