@@ -119,11 +119,15 @@ module Persistence
         end
 
         if two_phase?
+          puts 'in two-phase'
           file = "#{path.base_name}/#{path.two_phase_pending}/#{payload_key.pluralize}_#{id_of_object(object)}_.json"
+          puts file.inspect
           amazon_s3.export file_name: file, objects: [object]
           generate_inserts_for_two_phase(object, use_customer_email_param?)
         else
+          puts 'in one-phase'
           file = "#{path.base_name}/#{path.pending}/#{payload_key.pluralize}_#{id_of_object(object)}_.json"
+          puts file.inspect
           amazon_s3.export file_name: file, objects: [object]
         end
         generate_extra_objects(object)
