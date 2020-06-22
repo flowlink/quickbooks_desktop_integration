@@ -46,8 +46,10 @@ module Persistence
     def initialize(config = {}, payload = {})
       puts "*" * 81
       puts "Object#new"
+      puts 'config'
       puts config.inspect
       puts "*" * 81
+      puts 'payload'
       puts payload.inspect
       puts "*" * 81
       
@@ -61,8 +63,10 @@ module Persistence
       @amazon_s3   = S3Util.new
       @path        = Persistence::Path.new(@config)
       @request_id  = payload[:request_id]
+      puts '@payload_key'
       puts @payload_key.inspect
       puts "*" * 81
+      puts '@objects'
       puts @objects.inspect
       puts "*" * 81
       puts @request_id.inspect
@@ -84,6 +88,7 @@ module Persistence
     def save
       puts "*" * 81
       puts "Object#save"
+      puts 'objects '
       puts objects.inspect
       puts "*" * 81
       objects.each do |object|
