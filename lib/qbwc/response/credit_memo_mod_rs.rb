@@ -35,6 +35,10 @@ module QBWC
       end
 
       def check_receive_payment(obj)
+        puts "*" * 81
+        puts "check_receive_payment"
+        puts obj.inspect
+        puts "*" * 81
         # return '' unless obj['Other']
         payment_config = {
         }
@@ -53,6 +57,10 @@ module QBWC
             credit_txn_id: obj['Other']
           }
         }
+        puts payment_config.inspect
+        puts "*" * 81
+        puts payment_payload.inspect
+        puts "*" * 81
         integration = Persistence::Object.new(payment_config, payment_payload)
         integration.save
       end
