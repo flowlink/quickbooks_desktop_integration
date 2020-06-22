@@ -50,6 +50,7 @@ module QBWC
             },
             'invoice_txn_id' => obj['Other'],
             'amount' => obj['Subtotal'],
+            'payment_method' => 'CASH',
             'credit_amount' => obj['Subtotal'],
             'credit_txn_id' => obj['TxnID']
           }
