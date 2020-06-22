@@ -21,6 +21,10 @@ module QBWC
 
         memos = []
         records.each do |object|
+          puts "*" * 81
+          puts "object in process"
+          puts object.inspect
+          puts "*" * 81
           memos << { 
             creditmemos: {
               id: object['TxnId'],
