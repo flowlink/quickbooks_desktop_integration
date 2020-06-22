@@ -28,22 +28,22 @@ module QBWC
               edit_sequence: object['EditSequence']
             }
           }
-          check_receive_payment(object)
+          check_receive_payment(object, config)
         end
 
         Persistence::Object.update_statuses(config, memos)
       end
 
-      def check_receive_payment(obj)
+      def check_receive_payment(obj, conf)
         puts "*" * 81
         puts "check_receive_payment"
         puts obj.inspect
         puts "*" * 81
+        puts conf.inspect
+        puts "*" * 81
         # return '' unless obj['Other']
-        payment_config = {
-          quickbooks_customer_email: '1',
-          'quickbooks_customer_email' => '1'
-        }
+        payment_config = conf.dup
+        payment_config[:quickbooks_customer_email] = '1'
         payment_payload = {
           parameters: {
             payload_type: 'payment'
