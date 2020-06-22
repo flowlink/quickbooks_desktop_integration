@@ -30,7 +30,7 @@ module QBWC
           }
         end
 
-        Persistence::Object.update_statuses(config, products)
+        Persistence::Object.update_statuses(config, memos)
 
         # TODO: Do I trigger a receive payment request from here?
         # <ReceivePaymentAddRq requestID="#{session_id}">
