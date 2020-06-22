@@ -6,7 +6,10 @@
   "title": "Test",
   "total": 7,
   "status": "OPEN",
-  "invoice": {},
+  "invoice": {
+    "qbe_id": "",
+    "id": ""
+  },
   "customer_name": "ABC Test",
   "edit_sequence": "123456789",
   "customer": {

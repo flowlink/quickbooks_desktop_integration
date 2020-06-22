@@ -21,6 +21,10 @@ module QBWC
 
         memos = []
         records.each do |object|
+          puts "*" * 81
+          puts "object in process"
+          puts object.inspect
+          puts "*" * 81
           memos << { 
             creditmemos: {
               id: object['TxnId'],
@@ -31,6 +35,20 @@ module QBWC
         end
 
         Persistence::Object.update_statuses(config, memos)
+
+        # payment_config = {
+        # }
+        # payment_payload = {
+        #   parameters: {
+        #     payload_type: 'payment'
+        #   },
+        #   payment: {
+        #     invoice_txn_id: ''
+        #     amount: 1.4
+        #   }
+        # }
+        # integration = Persistence::Object.new(payment_config, payment_payload)
+        # integration.save
       end
 
 

@@ -54,7 +54,18 @@ module QBWC
             <AppliedToTxnAdd>
                 <TxnID>#{payment['invoice_txn_id']}</TxnID>
                 <PaymentAmount>#{'%.2f' % payment['amount'].to_f}</PaymentAmount>
+                #{credit_info(payment)}
             </AppliedToTxnAdd>
+          XML
+        end
+
+        def credit_info(payment)
+          return '' unless payment['credit_txn_id'] && payment['credit_amount']
+          <<~XML
+            <SetCredit>
+                <CreditTxnID>#{payment['credit_txn_id']}</CreditTxnID>
+                <AppliedAmount>#{'%.2f' % payment['credit_amount'].to_f}</AppliedAmount>
+            </SetCredit>
           XML
         end
 
