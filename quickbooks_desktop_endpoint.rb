@@ -71,7 +71,7 @@ OBJECT_TYPES_MAPPING_DATA_OBJECT = {
   'discountproducts' => 'products',
   'inventoryassemblyproducts' => 'products',
   'purchaseorders' => 'purchase_orders',
-  'salesreceipts' => 'sales_receipts'
+  'salesreceipts' => 'sales_receipts',
   'creditmemos' => 'credit_memos'
 }
 
