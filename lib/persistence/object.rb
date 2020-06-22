@@ -44,6 +44,13 @@ module Persistence
     #   e.g. { origin: 'quickbooks', connection_id: '54372cb069702d1f59000000' }
     #
     def initialize(config = {}, payload = {})
+      puts "*" * 81
+      puts "Object#new"
+      puts config.inspect
+      puts "*" * 81
+      puts payload.inspect
+      puts "*" * 81
+      
       @payload_key = payload[:parameters] ? payload[:parameters][:payload_type] : payload.keys.first
       @objects     = payload[payload_key].is_a?(Hash) ? [payload[payload_key]] : Array(payload[payload_key])
       begin
@@ -54,6 +61,12 @@ module Persistence
       @amazon_s3   = S3Util.new
       @path        = Persistence::Path.new(@config)
       @request_id  = payload[:request_id]
+      puts @payload_key.inspect
+      puts "*" * 81
+      puts @objects.inspect
+      puts "*" * 81
+      puts @request_id.inspect
+      puts "*" * 81
     end
 
     # Doesn't check whether the record (s) is already in s3. Only save it.
@@ -69,6 +82,10 @@ module Persistence
     # e.g. 54372cb069702d1f59000000/quickbooks_pending/orders_T-SHIRT-SPREE1.json
     #
     def save
+      puts "*" * 81
+      puts "Object#save"
+      puts objects.inspect
+      puts "*" * 81
       objects.each do |object|
         object['request_id'] = request_id
 

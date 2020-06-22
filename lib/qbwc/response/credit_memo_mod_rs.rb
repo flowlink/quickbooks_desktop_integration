@@ -46,15 +46,16 @@ module QBWC
           parameters: {
             payload_type: 'payment'
           },
+          request_id: obj['request_id'],
           payment: {
             id: "Memo-#{obj['RefNumber']}",
             customer: {
               name: obj['CustomerRef']['FullName']
             },
-            invoice_txn_id: obj['TxnId'],
+            invoice_txn_id: obj['Other'],
             amount: obj['Amount'],
             credit_amount: obj['Amount'],
-            credit_txn_id: obj['Other']
+            credit_txn_id: obj['TxnID']
           }
         }
         puts payment_config.inspect
