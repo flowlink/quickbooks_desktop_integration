@@ -35,15 +35,9 @@ module QBWC
       end
 
       def check_receive_payment(obj, conf)
-        puts "*" * 81
-        puts "check_receive_payment"
-        puts obj.inspect
-        puts "*" * 81
-        puts conf.inspect
-        puts "*" * 81
-        # return '' unless obj['Other']
+        return '' unless obj['Other']
         payment_config = conf.dup
-        payment_config[:quickbooks_customer_email] = '1'
+        payment_config[:quickbooks_customer_email] = obj['CustomerRef']['FullName']
         payment_payload = {
           parameters: {
             payload_type: 'payment'
@@ -60,10 +54,6 @@ module QBWC
             'credit_txn_id' => obj['TxnID']
           }
         }
-        puts payment_config.inspect
-        puts "*" * 81
-        puts payment_payload.inspect
-        puts "*" * 81
         integration = Persistence::Object.new(payment_config, payment_payload)
         integration.save
       end
