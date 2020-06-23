@@ -136,7 +136,36 @@ module QBWC
               <PostalCode>#{record['shipping_address']['zipcode']}</PostalCode>
               <Country>#{record['shipping_address']['country']}</Country>
             </ShipAddress>
+            #{terms_ref(record)}
+            #{due_date(record)}
+            #{expected_date(record)}
             #{cancel_order?(record)}
+          XML
+        end
+
+        def terms_ref(record)
+          return '' unless record['terms_name']
+
+          <<~XML
+          <TermsRef>
+            <FullName>#{record['terms_name']}</FullName>
+          </TermsRef>
+          XML
+        end
+
+        def due_date(record)
+          return '' unless record['due_date']
+
+          <<~XML
+          <DueDate>#{Time.parse(record['due_date']).to_date}</DueDate>
+          XML
+        end
+
+        def expected_date(record)
+          return '' unless record['expected_date']
+
+          <<~XML
+          <ExpectedDate>#{Time.parse(record['expected_date']).to_date}</ExpectedDate>
           XML
         end
 
