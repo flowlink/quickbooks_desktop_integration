@@ -189,10 +189,7 @@ module QBWC
         def pre_mapping_logic(initial_object)
           object = initial_object
 
-          if object['placed_on'].nil? || object['placed_on'].empty?
-            object['placed_on'] = Time.now.to_s
-          end
-          object['placed_on'] = Time.parse(object['placed_on']).to_date
+          object['placed_on'] = parse_string_to_date(object['placed_on'])
 
           # We determine refs in different ways in the code.
           # Setting up the object correctly here to use other ways of setting up refs
@@ -560,6 +557,20 @@ module QBWC
 
           return '' if full_name.nil? || full_name == ""
           "<#{qbe_field_name}><FullName>#{full_name}</FullName></#{qbe_field_name}>"
+        end
+
+        def parse_string_to_date(str)
+          return Time.now.to_date if str.nil? || str.empty?
+
+          begin
+            return Date.strptime(str, "%m-%d-%Y")
+          rescue => exception
+            begin
+              return DateTime.parse(str).to_date
+            rescue => exception
+              return str
+            end
+          end
         end
       end
     end
