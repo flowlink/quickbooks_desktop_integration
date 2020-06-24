@@ -122,7 +122,9 @@ module QBWC
           return '' if config['return_all'].to_i == 1
 
           <<~XML
-            <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
+            <ModifiedDateRangeFilter>
+              <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
+            </ModifiedDateRangeFilter>  
           XML
         end
 
