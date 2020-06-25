@@ -104,7 +104,7 @@ module QBWC
 
       def products_to_flowlink
         records.map do |record|
-          puts({connection: @connection_id, method: "products_to_flowlink", class: "ItemInventoryQueryRs", record: record})
+          puts({connection: @config[:connection_id], method: "products_to_flowlink", class: "ItemInventoryQueryRs", record: record})
 
           object = {
             id: record['Name'],
