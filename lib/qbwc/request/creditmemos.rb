@@ -62,8 +62,8 @@ module QBWC
           objects.inject('') do |request, object|
             config = { connection_id: params['connection_id'] }.with_indifferent_access
             session_id = Persistence::Session.save(config, object)
-            if object['list_id'] && object['list_id'].to_s.empty?
-              request << search_xml_by_name(object['id'], session_id)
+            if object['list_id'].to_s.empty?
+              request << search_xml_by_ref_number(object['id'], session_id)
             else
               request << search_xml_by_id(object['list_id'], session_id)
             end
@@ -120,7 +120,7 @@ module QBWC
           XML
         end
 
-        def search_xml_by_name(identifier, session_id)
+        def search_xml_by_ref_number(identifier, session_id)
           <<~XML
             <CreditMemoQueryRq requestID="#{session_id}">
               <RefNumberCaseSensitive>#{identifier}</RefNumberCaseSensitive>
