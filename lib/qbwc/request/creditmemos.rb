@@ -1,14 +1,46 @@
 module QBWC
   module Request
     class Creditmemos
-      GENERAL_MAPPING = [
+      MAPPING_ONE = [
         {qbe_name: "CustomerRef", flowlink_name: "customer_name", is_ref: true},
         {qbe_name: "ClassRef", flowlink_name: "class_name", is_ref: true},
-        {qbe_name: "ParentRef", flowlink_name: "parent_name", is_ref: true},
-        {qbe_name: "IsTaxIncluded", flowlink_name: "is_tax_included", is_ref: false},
-        {qbe_name: "SalesTaxCodeRef", flowlink_name: "sales_tax_code_name", is_ref: true},
+        {qbe_name: "ARAccountRef", flowlink_name: "ar_account", is_ref: true},
+        {qbe_name: "TemplateRef", flowlink_name: "template_name", is_ref: true},
+        {qbe_name: "TxnDate", flowlink_name: "placed_on", is_ref: false},
+        {qbe_name: "RefNumber", flowlink_name: "id", is_ref: false}
+      ]
+
+      ADDRESS_MAP = [
+        {qbe_name: "Addr1", flowlink_name: "address1", is_ref: false},
+        {qbe_name: "Addr2", flowlink_name: "address2", is_ref: false},
+        {qbe_name: "Addr3", flowlink_name: "address3", is_ref: false},
+        {qbe_name: "Addr4", flowlink_name: "address4", is_ref: false},
+        {qbe_name: "Addr5", flowlink_name: "address5", is_ref: false},
+        {qbe_name: "City", flowlink_name: "city", is_ref: false},
+        {qbe_name: "State", flowlink_name: "state", is_ref: false},
+        {qbe_name: "PostalCode", flowlink_name: "zipcode", is_ref: false},
+        {qbe_name: "Country", flowlink_name: "country", is_ref: false},
+        {qbe_name: "Note", flowlink_name: "note", is_ref: false}
+      ]
+        
+      MAPPING_TWO = [
+        {qbe_name: "IsPending", flowlink_name: "is_pending", is_ref: false},
         {qbe_name: "PONumber", flowlink_name: "po_number", is_ref: false},
+        {qbe_name: "TermsRef", flowlink_name: "terms", is_ref: true},
+        {qbe_name: "DueDate", flowlink_name: "due_date", is_ref: false},
+        {qbe_name: "SalesRepRef", flowlink_name: "sales_rep_name", is_ref: true},
+        {qbe_name: "FOB", flowlink_name: "fob", is_ref: false},
+        {qbe_name: "ShipDate", flowlink_name: "ship_date", is_ref: false},
+        {qbe_name: "ShipMethodRef", flowlink_name: "ship_method_name", is_ref: true},
+        {qbe_name: "ItemSalesTaxRef", flowlink_name: "item_sales_tax_name", is_ref: true},
+        {qbe_name: "Memo", flowlink_name: "memo", is_ref: false},
+        {qbe_name: "CustomerMsgRef", flowlink_name: "customer_msg_name", is_ref: true},
+        {qbe_name: "IsToBePrinted", flowlink_name: "is_to_be_printed", is_ref: false},
+        {qbe_name: "IsToBeEmailed", flowlink_name: "is_to_be_emailed", is_ref: false},
+        {qbe_name: "IsTaxIncluded", flowlink_name: "is_tax_included", is_ref: false},
+        {qbe_name: "CustomerSalesTaxCodeRef", flowlink_name: "customer_sales_tax_code_name", is_ref: true},
         {qbe_name: "Other", flowlink_name: "other", is_ref: false},
+        {qbe_name: "ExchangeRate", flowlink_name: "exchange_rate", is_ref: false}
       ]
 
       class << self
@@ -128,15 +160,43 @@ module QBWC
           XML
         end
 
-        def creditmemo(record, params, is_mod)
-          puts "Building creditmemo XML for #{record}"
-          if record['placed_on'].nil? || record['placed_on'].empty?
-            record['placed_on'] = Time.now.to_s
-          end
+        def creditmemo(initial_object, params, is_mod)
+          object = pre_mapping_logic(initial_object)
 
           <<~XML
-            #{add_fields(record, GENERAL_MAPPING, params, is_mod)}
+            #{add_fields(object, MAPPING_ONE, params, is_mod)}
+            #{address(object['billing_address'], params, is_mod, "BillAddress")}
+            #{address(object['shipping_address'], params, is_mod, "ShipAddress")}
+            #{add_fields(object, MAPPING_TWO, params, is_mod)}
           XML
+        end
+
+        def address(addr, config, is_mod, address_name)
+          return "" if addr.nil?
+          return "<#{address_name} />" unless addr.is_a?(Hash) && !addr.empty?
+
+          <<~XML
+            <#{address_name}>
+              #{add_fields(addr, ADDRESS_MAP, config, is_mod)}
+            </#{address_name}>
+          XML
+        end
+
+        def pre_mapping_logic(initial_object)
+          object = initial_object
+
+          if object['placed_on'].nil? || object['placed_on'].empty?
+            object['placed_on'] = Time.now.to_s
+          end
+
+          unless object['customer_name']
+            object['customer_name'] = object['customer']['name'] if object['customer']
+          end
+          unless object['sales_rep_name']
+            object['sales_rep_name'] = object['sales_rep']['name'] if object['sales_rep']
+          end
+
+          object
         end
 
         def add_fields(object, mapping, config, is_mod)
