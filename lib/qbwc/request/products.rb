@@ -149,11 +149,11 @@ module QBWC
             inventory_max_returned = params['quickbooks_max_returned']
           end
 
+              # <MaxReturned>#{inventory_max_returned || 50}</MaxReturned>
           <<~XML
             <ItemInventoryQueryRq requestID="#{session_id}">
-              <MaxReturned>#{inventory_max_returned || 50}</MaxReturned>
               #{query_by_date(params, time)}
-              <OwnerID>{99A44FB5-33D9-4815-AC85-BC87A7E7D118}</OwnerID>
+              <OwnerID>0</OwnerID>
             </ItemInventoryQueryRq>
           XML
         end
