@@ -143,6 +143,17 @@ module QBWC
           session_id = Persistence::Session.save(config, 'polling' => timestamp)
           time = Time.parse(timestamp).in_time_zone 'Pacific Time (US & Canada)'
 
+          <<~XML
+            <ItemInventoryQueryRq requestID="#{session_id}">
+              #{max_returned(params)}
+              #{query_by_date(params, time)}
+              <OwnerID>0</OwnerID>
+            </ItemInventoryQueryRq>
+          XML
+        end
+
+        def max_returned(params)
+          return '' if params['quickbooks_max_returned'] == '0'
           inventory_max_returned = nil
           inventory_max_returned = 10000 if params['return_all'].to_i == 1
           if params['quickbooks_max_returned'] && params['quickbooks_max_returned'] != ""
@@ -150,42 +161,7 @@ module QBWC
           end
 
           <<~XML
-            <ItemInventoryQueryRq requestID="#{session_id}">
               <MaxReturned>#{inventory_max_returned || 50}</MaxReturned>
-              #{query_by_date(params, time)}
-              <IncludeRetElement>Name</IncludeRetElement>
-              <IncludeRetElement>ListID</IncludeRetElement>
-              <IncludeRetElement>FullName</IncludeRetElement>
-              <IncludeRetElement>QuantityOnHand</IncludeRetElement>
-              <IncludeRetElement>IsActive</IncludeRetElement>
-              <IncludeRetElement>SalesPrice</IncludeRetElement>
-              <IncludeRetElement>PurchaseDesc</IncludeRetElement>
-              <IncludeRetElement>PurchaseCost</IncludeRetElement>
-              <IncludeRetElement>PrefVendorRef</IncludeRetElement>
-              <IncludeRetElement>UnitOfMeasureSetRef</IncludeRetElement>
-              <IncludeRetElement>ClassRef</IncludeRetElement>
-              <IncludeRetElement>ParentRef</IncludeRetElement>
-              <IncludeRetElement>SalesTaxCodeRef</IncludeRetElement>
-              <IncludeRetElement>IncomeAccountRef</IncludeRetElement>
-              <IncludeRetElement>PurchaseTaxCodeRef</IncludeRetElement>
-              <IncludeRetElement>COGSAccountRef</IncludeRetElement>
-              <IncludeRetElement>AssetAccountRef</IncludeRetElement>
-              <IncludeRetElement>AverageCost</IncludeRetElement>
-              <IncludeRetElement>QuantityOnOrder</IncludeRetElement>
-              <IncludeRetElement>QuantityOnSalesOrder</IncludeRetElement>
-              <IncludeRetElement>TimeCreated</IncludeRetElement>
-              <IncludeRetElement>TimeModified</IncludeRetElement>
-              <IncludeRetElement>BarCodeValue</IncludeRetElement>
-              <IncludeRetElement>Sublevel</IncludeRetElement>
-              <IncludeRetElement>ManufacturerPartNumber</IncludeRetElement>
-              <IncludeRetElement>IsTaxIncluded</IncludeRetElement>
-              <IncludeRetElement>SalesDesc</IncludeRetElement>
-              <IncludeRetElement>ReorderPoint</IncludeRetElement>
-              <IncludeRetElement>Max</IncludeRetElement>
-              <IncludeRetElement>ExternalGUID</IncludeRetElement>
-              <IncludeRetElement>DataExtRet</IncludeRetElement>
-              <OwnerID>0</OwnerID>
-            </ItemInventoryQueryRq>
           XML
         end
 
