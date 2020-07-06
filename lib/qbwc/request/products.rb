@@ -183,7 +183,7 @@ module QBWC
               <IncludeRetElement>ReorderPoint</IncludeRetElement>
               <IncludeRetElement>Max</IncludeRetElement>
               <IncludeRetElement>ExternalGUID</IncludeRetElement>
-              <IncludeRetElement>DataExtRetList</IncludeRetElement>
+              <IncludeRetElement>DataExtRet</IncludeRetElement>
               <OwnerID>0</OwnerID>
             </ItemInventoryQueryRq>
           XML
