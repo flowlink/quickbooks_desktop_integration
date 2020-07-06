@@ -42,6 +42,7 @@ module QBWC
             <ReceivePaymentAddRq requestID="#{session_id}">
               <ReceivePaymentAdd>
                 #{payment_xml(payment, params)}
+                #{external_guid(payment)}
                 #{payment.key?('invoice_txn_id') ? payment_apply_transaction_xml(payment) : auto_apply }
               </ReceivePaymentAdd>
             </ReceivePaymentAddRq>
@@ -53,7 +54,18 @@ module QBWC
             <AppliedToTxnAdd>
                 <TxnID>#{payment['invoice_txn_id']}</TxnID>
                 <PaymentAmount>#{'%.2f' % payment['amount'].to_f}</PaymentAmount>
+                #{credit_info(payment)}
             </AppliedToTxnAdd>
+          XML
+        end
+
+        def credit_info(payment)
+          return '' unless payment['credit_txn_id'] && payment['credit_amount']
+          <<~XML
+            <SetCredit>
+                <CreditTxnID>#{payment['credit_txn_id']}</CreditTxnID>
+                <AppliedAmount>#{'%.2f' % payment['credit_amount'].to_f}</AppliedAmount>
+            </SetCredit>
           XML
         end
 
@@ -96,6 +108,14 @@ module QBWC
             <PaymentMethodRef>
               <FullName>#{payment['payment_method']}</FullName>
             </PaymentMethodRef>
+          XML
+        end
+        
+        def external_guid(record)
+          return '' unless record['external_guid']
+
+          <<~XML
+          <ExternalGUID>#{record['external_guid']}</ExternalGUID>
           XML
         end
       end

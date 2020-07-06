@@ -21,6 +21,16 @@ module Persistence
       amazon_s3.export file_name: file, objects: objects
     end
 
+    def save_for_polling_without_timestamp
+      polling_path = @config[:origin] == 'quickbooks' ? path.qb_pending : path.pending
+      file = "#{path.base_name}/#{polling_path}/#{payload_key}_.json"
+      imported = amazon_s3.import file_name: file
+      existing_objects = imported[1]
+      # uniq will take the first object which should be the latest
+      updated_records = (objects + existing_objects).uniq{|obj| obj['id']}
+      amazon_s3.export file_name: file, objects: updated_records
+    end
+
     def save_for_query_later
       file = "#{path.base_name}/#{path.pending}/query_#{payload_key}_#{current_time}.json"
       amazon_s3.export file_name: file, objects: objects

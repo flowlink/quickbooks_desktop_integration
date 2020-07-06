@@ -35,9 +35,9 @@ module QBWC
           ''
         end
 
-        def polling_current_items_xml(timestamp, config)
+        def polling_current_items_xml(params, config)
+          timestamp = params['quickbooks_since']
           session_id = Persistence::Session.save(config, 'polling' => timestamp)
-
           time = Time.parse(timestamp).in_time_zone 'Pacific Time (US & Canada)'
 
           <<~XML
@@ -67,6 +67,7 @@ module QBWC
             <SalesOrderAddRq requestID="#{session_id}">
               <SalesOrderAdd>
                 #{sales_order record, params}
+                #{external_guid(record)}
                 #{items(record).map { |l| sales_order_line_add l }.join('')}
                 #{adjustments_add_xml record, params}
               </SalesOrderAdd>
@@ -131,7 +132,18 @@ module QBWC
               <PostalCode>#{record['shipping_address']['zipcode']}</PostalCode>
               <Country>#{record['shipping_address']['country']}</Country>
             </ShipAddress>
+            #{po_number(record)}
+            #{terms_ref_for_order(record)}
+            #{ship_date(record)}
             #{cancel_order?(record)}
+          XML
+        end
+
+        def external_guid(record)
+          return '' unless record['external_guid']
+
+          <<~XML
+          <ExternalGUID>#{record['external_guid']}</ExternalGUID>
           XML
         end
 
@@ -160,6 +172,36 @@ module QBWC
             <ClassRef>
               <FullName>#{record['class_name']}</FullName>
             </ClassRef>
+          XML
+        end
+
+        def terms_ref_for_order(record)
+          return '' unless record['terms_name']
+
+          <<~XML
+            <TermsRef>
+              <FullName>#{record['terms_name']}</FullName>
+            </TermsRef>
+          XML
+        end
+
+        def po_number(record)
+          return '' unless record['purchase_order_number']
+
+          <<~XML
+            <PONumber>
+              #{record['purchase_order_number']}
+            </PONumber>
+          XML
+        end
+
+        def ship_date(record)
+          return '' unless record['ship_date']
+
+          <<~XML
+            <ShipDate>
+              #{record['ship_date']}
+            </ShipDate>
           XML
         end
 
@@ -306,7 +348,7 @@ module QBWC
           billing_address = object['billing_address']
 
           {
-            'list_id'          => object['list_id'],
+            'list_id'          => object['customer']['list_id'],
             'id'               => object['customer']['name'],
             'firstname'        => billing_address['firstname'],
             'lastname'         => billing_address['lastname'],
@@ -320,6 +362,8 @@ module QBWC
         end
 
         def build_products_from_order(object)
+          puts "Building products from #{object}"
+
           object.first['line_items'].reject { |line| line['quantity'].to_f == 0.0 }.map do |item|
             {
               'id'          => item['product_id'],
@@ -427,7 +471,7 @@ module QBWC
               order[address_type] = { }
             end
 
-            ['address1', 'address2', 'city', 'state', 'zipcode', 'county'].each do |field|
+            ['address1', 'address2', 'city', 'state', 'zipcode', 'country'].each do |field|
               if !order[address_type][field].nil?
                 order[address_type][field].gsub!(/[^0-9A-Za-z\s]/, '')
               end

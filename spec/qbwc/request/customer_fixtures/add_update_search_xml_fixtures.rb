@@ -3,8 +3,8 @@ def qbe_customer_search_name
     <CustomerQueryRq requestID="12345">
       <MaxReturned>50</MaxReturned>
       <NameRangeFilter>
-        <FromName>My ID</FromName>
-        <ToName>My ID</ToName>
+        <FromName>Bruce Wayne</FromName>
+        <ToName>Bruce Wayne</ToName>
       </NameRangeFilter>
     </CustomerQueryRq>
   XML
@@ -13,7 +13,7 @@ end
 def qbe_customer_search_id
   <<~XML
     <CustomerQueryRq requestID="12345">
-      <ListID>My ID</ListID>
+      <ListID>qbe-customer-listid</ListID>
     </CustomerQueryRq>
   XML
 end
@@ -32,7 +32,7 @@ def qbe_customer_update
   <<~XML
     <CustomerModRq requestID="12345">
       <CustomerMod>
-        <ListID>12345</ListID>
+        <ListID>qbe-customer-listid</ListID>
         <EditSequence>1010101</EditSequence>
         #{qbe_customer_innards(true)}
       </CustomerMod>
@@ -49,7 +49,7 @@ def qbe_customer_innards(is_mod)
 
   open_balance_items = is_mod ? "" : "<OpenBalance>2500</OpenBalance><OpenBalanceDate>2019-11-01T13:22:02.718+00:00</OpenBalanceDate>"
 
-  guid = is_mod ? "" : "<ExternalGUID>1234</ExternalGUID>"
+  guid = is_mod ? "" : "<ExternalGUID>35cb4e30-54e1-49f9-b5ce-4134799eb2c0</ExternalGUID>"
 
   <<~XML
     <Name>First Last</Name>
@@ -57,7 +57,6 @@ def qbe_customer_innards(is_mod)
     <ClassRef><FullName>class_reference</FullName></ClassRef>
     <ParentRef><FullName>parent_reference</FullName></ParentRef>
     <CompanyName>some company</CompanyName>
-    <Salutation>Mr</Salutation>
     <FirstName>First</FirstName>
     <MiddleName>middlename</MiddleName>
     <LastName>Last</LastName>
@@ -150,6 +149,7 @@ def qbe_customer_innards(is_mod)
     <MiddleName>F</MiddleName>
     <LastName>Doe</LastName>
     <JobTitle>Doctor</JobTitle>
+    <AdditionalContactRef />
     #{contact_closed}
     <CustomerTypeRef><FullName>customer_type_reference</FullName></CustomerTypeRef>
     <TermsRef><FullName>terms_reference</FullName></TermsRef>
@@ -173,7 +173,7 @@ def qbe_customer_innards(is_mod)
     <PreferredDeliveryMethod>Email</PreferredDeliveryMethod>
     <PriceLevelRef><FullName>price_level_reference</FullName></PriceLevelRef>
     #{guid}
-    <TaxRegistrationNumber>0099</TaxRegistrationNumber>
+    <TaxRegistrationNumber></TaxRegistrationNumber>
     <CurrencyRef><FullName>currency_reference</FullName></CurrencyRef>
   XML
 end

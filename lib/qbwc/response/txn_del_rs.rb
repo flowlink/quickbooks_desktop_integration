@@ -20,8 +20,6 @@ module QBWC
       def process(config = {})
         return if records.empty?
 
-        puts records.inspect
-
         config  = { origin: 'flowlink', connection_id: config[:connection_id]  }.with_indifferent_access
         objects_updated = objects_to_update(config)
         Persistence::Object.new(config, {}).update_objects_with_query_results(objects_updated)
