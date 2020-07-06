@@ -191,12 +191,12 @@ module QBWC
             other: record['Other'],
             external_guid: record['ExternalGUID'],
             sales_order: {
-              title: record['PONumber']
+              purchase_order_number: record['PONumber']
             },
             relationships: [
               { object: 'customer', key: 'qbe_id' },
               { object: 'product', key: 'qbe_id', location: 'line_items' },
-              { object: 'order', key: 'title', location: 'sales_order' }
+              { object: 'order', key: 'purchase_order_number', location: 'sales_order' }
             ],
             linked_qbe_transactions: linked_qbe_transactions(record)
           }.compact
