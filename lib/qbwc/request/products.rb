@@ -153,6 +153,7 @@ module QBWC
             <ItemInventoryQueryRq requestID="#{session_id}">
               <MaxReturned>#{inventory_max_returned || 50}</MaxReturned>
               #{query_by_date(params, time)}
+              <IncludeRetElement>DIMENSION</IncludeRetElement>
               <OwnerID>0</OwnerID>
             </ItemInventoryQueryRq>
           XML
