@@ -153,6 +153,37 @@ module QBWC
             <ItemInventoryQueryRq requestID="#{session_id}">
               <MaxReturned>#{inventory_max_returned || 50}</MaxReturned>
               #{query_by_date(params, time)}
+              <IncludeRetElement>Name</IncludeRetElement>
+              <IncludeRetElement>ListID</IncludeRetElement>
+              <IncludeRetElement>FullName</IncludeRetElement>
+              <IncludeRetElement>QuantityOnHand</IncludeRetElement>
+              <IncludeRetElement>IsActive</IncludeRetElement>
+              <IncludeRetElement>SalesPrice</IncludeRetElement>
+              <IncludeRetElement>PurchaseDesc</IncludeRetElement>
+              <IncludeRetElement>PurchaseCost</IncludeRetElement>
+              <IncludeRetElement>PrefVendorRef</IncludeRetElement>
+              <IncludeRetElement>UnitOfMeasureSetRef</IncludeRetElement>
+              <IncludeRetElement>ClassRef</IncludeRetElement>
+              <IncludeRetElement>ParentRef</IncludeRetElement>
+              <IncludeRetElement>SalesTaxCodeRef</IncludeRetElement>
+              <IncludeRetElement>IncomeAccountRef</IncludeRetElement>
+              <IncludeRetElement>PurchaseTaxCodeRef</IncludeRetElement>
+              <IncludeRetElement>COGSAccountRef</IncludeRetElement>
+              <IncludeRetElement>AssetAccountRef</IncludeRetElement>
+              <IncludeRetElement>AverageCost</IncludeRetElement>
+              <IncludeRetElement>QuantityOnOrder</IncludeRetElement>
+              <IncludeRetElement>QuantityOnSalesOrder</IncludeRetElement>
+              <IncludeRetElement>TimeCreated</IncludeRetElement>
+              <IncludeRetElement>TimeModified</IncludeRetElement>
+              <IncludeRetElement>BarCodeValue</IncludeRetElement>
+              <IncludeRetElement>Sublevel</IncludeRetElement>
+              <IncludeRetElement>ManufacturerPartNumber</IncludeRetElement>
+              <IncludeRetElement>IsTaxIncluded</IncludeRetElement>
+              <IncludeRetElement>SalesDesc</IncludeRetElement>
+              <IncludeRetElement>ReorderPoint</IncludeRetElement>
+              <IncludeRetElement>Max</IncludeRetElement>
+              <IncludeRetElement>ExternalGUID</IncludeRetElement>
+              <IncludeRetElement>DIMENSION</IncludeRetElement>
               <OwnerID>0</OwnerID>
             </ItemInventoryQueryRq>
           XML
