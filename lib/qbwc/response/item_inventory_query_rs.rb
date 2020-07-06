@@ -106,13 +106,6 @@ module QBWC
         records.map do |record|
           puts({connection: @config[:connection_id], method: "products_to_flowlink", class: "ItemInventoryQueryRs", record: record})
 
-          if record['Name'] == 'Cheese'
-            puts "*" * 81
-            puts "Cheese"
-            puts record.inspect
-            puts "*" * 81
-          end
-
           object = {
             id: record['Name'],
             sku: record['Name'],

@@ -143,18 +143,25 @@ module QBWC
           session_id = Persistence::Session.save(config, 'polling' => timestamp)
           time = Time.parse(timestamp).in_time_zone 'Pacific Time (US & Canada)'
 
+          <<~XML
+            <ItemInventoryQueryRq requestID="#{session_id}">
+              #{max_returned(params)}
+              #{query_by_date(params, time)}
+              <OwnerID>0</OwnerID>
+            </ItemInventoryQueryRq>
+          XML
+        end
+
+        def max_returned(params)
+          return '' if params['quickbooks_max_returned'] == '0'
           inventory_max_returned = nil
           inventory_max_returned = 10000 if params['return_all'].to_i == 1
           if params['quickbooks_max_returned'] && params['quickbooks_max_returned'] != ""
             inventory_max_returned = params['quickbooks_max_returned']
           end
 
-              # <MaxReturned>#{inventory_max_returned || 50}</MaxReturned>
           <<~XML
-            <ItemInventoryQueryRq requestID="#{session_id}">
-              #{query_by_date(params, time)}
-              <OwnerID>0</OwnerID>
-            </ItemInventoryQueryRq>
+              <MaxReturned>#{inventory_max_returned || 50}</MaxReturned>
           XML
         end
 
