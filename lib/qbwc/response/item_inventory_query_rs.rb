@@ -155,12 +155,29 @@ module QBWC
             reorder_point: record['ReorderPoint'],
             max: record['Max'],
             external_guid: record['ExternalGUID'],
+            custom_fields: custom_fields(record),
             qbe_item_type: 'qbe_inventory'
           }.compact
 
           object
         end
       end
+
+      def custom_fields(object)
+        return nil unless object['DataExtRet']
+
+        object['DataExtRet'].map do |object|
+          {
+            name: object['DataExtName'],
+            owner_id: object['OwnerID'],
+            type: object['DataExtType'],
+            value: object['DataExtValue']
+          }
+        end
+
+      end
+
+
     end
   end
 end
