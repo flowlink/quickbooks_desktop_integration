@@ -154,8 +154,8 @@ module QBWC
           custom_fields = {}
 
           if record['DataExtRet']
-            record['DataExtRet'] = record['DataExtRet'].to_a if record['DataExtRet'].is_a?(Hash)
-            record['DataExtRet'].each do |custom_field|
+            data = [record['DataExtRet']] if record['DataExtRet'].is_a?(Hash)
+            (data || record['DataExtRet']).each do |custom_field|
               custom_fields[custom_field["DataExtName"]] = custom_field["DataExtValue"]
             end 
           end
