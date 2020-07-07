@@ -149,7 +149,6 @@ module QBWC
 
           <<~XML
             <ItemInventoryQueryRq requestID="#{session_id}">
-              #{ params['return_all'].to_i == 1 || "<MaxReturned>50</MaxReturned>" }
               #{query_by_date(params, time)}
               <OwnerID>0</OwnerID>
             </ItemInventoryQueryRq>
