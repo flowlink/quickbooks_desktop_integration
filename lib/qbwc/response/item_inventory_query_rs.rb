@@ -153,7 +153,7 @@ module QBWC
 
           custom_fields = {}
 
-          record['DataExtRet']&.to_each do |custom_field|
+          record['DataExtRet']&.each do |custom_field|
             custom_fields[custom_field["DataExtName"]] = custom_field["DataExtValue"]
           end
 
