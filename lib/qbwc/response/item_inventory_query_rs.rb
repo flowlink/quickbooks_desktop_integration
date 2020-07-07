@@ -149,9 +149,15 @@ module QBWC
             max: record['Max'],
             external_guid: record['ExternalGUID'],
             qbe_item_type: 'qbe_inventory'
-          }.compact
+          }
 
-          object
+          custom_fields = {}
+
+          record['DataExtRet']&.to_each do |custom_field|
+            custom_fields[custom_field["DataExtName"]] = custom_field["DataExtValue"]
+          end
+
+          object.merge(custom_fields).compact
         end
       end
     end
