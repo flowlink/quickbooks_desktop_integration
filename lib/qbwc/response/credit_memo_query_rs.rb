@@ -128,6 +128,7 @@ module QBWC
             is_tax_included: record['IsTaxIncluded'],
             customer_sales_tax_code_ref: record.dig('CustomerSalesTaxCodeRef', 'FullName'),
             line_items: line_items(record),
+            linked_qbe_transactions: linked_qbe_transactions(record),
             other: record['Other']
           }.compact
         end
@@ -164,8 +165,25 @@ module QBWC
             other_one: item['Other1'],
             other_two: item['Other2']
           }.compact
+        end
       end
-    end
+
+      def linked_qbe_transactions(record)
+        return unless record['LinkedTxn']
+        record['LinkedTxn'] = [record['LinkedTxn']] if record['LinkedTxn'].is_a?(Hash)
+
+        record['LinkedTxn'].to_a.map do |txn|
+          {
+            qbe_transaction_id: txn['TxnID'],
+            qbe_reference_number: txn['RefNumber'],
+            transaction_type: txn['TxnType'],
+            transaction_date: txn['TxnDate'].to_s,
+            link_type: txn['LinkType'],
+            amount: txn['Amount'],
+            line_item_amount: item['Amount']
+          }
+        end
+      end
 
     end
   end
