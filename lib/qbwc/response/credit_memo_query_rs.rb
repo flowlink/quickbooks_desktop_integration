@@ -69,6 +69,10 @@ module QBWC
 
       def to_flowlink
         records.map do |record|
+          if record['CreditMemoLineRet'].is_a?(Hash)
+            record['CreditMemoLineRet'] = [record['CreditMemoLineRet']]
+          end
+
           {
             id: record['TxnID'],
             list_id: record['TxnID'],
@@ -123,8 +127,61 @@ module QBWC
             is_to_be_emailed: record['IsToBeEmailed'],
             is_tax_included: record['IsTaxIncluded'],
             customer_sales_tax_code_ref: record.dig('CustomerSalesTaxCodeRef', 'FullName'),
+            line_items: line_items(record),
+            linked_qbe_transactions: linked_qbe_transactions(record),
             other: record['Other']
           }.compact
+        end
+      end
+
+      def line_items(record)
+        return unless record["CreditMemoLineRet"]
+        record['CreditMemoLineRet'] = [record['CreditMemoLineRet']] if record['CreditMemoLineRet'].is_a?(Hash)
+
+        record["CreditMemoLineRet"].map do |item|
+          {
+            line_id: item["TxnLineID"],
+            product_id: item.dig("ItemRef", "FullName"),
+            name: item.dig("ItemRef", "FullName"),
+            sku: item.dig("ItemRef", "FullName"),
+            qbe_id: item.dig('ItemRef', 'ListID'),
+            description: item["Desc"],
+            quantity: item["Quantity"],
+            line_item_quantity: item["Quantity"],
+            override_uom_set_name: item.dig("OverrideUOMSetRef", "FullName"),
+            unit_of_measure: item["UnitOfMeasure"],
+            rate: item["Rate"],
+            line_item_rate: item["Rate"],
+            rate_percent: item["RatePercent"],
+            amount: item["Amount"],
+            line_item_amount: item["Amount"],
+            class_ref: item.dig("ClassRef", "FullName"),
+            warehouse: item.dig("InventorySiteRef", "FullName"),
+            inventory_site_location_name: item.dig("InventorySiteLocationRef", "FullName"),
+            serial_number: item["SerialNumber"],
+            lot_number: item["LotNumber"],
+            service_date: item['ServiceDate'].to_s,
+            sales_tax_code: item.dig("SalesTaxCodeRef", "FullName"),
+            other_one: item['Other1'],
+            other_two: item['Other2']
+          }.compact
+        end
+      end
+
+      def linked_qbe_transactions(record)
+        return unless record['LinkedTxn']
+        record['LinkedTxn'] = [record['LinkedTxn']] if record['LinkedTxn'].is_a?(Hash)
+
+        record['LinkedTxn'].to_a.map do |txn|
+          {
+            qbe_transaction_id: txn['TxnID'],
+            qbe_reference_number: txn['RefNumber'],
+            transaction_type: txn['TxnType'],
+            transaction_date: txn['TxnDate'].to_s,
+            link_type: txn['LinkType'],
+            amount: txn['Amount'],
+            line_item_amount: item['Amount']
+          }
         end
       end
 
