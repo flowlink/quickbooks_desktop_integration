@@ -124,7 +124,7 @@ module QBWC
               po_number: record['PONumber'],
             },
             order: {
-              po_number: record['PONumber'],
+              purchase_order_number: record['PONumber'],
             },
             credit_remaining: record['CreditRemaining'],
             exchange_rate: record['ExchangeRate'],
@@ -139,7 +139,7 @@ module QBWC
             other: record['Other'],
             relationships: [
               { key: 'po_number', object: 'invoice' },
-              { key: 'po_number', object: 'order' }
+              { key: 'purchase_order_number', object: 'order' }
             ]
           }.compact
         end

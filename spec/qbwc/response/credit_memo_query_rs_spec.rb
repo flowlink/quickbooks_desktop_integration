@@ -23,8 +23,8 @@ RSpec.describe QBWC::Response::CreditMemoQueryRs do
         ],
         "po_number" => "test",
         "invoice" => {"po_number"=> "test"},
-        "order" => {"po_number"=> "test"},
-        "relationships" => [{"key"=>"po_number", "object"=>"invoice"}, {"key"=>"po_number", "object"=>"order"}],
+        "order" => {"purchase_order_number"=> "test"},
+        "relationships" => [{"key"=>"po_number", "object"=>"invoice"}, {"key"=>"purchase_order_number", "object"=>"order"}],
         "ship_date"=>""
       }
     }
