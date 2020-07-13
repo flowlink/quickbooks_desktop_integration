@@ -90,10 +90,13 @@ module Persistence
     end
 
     def healthceck_is_failing?
+      return false unless info = settings('healthcheck').first
+
+      healthcheck_settings = info.values.first
       now = Time.now.utc
       last_contact = healthcheck_settings[:qbwc_last_contact_at] || now.to_s
       difference_in_minutes = (now - Time.parse(last_contact).utc) / 60.0
-      config[:health_check_threshold_in_minutes].to_i < difference_in_minutes
+      threshold.to_i < difference_in_minutes
     end
 
     def base_name
@@ -105,8 +108,8 @@ module Persistence
       @settings[prefix] ||= fetch prefix
     end
 
-    def healthcheck_settings
-      settings('healthcheck').first.values.first
+    def threshold
+      config[:health_check_threshold_in_minutes] || 5
     end
   end
 end
