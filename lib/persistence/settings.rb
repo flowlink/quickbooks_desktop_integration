@@ -82,6 +82,20 @@ module Persistence
       end.flatten
     end
 
+    def update_qbwc_last_contact_timestamp
+      file = "#{base_name}/healthcheck.json"
+      time = Time.now.utc.to_s
+      s3_object = amazon_s3.bucket.object(file)
+      amazon_s3.export file_name: file, objects: [{qbwc_last_contact_at: time}], override: true
+    end
+
+    def healthceck_is_failing?
+      now = Time.now.utc
+      last_contact = healthcheck_settings[:qbwc_last_contact_at] || now.to_s
+      difference_in_minutes = (now - Time.parse(last_contact).utc) / 60.0
+      config[:health_check_threshold_in_minutes].to_i < difference_in_minutes
+    end
+
     def base_name
       "#{connection_id}/settings"
     end
@@ -89,6 +103,10 @@ module Persistence
     def settings(prefix)
       @settings ||= {}
       @settings[prefix] ||= fetch prefix
+    end
+
+    def healthcheck_settings
+      settings('healthcheck').first.values.first
     end
   end
 end
