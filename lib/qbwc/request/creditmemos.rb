@@ -89,6 +89,8 @@ module QBWC
             <CreditMemoQueryRq requestID="#{session_id}">
               <MaxReturned>#{max_returned || 50}</MaxReturned>
               #{query_by_date(params, time)}
+              <IncludeLineItems>true</IncludeLineItems>
+              <IncludeLinkedTxns>true</IncludeLinkedTxns>
             </CreditMemoQueryRq>
           XML
 
