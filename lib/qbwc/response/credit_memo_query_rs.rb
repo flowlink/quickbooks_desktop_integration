@@ -119,6 +119,13 @@ module QBWC
             sales_tax_total: record['SalesTaxTotal'],
             sales_tax_percentage: record['SalesTaxPercentage'],
             memo: record['Memo'],
+            po_number: record['PONumber'],
+            invoice: {
+              po_number: record['PONumber'],
+            },
+            order: {
+              purchase_order_number: record['PONumber'],
+            },
             credit_remaining: record['CreditRemaining'],
             exchange_rate: record['ExchangeRate'],
             currency: record.dig('CurrencyRef', 'FullName'),
@@ -129,7 +136,11 @@ module QBWC
             customer_sales_tax_code_ref: record.dig('CustomerSalesTaxCodeRef', 'FullName'),
             line_items: line_items(record),
             linked_qbe_transactions: linked_qbe_transactions(record),
-            other: record['Other']
+            other: record['Other'],
+            relationships: [
+              { key: 'po_number', object: 'invoice' },
+              { key: 'purchase_order_number', object: 'order' }
+            ]
           }.compact
         end
       end
