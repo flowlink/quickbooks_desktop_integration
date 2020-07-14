@@ -1,6 +1,9 @@
 require 'spec_helper'
 
 describe QBWC::Response::ItemInventoryQueryRs do
+  before(:each) do
+    Aws.config[:stub_responses] = true
+  end
   subject { described_class.new Factory.item_inventory_query_rs_hash }
   let(:config) { {connection_id: 123} }
 

@@ -2,6 +2,9 @@ require 'spec_helper'
 
 module Persistence
   describe Object do
+    before(:each) do
+      Aws.config[:stub_responses] = true
+    end
     let(:error) do
       {
         code: '3200',

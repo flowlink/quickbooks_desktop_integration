@@ -2,6 +2,10 @@ require 'spec_helper'
 
 module Persistence
   describe Settings do
+    before(:each) do
+      Aws.config[:stub_responses] = true
+    end
+
     let(:connection_id) { "nurelmremote" }
     let(:config) { { connection_id: connection_id } }
     subject {
