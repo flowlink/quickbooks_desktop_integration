@@ -2,6 +2,8 @@ module Persistence
   class Settings
     attr_reader :amazon_s3, :connection_id, :config, :flow, :force_save
 
+    DEFAULT_HEALTHCHECK_THRESHOLD = 5
+
     GENERATE_EXTRA_FLOWS_ARRAY = %w(
       add_products
       add_customers
@@ -109,7 +111,7 @@ module Persistence
     end
 
     def threshold
-      config[:health_check_threshold_in_minutes] || 5
+      config[:health_check_threshold_in_minutes] || DEFAULT_HEALTHCHECK_THRESHOLD
     end
   end
 end
