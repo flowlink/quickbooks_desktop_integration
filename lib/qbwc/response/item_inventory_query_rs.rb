@@ -1,7 +1,7 @@
 module QBWC
   module Response
     class ItemInventoryQueryRs
-      attr_reader :records
+      attr_reader :records, :config
 
       def initialize(records)
         @records = records
@@ -33,7 +33,7 @@ module QBWC
 
         if product_params
           @config = { origin: 'quickbooks' }.merge config.reject{|k,v| k == :origin || k == "origin"}
-          payload = { products: products_to_flowlink }
+          payload = { products: products_to_flowlink(@config) }
           poll_persistence = Persistence::Polling.new(@config, payload)
           poll_persistence.save_for_polling_without_timestamp
 
@@ -102,9 +102,9 @@ module QBWC
         end.join('') + object['Name']
       end
 
-      def products_to_flowlink
+      def products_to_flowlink(config)
         records.map do |record|
-          puts({connection: @config[:connection_id], method: "products_to_flowlink", class: "ItemInventoryQueryRs", record: record})
+          puts({connection: config[:connection_id], method: "products_to_flowlink", class: "ItemInventoryQueryRs", record: record})
 
           object = {
             id: record['Name'],

@@ -23,11 +23,11 @@ RSpec.describe QBWC::Response::InvoiceQueryRs do
         "sales_rep"=>{"name"=>nil},
         "shipping_date"=>"",
         "suggested_discount_date"=>"",
-        "sales_order"=>{"title"=>"1ABC"},
+        "sales_order"=>{"purchase_order_number"=>"1ABC"},
         "relationships"=>[
           {"object"=>"customer", "key"=>"qbe_id"},
           {"object"=>"product", "key"=>"qbe_id", "location"=>"line_items"},
-          {"object"=>"order", "key"=>"title", "location"=>"sales_order"}
+          {"object"=>"order", "key"=>"purchase_order_number", "location"=>"sales_order"}
         ]
       }
     }
