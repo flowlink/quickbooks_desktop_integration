@@ -55,6 +55,7 @@ module QBWC
               <MaxReturned>300</MaxReturned>
               #{query_by_date(params, time)}
               <IncludeLineItems>true</IncludeLineItems>
+              <IncludeLinkedTxns>true</IncludeLinkedTxns>
               <!-- <IncludeRetElement>Name</IncludeRetElement> -->
             </InvoiceQueryRq>
           XML
