@@ -71,6 +71,7 @@ describe QuickbooksDesktopEndpoint do
       }
     }
 
+    Aws.config[:stub_responses] = false
     VCR.use_cassette 'requests/425435435234532' do
       post '/get_inventories', request.to_json, headers
 
@@ -87,6 +88,7 @@ describe QuickbooksDesktopEndpoint do
   it 'gets no inventories' do
     headers = auth.merge('HTTP_X_HUB_STORE' => '54591b3a5869632afc090000')
 
+    Aws.config[:stub_responses] = false
     VCR.use_cassette 'requests/43535345325' do
       post '/get_inventories', {}.to_json, headers
       expect(json_response[:summary]).to eq nil
@@ -106,6 +108,7 @@ describe QuickbooksDesktopEndpoint do
       }
     }
 
+    Aws.config[:stub_responses] = false
     VCR.use_cassette 'requests/4253442355352' do
       post '/get_products', request.to_json, headers
 
