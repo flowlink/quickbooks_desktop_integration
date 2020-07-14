@@ -10,14 +10,16 @@ describe QuickbooksDesktopEndpoint do
         'quickbooks_income_account'    => 'Inventory Asset',
         'quickbooks_cogs_account'      => 'Inventory Asset',
         'quickbooks_inventory_account' => 'Inventory Asset',
-        'payload_type'      => 'products'
+        'payload_type'      => 'product',
+        'return_to_fl' => ""
       }
     }
 
-    VCR.use_cassette 'products/32425454354353' do
+    Aws.config[:stub_responses] = false
+    VCR.use_cassette 'products/32425454354353' do |cas|
       post '/add_products', request.to_json, headers
       expect(last_response.status).to be 200
-      expect(body['summary']).to eq 'Products waiting for Quickbooks Desktop scheduler'
+      expect(last_response.body).to include('Product waiting for Quickbooks Desktop scheduler')
     end
   end
 
