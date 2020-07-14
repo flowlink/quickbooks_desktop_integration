@@ -7,6 +7,9 @@ require 'qbwc/request/inventorywithsites'
 module QBWC
   module Request
     describe Inventorywithsites do
+      before(:each) do
+        Aws.config[:stub_responses] = true
+      end
       subject { described_class }
 
       it 'parses quickbooks_site and return request xml' do
