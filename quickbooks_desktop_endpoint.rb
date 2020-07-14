@@ -135,6 +135,21 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
     result 200, "Notifications retrieved"
   end
 
+  post '/get_health_check' do
+    config = {
+      connection_id: request.env['HTTP_X_HUB_STORE'],
+      flow: "get_health_check",
+      quickbooks_force_config: 'true'
+    }.merge(@config).with_indifferent_access
+
+    s3_settings = Persistence::Settings.new(config)
+    if s3_settings.healthceck_is_failing?
+      result 500, "Health check was not successful"
+    else
+      result 200, "Health check was successful"
+    end
+  end
+
   post '/set_inventory' do
     config = {
       connection_id: request.env['HTTP_X_HUB_STORE'],

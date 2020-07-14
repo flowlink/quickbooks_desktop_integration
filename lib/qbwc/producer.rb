@@ -6,6 +6,8 @@ module QBWC
       @config = config.with_indifferent_access
       @integration = Persistence::Object.new config, payload
       @s3_settings = Persistence::Settings.new config
+
+      @s3_settings.update_qbwc_last_contact_timestamp
     end
 
     # Create a XML Requests that englobe all operations available on this time

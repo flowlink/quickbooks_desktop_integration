@@ -7,6 +7,9 @@ require 'qbwc/request/otherchargeproducts'
 module QBWC
   module Request
     describe Otherchargeproducts do
+      before(:each) do
+        Aws.config[:stub_responses] = true
+      end
       subject { described_class }
 
       context '#polling_others_items_xml' do

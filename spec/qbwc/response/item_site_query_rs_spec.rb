@@ -54,13 +54,14 @@ RSpec.describe QBWC::Response::ItemSitesQueryRs do
       it "returns fields specific to inventory items" do
         service_rs = QBWC::Response::ItemSitesQueryRs.new([inventory_object])
         output = service_rs.send(:inventories_to_flowlink).first.with_indifferent_access
+        expected_inventory["timestamp"] = output["timestamp"]
         expect(output).to eq(expected_inventory.with_indifferent_access)
-
       end
 
       it "returns fields specific to assembly items" do
         service_rs = QBWC::Response::ItemSitesQueryRs.new([assembly_object])
         output = service_rs.send(:inventories_to_flowlink).first.with_indifferent_access
+        expected_assembly["timestamp"] = output["timestamp"]
         expect(output).to eq(expected_assembly.with_indifferent_access)
 
       end

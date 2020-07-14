@@ -4,7 +4,7 @@ http_interactions:
     method: head
     uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/settings/add_products.json
     body:
-      encoding: US-ASCII
+      encoding: ASCII-8BIT
       string: ''
     headers:
       Content-Type:
@@ -12,11 +12,17 @@ http_interactions:
       Accept-Encoding:
       - ''
       User-Agent:
-      - aws-sdk-ruby/1.57.0 ruby/2.1.5 x86_64-darwin14.0
-      Date:
-      - Tue, 18 Nov 2014 17:27:31 GMT
+      - aws-sdk-ruby2/2.10.22 ruby/2.4.2 x86_64-linux resources
+      X-Amz-Date:
+      - 20200714T195132Z
+      Host:
+      - quickbooks-desktop-integration.s3.amazonaws.com
+      X-Amz-Content-Sha256:
+      - e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
       Authorization:
       - AUTHORIZATION
+      Content-Length:
+      - '0'
       Accept:
       - "*/*"
   response:
@@ -25,33 +31,33 @@ http_interactions:
       message: OK
     headers:
       X-Amz-Id-2:
-      - MUtq3xcggkHAhWQtEff8+6lixFZ/+lHHzrqO5EBvKeN2ErC8wN4dX6/kZY2aT/MzpNS+2qYyASw=
+      - W1SsNKMgXmzijsOg1JpuHqhRBxrXlyXR7bR9ScuTc9cWZ/fls5iAbeR6bBWWJyry3OaHjdonYn4=
       X-Amz-Request-Id:
-      - EA20874B0F211978
+      - 050DBFF84E6F47D4
       Date:
-      - Tue, 18 Nov 2014 17:27:33 GMT
+      - Tue, 14 Jul 2020 19:51:33 GMT
       Last-Modified:
-      - Mon, 17 Nov 2014 21:11:52 GMT
+      - Tue, 14 Jul 2020 19:26:30 GMT
       Etag:
-      - '"52ff1dcb2c8f080679fc4cfef15672be"'
+      - '"aa830cd5622f34dfa4a3e117f492b80b"'
       Accept-Ranges:
       - bytes
       Content-Type:
       - ''
       Content-Length:
-      - '212'
+      - '266'
       Server:
       - AmazonS3
     body:
       encoding: UTF-8
       string: ''
     http_version: 
-  recorded_at: Tue, 18 Nov 2014 17:27:32 GMT
+  recorded_at: Tue, 14 Jul 2020 19:51:32 GMT
 - request:
-    method: get
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/?versioning=
+    method: head
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/
     body:
-      encoding: US-ASCII
+      encoding: ASCII-8BIT
       string: ''
     headers:
       Content-Type:
@@ -59,11 +65,17 @@ http_interactions:
       Accept-Encoding:
       - ''
       User-Agent:
-      - aws-sdk-ruby/1.57.0 ruby/2.1.5 x86_64-darwin14.0
-      Date:
-      - Tue, 18 Nov 2014 17:27:32 GMT
+      - aws-sdk-ruby2/2.10.22 ruby/2.4.2 x86_64-linux resources
+      X-Amz-Date:
+      - 20200714T195132Z
+      Host:
+      - quickbooks-desktop-integration.s3.amazonaws.com
+      X-Amz-Content-Sha256:
+      - e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
       Authorization:
       - AUTHORIZATION
+      Content-Length:
+      - '0'
       Accept:
       - "*/*"
   response:
@@ -72,43 +84,53 @@ http_interactions:
       message: OK
     headers:
       X-Amz-Id-2:
-      - dkWhMYZnnB372VajCjyGx5hcyGo20V5rU3P0uoubdZV5GC3CbXSl6rquto/5Q7s9yAEFVjQYHGk=
+      - rKvcPgY5yv3Gr3sBlJhneafqjL+j/ZIS7Hij+XLR3ftTSgDDFTl/8QcfuYhp37jAs2dQqr0affg=
       X-Amz-Request-Id:
-      - DA4D4B2CB0E3EEC3
+      - 0FD2AA197DD3145C
       Date:
-      - Tue, 18 Nov 2014 17:27:33 GMT
+      - Tue, 14 Jul 2020 19:51:33 GMT
+      X-Amz-Bucket-Region:
+      - us-east-1
+      Content-Type:
+      - application/xml
       Transfer-Encoding:
       - chunked
       Server:
       - AmazonS3
     body:
       encoding: UTF-8
-      string: |-
-        <?xml version="1.0" encoding="UTF-8"?>
-        <VersioningConfiguration xmlns="http://s3.amazonaws.com/doc/2006-03-01/"/>
+      string: ''
     http_version: 
-  recorded_at: Tue, 18 Nov 2014 17:27:32 GMT
+  recorded_at: Tue, 14 Jul 2020 19:51:32 GMT
 - request:
     method: put
     uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/settings/add_products.json
     body:
-      encoding: ASCII-8BIT
-      string: |-
-        connection_id,flow,quickbooks_force_config,quickbooks_income_account,quickbooks_cogs_account,quickbooks_inventory_account
-        54591b3a5869632afc090000,add_products,true,Inventory Asset,Inventory Asset,Inventory Asset
+      encoding: UTF-8
+      string: '[{"connection_id":"54591b3a5869632afc090000","flow":"add_products","quickbooks_force_config":"true","quickbooks_income_account":"Inventory
+        Asset","quickbooks_cogs_account":"Inventory Asset","quickbooks_inventory_account":"Inventory
+        Asset","payload_type":"product","return_to_fl":""}]'
     headers:
       Content-Type:
       - ''
       Accept-Encoding:
       - ''
-      Content-Length:
-      - '212'
       User-Agent:
-      - aws-sdk-ruby/1.57.0 ruby/2.1.5 x86_64-darwin14.0
-      Date:
-      - Tue, 18 Nov 2014 17:27:32 GMT
+      - aws-sdk-ruby2/2.10.22 ruby/2.4.2 x86_64-linux resources
+      Expect:
+      - 100-continue
+      Content-Md5:
+      - JCm8J9Dt+oozlZK37jpZ+A==
+      X-Amz-Date:
+      - 20200714T195132Z
+      Host:
+      - quickbooks-desktop-integration.s3.amazonaws.com
+      X-Amz-Content-Sha256:
+      - 2d13d579d1f33166eae11cfa0cd9b42a6b2b4988b5e26d17094d4c3cc7a994f8
       Authorization:
       - AUTHORIZATION
+      Content-Length:
+      - '283'
       Accept:
       - "*/*"
   response:
@@ -117,13 +139,13 @@ http_interactions:
       message: OK
     headers:
       X-Amz-Id-2:
-      - sT5fYk/b1ShXo0IuhZe9t9G6qAibrpS9ZlUvIZBMXw5zl7w4UP6tchj4Il7o1gRaDO/UrdvAOss=
+      - b5JAcCwpPymbQbBVedkXn8JglrC/sYAPzWoVIcZjwdZ2k1NbOk0v2QjEhLOicfaFhjmZJajQXwU=
       X-Amz-Request-Id:
-      - 1DFDE16D27675171
+      - F39627971973EC9A
       Date:
-      - Tue, 18 Nov 2014 17:27:34 GMT
+      - Tue, 14 Jul 2020 19:51:33 GMT
       Etag:
-      - '"52ff1dcb2c8f080679fc4cfef15672be"'
+      - '"2429bc27d0edfa8a339592b7ee3a59f8"'
       Content-Length:
       - '0'
       Server:
@@ -132,12 +154,12 @@ http_interactions:
       encoding: UTF-8
       string: ''
     http_version: 
-  recorded_at: Tue, 18 Nov 2014 17:27:33 GMT
+  recorded_at: Tue, 14 Jul 2020 19:51:32 GMT
 - request:
-    method: get
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/?versioning=
+    method: head
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/
     body:
-      encoding: US-ASCII
+      encoding: ASCII-8BIT
       string: ''
     headers:
       Content-Type:
@@ -145,11 +167,17 @@ http_interactions:
       Accept-Encoding:
       - ''
       User-Agent:
-      - aws-sdk-ruby/1.57.0 ruby/2.1.5 x86_64-darwin14.0
-      Date:
-      - Tue, 18 Nov 2014 17:27:33 GMT
+      - aws-sdk-ruby2/2.10.22 ruby/2.4.2 x86_64-linux resources
+      X-Amz-Date:
+      - 20200714T195132Z
+      Host:
+      - quickbooks-desktop-integration.s3.amazonaws.com
+      X-Amz-Content-Sha256:
+      - e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
       Authorization:
       - AUTHORIZATION
+      Content-Length:
+      - '0'
       Accept:
       - "*/*"
   response:
@@ -158,84 +186,54 @@ http_interactions:
       message: OK
     headers:
       X-Amz-Id-2:
-      - x/tWho5g67pdhXXHwjGbvIh5zjc0bE6Z267PFixv7ZapMEgRFvXUldH4iXCLzbJ62SHzyFxdrpg=
+      - BpP2jGkQBk5nxCrNKDfhrUlsjJynRdBp63JBn7iWJmB/H7NiAnoFmk5eCSEOI9OrCIMeZbNz3yg=
       X-Amz-Request-Id:
-      - FC360DC171975553
+      - 2EB7E9CB650148C1
       Date:
-      - Tue, 18 Nov 2014 17:27:35 GMT
-      Transfer-Encoding:
-      - chunked
-      Server:
-      - AmazonS3
-    body:
-      encoding: UTF-8
-      string: |-
-        <?xml version="1.0" encoding="UTF-8"?>
-        <VersioningConfiguration xmlns="http://s3.amazonaws.com/doc/2006-03-01/"/>
-    http_version: 
-  recorded_at: Tue, 18 Nov 2014 17:27:34 GMT
-- request:
-    method: head
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/flowlink_pending/products_the%20internets_.json
-    body:
-      encoding: US-ASCII
-      string: ''
-    headers:
-      Content-Type:
-      - ''
-      Accept-Encoding:
-      - ''
-      User-Agent:
-      - aws-sdk-ruby/1.57.0 ruby/2.1.5 x86_64-darwin14.0
-      Date:
-      - Tue, 18 Nov 2014 17:27:34 GMT
-      Authorization:
-      - AUTHORIZATION
-      Accept:
-      - "*/*"
-  response:
-    status:
-      code: 404
-      message: Not Found
-    headers:
-      X-Amz-Request-Id:
-      - EB59078F7648575C
-      X-Amz-Id-2:
-      - Wv080eR+deCnjsVWLzwyR9afztulLkXOvTZYy4kC+Q8vm/wASBXGJLVgkZYqPChCKYq/qlRBWCo=
+      - Tue, 14 Jul 2020 19:51:33 GMT
+      X-Amz-Bucket-Region:
+      - us-east-1
       Content-Type:
       - application/xml
       Transfer-Encoding:
       - chunked
-      Date:
-      - Tue, 18 Nov 2014 17:27:34 GMT
       Server:
       - AmazonS3
     body:
       encoding: UTF-8
       string: ''
     http_version: 
-  recorded_at: Tue, 18 Nov 2014 17:27:34 GMT
+  recorded_at: Tue, 14 Jul 2020 19:51:32 GMT
 - request:
     method: put
     uri: https://quickbooks-desktop-integration.s3.amazonaws.com/54591b3a5869632afc090000/flowlink_pending/products_the%20internets_.json
     body:
-      encoding: ASCII-8BIT
-      string: |-
-        id,name,sku,description,price,cost_price,available_on,permalink,meta_description,meta_keywords,shipping_category
-        the internets,the internets,the internets,the internets,35,22.33,2014-01-29T14:01:28.000Z,spree-tshirt,,,Default
+      encoding: UTF-8
+      string: '[{"id":"e internets","product_id":"the internets","name":"the internets","sku":"the
+        internets","description":"the internets","price":35,"cost_price":22.33,"available_on":"2014-01-29T14:01:28.000Z","permalink":"spree-tshirt","meta_description":null,"meta_keywords":null,"shipping_category":"Default","external_guid":"{B8660FC7-DA70-455E-A349-95AB46AA2CF8}","request_id":null,"shipping_address":{"firstname":"Generic","lastname":"Customer","address1":"No
+        Address","address2":"No Address","zipcode":"12345","city":"No City","state":"Pennsylvania","country":"US","phone":"555-555-1212"},"billing_address":{"firstname":"Generic","lastname":"Customer","address1":"No
+        Address","address2":"No Address","zipcode":"12345","city":"No City","state":"Pennsylvania","country":"US","phone":"555-555-1212"}}]'
     headers:
       Content-Type:
       - ''
       Accept-Encoding:
       - ''
-      Content-Length:
-      - '225'
       User-Agent:
-      - aws-sdk-ruby/1.57.0 ruby/2.1.5 x86_64-darwin14.0
-      Date:
-      - Tue, 18 Nov 2014 17:27:34 GMT
+      - aws-sdk-ruby2/2.10.22 ruby/2.4.2 x86_64-linux resources
+      Expect:
+      - 100-continue
+      Content-Md5:
+      - fbhcTJvzDlTAmdRB1pwJ2Q==
+      X-Amz-Date:
+      - 20200714T195132Z
+      Host:
+      - quickbooks-desktop-integration.s3.amazonaws.com
+      X-Amz-Content-Sha256:
+      - 004ddbfd73c4f18a963a7a7f1a0bcace495d7dfbb468501cb4700b4d1df34114
       Authorization:
       - AUTHORIZATION
+      Content-Length:
+      - '792'
       Accept:
       - "*/*"
   response:
@@ -244,13 +242,13 @@ http_interactions:
       message: OK
     headers:
       X-Amz-Id-2:
-      - M4m4kxIgrD3IexVaqC3EKWzW12AVeheGs4ttC6/f8JVeMNOL6lHaMPAkg9zzjg5UEa4qZHOFQGw=
+      - 00P1dTZCtMSTS8MhtX+JtYDbtNxzqj3lkOIX0NcxbsA685tr2j+qwqbnN5fbEmhFYW+ugFDAm6Y=
       X-Amz-Request-Id:
-      - 6F56E5E8FA61223A
+      - E90D3642202C097A
       Date:
-      - Tue, 18 Nov 2014 17:27:36 GMT
+      - Tue, 14 Jul 2020 19:51:33 GMT
       Etag:
-      - '"14e1b123ab0c677ce3df56a034f4f49e"'
+      - '"7db85c4c9bf30e54c099d441d69c09d9"'
       Content-Length:
       - '0'
       Server:
@@ -259,48 +257,5 @@ http_interactions:
       encoding: UTF-8
       string: ''
     http_version: 
-  recorded_at: Tue, 18 Nov 2014 17:27:35 GMT
-- request:
-    method: get
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/?max-keys=1000&prefix=54591b3a5869632afc090000/flowlink_ready/notification_
-    body:
-      encoding: US-ASCII
-      string: ''
-    headers:
-      Content-Type:
-      - ''
-      Accept-Encoding:
-      - ''
-      User-Agent:
-      - aws-sdk-ruby/1.57.0 ruby/2.1.5 x86_64-darwin14.0
-      Date:
-      - Tue, 18 Nov 2014 17:27:35 GMT
-      Authorization:
-      - AUTHORIZATION
-      Accept:
-      - "*/*"
-  response:
-    status:
-      code: 200
-      message: OK
-    headers:
-      X-Amz-Id-2:
-      - H6RTB4x0EemZbBF9GPKSgN9Y8m84In9fZEvOmV4oGiF7qJaVqmLpQSYkML6oGKdMX4T9DbpkjpY=
-      X-Amz-Request-Id:
-      - 768E637BEB8181FB
-      Date:
-      - Tue, 18 Nov 2014 17:27:37 GMT
-      Content-Type:
-      - application/xml
-      Transfer-Encoding:
-      - chunked
-      Server:
-      - AmazonS3
-    body:
-      encoding: UTF-8
-      string: |-
-        <?xml version="1.0" encoding="UTF-8"?>
-        <ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>quickbooks-desktop-integration</Name><Prefix>54591b3a5869632afc090000/flowlink_ready/notification_</Prefix><Marker></Marker><MaxKeys>1000</MaxKeys><IsTruncated>false</IsTruncated></ListBucketResult>
-    http_version: 
-  recorded_at: Tue, 18 Nov 2014 17:27:36 GMT
-recorded_with: VCR 2.9.3
+  recorded_at: Tue, 14 Jul 2020 19:51:32 GMT
+recorded_with: VCR 3.0.3

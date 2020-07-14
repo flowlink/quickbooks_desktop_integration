@@ -10,14 +10,16 @@ describe QuickbooksDesktopEndpoint do
         'quickbooks_income_account'    => 'Inventory Asset',
         'quickbooks_cogs_account'      => 'Inventory Asset',
         'quickbooks_inventory_account' => 'Inventory Asset',
-        'payload_type'      => 'products'
+        'payload_type'      => 'product',
+        'return_to_fl' => ""
       }
     }
 
-    VCR.use_cassette 'products/32425454354353' do
+    Aws.config[:stub_responses] = false
+    VCR.use_cassette 'products/32425454354353' do |cas|
       post '/add_products', request.to_json, headers
       expect(last_response.status).to be 200
-      expect(body['summary']).to eq 'Products waiting for Quickbooks Desktop scheduler'
+      expect(last_response.body).to include('Product waiting for Quickbooks Desktop scheduler')
     end
   end
 
@@ -69,6 +71,7 @@ describe QuickbooksDesktopEndpoint do
       }
     }
 
+    Aws.config[:stub_responses] = false
     VCR.use_cassette 'requests/425435435234532' do
       post '/get_inventories', request.to_json, headers
 
@@ -85,6 +88,7 @@ describe QuickbooksDesktopEndpoint do
   it 'gets no inventories' do
     headers = auth.merge('HTTP_X_HUB_STORE' => '54591b3a5869632afc090000')
 
+    Aws.config[:stub_responses] = false
     VCR.use_cassette 'requests/43535345325' do
       post '/get_inventories', {}.to_json, headers
       expect(json_response[:summary]).to eq nil
@@ -104,6 +108,7 @@ describe QuickbooksDesktopEndpoint do
       }
     }
 
+    Aws.config[:stub_responses] = false
     VCR.use_cassette 'requests/4253442355352' do
       post '/get_products', request.to_json, headers
 
