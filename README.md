@@ -80,7 +80,7 @@ The following webhooks are implemented:
 * **get_inventorywithsites**: Gets inventories by Site from QuickBooks
 
 * **get_notifications**: Retrieves succes and failure notifications from previous requests
-* **healthcheck**: Runs a check to see when the last time the QBWC connected with this integration. Returns an error if the amount of time is past a certain threshold
+* **get_health_check**: Runs a check to see when the last time the QBWC connected with this integration. Returns an error if the amount of time is past a certain threshold
 
 ### add_orders
 
@@ -174,7 +174,7 @@ creditmemo: {
 ### Running the Health Check
 
 FlowLink relies on the QuickBooks Web Connector (QBWC) to connect with QuickBooks Enterprise applications, but FlowLink has no development control over the QBWC. So when the QBWC either gets closed or the auto-run gets turned off, FlowLink is not automatically notified.
-To ensure that clients are notified quickly if this happens, you can use the /healthcheck endpoint to determine if the QBWC is still running. The /healthcheck endpoint checks a file in S3 named /settings/healthcheck.json. This file stores the timestamp of the last time the QBWC made a request to the integration. The timestamp is updated when the QBWC makes a request to the integration (On both send_request_xml and receive_response_xml but not any of the other QBWC endpoints). The /healthcheck endpoint checks the timestamp using the following formula:
+To ensure that clients are notified quickly if this happens, you can use the /get_health_check endpoint to determine if the QBWC is still running. The /get_health_check endpoint checks a file in S3 named /settings/healthcheck.json. This file stores the timestamp of the last time the QBWC made a request to the integration. The timestamp is updated when the QBWC makes a request to the integration (On both send_request_xml and receive_response_xml but not any of the other QBWC endpoints). The /get_health_check endpoint checks the timestamp using the following formula:
 
 ```ruby
 now = Time.now.utc
