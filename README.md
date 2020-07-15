@@ -1,5 +1,15 @@
 # Quickbooks Desktop Integration
 
+## Get it Running
+
+You can run the integration locally:
+
+```sh
+scripts/run_local.sh
+```
+
+The script accepts further arguments for docker-compose like `build`, `up`, etc
+
 ## Overview
 
 [Quickbooks](http://quickbooks.intuit.com) is an accounting software package developed and marketed by [Intuit](http://www.intuit.com).
@@ -21,6 +31,7 @@ product. With this integration you can perform the following functions:
 * Send shipments to Quickbooks
 * Set/Receives inventories to Quicbooks
 * Receives inventories by site from Quicbooks
+* Run a "healthcheck" to ensure the QBWC is still contacting the integration
 
 ## Connection Parameters
 
@@ -68,6 +79,9 @@ The following webhooks are implemented:
 * **get_inventories**: Gets inventories from QuickBooks
 * **get_inventorywithsites**: Gets inventories by Site from QuickBooks
 
+* **get_notifications**: Retrieves succes and failure notifications from previous requests
+* **healthcheck**: Runs a check to see when the last time the QBWC connected with this integration. Returns an error if the amount of time is past a certain threshold
+
 ### add_orders
 
 The `add_orders` hook creates a Sales Order in QB for each order.
@@ -104,6 +118,7 @@ The following parameters are required when setting up a Flow with this webhook:
 | return_all | Use to return all objects |
 | receive | I think this gets set within the integration |
 | flow | I think this gets set within the integration |
+| health_check_threshold_in_minutes | Minute threshold to determine if the QBWC is failing it's healthcheck or not |
 
 [Adding QBE Refs Readme](./QBE_REFS.md)
 
@@ -154,6 +169,50 @@ creditmemo: {
   other: "192839:::Credit Card",
   # More fields...
 }
+```
+
+### Running the Health Check
+
+FlowLink relies on the QuickBooks Web Connector (QBWC) to connect with QuickBooks Enterprise applications, but FlowLink has no development control over the QBWC. So when the QBWC either gets closed or the auto-run gets turned off, FlowLink is not automatically notified.
+To ensure that clients are notified quickly if this happens, you can use the /healthcheck endpoint to determine if the QBWC is still running. The /healthcheck endpoint checks a file in S3 named /settings/healthcheck.json. This file stores the timestamp of the last time the QBWC made a request to the integration. The timestamp is updated when the QBWC makes a request to the integration (On both send_request_xml and receive_response_xml but not any of the other QBWC endpoints). The /healthcheck endpoint checks the timestamp using the following formula:
+
+```ruby
+now = Time.now.utc
+
+# Default the last contact to right now
+last_contact = healthcheck_settings[:qbwc_last_contact_at] || now.to_s
+
+# Calculate the time difference in minutes from now and the last contact with the QBWC
+difference_in_minutes = (now - Time.parse(last_contact).utc) / 60.0
+
+# Calculate the threshold for determining if we should consider the QBWC as failing the healthcheck
+threshold = config[:health_check_threshold_in_minutes] || DEFAULT_HEALTHCHECK_THRESHOLD
+
+threshold.to_i < difference_in_minutes
+```
+
+The integration will automatically set `qbwc_last_contact_at` as the QBWC runs. The default threshold (in minutes) is 5. To set your own threshold, use the `health_check_threshold_in_minutes` config parameter.
+
+Some things to note:
+
+1. If the QBWC goes down, FlowLink will continue to generate errors until the situation is rectified
+2. If the QBWC is set to autorun at a higher than normal rate, please consider this when setting the `health_check_threshold_in_minutes` parameter
+
+## Specs
+
+### Running Specs
+
+You can run all the specs for the project by using the `run_tests.sh` script. The script allows you to append further commands ("--seed 1234", a specific test to run only instead of the full suite, etc)
+
+### Specs and AWS config
+
+[VCR](https://github.com/vcr/vcr) is utilized for many of the specs while some specs simply stub out AWS connections. It's important to explicitly dictate if you want to stub out AWS or not. The tests run randomly and the global setting for stubbing AWS connections can be turned on and off per test, so it's not guaranteed to be a specific value before each test is run.
+You can explicitly set the value per test by adding `Aws.config[:stub_responses] = <boolean>` before the test runs, or you can set the value for the entire file by adding the following at the top of your specs for that file:
+
+```ruby
+before(:each) do
+  Aws.config[:stub_responses] = <boolean>
+end
 ```
 
 ## About FlowLink
