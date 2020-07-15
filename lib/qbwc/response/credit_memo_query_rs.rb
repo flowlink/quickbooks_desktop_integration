@@ -109,6 +109,9 @@ module QBWC
             }.compact,
             class_name: record.dig('ClassRef', 'FullName'),
             customer_name: record.dig('CustomerRef', 'FullName'),
+            customer: {
+              name: record.dig('CustomerRef', 'FullName'),
+            },
             ar_account: record.dig('ARAccountRef', 'FullName'),
             template: record.dig('TemplateRef', 'FullName'),
             is_pending: record['IsPending'],
@@ -138,7 +141,9 @@ module QBWC
             linked_qbe_transactions: linked_qbe_transactions(record),
             other: record['Other'],
             relationships: [
+              { key: 'name', object: 'customer'},
               { key: 'po_number', object: 'invoice' },
+              { key: 'sku', object: 'product', location: 'line_items'},
               { key: 'purchase_order_number', object: 'order' }
             ]
           }.compact
