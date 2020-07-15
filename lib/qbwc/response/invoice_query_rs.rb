@@ -215,7 +215,7 @@ module QBWC
             transaction_date: txn['TxnDate'].to_s,
             link_type: txn['LinkType'],
             amount: txn['Amount'],
-            line_item_amount: item['Amount']
+            line_item_amount: txn['Amount']
           }
         end
       end
