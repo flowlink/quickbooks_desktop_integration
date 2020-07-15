@@ -96,7 +96,7 @@ module Persistence
 
       healthcheck_settings = info.values.first
       now = Time.now.utc
-      last_contact = healthcheck_settings[:qbwc_last_contact_at] || now.to_s
+      last_contact = healthcheck_settings["qbwc_last_contact_at"] || now.to_s
       difference_in_minutes = (now - Time.parse(last_contact).utc) / 60.0
       threshold.to_i < difference_in_minutes
     end
