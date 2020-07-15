@@ -11,6 +11,7 @@ RSpec.describe QBWC::Response::CreditMemoQueryRs do
         "key"=>["qbe_id", "external_guid"],
         "created_at"=>"2015-02-04T17:22:56-05:00",
         "modified_at"=>"2015-02-04T17:22:56-05:00",
+        "customer" => {"name"=>nil},
         "total" => "0",
         "billing_address"=>{},
         "shipping_address"=>{},
@@ -24,7 +25,7 @@ RSpec.describe QBWC::Response::CreditMemoQueryRs do
         "po_number" => "test",
         "invoice" => {"po_number"=> "test"},
         "order" => {"purchase_order_number"=> "test"},
-        "relationships" => [{"key"=>"po_number", "object"=>"invoice"}, {"key"=>"purchase_order_number", "object"=>"order"}],
+        "relationships" => [{"key"=>"name", "object"=>"customer"}, {"key"=>"po_number", "object"=>"invoice"}, {"key"=>"sku", "object"=>"product", "location"=>"line_items"}, {"key"=>"purchase_order_number", "object"=>"order"}],
         "ship_date"=>""
       }
     }
