@@ -474,7 +474,7 @@ module Persistence
         new_version_of_object = amazon_s3.bucket.object("#{path.base_name}/#{destination_folder_name}/#{reverted_filename}.json")
 
         unless new_version_of_object.exists?
-          new_file_name = "#{path.base_name_w_bucket}/#{destination_folder_name}/#{reverted_filename}"
+          new_file_name = "#{path.base_name}/#{destination_folder_name}/#{reverted_filename}"
           amazon_s3.export file_name: new_file_name, objects: [s3_object_json]
         else
           # MARCTODO: 
@@ -873,7 +873,7 @@ module Persistence
 
       now = Time.now.utc
       difference_in_minutes = (now - last_modified) / 60.0
-      difference_in_minutes <= retry_pending_threshold_min_amount
+      difference_in_minutes > retry_pending_threshold_min_amount
     end
 
     def retry_pending_threshold_min_amount
