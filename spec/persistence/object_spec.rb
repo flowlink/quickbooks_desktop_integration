@@ -315,7 +315,7 @@ module Persistence
       end
     end
 
-    describe '#should_retry_pending_object?' do
+    describe '#should_retry_in_progress_object?' do
       let(:config) { { origin: 'flowlink', connection_id: 'rspec_testing' } }
       let(:s3_converted_json) { { 'qbe_integration_retry_counter' => retry_number} }
       let(:retry_number) { rand(3) }
@@ -327,7 +327,7 @@ module Persistence
           it 'returns true' do
             subject = described_class.new(config, {})
             allow(subject).to receive(:is_old_enough_to_be_moved?).and_return(true)
-            expect(subject.send(:should_retry_pending_object?, s3_converted_json, last_modified)).to be true
+            expect(subject.send(:should_retry_in_progress_object?, s3_converted_json, last_modified)).to be true
           end
         end
 
@@ -335,7 +335,7 @@ module Persistence
           let(:retry_number) { rand(5) + 3 }
           it 'returns false' do
             subject = described_class.new(config, {})
-            expect(subject.send(:should_retry_pending_object?, s3_converted_json, last_modified)).to be false
+            expect(subject.send(:should_retry_in_progress_object?, s3_converted_json, last_modified)).to be false
           end
         end
 
@@ -343,7 +343,7 @@ module Persistence
           it 'returns true' do
             subject = described_class.new(config, {})
             allow(subject).to receive(:is_old_enough_to_be_moved?).and_return(true)
-            expect(subject.send(:should_retry_pending_object?, s3_converted_json, last_modified)).to be true
+            expect(subject.send(:should_retry_in_progress_object?, s3_converted_json, last_modified)).to be true
           end
         end
       end
@@ -354,7 +354,7 @@ module Persistence
           it 'returns false' do
             subject = described_class.new(config, {})
             allow(subject).to receive(:is_old_enough_to_be_moved?).and_return(false)
-            expect(subject.send(:should_retry_pending_object?, s3_converted_json, last_modified)).to be false
+            expect(subject.send(:should_retry_in_progress_object?, s3_converted_json, last_modified)).to be false
           end
         end
 
@@ -362,7 +362,7 @@ module Persistence
           let(:retry_number) { rand(5) + 3 }
           it 'returns false' do
             subject = described_class.new(config, {})
-            expect(subject.send(:should_retry_pending_object?, s3_converted_json, last_modified)).to be false
+            expect(subject.send(:should_retry_in_progress_object?, s3_converted_json, last_modified)).to be false
           end
         end
 
@@ -370,7 +370,7 @@ module Persistence
           it 'returns false' do
             subject = described_class.new(config, {})
             allow(subject).to receive(:is_old_enough_to_be_moved?).and_return(false)
-            expect(subject.send(:should_retry_pending_object?, s3_converted_json, last_modified)).to be false
+            expect(subject.send(:should_retry_in_progress_object?, s3_converted_json, last_modified)).to be false
           end
         end
       end
@@ -397,7 +397,7 @@ module Persistence
             allow(s3_settings).to receive(:healthceck_is_failing?).and_return(false)
 
             subject = described_class.new(config, {})
-            allow(subject).to receive(:retry_pending_threshold_min_amount).and_return(30)
+            allow(subject).to receive(:retry_in_progress_threshold_amount).and_return(30)
             
             expect(subject.send(:is_old_enough_to_be_moved?, last_modified)).to be true
           end
@@ -410,7 +410,7 @@ module Persistence
             allow(s3_settings).to receive(:healthceck_is_failing?).and_return(false)
             
             subject = described_class.new(config, {})
-            allow(subject).to receive(:retry_pending_threshold_min_amount).and_return(30)
+            allow(subject).to receive(:retry_in_progress_threshold_amount).and_return(30)
 
             expect(subject.send(:is_old_enough_to_be_moved?, last_modified)).to be false
           end
@@ -418,40 +418,40 @@ module Persistence
       end
     end
 
-    describe 'retry_pending_threshold_min_amount' do
-      let(:config) { { origin: 'flowlink', connection_id: 'rspec_testing', retry_pending_threshold_min_amount: retry_param_num } }
+    describe 'retry_in_progress_threshold_amount' do
+      let(:config) { { origin: 'flowlink', connection_id: 'rspec_testing', retry_threshold_in_minutes: retry_param_num } }
       let(:retry_param_num) { rand(100) + 5 }
 
-      describe 'given a config with no retry_pending_threshold_min_amount param' do
+      describe 'given a config with no retry_threshold_in_minutes param' do
         let(:config) { { origin: 'flowlink', connection_id: 'rspec_testing' } }
         it 'returns the default of 30' do
           subject = described_class.new(config, {})
-          expect(subject.send(:retry_pending_threshold_min_amount)).to eq(30)
+          expect(subject.send(:retry_in_progress_threshold_amount)).to eq(30)
         end
       end
 
-      describe 'given a config with retry_pending_threshold_min_amount set to less than 5' do
-        let(:config) { { origin: 'flowlink', connection_id: 'rspec_testing', retry_pending_threshold_min_amount: rand(5) } }
+      describe 'given a config with retry_threshold_in_minutes set to less than 5' do
+        let(:config) { { origin: 'flowlink', connection_id: 'rspec_testing', retry_threshold_in_minutes: rand(5) } }
         it 'returns the default of 30' do
           subject = described_class.new(config, {})
-          expect(subject.send(:retry_pending_threshold_min_amount)).to eq(30)
+          expect(subject.send(:retry_in_progress_threshold_amount)).to eq(30)
         end
       end
 
-      describe 'given a config with retry_pending_threshold_min_amount greater than 5' do
+      describe 'given a config with retry_threshold_in_minutes greater than 5' do
         it 'returns the config param as an integer' do
           subject = described_class.new(config, {})
-          expect(subject.send(:retry_pending_threshold_min_amount)).to eq(retry_param_num)
+          expect(subject.send(:retry_in_progress_threshold_amount)).to eq(retry_param_num)
         end
       end
 
-      describe 'given a config with retry_pending_threshold_min_amount set as an array or object' do
+      describe 'given a config with retry_threshold_in_minutes set as an array or object' do
         let(:retry_param_num) { [[], {}][rand(2)] }
         it 'raises an error' do
-          error_msg = /The param retry_pending_threshold_min_amount may be incorrect. It should be an integer value/
+          error_msg = /The param retry_threshold_in_minutes may be incorrect. It should be an integer value/
           subject = described_class.new(config, {})
           expect {
-            subject.send(:retry_pending_threshold_min_amount)
+            subject.send(:retry_in_progress_threshold_amount)
           }.to raise_error(NoMethodError, error_msg)
         end
       end

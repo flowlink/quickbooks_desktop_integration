@@ -1,6 +1,10 @@
 require 'spec_helper'
 
 describe QBWC::Response::All do
+  before(:each) do
+    Aws.config[:stub_responses] = true
+  end
+
   subject { described_class.new Factory.item_query_rs_qbxml }
 
   describe '#process' do
