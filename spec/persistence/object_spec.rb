@@ -314,5 +314,112 @@ module Persistence
         expect { subject.send(:type_and_identifier_filename, object, identifier) }.to raise_error(NoMethodError)
       end
     end
+
+    describe '#should_retry_pending_object?' do
+      let(:config) { { origin: 'flowlink', connection_id: 'rspec_testing' } }
+      let(:s3_converted_json) { { 'qbe_integration_retry_counter' => retry_number} }
+      let(:retry_number) { rand(3) }
+      let(:last_modified) { Time.now.utc }
+
+      describe 'with an object that has been in in_progress for a while' do
+        describe 'given json with no qbe_integration_retry_counter key' do
+          let(:s3_converted_json) { { 'some_other_key' => retry_number} }
+          it 'returns true' do
+            subject = described_class.new(config, {})
+            allow(subject).to receive(:is_old_enough_to_be_moved?).and_return(true)
+            expect(subject.send(:should_retry_pending_object?, s3_converted_json, last_modified)).to be true
+          end
+        end
+
+        describe 'given json with a qbe_integration_retry_counter key greater than or equal to 3' do
+          let(:retry_number) { rand(5) + 3 }
+          it 'returns false' do
+            subject = described_class.new(config, {})
+            expect(subject.send(:should_retry_pending_object?, s3_converted_json, last_modified)).to be false
+          end
+        end
+
+        describe 'given json with a qbe_integration_retry_counter key less than 3' do
+          it 'returns true' do
+            subject = described_class.new(config, {})
+            allow(subject).to receive(:is_old_enough_to_be_moved?).and_return(true)
+            expect(subject.send(:should_retry_pending_object?, s3_converted_json, last_modified)).to be true
+          end
+        end
+      end
+
+      describe 'with an object that has been in in_progress for a short period of time' do
+        describe 'given json with no qbe_integration_retry_counter key' do
+          let(:s3_converted_json) { { 'some_other_key' => retry_number} }
+          it 'returns false' do
+            subject = described_class.new(config, {})
+            allow(subject).to receive(:is_old_enough_to_be_moved?).and_return(false)
+            expect(subject.send(:should_retry_pending_object?, s3_converted_json, last_modified)).to be false
+          end
+        end
+
+        describe 'given json with a qbe_integration_retry_counter key greater than or equal to 3' do
+          let(:retry_number) { rand(5) + 3 }
+          it 'returns false' do
+            subject = described_class.new(config, {})
+            expect(subject.send(:should_retry_pending_object?, s3_converted_json, last_modified)).to be false
+          end
+        end
+
+        describe 'given json with a qbe_integration_retry_counter key less than 3' do
+          it 'returns false' do
+            subject = described_class.new(config, {})
+            allow(subject).to receive(:is_old_enough_to_be_moved?).and_return(false)
+            expect(subject.send(:should_retry_pending_object?, s3_converted_json, last_modified)).to be false
+          end
+        end
+      end
+    end
+
+    describe '#is_old_enough_to_be_moved?' do
+      it '' do
+      end
+    end
+
+    describe 'retry_pending_threshold_mins' do
+      let(:config) { { origin: 'flowlink', connection_id: 'rspec_testing', retry_pending_threshold_mins: retry_param_num } }
+      let(:retry_param_num) { rand(100) + 5 }
+
+      describe 'given a config with no retry_pending_threshold_mins param' do
+        let(:config) { { origin: 'flowlink', connection_id: 'rspec_testing' } }
+        it 'returns the default of 30' do
+          subject = described_class.new(config, {})
+          expect(subject.send(:retry_pending_threshold_mins)).to eq(30)
+        end
+      end
+
+      describe 'given a config with retry_pending_threshold_mins set to less than 5' do
+        let(:config) { { origin: 'flowlink', connection_id: 'rspec_testing', retry_pending_threshold_mins: rand(5) } }
+        it 'returns the default of 30' do
+          subject = described_class.new(config, {})
+          expect(subject.send(:retry_pending_threshold_mins)).to eq(30)
+        end
+      end
+
+      describe 'given a config with retry_pending_threshold_mins greater than 5' do
+        it 'returns the config param as an integer' do
+          subject = described_class.new(config, {})
+          expect(subject.send(:retry_pending_threshold_mins)).to eq(retry_param_num)
+        end
+      end
+
+      describe 'given a config with retry_pending_threshold_mins set as an array or object' do
+        let(:retry_param_num) { [[], {}][rand(2)] }
+        it 'raises an error' do
+          error_msg = /The param retry_pending_threshold_mins may be incorrect. It should be an integer value or removed so the default value (30) is used. Error Message:/
+          subject = described_class.new(config, {})
+          expect {
+            subject.send(:retry_pending_threshold_mins)
+          }.to raise_error(error_msg)
+        end
+      end
+      
+    end
+
   end
 end

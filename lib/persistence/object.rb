@@ -15,6 +15,9 @@ module Persistence
 
     IDS_TO_LOG_S3_OBJ_MOVEMENT = ENV.fetch('IDS_TO_LOG', '').split(',')
 
+    DEFAULT_PENDING_THRESHOLD_MINS = 30
+    RETRY_CUTOFF = 3
+
     class << self
       def handle_error(config, error_context, object_type, request_id)
         Persistence::Object.new(config, {})
@@ -449,6 +452,39 @@ module Persistence
       amazon_s3.export file_name: new_file_name, objects: save_object
     end
 
+    def retry_in_progress_objects_that_are_stuck
+      prefix = "#{path.base_name}/#{path.in_progress}"
+      collection = amazon_s3.bucket.objects(prefix: prefix)
+
+      collection.each do |s3_object|
+        _, _, filename    = s3_object.key.split('/')
+        object_type, identifier, _ = filename.split('_')
+
+        s3_object_json = amazon_s3.convert_download('json', s3_object.get.body.read).first
+        next unless should_retry_pending_object?(s3_object_json, s3_object.last_modified)
+
+        # Remove old object and update counter
+        amazon_s3.bucket.object(s3_object.key).delete
+        s3_object_json['qbe_integration_retry_counter'] = s3_object_json['qbe_integration_retry_counter'].to_i + 1
+
+        @payload_key = object_type # Need to set here => `two_phase?` uses payload_key
+
+        reverted_filename = "#{object_type.pluralize}_#{identifier}_.json"
+        destination_folder_name = two_phase? ? path.two_phase_pending : path.pending
+        new_version_of_object = amazon_s3.bucket.object("#{path.base_name}/#{destination_folder_name}/#{reverted_filename}.json")
+
+        unless new_version_of_object.exists?
+          new_file_name = "#{path.base_name_w_bucket}/#{destination_folder_name}/#{reverted_filename}"
+          amazon_s3.export file_name: new_file_name, objects: [s3_object_json]
+        else
+          # MARCTODO: 
+          # Tag this in_progress object with the correct error message?
+          # Create a notification maybe to send to FL?
+          # "The object failed, but a newer one exists, so we aren't going to retry this one"
+        end
+      end
+    end
+
     private
 
     def auto_create_products
@@ -823,6 +859,32 @@ module Persistence
 
     def should_log_s3_obj_movement?(id)
       IDS_TO_LOG_S3_OBJ_MOVEMENT.include?(id)
+    end
+
+    def should_retry_pending_object?(s3_object_json, last_modified)
+      s3_object_json['qbe_integration_retry_counter'].to_i < RETRY_CUTOFF &&
+      is_old_enough_to_be_moved?(last_modified)
+    end
+
+    def is_old_enough_to_be_moved?(last_modified)
+      s3_settings = Persistence::Settings.new(config)
+      # If web connector is off/stuck, we shouldn't necesarily retry these?
+      return false if s3_settings.healthceck_is_failing?
+
+      now = Time.now.utc
+      difference_in_minutes = (now - last_modified) / 60.0
+      difference_in_minutes <= retry_pending_threshold_mins
+    end
+
+    def retry_pending_threshold_mins
+      begin
+        # Threshold should be at least 5 minutes to allow for connector to run a couple times
+        param_as_int = config[:retry_pending_threshold_mins].to_i
+        param_as_int < 5 ? DEFAULT_PENDING_THRESHOLD_MINS : param_as_int
+      rescue NoMethodError => e
+        puts "HQ(WDUNQIDNQNDUQWNNDUI"
+        raise NoMethodError.new("The param retry_pending_threshold_mins may be incorrect. It should be an integer value or removed so the default value (30) is used. Error Message: #{e.message}")
+      end
     end
   end
 end
