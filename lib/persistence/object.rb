@@ -882,8 +882,7 @@ module Persistence
         param_as_int = config[:retry_pending_threshold_mins].to_i
         param_as_int < 5 ? DEFAULT_PENDING_THRESHOLD_MINS : param_as_int
       rescue NoMethodError => e
-        puts "HQ(WDUNQIDNQNDUQWNNDUI"
-        raise NoMethodError.new("The param retry_pending_threshold_mins may be incorrect. It should be an integer value or removed so the default value (30) is used. Error Message: #{e.message}")
+        raise "The param retry_pending_threshold_mins may be incorrect. It should be an integer value or removed so the default value (30) is used. Error Message: #{e.message}")
       end
     end
   end
