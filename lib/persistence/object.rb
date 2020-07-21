@@ -467,7 +467,7 @@ module Persistence
         amazon_s3.bucket.object(s3_object.key).delete
         s3_object_json['qbe_integration_retry_counter'] = s3_object_json['qbe_integration_retry_counter'].to_i + 1
 
-        @payload_key = object_type # Need to set here => `two_phase?` uses payload_key
+        @payload_key = object_type # Need to set here because `two_phase?` uses payload_key
 
         reverted_filename = "#{object_type.pluralize}_#{identifier}_.json"
         destination_folder_name = two_phase? ? path.two_phase_pending : path.pending
@@ -477,7 +477,7 @@ module Persistence
           new_file_name = "#{path.base_name}/#{destination_folder_name}/#{reverted_filename}"
           amazon_s3.export file_name: new_file_name, objects: [s3_object_json]
         else
-          # MARCTODO: 
+          # TODO: 
           # Tag this in_progress object with the correct error message?
           # Create a notification maybe to send to FL?
           # "The object failed, but a newer one exists, so we aren't going to retry this one"
@@ -868,7 +868,6 @@ module Persistence
 
     def is_old_enough_to_be_moved?(last_modified)
       s3_settings = Persistence::Settings.new(config)
-      # If web connector is off/stuck, we shouldn't necesarily retry these?
       return false if s3_settings.healthceck_is_failing?
 
       now = Time.now.utc
