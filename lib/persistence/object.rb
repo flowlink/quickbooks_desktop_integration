@@ -873,16 +873,16 @@ module Persistence
 
       now = Time.now.utc
       difference_in_minutes = (now - last_modified) / 60.0
-      difference_in_minutes <= retry_pending_threshold_mins
+      difference_in_minutes <= retry_pending_threshold_min_amount
     end
 
-    def retry_pending_threshold_mins
+    def retry_pending_threshold_min_amount
       begin
         # Threshold should be at least 5 minutes to allow for connector to run a couple times
-        param_as_int = config[:retry_pending_threshold_mins].to_i
+        param_as_int = config[:retry_pending_threshold_min_amount].to_i
         param_as_int < 5 ? DEFAULT_PENDING_THRESHOLD_MINS : param_as_int
       rescue NoMethodError => e
-        raise "The param retry_pending_threshold_mins may be incorrect. It should be an integer value or removed so the default value (30) is used. Error Message: #{e.message}")
+        raise e, "The param retry_pending_threshold_min_amount may be incorrect. It should be an integer value or removed so the default value (30) is used. Error Message: #{e.message}"
       end
     end
   end

@@ -381,41 +381,41 @@ module Persistence
       end
     end
 
-    describe 'retry_pending_threshold_mins' do
-      let(:config) { { origin: 'flowlink', connection_id: 'rspec_testing', retry_pending_threshold_mins: retry_param_num } }
+    describe 'retry_pending_threshold_min_amount' do
+      let(:config) { { origin: 'flowlink', connection_id: 'rspec_testing', retry_pending_threshold_min_amount: retry_param_num } }
       let(:retry_param_num) { rand(100) + 5 }
 
-      describe 'given a config with no retry_pending_threshold_mins param' do
+      describe 'given a config with no retry_pending_threshold_min_amount param' do
         let(:config) { { origin: 'flowlink', connection_id: 'rspec_testing' } }
         it 'returns the default of 30' do
           subject = described_class.new(config, {})
-          expect(subject.send(:retry_pending_threshold_mins)).to eq(30)
+          expect(subject.send(:retry_pending_threshold_min_amount)).to eq(30)
         end
       end
 
-      describe 'given a config with retry_pending_threshold_mins set to less than 5' do
-        let(:config) { { origin: 'flowlink', connection_id: 'rspec_testing', retry_pending_threshold_mins: rand(5) } }
+      describe 'given a config with retry_pending_threshold_min_amount set to less than 5' do
+        let(:config) { { origin: 'flowlink', connection_id: 'rspec_testing', retry_pending_threshold_min_amount: rand(5) } }
         it 'returns the default of 30' do
           subject = described_class.new(config, {})
-          expect(subject.send(:retry_pending_threshold_mins)).to eq(30)
+          expect(subject.send(:retry_pending_threshold_min_amount)).to eq(30)
         end
       end
 
-      describe 'given a config with retry_pending_threshold_mins greater than 5' do
+      describe 'given a config with retry_pending_threshold_min_amount greater than 5' do
         it 'returns the config param as an integer' do
           subject = described_class.new(config, {})
-          expect(subject.send(:retry_pending_threshold_mins)).to eq(retry_param_num)
+          expect(subject.send(:retry_pending_threshold_min_amount)).to eq(retry_param_num)
         end
       end
 
-      describe 'given a config with retry_pending_threshold_mins set as an array or object' do
+      describe 'given a config with retry_pending_threshold_min_amount set as an array or object' do
         let(:retry_param_num) { [[], {}][rand(2)] }
         it 'raises an error' do
-          error_msg = /The param retry_pending_threshold_mins may be incorrect. It should be an integer value or removed so the default value (30) is used. Error Message:/
+          error_msg = /The param retry_pending_threshold_min_amount may be incorrect. It should be an integer value/
           subject = described_class.new(config, {})
           expect {
-            subject.send(:retry_pending_threshold_mins)
-          }.to raise_error(error_msg)
+            subject.send(:retry_pending_threshold_min_amount)
+          }.to raise_error(NoMethodError, error_msg)
         end
       end
       
