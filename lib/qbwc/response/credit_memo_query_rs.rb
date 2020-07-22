@@ -78,6 +78,7 @@ module QBWC
             list_id: record['TxnID'],
             qbe_id: record['TxnID'],
             transaction_number: record['TxnNumber'],
+            ref_number: record['RefNumber'],
             external_guid: record['ExternalGUID'],
             key: ['qbe_id', 'external_guid'],
             created_at: record['TimeCreated'].to_s,
