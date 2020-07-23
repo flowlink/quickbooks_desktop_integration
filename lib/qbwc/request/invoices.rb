@@ -221,8 +221,8 @@ module QBWC
 
         def transaction_already_occured?(record, memo)
           inv_txns = record['linked_qbe_transactions']
-          cm_txns =memo['linked_qbe_transactions']
-          return false unless inv_txns.is_a? Array && cm_txns.is_a? Array
+          cm_txns = memo['linked_qbe_transactions']
+          return false unless inv_txns.is_a?(Array) && cm_txns.is_a?(Array)
 
           is_matching = false
           inv_txns.each do |inv_hash|
