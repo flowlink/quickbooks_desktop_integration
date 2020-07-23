@@ -168,6 +168,8 @@ module Persistence
         s3_object = amazon_s3.bucket.object("#{filename}.json")
         puts({connection_id: config[:connection_id], method: "update_objects_with_query_results", message: "First try using list_id as filename", object: object, filename: filename, filename_with_bucket: filename_with_bucket}) if should_log
 
+        # We first checked for a filename using the list_id field, but lots of objects don't use the list_id as the "id" in FlowLink so the list_id is not in the filename. 
+        # These objects will have been created in QBE and set the refNumber to equal whatever other identifier they use
         unless s3_object.exists?
           filename = "#{prefix}/#{type_and_identifier_filename(object, object[:object_ref])}"
           filename_with_bucket = "#{prefix_with_bucket}/#{type_and_identifier_filename(object, object[:object_ref])}"

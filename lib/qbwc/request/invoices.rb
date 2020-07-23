@@ -165,6 +165,7 @@ module QBWC
             #{shipping_method(record)}
             #{is_to_be_printed(record)}
             #{is_to_be_emailed(record)}
+            #{credit_list(record)}
           XML
         end
 
@@ -200,6 +201,39 @@ module QBWC
           <<~XML
             <IsToBeEmailed>#{record['is_to_be_emailed']}</IsToBeEmailed>
           XML
+        end
+
+        def credit_list(record)
+          return '' unless record['credit_memos']
+
+          record['credit_memos'].map do |memo|
+            next if transaction_already_occured?(record, memo)
+
+            <<~XML
+              <SetCredit>
+                <CreditTxnID>#{memo['qbe_id']}</CreditTxnID>
+                <AppliedAmount>#{memo['applied_amount']}</AppliedAmount>
+                <Override>#{false}</Override>
+              </SetCredit>
+            XML
+          end.join
+        end
+
+        def transaction_already_occured?(record, memo)
+          inv_txns = record['linked_qbe_transactions']
+          cm_txns =memo['linked_qbe_transactions']
+          return false unless inv_txns.is_a? Array && cm_txns.is_a? Array
+
+          is_matching = false
+          inv_txns.each do |inv_hash|
+            inv_hash = inv_hash.with_indifferent_access
+            cm_txns.each do |cm_hash|
+              cm_hash = cm_hash.with_indifferent_access
+              if inv_hash['qbe_transaction_id'] == memo['qbe_id'] && cm_hash['qbe_transaction_id'] == record['qbe_id']
+                is_matching = true
+              end
+            end
+          end
         end
 
         def sales_rep(record)
@@ -367,7 +401,6 @@ module QBWC
           XML
         end
 
-        
         def class_ref_for_receipt_line(line)
           return '' unless line['class_name']
 
@@ -377,7 +410,6 @@ module QBWC
             </ClassRef>
           XML
         end
-
 
         def quantity(line)
           return '' if line['quantity'].to_f == 0.0
@@ -394,8 +426,6 @@ module QBWC
             </SalesTaxCodeRef>
           XML
         end
-
-
 
         def rate_line(line)
           return '' if !line['amount'].to_s.empty? || line['use_amount'] == true
@@ -415,7 +445,6 @@ module QBWC
             <Amount>#{'%.2f' % amount.to_f}</Amount>
           XML
         end
-
 
         def build_customer_from_invoice(object)
           billing_address = object['billing_address']
