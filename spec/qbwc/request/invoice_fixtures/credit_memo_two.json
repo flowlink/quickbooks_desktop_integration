@@ -1,0 +1,15 @@
+{
+  "applied_amount": 120,
+  "qbe_id": "B7D37-1595450715",
+  "linked_qbe_transactions": [
+    {
+      "amount": "-120.00",
+      "link_type": "AMTTYPE",
+      "line_item_amount": "-120.00",
+      "transaction_date": "2020-06-17",
+      "transaction_type": "Invoice",
+      "qbe_transaction_id": "A9FB3-1592413975",
+      "qbe_reference_number": "103"
+    }
+  ]
+}

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+require 'active_support/core_ext/hash'
 
 module QBWC
   module Request
@@ -234,6 +235,8 @@ module QBWC
               end
             end
           end
+          
+          is_matching
         end
 
         def sales_rep(record)
