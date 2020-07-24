@@ -27,7 +27,7 @@ module QBWC
           config = { origin: 'quickbooks' }.merge config.reject{|k,v| k == :origin || k == 'origin'}
 
           poll_persistence = Persistence::Polling.new(config, payload)
-          poll_persistence.save_for_polling
+          poll_persistence.save_for_polling_without_timestamp
 
           credit_params['creditmemos']['quickbooks_since'] = last_time_modified
           credit_params['creditmemos']['quickbooks_force_config'] = 'true'
@@ -77,6 +77,8 @@ module QBWC
             id: record['TxnID'],
             list_id: record['TxnID'],
             qbe_id: record['TxnID'],
+            transaction_number: record['TxnNumber'],
+            ref_number: record['RefNumber'],
             external_guid: record['ExternalGUID'],
             key: ['qbe_id', 'external_guid'],
             created_at: record['TimeCreated'].to_s,

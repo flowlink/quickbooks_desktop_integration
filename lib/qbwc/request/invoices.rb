@@ -164,6 +164,7 @@ module QBWC
 						#{terms_ref_for_invoice(record)}
             #{sales_rep(record)}
             #{shipping_method(record)}
+            #{memo(record)}
             #{is_to_be_printed(record)}
             #{is_to_be_emailed(record)}
             #{credit_list(record)}
@@ -185,6 +186,14 @@ module QBWC
             <ShipMethodRef>
               <FullName>#{record['shipping_method']['name']}</FullName>
             </ShipMethodRef>
+          XML
+        end
+
+        def memo(record)
+          return '' unless record.dig('memo')
+
+          <<~XML
+            <Memo>#{record['memo']}</Memo>
           XML
         end
 
