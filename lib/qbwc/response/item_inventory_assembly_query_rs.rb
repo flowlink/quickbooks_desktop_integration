@@ -28,7 +28,7 @@ module QBWC
           config = { origin: 'quickbooks' }.merge config.reject{|k,v| k == :origin || k == "origin"}
 
           poll_persistence = Persistence::Polling.new(config, payload)
-          poll_persistence.save_for_polling
+          poll_persistence.save_for_polling_without_timestamp
         end
 
         if inventoryassemblyproduct_params
