@@ -222,7 +222,7 @@ module QBWC
             <<~XML
               <SetCredit>
                 <CreditTxnID>#{memo['qbe_id']}</CreditTxnID>
-                <AppliedAmount>#{memo['applied_amount']}</AppliedAmount>
+                <AppliedAmount>#{'%.2f' % memo['applied_amount']}</AppliedAmount>
                 <Override>#{false}</Override>
               </SetCredit>
             XML
