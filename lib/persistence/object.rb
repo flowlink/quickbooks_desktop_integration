@@ -479,10 +479,11 @@ module Persistence
           new_file_name = "#{path.base_name}/#{destination_folder_name}/#{reverted_filename}"
           amazon_s3.export file_name: new_file_name, objects: [s3_object_json]
         else
-          # TODO: 
-          # Tag this in_progress object with the correct error message?
-          # Create a notification maybe to send to FL?
-          # "The object failed, but a newer one exists, so we aren't going to retry this one"
+          error_obj = {
+            message: "This #{object_type.singularize} never finshed syncing to QuickBooks Desktop. FlowLink attempted to retry the sync, but found a more update object with the same ID.",
+            context: 'Attempting to retry sync of out of date object'
+          }
+          create_error_notifications(error_obj, object_type, s3_object_json['request_id'])
         end
       end
     end
