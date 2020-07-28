@@ -335,7 +335,6 @@ module QBWC
           XML
         end
 
-
         def cancel_order?(object)
           return '' unless object['status'].to_s == 'cancelled' || object['status'].to_s == 'closed'
 
@@ -387,7 +386,9 @@ module QBWC
               customer: object['customer'],
               invoice_txn_id: object['transaction_id'],
               amount: payment['amount'],
-              payment_method: payment['payment_method']
+              payment_method: payment['payment_method'],
+              credit_amount: payment['credit_amount'],
+              credit_txn_id: payment['credit_txn_id']
             }
           end
         end
@@ -398,7 +399,6 @@ module QBWC
           line['line_item_price'] || line['price']
         end
 
-
         def items(record)
           record['line_items'].to_a.sort { |a, b| a['product_id'] <=> b['product_id'] }
         end
@@ -407,7 +407,7 @@ module QBWC
         # If the quickbooks_use_tax_line_items is set, then don't include tax from the adjustments object, and instead
         # use tax_line_items if it exists.
         def adjustments_add_xml(record, params)
-        puts "record is #{record}"
+          puts "record is #{record}"
           final_adjustments = []
           use_tax_line_items = !params['quickbooks_use_tax_line_items'].nil? &&
                                 params['quickbooks_use_tax_line_items'] == "1" &&
