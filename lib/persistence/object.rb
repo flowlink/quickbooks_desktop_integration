@@ -455,8 +455,7 @@ module Persistence
     end
 
     def retry_in_progress_objects_that_are_stuck
-      prefix = "#{path.base_name}/#{path.in_progress}"
-      collection = amazon_s3.bucket.objects(prefix: prefix)
+      collection = amazon_s3.bucket.objects(prefix: "#{path.base_name}/#{path.in_progress}")
 
       collection.each do |s3_object|
         _, _, filename    = s3_object.key.split('/')
@@ -466,24 +465,22 @@ module Persistence
         next unless should_retry_in_progress_object?(s3_object_json, s3_object.last_modified)
 
         # Remove old object and update counter
-        amazon_s3.bucket.object(s3_object.key).delete
-        s3_object_json['qbe_integration_retry_counter'] = s3_object_json['qbe_integration_retry_counter'].to_i + 1
+        remove_old_object_and_update_retry_counter(s3_object, s3_object_json)
 
         @payload_key = object_type # Need to set here because `two_phase?` uses payload_key
 
         reverted_filename = "#{object_type.pluralize}_#{identifier}_.json"
         destination_folder_name = two_phase? ? path.two_phase_pending : path.pending
-        new_version_of_object = amazon_s3.bucket.object("#{path.base_name}/#{destination_folder_name}/#{reverted_filename}.json")
+        new_file_name = "#{path.base_name}/#{destination_folder_name}/#{reverted_filename}"
 
-        unless new_version_of_object.exists?
-          new_file_name = "#{path.base_name}/#{destination_folder_name}/#{reverted_filename}"
+        unless amazon_s3.bucket.object("#{new_file_name}.json").exists?
           amazon_s3.export file_name: new_file_name, objects: [s3_object_json]
         else
-          error_obj = {
-            message: "This #{object_type.singularize} never finshed syncing to QuickBooks Desktop. FlowLink attempted to retry the sync, but found a more update object with the same ID.",
-            context: 'Attempting to retry sync of out of date object'
-          }
-          create_error_notifications(error_obj, object_type, s3_object_json['request_id'])
+          create_error_notifications(
+                          outdated_error(object_type),
+                          object_type,
+                          s3_object_json['request_id']
+                        )
         end
       end
     end
@@ -862,6 +859,18 @@ module Persistence
 
     def should_log_s3_obj_movement?(id)
       IDS_TO_LOG_S3_OBJ_MOVEMENT.include?(id)
+    end
+
+    def remove_old_object_and_update_retry_counter(obj, json)
+      amazon_s3.bucket.object(obj.key).delete
+      json['qbe_integration_retry_counter'] = json['qbe_integration_retry_counter'].to_i + 1
+    end
+
+    def outdated_error(object_type)
+      {
+        message: "This #{object_type.singularize} never finshed syncing to QuickBooks Desktop. FlowLink attempted to retry the sync, but found a more update object with the same ID.",
+        context: 'Attempting to retry sync of out of date object'
+      }
     end
 
     def should_retry_in_progress_object?(s3_object_json, last_modified)
