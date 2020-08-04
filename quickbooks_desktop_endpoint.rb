@@ -25,6 +25,7 @@ ENDPOINTS = %w(
   add_discountproducts
   add_otherchargeproducts
   add_creditmemos
+  add_creditmemosaspayments
 )
 
 GET_ENDPOINTS =  %w(
@@ -170,7 +171,7 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
     result 200, "Inventory waiting for Quickbooks Desktop scheduler"
   end
 
- GET_ENDPOINTS.each do |path|
+  GET_ENDPOINTS.each do |path|
     post "/#{path}" do
       object_type = path.split('_').last.pluralize
 
