@@ -69,7 +69,7 @@ module QBWC
 
       def to_flowlink
         records.map do |record|
-          {
+          object = {
             id: record['ListID'],
             list_id: record['ListID'],
             qbe_id: record['ListID'],
@@ -149,6 +149,17 @@ module QBWC
             additional_contacts: additional_contacts(record),
             contacts: contacts(record)
           }.compact
+
+          custom_fields = {}
+
+          if record['DataExtRet']
+            data = [record['DataExtRet']] if record['DataExtRet'].is_a?(Hash)
+            (data || record['DataExtRet']).each do |custom_field|
+              custom_fields[custom_field["DataExtName"]] = custom_field["DataExtValue"]
+            end 
+          end
+
+          object.merge(custom_fields).compact
         end
       end
 
