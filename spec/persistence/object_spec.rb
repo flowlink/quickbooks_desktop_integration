@@ -368,16 +368,16 @@ module Persistence
         VCR.use_cassette 'persistence/move_in_progress' do
           # If you need to re-run the cassette:
           # 1. Delete the cassette
-          # 2. Uncomment the 2 commented lines of code below (that start with `amazon_s3`)
+          # 2. Uncomment the 4 commented lines of code below (that start with id assignment)
           # 3. Ensure that scripts/run_tests.sh has the REAL key/secret
           # 4. Run the spec (It will create the file in S3 in the quickbooks-desktop-integration/rspec-and-vcr/flowlink_in_progress folder)
           # 5. Delete the cassette again (since we're not testing the creation of the file, but the moving of the file)
-          # 6. Comment the 2 lines of code below (that start with `amazon_s3`)
+          # 6. Comment the 2 lines of code below (that start with id assignment)
           
-          id = Persistence::Session.save(config_for_retry, object_for_retry)
-          object_for_retry["request_id"] = id
-          amazon_s3 = S3Util.new
-          amazon_s3.export file_name: file_name_for_retry, objects: [object_for_retry]
+          # id = Persistence::Session.save(config_for_retry, object_for_retry)
+          # object_for_retry["request_id"] = id
+          # amazon_s3 = S3Util.new
+          # amazon_s3.export file_name: file_name_for_retry, objects: [object_for_retry]
           
           subject = described_class.new config_for_retry
           subject.retry_in_progress_objects_that_are_stuck
@@ -389,16 +389,16 @@ module Persistence
         VCR.use_cassette 'persistence/remove_in_progress_and_generate_notification' do
           # If you need to re-run the cassette:
           # 1. Delete the cassette
-          # 2. Uncomment the 2 commented lines of code below (that start with `amazon_s3`)
+          # 2. Uncomment the 4 commented lines of code below (that start with id assignment)
           # 3. Ensure that scripts/run_tests.sh has the REAL key/secret
           # 4. Run the spec (It will create the file in S3 in the quickbooks-desktop-integration/rspec-and-vcr/flowlink_in_progress folder)
           # 5. Delete the cassette again (since we're not testing the creation of the file, but the moving of the file)
-          # 6. Comment the 2 lines of code below (that start with `amazon_s3`)
+          # 6. Comment the 4 lines of code below (that start with id assignment)
           
-          id = Persistence::Session.save(config_for_removal, object_for_removal)
-          object_for_removal["request_id"] = id
-          amazon_s3 = S3Util.new
-          amazon_s3.export file_name: file_name_for_removal, objects: [object_for_removal]
+          # id = Persistence::Session.save(config_for_removal, object_for_removal)
+          # object_for_removal["request_id"] = id
+          # amazon_s3 = S3Util.new
+          # amazon_s3.export file_name: file_name_for_removal, objects: [object_for_removal]
 
           subject = described_class.new config_for_removal
           subject.retry_in_progress_objects_that_are_stuck
