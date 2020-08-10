@@ -14,9 +14,7 @@ module Persistence
     )
 
     IDS_TO_LOG_S3_OBJ_MOVEMENT = ENV.fetch('IDS_TO_LOG', '').split(',')
-
-    DEFAULT_PENDING_THRESHOLD_MINS = 30
-    RETRY_CUTOFF = 3
+    RETRY_CUTOFF = ENV.fetch('RETRY_CUTOFF', 3)
 
     class << self
       def handle_error(config, error_context, object_type, request_id)
