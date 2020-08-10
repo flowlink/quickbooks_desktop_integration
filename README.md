@@ -119,7 +119,6 @@ The following parameters are required when setting up a Flow with this webhook:
 | receive | I think this gets set within the integration |
 | flow | I think this gets set within the integration |
 | health_check_threshold_in_minutes | Minute threshold to determine if the QBWC is failing it's healthcheck or not |
-| retry_threshold_in_minutes | Minute threshold to determine when to start retrying objects stuck in in_progress folder |
 
 [Adding QBE Refs Readme](./QBE_REFS.md)
 
@@ -225,19 +224,9 @@ It helps because:
 1. If the request fails, future requests won't contain the object
 2. It allows us to retry valid objects that may have failed simply because they were in the same request as an invalid objects
 
-When the QBWC sends a response back the integration, we run through all the information in the response. Then, we look through the `flowlink_in_progress` folder for any objects to retry. An object only gets retried if all of the following are true:
-
-* **The healthcheck is not failing:** We don't want to retry any objects if the QBWC is down
-* **The object's last_modified is past a certain threshold:** If the object has been sitting in the `flowlink_in_progress` folder for a very short period of time, we should leave it be in case it gets moved out on subsequent requests (See **Retry Threshold** below )
-* **The object has not surpassed the retry limit:** Once we retry an object that gets stuck in the `flowlink_in_progress` folder 3 times, we'll stop retrying it.
+When the QBWC sends a response back the integration, we run through all the information in the response. Then, we look through the `flowlink_in_progress` folder for any objects to retry. An object only gets retried if the object has not surpassed the retry limit. Once we retry an object that gets stuck in the `flowlink_in_progress` folder 3 times, we'll stop retrying it.
 
 When retrying an object, we move it to the `flowlink_pending` folder or the `flowlink_two_phase_pending` folder, based on the object type.
-
-#### Retry Threshold
-
-30 minutes is the default amount of time we use to check if an object has been stuck in the `flowlink_in_progress` folder long enough to retry.
-
-Sometimes clients will need to run their QBWC at much slower rates, so you may override this default using the config param `retry_threshold_in_minutes`
 
 ### Running the Health Check
 
