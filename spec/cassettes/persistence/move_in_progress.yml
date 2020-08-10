@@ -1,8 +1,8 @@
 ---
 http_interactions:
 - request:
-    method: get
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/?encoding-type=url&prefix=rspec-and-vcr/flowlink_in_progress
+    method: head
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/
     body:
       encoding: ASCII-8BIT
       string: ''
@@ -14,7 +14,7 @@ http_interactions:
       User-Agent:
       - aws-sdk-ruby2/2.10.22 ruby/2.4.2 x86_64-linux resources
       X-Amz-Date:
-      - 20200721T200248Z
+      - 20200810T174628Z
       Host:
       - quickbooks-desktop-integration.s3.amazonaws.com
       X-Amz-Content-Sha256:
@@ -31,11 +31,211 @@ http_interactions:
       message: OK
     headers:
       X-Amz-Id-2:
-      - bZ0Trpk1BOYybMwGXDfnPNIqrGCEqpVC6Pw9EbRaWJfbYPAQ6FMRRCZowF6peDbj+qhH6Yt+FC8=
+      - nfgYNgMg7XY/hatejty6K7VmXanD+ggjwmgjyesHaO/oIJXCRQpyrZjagkq1uqB2cQqaNzC4giE=
       X-Amz-Request-Id:
-      - BFF3D989BB5CB215
+      - 0C30C3764D1B6CB8
       Date:
-      - Tue, 21 Jul 2020 20:02:49 GMT
+      - Mon, 10 Aug 2020 17:46:29 GMT
+      X-Amz-Bucket-Region:
+      - us-east-1
+      Content-Type:
+      - application/xml
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: ''
+    http_version: 
+  recorded_at: Mon, 10 Aug 2020 17:46:28 GMT
+- request:
+    method: put
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/rspec-and-vcr/flowlink_sessions/e6f5584b-3203-449b-9979-8dcf24992a96_.json
+    body:
+      encoding: UTF-8
+      string: '[{"id":"1234-test","product_id":"1234-test","qbe_integration_retry_counter":1}]'
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby2/2.10.22 ruby/2.4.2 x86_64-linux resources
+      Expect:
+      - 100-continue
+      Content-Md5:
+      - 1P6AcaSCn4gH56jWUr4r6w==
+      X-Amz-Date:
+      - 20200810T174629Z
+      Host:
+      - quickbooks-desktop-integration.s3.amazonaws.com
+      X-Amz-Content-Sha256:
+      - 7d38901cffaffbb375b9b7f0478733d21229cd6a8e53d0c64e9a3cf7e146097d
+      Authorization:
+      - AUTHORIZATION
+      Content-Length:
+      - '79'
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amz-Id-2:
+      - dB15FpObmmNdIZnV5x8UB6L8IUmd1jEPWC5ScJWXgcu9RbO3QuEC7LjDJl43cE5hPhWVApdh+yI=
+      X-Amz-Request-Id:
+      - 28A0D965D61E3B7E
+      Date:
+      - Mon, 10 Aug 2020 17:46:30 GMT
+      Etag:
+      - '"d4fe8071a4829f8807e7a8d652be2beb"'
+      Content-Length:
+      - '0'
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: ''
+    http_version: 
+  recorded_at: Mon, 10 Aug 2020 17:46:29 GMT
+- request:
+    method: head
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/
+    body:
+      encoding: ASCII-8BIT
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby2/2.10.22 ruby/2.4.2 x86_64-linux resources
+      X-Amz-Date:
+      - 20200810T174629Z
+      Host:
+      - quickbooks-desktop-integration.s3.amazonaws.com
+      X-Amz-Content-Sha256:
+      - e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+      Authorization:
+      - AUTHORIZATION
+      Content-Length:
+      - '0'
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amz-Id-2:
+      - 7B1hAfFzqz5klrfWuSst4HGleB6OHq/JGkSa83BL5HiqmB0fHF5txCaXOsxff4zaRqPWuDIZmnE=
+      X-Amz-Request-Id:
+      - 15106B9226AB6C45
+      Date:
+      - Mon, 10 Aug 2020 17:46:30 GMT
+      X-Amz-Bucket-Region:
+      - us-east-1
+      Content-Type:
+      - application/xml
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: ''
+    http_version: 
+  recorded_at: Mon, 10 Aug 2020 17:46:29 GMT
+- request:
+    method: put
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/rspec-and-vcr/flowlink_in_progress/products_1234-test_.json
+    body:
+      encoding: UTF-8
+      string: '[{"id":"1234-test","product_id":"1234-test","qbe_integration_retry_counter":1,"request_id":"e6f5584b-3203-449b-9979-8dcf24992a96_"}]'
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby2/2.10.22 ruby/2.4.2 x86_64-linux resources
+      Expect:
+      - 100-continue
+      Content-Md5:
+      - C+Yku2K5/7a6e+dOc/o1QQ==
+      X-Amz-Date:
+      - 20200810T174629Z
+      Host:
+      - quickbooks-desktop-integration.s3.amazonaws.com
+      X-Amz-Content-Sha256:
+      - 20a3ba6d1b3a0b8a58b7c95b67c88131e01c2bb984d1fc8094c842e3658e6380
+      Authorization:
+      - AUTHORIZATION
+      Content-Length:
+      - '132'
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amz-Id-2:
+      - POA1RXQ9Pz8NCa45XIqAasu13lUDCkTnno5Bb0mHTWK4RZ8YeQwlbACxaUjjoY2q2D/Qvn6R3bw=
+      X-Amz-Request-Id:
+      - 95FCFA69675667FE
+      Date:
+      - Mon, 10 Aug 2020 17:46:30 GMT
+      Etag:
+      - '"0be624bb62b9ffb6ba7be74e73fa3541"'
+      Content-Length:
+      - '0'
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: ''
+    http_version: 
+  recorded_at: Mon, 10 Aug 2020 17:46:29 GMT
+- request:
+    method: get
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/?encoding-type=url&prefix=rspec-and-vcr/flowlink_in_progress
+    body:
+      encoding: ASCII-8BIT
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby2/2.10.22 ruby/2.4.2 x86_64-linux resources
+      X-Amz-Date:
+      - 20200810T174629Z
+      Host:
+      - quickbooks-desktop-integration.s3.amazonaws.com
+      X-Amz-Content-Sha256:
+      - e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+      Authorization:
+      - AUTHORIZATION
+      Content-Length:
+      - '0'
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amz-Id-2:
+      - dRl0nUf9bG5BHW9pSk2M4BEmfgWvEKIeKse4xcnJKkZzWAqe2wYsUzFv6mTLLGxsExoZ0+o/fAU=
+      X-Amz-Request-Id:
+      - DHDK8MBTCT2P2GCY
+      Date:
+      - Mon, 10 Aug 2020 17:46:30 GMT
       X-Amz-Bucket-Region:
       - us-east-1
       Content-Type:
@@ -48,9 +248,9 @@ http_interactions:
       encoding: UTF-8
       string: |-
         <?xml version="1.0" encoding="UTF-8"?>
-        <ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>quickbooks-desktop-integration</Name><Prefix>rspec-and-vcr/flowlink_in_progress</Prefix><Marker></Marker><MaxKeys>1000</MaxKeys><EncodingType>url</EncodingType><IsTruncated>false</IsTruncated><Contents><Key>rspec-and-vcr/flowlink_in_progress/products_1234-test_.json</Key><LastModified>2020-07-21T19:54:30.000Z</LastModified><ETag>&quot;d4fe8071a4829f8807e7a8d652be2beb&quot;</ETag><Size>79</Size><Owner><ID>b61b1cd6d8e875c0b7fcfa5abc6858b8af2ecd2d85c32f240640d62ca0b0b750</ID><DisplayName>nurelm</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents></ListBucketResult>
+        <ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>quickbooks-desktop-integration</Name><Prefix>rspec-and-vcr/flowlink_in_progress</Prefix><Marker></Marker><MaxKeys>1000</MaxKeys><EncodingType>url</EncodingType><IsTruncated>false</IsTruncated><Contents><Key>rspec-and-vcr/flowlink_in_progress/products_1234-test_.json</Key><LastModified>2020-08-10T17:46:30.000Z</LastModified><ETag>&quot;0be624bb62b9ffb6ba7be74e73fa3541&quot;</ETag><Size>132</Size><Owner><ID>b61b1cd6d8e875c0b7fcfa5abc6858b8af2ecd2d85c32f240640d62ca0b0b750</ID><DisplayName>nurelm</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents></ListBucketResult>
     http_version: 
-  recorded_at: Tue, 21 Jul 2020 20:02:48 GMT
+  recorded_at: Mon, 10 Aug 2020 17:46:29 GMT
 - request:
     method: get
     uri: https://quickbooks-desktop-integration.s3.amazonaws.com/rspec-and-vcr/flowlink_in_progress/products_1234-test_.json
@@ -65,7 +265,7 @@ http_interactions:
       User-Agent:
       - aws-sdk-ruby2/2.10.22 ruby/2.4.2 x86_64-linux resources
       X-Amz-Date:
-      - 20200721T200248Z
+      - 20200810T174629Z
       Host:
       - quickbooks-desktop-integration.s3.amazonaws.com
       X-Amz-Content-Sha256:
@@ -82,79 +282,28 @@ http_interactions:
       message: OK
     headers:
       X-Amz-Id-2:
-      - 1Q2dqgXcGBTS9Mj9sH0t4qVxaqHLjNdIBFtNxiNiYCCC22toYknUlNn28NLe6+yZtOJWG1mco/8=
+      - ZNn8nEfBxI6bWHwh2Tc6l2rcEYqgtJjzd4XfzloRIIWF7szF6rLma3pqvPPBN0/J3/um5f07jv4=
       X-Amz-Request-Id:
-      - 2X2JDW1N4X1YAZDG
+      - C9DF4F797E87DAF5
       Date:
-      - Tue, 21 Jul 2020 20:02:49 GMT
+      - Mon, 10 Aug 2020 17:46:30 GMT
       Last-Modified:
-      - Tue, 21 Jul 2020 19:54:30 GMT
+      - Mon, 10 Aug 2020 17:46:30 GMT
       Etag:
-      - '"d4fe8071a4829f8807e7a8d652be2beb"'
+      - '"0be624bb62b9ffb6ba7be74e73fa3541"'
       Accept-Ranges:
       - bytes
       Content-Type:
       - ''
       Content-Length:
-      - '79'
+      - '132'
       Server:
       - AmazonS3
     body:
       encoding: UTF-8
-      string: '[{"id":"1234-test","product_id":"1234-test","qbe_integration_retry_counter":1}]'
+      string: '[{"id":"1234-test","product_id":"1234-test","qbe_integration_retry_counter":1,"request_id":"e6f5584b-3203-449b-9979-8dcf24992a96_"}]'
     http_version: 
-  recorded_at: Tue, 21 Jul 2020 20:02:49 GMT
-- request:
-    method: get
-    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/?encoding-type=url&prefix=rspec-and-vcr/settings/healthcheck
-    body:
-      encoding: ASCII-8BIT
-      string: ''
-    headers:
-      Content-Type:
-      - ''
-      Accept-Encoding:
-      - ''
-      User-Agent:
-      - aws-sdk-ruby2/2.10.22 ruby/2.4.2 x86_64-linux resources
-      X-Amz-Date:
-      - 20200721T200249Z
-      Host:
-      - quickbooks-desktop-integration.s3.amazonaws.com
-      X-Amz-Content-Sha256:
-      - e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
-      Authorization:
-      - AUTHORIZATION
-      Content-Length:
-      - '0'
-      Accept:
-      - "*/*"
-  response:
-    status:
-      code: 200
-      message: OK
-    headers:
-      X-Amz-Id-2:
-      - VPUFiJBt8dFgnaNHK38uako0hMlUTovmNRAIKdZBbYDY/mND1YoEGU8GKlVJE4f+4CeAsIEX1qA=
-      X-Amz-Request-Id:
-      - 99783A8B5F38909B
-      Date:
-      - Tue, 21 Jul 2020 20:02:50 GMT
-      X-Amz-Bucket-Region:
-      - us-east-1
-      Content-Type:
-      - application/xml
-      Transfer-Encoding:
-      - chunked
-      Server:
-      - AmazonS3
-    body:
-      encoding: UTF-8
-      string: |-
-        <?xml version="1.0" encoding="UTF-8"?>
-        <ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>quickbooks-desktop-integration</Name><Prefix>rspec-and-vcr/settings/healthcheck</Prefix><Marker></Marker><MaxKeys>1000</MaxKeys><EncodingType>url</EncodingType><IsTruncated>false</IsTruncated></ListBucketResult>
-    http_version: 
-  recorded_at: Tue, 21 Jul 2020 20:02:49 GMT
+  recorded_at: Mon, 10 Aug 2020 17:46:29 GMT
 - request:
     method: delete
     uri: https://quickbooks-desktop-integration.s3.amazonaws.com/rspec-and-vcr/flowlink_in_progress/products_1234-test_.json
@@ -169,7 +318,7 @@ http_interactions:
       User-Agent:
       - aws-sdk-ruby2/2.10.22 ruby/2.4.2 x86_64-linux resources
       X-Amz-Date:
-      - 20200721T200249Z
+      - 20200810T174629Z
       Host:
       - quickbooks-desktop-integration.s3.amazonaws.com
       X-Amz-Content-Sha256:
@@ -186,18 +335,18 @@ http_interactions:
       message: No Content
     headers:
       X-Amz-Id-2:
-      - dbxHK2kNEc3NY6cGPr/HgERZSG+xQcDpIlcVLmkmukJz9kS1tSX90D/aF8YQbpUqNqxYtSaEvHM=
+      - dWWXAdP+I2tZf5DQm3CTLOms2qLP1QKmZmlJGaJU3YXxGwlMSDf3W1e5Mn/ZXHn62t7NZsUQq0Q=
       X-Amz-Request-Id:
-      - 69959C41BF34CA7B
+      - D08B7B5DF33ABCE8
       Date:
-      - Tue, 21 Jul 2020 20:02:50 GMT
+      - Mon, 10 Aug 2020 17:46:31 GMT
       Server:
       - AmazonS3
     body:
       encoding: UTF-8
       string: ''
     http_version: 
-  recorded_at: Tue, 21 Jul 2020 20:02:49 GMT
+  recorded_at: Mon, 10 Aug 2020 17:46:30 GMT
 - request:
     method: head
     uri: https://quickbooks-desktop-integration.s3.amazonaws.com/rspec-and-vcr/flowlink_pending/products_1234-test_.json.json
@@ -212,7 +361,7 @@ http_interactions:
       User-Agent:
       - aws-sdk-ruby2/2.10.22 ruby/2.4.2 x86_64-linux resources
       X-Amz-Date:
-      - 20200721T200249Z
+      - 20200810T174630Z
       Host:
       - quickbooks-desktop-integration.s3.amazonaws.com
       X-Amz-Content-Sha256:
@@ -229,22 +378,22 @@ http_interactions:
       message: Not Found
     headers:
       X-Amz-Request-Id:
-      - 8D3480C01921B530
+      - 9D0CAFB6EC9C3EC8
       X-Amz-Id-2:
-      - UUlu5yI6t6ATx+Od1X80UtsteHmBN2hffLu/lIPsIIfJ/FIuUSygl4bZbav9tk9ridX2IalUu0o=
+      - SmjF5FLcquxXS79ba/Sciq3yPGIs8tc5dF3f7ogvKMudNXqnHBijB6eqEZB+UNEQFBZLasuDvjI=
       Content-Type:
       - application/xml
       Transfer-Encoding:
       - chunked
       Date:
-      - Tue, 21 Jul 2020 20:02:49 GMT
+      - Mon, 10 Aug 2020 17:46:29 GMT
       Server:
       - AmazonS3
     body:
       encoding: UTF-8
       string: ''
     http_version: 
-  recorded_at: Tue, 21 Jul 2020 20:02:49 GMT
+  recorded_at: Mon, 10 Aug 2020 17:46:30 GMT
 - request:
     method: head
     uri: https://quickbooks-desktop-integration.s3.amazonaws.com/
@@ -259,7 +408,7 @@ http_interactions:
       User-Agent:
       - aws-sdk-ruby2/2.10.22 ruby/2.4.2 x86_64-linux resources
       X-Amz-Date:
-      - 20200721T200249Z
+      - 20200810T174630Z
       Host:
       - quickbooks-desktop-integration.s3.amazonaws.com
       X-Amz-Content-Sha256:
@@ -276,11 +425,11 @@ http_interactions:
       message: OK
     headers:
       X-Amz-Id-2:
-      - wk1ao7SNQcsAeByRcM8PV5sotNu5pBGrnB1BxFPB3Cx1CoQQhZnS0BHTSlMhIeefMGW8OUVYh4s=
+      - 5usFLlJVKOt47HPmdI1YVF/x6xfTdMxIfaLkD7gwDrf7KtLksD7n07zE2RUOokgN4/BXVhCONP8=
       X-Amz-Request-Id:
-      - 834BD184DC7F9F49
+      - 6E96B8DE6142714A
       Date:
-      - Tue, 21 Jul 2020 20:02:50 GMT
+      - Mon, 10 Aug 2020 17:46:31 GMT
       X-Amz-Bucket-Region:
       - us-east-1
       Content-Type:
@@ -293,13 +442,13 @@ http_interactions:
       encoding: UTF-8
       string: ''
     http_version: 
-  recorded_at: Tue, 21 Jul 2020 20:02:49 GMT
+  recorded_at: Mon, 10 Aug 2020 17:46:31 GMT
 - request:
     method: put
     uri: https://quickbooks-desktop-integration.s3.amazonaws.com/rspec-and-vcr/flowlink_pending/products_1234-test_.json
     body:
       encoding: UTF-8
-      string: '[{"id":"1234-test","product_id":"1234-test","qbe_integration_retry_counter":2}]'
+      string: '[{"id":"1234-test","product_id":"1234-test","qbe_integration_retry_counter":2,"request_id":"e6f5584b-3203-449b-9979-8dcf24992a96_"}]'
     headers:
       Content-Type:
       - ''
@@ -310,17 +459,17 @@ http_interactions:
       Expect:
       - 100-continue
       Content-Md5:
-      - 3VbAeTFUbvi5cbw3TMX8HA==
+      - U1m9j4F3kSYczpn81ejbSw==
       X-Amz-Date:
-      - 20200721T200249Z
+      - 20200810T174631Z
       Host:
       - quickbooks-desktop-integration.s3.amazonaws.com
       X-Amz-Content-Sha256:
-      - 00fe5f02792f82000d902dcf5da3c7e07b2963a2d4ebbdbd22f2f7ddf7f9f916
+      - 1fc0165e5832a837b9fe110454793f3b9c83702a034c578ff15461139d43f399
       Authorization:
       - AUTHORIZATION
       Content-Length:
-      - '79'
+      - '132'
       Accept:
       - "*/*"
   response:
@@ -329,13 +478,13 @@ http_interactions:
       message: OK
     headers:
       X-Amz-Id-2:
-      - 8szRQiShFRP8d3PuV8F0zoKVC8DHnTcWuZBcB3KQYqaagt/pd9CtvkWzVH265G8QMLlC48JKQCE=
+      - "/rnyZqhZ0pXFMVcapXEx88vvbDe/ztC3ZIWpYJ+/920Vkd54RgUlBSHZFVbuqL3luTHYHfFyz5w="
       X-Amz-Request-Id:
-      - FD369A72E8E6E4A0
+      - FR0K4JFG5N7M5YCJ
       Date:
-      - Tue, 21 Jul 2020 20:02:50 GMT
+      - Mon, 10 Aug 2020 17:46:32 GMT
       Etag:
-      - '"dd56c07931546ef8b971bc374cc5fc1c"'
+      - '"5359bd8f817791261cce99fcd5e8db4b"'
       Content-Length:
       - '0'
       Server:
@@ -344,5 +493,5 @@ http_interactions:
       encoding: UTF-8
       string: ''
     http_version: 
-  recorded_at: Tue, 21 Jul 2020 20:02:49 GMT
+  recorded_at: Mon, 10 Aug 2020 17:46:31 GMT
 recorded_with: VCR 3.0.3

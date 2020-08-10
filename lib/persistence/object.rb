@@ -458,15 +458,22 @@ module Persistence
       collection.each do |s3_object|
         _, _, filename    = s3_object.key.split('/')
         object_type, identifier, _ = filename.split('_')
-
+        
         s3_object_json = amazon_s3.convert_download('json', s3_object.get.body.read).first
-        next unless should_retry_in_progress_object?(s3_object_json)
 
-        # Remove old object and update counter
+        unless should_retry_in_progress_object?(s3_object_json)
+          puts "generating error"
+          create_error_notifications(
+                          retry_max_error(object_type),
+                          object_type,
+                          s3_object_json['request_id']
+                        )
+          next
+        end
+
         remove_old_object_and_update_retry_counter(s3_object, s3_object_json)
 
         @payload_key = object_type # Need to set here because `two_phase?` uses payload_key
-
         reverted_filename = "#{object_type.pluralize}_#{identifier}_.json"
         destination_folder_name = two_phase? ? path.two_phase_pending : path.pending
         new_file_name = "#{path.base_name}/#{destination_folder_name}/#{reverted_filename}"
@@ -867,6 +874,13 @@ module Persistence
     def outdated_error(object_type)
       {
         message: "This #{object_type.singularize} never finshed syncing to QuickBooks Desktop. FlowLink attempted to retry the sync, but found a more update object with the same ID.",
+        context: 'Attempting to retry sync of out of date object'
+      }
+    end
+
+    def retry_max_error(object_type)
+      {
+        message: "This #{object_type.singularize} never finshed syncing to QuickBooks Desktop. FlowLink retried it 3x, but each time it failed.",
         context: 'Attempting to retry sync of out of date object'
       }
     end
