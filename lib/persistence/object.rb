@@ -462,7 +462,7 @@ module Persistence
         object_type, identifier, _ = filename.split('_')
 
         s3_object_json = amazon_s3.convert_download('json', s3_object.get.body.read).first
-        next unless should_retry_in_progress_object?(s3_object_json, s3_object.last_modified)
+        next unless should_retry_in_progress_object?(s3_object_json)
 
         # Remove old object and update counter
         remove_old_object_and_update_retry_counter(s3_object, s3_object_json)
@@ -873,28 +873,8 @@ module Persistence
       }
     end
 
-    def should_retry_in_progress_object?(s3_object_json, last_modified)
-      s3_object_json['qbe_integration_retry_counter'].to_i < RETRY_CUTOFF &&
-      is_old_enough_to_be_moved?(last_modified)
-    end
-
-    def is_old_enough_to_be_moved?(last_modified)
-      s3_settings = Persistence::Settings.new(config)
-      return false if s3_settings.healthceck_is_failing?
-
-      now = Time.now.utc
-      difference_in_minutes = (now - last_modified) / 60.0
-      difference_in_minutes > retry_in_progress_threshold_amount
-    end
-
-    def retry_in_progress_threshold_amount
-      begin
-        # Threshold should be at least 5 minutes to allow for connector to run a couple times
-        param_as_int = config[:retry_threshold_in_minutes].to_i
-        param_as_int < 5 ? DEFAULT_PENDING_THRESHOLD_MINS : param_as_int
-      rescue NoMethodError => e
-        raise e, "The param retry_threshold_in_minutes may be incorrect. It should be an integer value or removed so the default value (30) is used. Error Message: #{e.message}"
-      end
+    def should_retry_in_progress_object?(s3_object_json)
+      s3_object_json['qbe_integration_retry_counter'].to_i < RETRY_CUTOFF
     end
   end
 end
