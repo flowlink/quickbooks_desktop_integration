@@ -166,7 +166,7 @@ module QBWC
 
         private
 
-        def query_inactive(config)
+        def query_inactive?(config)
           return '' unless config['query_inactive'].to_i == 1
 
           <<~XML
