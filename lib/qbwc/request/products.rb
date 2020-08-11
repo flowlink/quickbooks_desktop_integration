@@ -170,7 +170,7 @@ module QBWC
           return '' unless config['query_inactive'].to_i == 1
 
           <<~XML
-            <ActiveStatus>asAll</ActiveStatus>
+            <ActiveStatus>All</ActiveStatus>
           XML
         end
 
