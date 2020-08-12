@@ -171,6 +171,63 @@ creditmemo: {
 }
 ```
 
+### Integration and S3
+
+#### General File Flow
+
+The general flow of objects that are being added/updated in QuickBooks Enterprise are as follows:
+
+The object gets added to S3 like this:
+
+`<Bucket Name><Folder Name><Phase Folder Name><File Name>`
+
+**Bucket Name**: Bucket named `quickbooks-desktop-integration`
+
+**Folder Name**: Folder within that bucket which corresponds to the `connection_id` found in the config params in the request.
+
+**Phase Folder Name**: Folder within that folder named either `flowlink_pending` or `flowlink_two_phase_pending` based on the object type
+
+**File Name**: File within that folder named as `<object_type_plural>_<id_of_object>_.json`, so a product with an id of 1234 would be named `products_1234_.json`
+
+A full path might be `quickbooks-desktop-integration/my-company/flowlink_two_phase_pending/products_1234_.json`
+
+Then the QBWC hits the integration and the following happens:
+
+* Any objects in `flowlink_pending` are added as QUERY requests to QBE
+
+Then the QBWC returns a response and the following happens:
+
+* Any objects in `flowlink_two_phase_pending` are moved to the `flowlink_pending` folder
+* The objects in `flowlink_pending` are updated with response info from QBE and are moved to the `flowlink_ready` folder
+
+Then the QBWC hits the integration and the following happens:
+
+* Any objects in `flowlink_pending` are added as QUERY requests to QBE
+* Any objects in `flowlink_ready` are added as ADD or MOD requests to QBE
+* The objects in `flowlink_ready` folder are moved to `flowlink_in_progress`
+
+Then the QBWC returns a response and the following happens:
+
+* Any objects in `flowlink_two_phase_pending` are moved to the `flowlink_pending` folder
+* The objects in `flowlink_pending` are updated with response info from QBE and are moved to the `flowlink_ready` folder
+* The objects in `flowlink_in_progress` are updated with response info from QBE and are moved to either `flowlink_processed` folder or the `flowlink_failed` folder
+* NOTE: Some objects may have failed for invalid QBXML or a bug in the code and **will not get moved out of the flowlink_in_progress folder** (See below for **Retrying In Progress Objects**)
+
+The cycle continues...
+
+### Retrying In Progress Objects
+
+The integration combines all requests to QuickBooks into 1 request each time. If an object has invalid QBXML or some other typo/bug, it will cause the entire request to fail (rather than just that single, poorly constructed object). This is why we move files from the `flowlink_ready` folder to the `flowlink_in_progress` folder when trying to ADD/MOD the file (Querying rarely has invalid QBXML).
+
+It helps because:
+
+1. If the request fails, future requests won't contain the object
+2. It allows us to retry valid objects that may have failed simply because they were in the same request as an invalid objects
+
+When the QBWC sends a response back the integration, we run through all the information in the response. Then, we look through the `flowlink_in_progress` folder for any objects to retry. An object only gets retried if the object has not surpassed the retry limit. Once we retry an object that gets stuck in the `flowlink_in_progress` folder 3 times, we'll stop retrying it.
+
+When retrying an object, we move it to the `flowlink_pending` folder or the `flowlink_two_phase_pending` folder, based on the object type.
+
 ### Running the Health Check
 
 FlowLink relies on the QuickBooks Web Connector (QBWC) to connect with QuickBooks Enterprise applications, but FlowLink has no development control over the QBWC. So when the QBWC either gets closed or the auto-run gets turned off, FlowLink is not automatically notified.
