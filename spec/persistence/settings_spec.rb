@@ -85,7 +85,7 @@ module Persistence
         describe 'when the parameter is set' do
           let(:config) { { connection_id: connection_id, health_check_threshold_in_minutes: rand_mins } }
           it 'returns the parameter amount' do
-            expect(subject.threshold).to eq(rand_mins)
+            expect(subject.threshold).to eq(rand_mins.to_s)
           end
         end
       end
