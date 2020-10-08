@@ -54,7 +54,7 @@ module QBWC
         {qbe_name: "TaxRegistrationNumber", flowlink_name: "tax_registration_number", is_ref: false},
         {qbe_name: "CurrencyRef", flowlink_name: "currency_name", is_ref: true}
       ]
-      
+
       ADDRESS_MAP = [
         {qbe_name: "Addr1", flowlink_name: "address1", is_ref: false},
         {qbe_name: "Addr2", flowlink_name: "address2", is_ref: false},
@@ -99,14 +99,15 @@ module QBWC
 
         def polling_current_items_xml(params, config)
           timestamp = params['quickbooks_since']
-          session_id = Persistence::Session.save(config, 'polling' => timestamp) 
+          session_id = Persistence::Session.save(config, 'polling' => timestamp)
           time = Time.parse(timestamp).in_time_zone 'Pacific Time (US & Canada)'
 
           <<~XML
             <!-- polling customers -->
             <CustomerQueryRq requestID="#{session_id}">
-              <MaxReturned>100000</MaxReturned>
+              #{query_inactive?(params)}
               #{query_by_date(params, time)}
+              <OwnerID>0</OwnerID>
             </CustomerQueryRq>
           XML
         end
@@ -180,6 +181,14 @@ module QBWC
 
         private
 
+        def query_inactive?(config)
+          return '' unless config['query_inactive'].to_i == 1
+
+          <<~XML
+            <ActiveStatus>All</ActiveStatus>
+          XML
+        end
+
         def customer_xml(initial_object, config, is_mod)
           object = pre_mapping_logic(initial_object)
 
@@ -223,7 +232,7 @@ module QBWC
             fields += "<DefaultShipTo>#{default_ship_to}</DefaultShipTo>"
             fields += "</ShipToAddress>"
           end
-          
+
           fields
         end
 
@@ -247,7 +256,7 @@ module QBWC
         def additional_notes(notes, is_mod)
           return "" if notes.nil?
           return is_mod ? "<AdditionalNotesMod />" : "<AdditionalNotes />" unless notes.is_a?(Array) && !notes.empty?
-          
+
           fields = ""
           notes.each do |note|
             next unless note && note['note']
@@ -264,7 +273,7 @@ module QBWC
         def contacts(contacts, config, is_mod)
           return "" if contacts.nil?
           return is_mod ? "<ContactsMod />" : "<Contacts />" unless contacts.is_a?(Array) && !contacts.empty?
-          
+
           fields = ""
           contacts.each do |contact|
             fields += is_mod ? "<ContactsMod>" : "<Contacts>"

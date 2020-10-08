@@ -27,7 +27,7 @@ module QBWC
           config = { origin: 'quickbooks' }.merge config.reject{|k,v| k == :origin || k == 'origin'}
 
           poll_persistence = Persistence::Polling.new(config, payload)
-          poll_persistence.save_for_polling
+          poll_persistence.save_for_polling_without_timestamp
 
           invoice_params['invoices']['quickbooks_since'] = last_time_modified
           invoice_params['invoices']['quickbooks_force_config'] = 'true'
