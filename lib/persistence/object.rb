@@ -467,6 +467,10 @@ module Persistence
       @config[:quickbooks_use_customer_object].to_s == '1'
     end
 
+    def do_not_update_customer(object)
+      object['quickbooks_do_not_update_customer'] == '1' || @config[:quickbooks_do_not_update_customer].to_s == '1'
+    end
+
     def use_vendor_object?
       @config[:quickbooks_use_vendor_object].to_s == '1'
     end
@@ -610,7 +614,7 @@ module Persistence
             customer = QBWC::Request::Orders.build_customer_from_order(object)
           end
           
-          save_pending_file(customer['name'], 'customers', customer)
+          save_pending_file(customer['name'], 'customers', customer) unless do_not_update_customer(object)
         end
 
         if auto_create_products
@@ -639,7 +643,7 @@ module Persistence
             customer = QBWC::Request::Orders.build_customer_from_order(object)
           end
           
-          save_pending_file(customer['name'], 'customers', customer)
+          save_pending_file(customer['name'], 'customers', customer) unless do_not_update_customer(object)
         end
 
         if auto_create_products
@@ -678,7 +682,7 @@ module Persistence
           else
             customer = QBWC::Request::Orders.build_customer_from_order(object)
           end
-          save_pending_file(customer['name'], 'customers', customer)
+          save_pending_file(customer['name'], 'customers', customer) unless do_not_update_customer(object)
         end
 
         ## TODO: Look for the invoice?
@@ -721,7 +725,7 @@ module Persistence
             customer = QBWC::Request::Orders.build_customer_from_order(object)
           end
           
-          save_pending_file(customer['name'], 'customers', customer)
+          save_pending_file(customer['name'], 'customers', customer) unless do_not_update_customer(object)
         end
 
         if auto_create_products
