@@ -111,7 +111,10 @@ module Persistence
     end
 
     def threshold
-      config[:health_check_threshold_in_minutes] || DEFAULT_HEALTHCHECK_THRESHOLD
+      threshold_param = config[:health_check_threshold_in_minutes].to_s
+      return threshold_param unless threshold_param.empty?
+      DEFAULT_HEALTHCHECK_THRESHOLD
     end
+
   end
 end

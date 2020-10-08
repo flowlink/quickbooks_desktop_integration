@@ -94,6 +94,7 @@ module QBWC
             <AppliedToTxnMod>
               <TxnID>#{payment['invoice_txn_id']}</TxnID>
               <PaymentAmount>#{'%.2f' % payment['amount'].to_f}</PaymentAmount>
+              #{credit_info(payment)}
             </AppliedToTxnMod>
           XML
         end

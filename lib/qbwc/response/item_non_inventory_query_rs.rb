@@ -65,13 +65,13 @@ module QBWC
 
       def build_product_id_or_ref(object)
         return object['Name'] if object['ParentRef'].nil?
-        
+
         if object['ParentRef'].is_a?(Array)
           arr = object['ParentRef']
         else
           arr = [object['ParentRef']]
         end
-        
+
         arr.map do |item|
           next unless item['FullName']
           "#{item['FullName']}:"
@@ -135,7 +135,16 @@ module QBWC
             }.compact)
           end
 
-          object
+          custom_fields = {}
+
+          if record['DataExtRet']
+            data = [record['DataExtRet']] if record['DataExtRet'].is_a?(Hash)
+            (data || record['DataExtRet']).each do |custom_field|
+              custom_fields[custom_field["DataExtName"]] = custom_field["DataExtValue"]
+            end
+          end
+
+          object.merge(custom_fields).compact
         end
       end
     end

@@ -132,8 +132,6 @@ module QBWC
           session_id = Persistence::Session.save(config, 'polling' => timestamp)
           time = Time.parse(timestamp).in_time_zone 'Pacific Time (US & Canada)'
 
-          inventory_max_returned = nil
-          inventory_max_returned = 10000 if params['return_all'].to_i == 1
           if params['quickbooks_max_returned'] && params['quickbooks_max_returned'] != ""
             inventory_max_returned = params['quickbooks_max_returned']
           end
@@ -141,8 +139,9 @@ module QBWC
           <<~XML
             <!-- polling non inventory products -->
             <ItemNonInventoryQueryRq requestID="#{session_id}">
-              <MaxReturned>#{inventory_max_returned || 50}</MaxReturned>
-                #{query_by_date(params, time)}
+              #{query_inactive?(params)}
+              #{query_by_date(params, time)}
+              <OwnerID>0</OwnerID>
             </ItemNonInventoryQueryRq>
           XML
         end
@@ -167,11 +166,11 @@ module QBWC
 
         def sales_or_and_purchase(product, config, is_mod)
           return "" unless !is_mod || product['sales_or_purchase'] || product['sales_and_purchase']
-          
+
           # SandP or SorP is required when adding. We default to Sales and Purchase here.
           map = SALES_AND_PURCHASE_MAP
           tag = is_mod ? "SalesAndPurchaseMod" : "SalesAndPurchase"
-          
+
           if product['sales_or_purchase'] && product['sales_and_purchase'] != true
             map = SALES_OR_PURCHASE_MAP
             tag = is_mod ? "SalesOrPurchaseMod" : "SalesOrPurchase"
@@ -234,6 +233,14 @@ module QBWC
 
           <<~XML
             <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
+          XML
+        end
+
+        def query_inactive?(config)
+          return '' unless config['query_inactive'].to_i == 1
+
+          <<~XML
+            <ActiveStatus>All</ActiveStatus>
           XML
         end
       end

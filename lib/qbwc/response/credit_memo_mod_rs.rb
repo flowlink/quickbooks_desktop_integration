@@ -28,40 +28,10 @@ module QBWC
               edit_sequence: object['EditSequence']
             }
           }
-          check_receive_payment(object, config)
         end
 
         Persistence::Object.update_statuses(config, memos)
       end
-
-      def check_receive_payment(obj, conf)
-				return '' unless obj['Other']
-				invoice_txn_id, payment_method = obj['Other'].split(':::')
-
-        payment_config = conf.dup
-        payment_config[:quickbooks_customer_email] = obj['CustomerRef']['FullName']
-        payment_payload = {
-          parameters: {
-            payload_type: 'payment'
-          },
-          request_id: obj['request_id'],
-          'payment' => {
-            'id' => "Memo-#{obj['RefNumber']}",
-            'customer' => {
-              'name' => obj['CustomerRef']['FullName']
-            },
-            'invoice_txn_id' => invoice_txn_id,
-            'amount' => obj['Subtotal'],
-            'payment_method' => payment_method || 'CASH',
-            'credit_amount' => obj['Subtotal'],
-            'credit_txn_id' => obj['TxnID']
-          }
-        }
-        integration = Persistence::Object.new(payment_config, payment_payload)
-        integration.save
-      end
-
-
     end
   end
 end
