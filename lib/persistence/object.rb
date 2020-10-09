@@ -512,6 +512,10 @@ module Persistence
       object['quickbooks_do_not_update_customer'] == '1' || @config[:quickbooks_do_not_update_customer].to_s == '1'
     end
 
+    def do_not_update_vendor(object)
+      object['quickbooks_do_not_update_vendor'] == '1' || @config[:quickbooks_do_not_update_vendor].to_s == '1'
+    end
+
     def use_vendor_object?
       @config[:quickbooks_use_vendor_object].to_s == '1'
     end
@@ -737,7 +741,7 @@ module Persistence
             vendor = QBWC::Request::Purchaseorders.build_vendor_from_purchaseorder(object)
           end
 
-          save_pending_file(vendor['name'], 'vendors', vendor)
+          save_pending_file(vendor['name'], 'vendors', vendor) unless do_not_update_vendor(object)
         end
 
         if auto_create_products
