@@ -142,10 +142,12 @@ module QBWC
             line_items: line_items(record),
             linked_qbe_transactions: linked_qbe_transactions(record),
             other: record['Other'],
+            applied_invoices: applied_invoices(record),
             relationships: [
               { key: 'name', object: 'customer'},
               { key: 'po_number', object: 'invoice' },
               { key: 'sku', object: 'product', location: 'line_items'},
+              { key: 'id', object: 'invoice', location: 'applied_invoices'},
               { key: 'purchase_order_number', object: 'order' }
             ]
           }.compact
@@ -201,6 +203,28 @@ module QBWC
             line_item_amount: txn['Amount']
           }
         end
+      end
+
+      def applied_invoices(record)
+        return unless record['LinkedTxn']
+        record['LinkedTxn'] = [record['LinkedTxn']] if record['LinkedTxn'].is_a?(Hash)
+
+        invoices = []
+        record['LinkedTxn'].to_a.each do |txn|
+          if txn['TxnType'] == 'Invoice'
+            invoices << {
+              id: txn['RefNumber'],
+              qbe_transaction_id: txn['TxnID'],
+              qbe_reference_number: txn['RefNumber'],
+              transaction_type: txn['TxnType'],
+              transaction_date: txn['TxnDate'].to_s,
+              link_type: txn['LinkType'],
+              amount: txn['Amount'],
+              line_item_amount: txn['Amount']
+            }
+          end
+        end
+        invoices
       end
 
     end
