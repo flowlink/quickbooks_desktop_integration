@@ -225,9 +225,9 @@ module QBWC
 
         def sales_receipt_group_line_add(line)
           <<~XML
-            <SalesReceiptGroupLineAdd>
+            <SalesReceiptLineGroupAdd>
               #{sales_receipt_group_line(line)}
-            </SalesReceiptGroupLineAdd>
+            </SalesReceiptLineGroupAdd>
           XML
         end
 
