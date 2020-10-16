@@ -165,10 +165,22 @@ module QBWC
           object = pre_mapping_logic(initial_object)
 
           if is_mod
-            line_xml = items(object).map { |line| sales_receipt_line_mod(line) }.join('')
+            line_xml = items(object).map { |line|
+              if line[:is_bom]
+                sales_receipt_group_line_mod(line)
+              else
+                sales_receipt_line_mod(line)
+              end
+            }.join('')
             adj_line_xml = adjustments_mod_xml(object, config)
           else
-            line_xml = items(object).map { |line| sales_receipt_line_add(line) }.join('')
+            line_xml = items(object).map { |line|
+              if line[:is_bom]
+                sales_receipt_group_line_add(line)
+              else
+                sales_receipt_line_add(line)
+              end
+            }.join('')
             adj_line_xml = adjustments_add_xml(object, config)
           end
           
@@ -214,6 +226,14 @@ module QBWC
             <SalesReceiptLineAdd>
               #{sales_receipt_line(line)}
             </SalesReceiptLineAdd>
+          XML
+        end
+
+        def sales_receipt_group_line_add(line)
+          <<~XML
+            <SalesReceiptLineGroupAdd>
+              #{sales_receipt_group_line(line)}
+            </SalesReceiptLineGroupAdd>
           XML
         end
 
@@ -278,6 +298,15 @@ module QBWC
           XML
         end
 
+        def sales_receipt_group_line_mod(line)
+          <<~XML
+            <SalesReceiptLineGroupMod>
+              <TxnLineID>#{line['txn_line_id'] || -1}</TxnLineID>
+              #{sales_receipt_group_line(line)}
+            </SalesReceiptLineGroupMod>
+          XML
+        end
+
         def sales_receipt_line_mod_from_adjustment(adjustment, params)
           
           multiplier = QBWC::Request::Adjustments.is_adjustment_discount?(adjustment['name']) ? -1 : 1
@@ -325,6 +354,17 @@ module QBWC
             #{amount_line(line)}
             #{inventory_site(line)}
             #{tax_code_line(line)}
+          XML
+        end
+
+        def sales_receipt_group_line(line)
+          <<~XML
+            <ItemGroupRef>
+              <FullName>#{line['product_id']}</FullName>
+            </ItemGroupRef>
+            #{quantity(line)}
+            #{class_ref_for_receipt_line(line)}
+            #{inventory_site(line)}
           XML
         end
 
