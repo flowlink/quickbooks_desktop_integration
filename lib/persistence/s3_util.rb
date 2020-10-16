@@ -73,6 +73,7 @@ module Persistence
     end
 
     def convert_download(file_type, content)
+      return [] if content.empty?
       case file_type.to_s.downcase
       when 'csv'
         Converter.csv_to_hash(content)
@@ -84,12 +85,10 @@ module Persistence
     end
 
     def read_file!(file_name)
-      s3_object = bucket.objects[file_name]
+      s3_object = bucket.object(file_name)
 
       if s3_object.exists?
-        contents = s3_object.get.body.read
-        s3_object.delete
-        contents
+        s3_object.get.body.read
       else
         ''
       end

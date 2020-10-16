@@ -19,8 +19,6 @@ module QBWC
       def process(config)
         return if records.empty?
 
-        puts "Config for customer query: #{config}"
-
         receive_configs = config[:receive] || []
         customer_params = receive_configs.find { |c| c['customers'] }
 
@@ -29,7 +27,7 @@ module QBWC
           config = { origin: 'quickbooks' }.merge config.reject{|k,v| k == :origin || k == 'origin'}
 
           poll_persistence = Persistence::Polling.new(config, payload)
-          poll_persistence.save_for_polling
+          poll_persistence.save_for_polling_without_timestamp
 
           customer_params['customers']['quickbooks_since'] = last_time_modified
           customer_params['customers']['quickbooks_force_config'] = 'true'
@@ -51,7 +49,6 @@ module QBWC
       private
 
       def objects_to_update
-        # puts "Objects to update: #{records}"
         records.map do |record|
           {
             object_type: 'customer',
@@ -72,12 +69,11 @@ module QBWC
 
       def to_flowlink
         records.map do |record|
-          puts "Customer QBE object: #{record}"
-          {
+          object = {
             id: record['ListID'],
             list_id: record['ListID'],
             qbe_id: record['ListID'],
-            key: 'qbe_id',
+            key: ['qbe_id', 'external_guid'],
             external_id: record['ListID'],
             created_at: record['TimeCreated'].to_s,
             modified_at: record['TimeModified'].to_s,
@@ -153,6 +149,17 @@ module QBWC
             additional_contacts: additional_contacts(record),
             contacts: contacts(record)
           }.compact
+
+          custom_fields = {}
+
+          if record['DataExtRet']
+            data = [record['DataExtRet']] if record['DataExtRet'].is_a?(Hash)
+            (data || record['DataExtRet']).each do |custom_field|
+              custom_fields[custom_field["DataExtName"]] = custom_field["DataExtValue"]
+            end 
+          end
+
+          object.merge(custom_fields).compact
         end
       end
 

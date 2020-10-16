@@ -27,7 +27,7 @@ module QBWC
           config = { origin: 'quickbooks' }.merge config.reject{|k,v| k == :origin || k == 'origin'}
 
           poll_persistence = Persistence::Polling.new(config, payload)
-          poll_persistence.save_for_polling
+          poll_persistence.save_for_polling_without_timestamp
 
           invoice_params['invoices']['quickbooks_since'] = last_time_modified
           invoice_params['invoices']['quickbooks_force_config'] = 'true'
@@ -46,16 +46,18 @@ module QBWC
           Persistence::Object.new(config, {}).update_shipments_with_qb_ids(shipment_id, objects_updated.first)
         else
           # We only need to update files when is not shipments invoice
+          
+          puts({method: "process", class_based: "InvoiceQueryRs", to_update: objects_updated})
+
           Persistence::Object.new(config, {}).update_objects_with_query_results(objects_updated)
+        
         end
 
         nil
       end
 
       def last_time_modified
-        puts 'SETTING A NEW SINCE DATE FOR INVOICES'
-        date = records.sort_by { |r| r['TxnDate'] }.last['TxnDate'].to_s
-        puts Date.parse(date).to_time.in_time_zone('Pacific Time (US & Canada)').iso8601
+        date = records.sort_by { |r| r['TimeModified'] }.last['TimeModified'].to_s
         Date.parse(date).to_time.in_time_zone('Pacific Time (US & Canada)').iso8601
       end
 
@@ -109,8 +111,6 @@ module QBWC
 
       def invoices_to_flowlink
         records.map do |record|
-          # puts "invoice from qbe: #{record}"
-
           {
             id: record['RefNumber'],
             is_pending: record['IsPending'],
@@ -118,7 +118,8 @@ module QBWC
             is_paid: record['IsPaid'],
             transaction_id: record['TxnID'],
             qbe_transaction_id: record['TxnID'],
-            key: 'qbe_transaction_id',
+            qbe_id: record['TxnID'],
+            key: ['qbe_transaction_id', 'qbe_id', 'external_guid'],
             created_at: record['TimeCreated'].to_s,
             modified_at: record['TimeModified'].to_s,
             transaction_number: record['TxnNumber'],
@@ -130,7 +131,7 @@ module QBWC
             },
             class_ref: record.dig('ClassRef', 'FullName'),
             class_name: record.dig('ClassRef', 'FullName'),
-            ara_account: record.dig('ARAccountRef', 'FullName'),
+            ar_account: record.dig('ARAccountRef', 'FullName'),
             customer_tax_code: record.dig('CustomerSalesTaxCodeRef', 'FullName'),
             billing_address: {
               address1: record.dig('BillAddress', 'Addr1'),
@@ -189,9 +190,13 @@ module QBWC
             suggested_discount_date: record['SuggestedDiscountDate'].to_s,
             other: record['Other'],
             external_guid: record['ExternalGUID'],
+            sales_order: {
+              purchase_order_number: record['PONumber']
+            },
             relationships: [
               { object: 'customer', key: 'qbe_id' },
-              { object: 'product', key: 'qbe_id', location: 'line_items' }
+              { object: 'product', key: 'qbe_id', location: 'line_items' },
+              { object: 'order', key: 'purchase_order_number', location: 'sales_order' }
             ],
             linked_qbe_transactions: linked_qbe_transactions(record)
           }.compact
@@ -210,7 +215,7 @@ module QBWC
             transaction_date: txn['TxnDate'].to_s,
             link_type: txn['LinkType'],
             amount: txn['Amount'],
-            line_item_amount: item['Amount']
+            line_item_amount: txn['Amount']
           }
         end
       end

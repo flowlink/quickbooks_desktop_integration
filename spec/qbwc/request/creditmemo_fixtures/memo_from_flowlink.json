@@ -1,0 +1,94 @@
+{
+  "id": 46,
+  "key": [
+    "systum_id"
+  ],
+  "title": "Test",
+  "total": 7,
+  "status": "OPEN",
+  "invoice": {
+    "qbe_id": "",
+    "id": ""
+  },
+  "customer_name": "ABC Test",
+  "edit_sequence": "123456789",
+  "customer": {
+    "systum_id": 125444,
+    "name": "ABC Test"
+  },
+  "subtotal": 7,
+  "remaining": 7,
+  "systum_id": 46,
+  "created_at": 1591983874.200118,
+  "modified_at": 1591983874.201081,
+  "credit_amount": 7,
+  "external_guid": "{9ADB6B68-2DDB-4FEA-9271-AE8725F4DBAD}",
+  "relationships": [
+    {
+      "key": "systum_id",
+      "object": "invoice"
+    },
+    {
+      "key": "systum_id",
+      "object": "customer"
+    }
+  ],
+  "return_to_fl": {
+    "systum_id": 46,
+    "key": [
+      "systum_id"
+    ]
+  },
+  "request_id": "67c878c8-b87e-4d7c-a5ee-ed2e9712ce6e",
+  "shipping_address": {
+    "firstname": "Generic",
+    "lastname": "Customer",
+    "address1": "No Address",
+    "address2": "No Address",
+    "zipcode": "12345",
+    "city": "No City",
+    "state": "Pennsylvania",
+    "country": "US",
+    "phone": "555-555-1212"
+  },
+  "billing_address": {
+    "firstname": "Generic",
+    "lastname": "Customer",
+    "address1": "No Address",
+    "address2": "No Address",
+    "zipcode": "12345",
+    "city": "No City",
+    "state": "Pennsylvania",
+    "country": "US",
+    "phone": "555-555-1212"
+  },
+  "list_id": "list-1234",
+  "line_items": [
+    {
+      "sku": "cold-brew",
+      "product_id": "cold-brew",
+      "cost": 0.0,
+      "name": "Cold brew",
+      "image": null,
+      "price": 0.0,
+      "promo": 0,
+      "sysid": 172713,
+      "status": "ACTIVE",
+      "costMAP": 0.0,
+      "costMSRP": 0.0,
+      "discount": 0,
+      "quantity": 2,
+      "subtotal": 7,
+      "childItems": [
+
+      ],
+      "isArchived": false,
+      "unitWeight": 0.8,
+      "dateCreated": 1580841865.488999,
+      "customFields": "[]",
+      "dateModified": 1580841865.490677,
+      "weightMeasure": "oz"
+    }
+  ],
+  "object_type": "creditmemos"
+}

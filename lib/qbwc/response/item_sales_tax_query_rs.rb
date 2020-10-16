@@ -11,7 +11,7 @@ module QBWC
         errors.each do |error|
           Persistence::Object.handle_error(config,
                                            error.merge(context: 'Querying sales tax products'),
-                                           'products',
+                                           'salestaxproducts',
                                            error[:request_id])
         end
       end
@@ -20,13 +20,15 @@ module QBWC
         return if records.empty?
 
         receive_configs = config[:receive] || []
+        puts({connection_id: config[:connection_id], method: "ItemSalesTaxQueryRs - process", receive_configs: receive_configs, records: records})
         salestaxproduct_params = receive_configs.find { |c| c['salestaxproducts'] }
 
         if salestaxproduct_params
-          payload = { salestaxproducts: salestaxproducts_to_flowlink }
+          payload = { salestaxproducts: products_to_flowlink }
           config = { origin: 'quickbooks' }.merge config.reject{|k,v| k == :origin || k == "origin"}
           poll_persistence = Persistence::Polling.new(config, payload)
-          poll_persistence.save_for_polling
+          poll_persistence.save_for_polling_without_timestamp
+
 
           salestaxproduct_params['salestaxproducts']['quickbooks_since'] = last_time_modified
           salestaxproduct_params['salestaxproducts']['quickbooks_force_config'] = 'true'
@@ -78,8 +80,7 @@ module QBWC
         end.join('') + object['Name']
       end
 
-      def salestaxproducts_to_flowlink
-        # puts "Product object from QBE: #{records.first}"
+      def products_to_flowlink
         records.map do |record|
           object = {
             id: record['Name'],
@@ -88,7 +89,7 @@ module QBWC
             qbe_id: record['ListID'],
             created_at: record['TimeCreated'],
             modified_at: record['TimeModified'],
-            key: 'qbe_id',
+            key: ['qbe_id', 'external_guid'],
             name: record['Name'],
             fullname: record['Name'],
             barcode_value: record['BarCodeValue'],

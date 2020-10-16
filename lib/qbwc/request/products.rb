@@ -1,7 +1,7 @@
 module QBWC
   module Request
     class Products
-      
+
       MAPPING = [
         {qbe_name: "IsActive", flowlink_name: "is_active", is_ref: false},
         {qbe_name: "ClassRef", flowlink_name: "class_name", is_ref: true},
@@ -45,11 +45,6 @@ module QBWC
             config = { connection_id: params['connection_id'] }.with_indifferent_access
             session_id = Persistence::Session.save(config, object)
 
-            if params['connection_id'] == "kidmademodern"
-              puts "KMM - kidmademodern"
-              puts add_xml_to_send(object, params, session_id, config).gsub(/\s+/, "")
-            end
-
             request << if object[:list_id].to_s.empty?
                          add_xml_to_send(object, params, session_id, config)
                        else
@@ -68,17 +63,29 @@ module QBWC
             config = { connection_id: params['connection_id'] }.with_indifferent_access
             session_id = Persistence::Session.save(config, object)
 
-            request << search_xml(product_identifier(object), session_id)
+            if object['list_id'].to_s.empty?
+              request << search_xml_by_name(product_identifier(object), session_id)
+            else
+              request << search_xml_by_id(object['list_id'], session_id)
+            end
           end
         end
 
-        def search_xml(product_id, session_id)
+        def search_xml_by_id(object_id, session_id)
+          <<~XML
+            <ItemInventoryQueryRq requestID="#{session_id}">
+              <ListID>#{object_id}</ListID>
+            </ItemInventoryQueryRq>
+          XML
+        end
+
+        def search_xml_by_name(object_id, session_id)
           <<~XML
             <ItemInventoryQueryRq requestID="#{session_id}">
               <MaxReturned>10000</MaxReturned>
               <NameRangeFilter>
-                <FromName>#{product_id}</FromName>
-                <ToName>#{product_id}</ToName>
+                <FromName>#{object_id}</FromName>
+                <ToName>#{object_id}</ToName>
               </NameRangeFilter>
             </ItemInventoryQueryRq>
           XML
@@ -123,7 +130,7 @@ module QBWC
 
         def inventory_date(product)
           return '' unless product['quantity']
-          
+
           date_to_use = Time.now.to_date
           date_to_use = Time.parse(product['inventory_date']).to_date if product['inventory_date']
           <<~XML
@@ -132,53 +139,25 @@ module QBWC
         end
 
         def polling_current_items_xml(params, config)
-          timestamp = params
-          timestamp = params['quickbooks_since'] if params['return_all']
-
+          timestamp = params['quickbooks_since']
           session_id = Persistence::Session.save(config, 'polling' => timestamp)
-
           time = Time.parse(timestamp).in_time_zone 'Pacific Time (US & Canada)'
 
-          if params['quickbooks_specify_products'] && params['quickbooks_specify_products'] != ""
-            return build_polling_from_config_param(params, session_id, time)
-          end
-
-          inventory_max_returned = nil
           if params['quickbooks_max_returned'] && params['quickbooks_max_returned'] != ""
             inventory_max_returned = params['quickbooks_max_returned']
           end
 
           <<~XML
             <ItemInventoryQueryRq requestID="#{session_id}">
-              <MaxReturned>#{inventory_max_returned || 50}</MaxReturned>
+              #{query_inactive?(params)}
               #{query_by_date(params, time)}
+              <OwnerID>0</OwnerID>
             </ItemInventoryQueryRq>
-            <ItemInventoryAssemblyQueryRq requestID="#{session_id}">
-              <MaxReturned>50</MaxReturned>
-              #{query_by_date(params, time)}
-            </ItemInventoryAssemblyQueryRq>
-            <ItemNonInventoryQueryRq requestID="#{session_id}">
-              <MaxReturned>50</MaxReturned>
-              #{query_by_date(params, time)}
-            </ItemNonInventoryQueryRq>
-            <ItemSalesTaxQueryRq requestID="#{session_id}">
-              <MaxReturned>50</MaxReturned>
-              #{query_by_date(params, time)}
-            </ItemSalesTaxQueryRq>
-            <ItemServiceQueryRq requestID="#{session_id}">
-              <MaxReturned>50</MaxReturned>
-              #{query_by_date(params, time)}
-            </ItemServiceQueryRq>
-            <ItemDiscountQueryRq requestID="#{session_id}">
-              <MaxReturned>50</MaxReturned>
-              #{query_by_date(params, time)}
-            </ItemDiscountQueryRq>
           XML
         end
 
         def query_by_date(config, time)
-          puts "Product config for polling: #{config}"
-          return '' if config['return_all']
+          return '' if config['return_all'].to_i == 1
 
           <<~XML
             <FromModifiedDate>#{time.iso8601}</FromModifiedDate>
@@ -187,16 +166,12 @@ module QBWC
 
         private
 
-        def build_polling_from_config_param(params, session_id, time)
-          JSON.parse(params['quickbooks_specify_products']).map do |value|
-            next unless PRODUCT_TYPES.has_key?(value.to_sym)
-            <<~XML
-              <#{PRODUCT_TYPES[value.to_sym]} requestID="#{session_id}">
-                <MaxReturned>50</MaxReturned>
-                #{query_by_date(params, time)}
-              </#{PRODUCT_TYPES[value.to_sym]}>
-            XML
-          end.join
+        def query_inactive?(config)
+          return '' unless config['query_inactive'].to_i == 1
+
+          <<~XML
+            <ActiveStatus>All</ActiveStatus>
+          XML
         end
 
         def product_identifier(object)
@@ -237,7 +212,7 @@ module QBWC
           qbe_field_name = mapping[:qbe_name]
           float_fields = ['price', 'cost']
 
-          return '' if flowlink_field.nil?
+          return '' if flowlink_field.nil? || flowlink_field == ""
 
           flowlink_field = '%.2f' % flowlink_field.to_f if float_fields.include?(mapping[:flowlink_name])
 
@@ -255,7 +230,8 @@ module QBWC
                                 config[mapping[:flowlink_name].to_sym] ||
                                 config["quickbooks_#{mapping[:flowlink_name]}".to_sym]
 
-          full_name.nil? ? "" : "<#{qbe_field_name}><FullName>#{full_name}</FullName></#{qbe_field_name}>"
+          return '' if full_name.nil? || full_name == ""
+          "<#{qbe_field_name}><FullName>#{full_name}</FullName></#{qbe_field_name}>"
         end
 
       end

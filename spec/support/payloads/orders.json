@@ -5,6 +5,9 @@
       "status": "complete",
       "channel": "spree",
       "email": "spree@example.com",
+      "customer": {
+        "name": "spree@example.com"
+      },
       "currency": "USD",
       "placed_on": "2014-02-03T17:29:15.219Z",
       "totals": {

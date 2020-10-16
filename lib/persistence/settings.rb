@@ -2,6 +2,8 @@ module Persistence
   class Settings
     attr_reader :amazon_s3, :connection_id, :config, :flow, :force_save
 
+    DEFAULT_HEALTHCHECK_THRESHOLD = 5
+
     GENERATE_EXTRA_FLOWS_ARRAY = %w(
       add_products
       add_customers
@@ -82,6 +84,23 @@ module Persistence
       end.flatten
     end
 
+    def update_qbwc_last_contact_timestamp
+      file = "#{base_name}/healthcheck.json"
+      time = Time.now.utc.to_s
+      s3_object = amazon_s3.bucket.object(file)
+      amazon_s3.export file_name: file, objects: [{qbwc_last_contact_at: time}], override: true
+    end
+
+    def healthceck_is_failing?
+      return false unless info = settings('healthcheck').first
+
+      healthcheck_settings = info.values.first
+      now = Time.now.utc
+      last_contact = healthcheck_settings["qbwc_last_contact_at"] || now.to_s
+      difference_in_minutes = (now - Time.parse(last_contact).utc) / 60.0
+      threshold.to_i < difference_in_minutes
+    end
+
     def base_name
       "#{connection_id}/settings"
     end
@@ -90,5 +109,12 @@ module Persistence
       @settings ||= {}
       @settings[prefix] ||= fetch prefix
     end
+
+    def threshold
+      threshold_param = config[:health_check_threshold_in_minutes].to_s
+      return threshold_param unless threshold_param.empty?
+      DEFAULT_HEALTHCHECK_THRESHOLD
+    end
+
   end
 end

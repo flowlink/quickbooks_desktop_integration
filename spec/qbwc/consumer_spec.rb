@@ -2,6 +2,9 @@ require 'spec_helper'
 
 module QBWC
   describe Consumer do
+    before(:each) do
+      Aws.config[:stub_responses] = true
+    end
     it 'process item inventory query poll request' do
       xml = Factory.item_inventory_query_rs_raw_qbxml
       subject = described_class.new connection_id: '54591b3a5869632afc090000'

@@ -1,0 +1,60 @@
+{
+    "customers": [
+        {
+            "id": 1351630651463,
+            "email": "test@example.com",
+            "accepts_marketing": false,
+            "created_at": "2019-08-21T09:12:25-04:00",
+            "updated_at": "2019-08-21T09:12:25-04:00",
+            "first_name": "test",
+            "last_name": "Example",
+            "orders_count": 0,
+            "name": "Test Example",
+            "total_spent": "0.00",
+            "last_order_id": null,
+            "note": null,
+            "verified_email": true,
+            "multipass_identifier": null,
+            "tax_exempt": false,
+            "phone": null,
+            "tags": "",
+            "last_order_name": null,
+            "currency": "USD",
+            "addresses": [
+                {
+                    "id": 1534811504711,
+                    "customer_id": 1351630651463,
+                    "company": null,
+                    "address1": "1600 Gateway Blvd",
+                    "address2": "",
+                    "city": "Oakland",
+                    "province": "California",
+                    "country": "United States",
+                    "zip": "12345",
+                    "phone": null,
+                    "province_code": "CA",
+                    "country_code": "US",
+                    "country_name": "United States",
+                    "default": true
+                }
+            ],
+            "accepts_marketing_updated_at": "2019-08-21T09:12:25-04:00",
+            "default_address": {
+              "id": 1534811504711,
+              "customer_id": 1351630651463,
+              "company": null,
+              "address1": "1600 Gateway Blvd",
+              "address2": "",
+              "city": "Oakland",
+              "province": "California",
+              "country": "United States",
+              "zip": "12345",
+              "phone": null,
+              "province_code": "CA",
+              "country_code": "US",
+              "country_name": "United States",
+              "default": true
+            }
+        }
+    ]
+}

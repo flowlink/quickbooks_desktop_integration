@@ -1,0 +1,332 @@
+---
+http_interactions:
+- request:
+    method: head
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/
+    body:
+      encoding: ASCII-8BIT
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby2/2.10.22 ruby/2.4.2 x86_64-linux resources
+      X-Amz-Date:
+      - 20200506T195114Z
+      Host:
+      - quickbooks-desktop-integration.s3.amazonaws.com
+      X-Amz-Content-Sha256:
+      - e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+      Authorization:
+      - AUTHORIZATION
+      Content-Length:
+      - '0'
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amz-Id-2:
+      - PWVleyvRhdCwwKJ2rB+avAft+jYlxr0zeDPcGhrSoUBZoLxGpi7xHocCYMz471cNNYjSkneZf6k=
+      X-Amz-Request-Id:
+      - 91A831FA2E8224FF
+      Date:
+      - Wed, 06 May 2020 19:51:15 GMT
+      X-Amz-Bucket-Region:
+      - us-east-1
+      Content-Type:
+      - application/xml
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: ''
+    http_version: 
+  recorded_at: Wed, 06 May 2020 19:51:14 GMT
+- request:
+    method: head
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/nurelmremote/quickbooks_pending/products_.json
+    body:
+      encoding: ASCII-8BIT
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby2/2.10.22 ruby/2.4.2 x86_64-linux resources
+      X-Amz-Date:
+      - 20200506T195115Z
+      Host:
+      - quickbooks-desktop-integration.s3.amazonaws.com
+      X-Amz-Content-Sha256:
+      - e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+      Authorization:
+      - AUTHORIZATION
+      Content-Length:
+      - '0'
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amz-Id-2:
+      - 9rsmy8qYY8Q8peLtznT2DiQFmqe5UQdd8I+n07+XvUs1FmoT83Hgu9lF7d4Afs/j1U5WFjATDA0=
+      X-Amz-Request-Id:
+      - 21EEB545912E4445
+      Date:
+      - Wed, 06 May 2020 19:51:16 GMT
+      Last-Modified:
+      - Wed, 06 May 2020 19:33:39 GMT
+      Etag:
+      - '"bd5286bfe0fb9724453bc630ccfb6aea"'
+      Accept-Ranges:
+      - bytes
+      Content-Type:
+      - ''
+      Content-Length:
+      - '1308'
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: ''
+    http_version: 
+  recorded_at: Wed, 06 May 2020 19:51:15 GMT
+- request:
+    method: get
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/nurelmremote/quickbooks_pending/products_.json
+    body:
+      encoding: ASCII-8BIT
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby2/2.10.22 ruby/2.4.2 x86_64-linux resources
+      X-Amz-Date:
+      - 20200506T195115Z
+      Host:
+      - quickbooks-desktop-integration.s3.amazonaws.com
+      X-Amz-Content-Sha256:
+      - e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+      Authorization:
+      - AUTHORIZATION
+      Content-Length:
+      - '0'
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amz-Id-2:
+      - 0enq0Z8rIhB+l32NyehrXrD3PftNjwnh0Jdu4GXrAVCF8XZt+lnnchfrfwaTluDChuBcTSUaAtg=
+      X-Amz-Request-Id:
+      - B215D8DBAE5A5419
+      Date:
+      - Wed, 06 May 2020 19:51:16 GMT
+      Last-Modified:
+      - Wed, 06 May 2020 19:33:39 GMT
+      Etag:
+      - '"bd5286bfe0fb9724453bc630ccfb6aea"'
+      Accept-Ranges:
+      - bytes
+      Content-Type:
+      - ''
+      Content-Length:
+      - '1308'
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: '[{"id":"the internets","name":"the internets","sku":"the internets","description":"the
+        internets","price":35,"cost_price":22.33,"available_on":"2014-01-29T14:01:28.000Z","permalink":"spree-tshirt","meta_description":null,"meta_keywords":null,"shipping_category":"Default","new_field":"Giving
+        a new field"},{"id":"SPREE-T-SHIRT293178","name":"Spree T-Shirt","sku":"SPREE-T-SHIRT","product_id":"SPREE-T-SHIRT","description":"Awesome
+        Spree T-Shirt","price":35,"cost_price":22.33,"available_on":"2014-01-29T14:01:28.000Z","permalink":"spree-tshirt","meta_description":null,"meta_keywords":null,"shipping_category":"Default","taxons":[["Categories","Clothes","T-Shirts"],["Brands","Spree"],["Brands","Open
+        Source"]],"options":["color","size"],"properties":{"material":"cotton","fit":"smart
+        fit"},"images":[{"url":"http://dummyimage.com/600x400/000/fff.jpg&text=Spree
+        T-Shirt","position":1,"title":"Spree T-Shirt - Grey Small","type":"thumbnail","dimensions":{"height":220,"width":100}}],"variants":[{"sku":"SPREE-T-SHIRT-S","price":39.99,"cost_price":22.33,"quantity":1,"options":{"color":"GREY","size":"S"},"images":[{"url":"http://dummyimage.com/600x400/000/fff.jpg&text=Spree
+        T-Shirt Grey Small","position":1,"title":"Spree T-Shirt - Grey Small","type":"thumbnail","dimensions":{"height":220,"width":100}}]}]}]'
+    http_version: 
+  recorded_at: Wed, 06 May 2020 19:51:15 GMT
+- request:
+    method: head
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/
+    body:
+      encoding: ASCII-8BIT
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby2/2.10.22 ruby/2.4.2 x86_64-linux resources
+      X-Amz-Date:
+      - 20200506T195115Z
+      Host:
+      - quickbooks-desktop-integration.s3.amazonaws.com
+      X-Amz-Content-Sha256:
+      - e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+      Authorization:
+      - AUTHORIZATION
+      Content-Length:
+      - '0'
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amz-Id-2:
+      - l8w1WIx9S76IhnGhpSbkTtzS9RCzF/+ahXYpsfPzhz3lVVsyUrIGIDvVIZApWbEZ4t09gKrNnU0=
+      X-Amz-Request-Id:
+      - 2EEEFC472ECAF282
+      Date:
+      - Wed, 06 May 2020 19:51:17 GMT
+      X-Amz-Bucket-Region:
+      - us-east-1
+      Content-Type:
+      - application/xml
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: ''
+    http_version: 
+  recorded_at: Wed, 06 May 2020 19:51:16 GMT
+- request:
+    method: put
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/nurelmremote/quickbooks_pending/products_.json
+    body:
+      encoding: UTF-8
+      string: '[{"id":"the internets","name":"the internets","sku":"the internets","description":"new
+        description","price":35,"cost_price":22.33,"available_on":"2014-01-29T14:01:28.000Z","permalink":"spree-tshirt","meta_description":null,"meta_keywords":null,"shipping_category":"Default"},{"id":"SPREE-T-SHIRT293178","name":"Spree
+        T-Shirt","sku":"SPREE-T-SHIRT","product_id":"SPREE-T-SHIRT","description":"Awesome
+        Spree T-Shirt","price":35,"cost_price":22.33,"available_on":"2014-01-29T14:01:28.000Z","permalink":"spree-tshirt","meta_description":null,"meta_keywords":null,"shipping_category":"Default","taxons":[["Categories","Clothes","T-Shirts"],["Brands","Spree"],["Brands","Open
+        Source"]],"options":["color","size"],"properties":{"material":"cotton","fit":"smart
+        fit"},"images":[{"url":"http://dummyimage.com/600x400/000/fff.jpg&text=Spree
+        T-Shirt","position":1,"title":"Spree T-Shirt - Grey Small","type":"thumbnail","dimensions":{"height":220,"width":100}}],"variants":[{"sku":"SPREE-T-SHIRT-S","price":39.99,"cost_price":22.33,"quantity":1,"options":{"color":"GREY","size":"S"},"images":[{"url":"http://dummyimage.com/600x400/000/fff.jpg&text=Spree
+        T-Shirt Grey Small","position":1,"title":"Spree T-Shirt - Grey Small","type":"thumbnail","dimensions":{"height":220,"width":100}}]}]}]'
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby2/2.10.22 ruby/2.4.2 x86_64-linux resources
+      Expect:
+      - 100-continue
+      Content-Md5:
+      - xHRCz99sYtB1ed2o8IPgWA==
+      X-Amz-Date:
+      - 20200506T195116Z
+      Host:
+      - quickbooks-desktop-integration.s3.amazonaws.com
+      X-Amz-Content-Sha256:
+      - 67ff504d318319e81319a635624afbee41314b9ce9162c04520dc6966ef3ee7f
+      Authorization:
+      - AUTHORIZATION
+      Content-Length:
+      - '1277'
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amz-Id-2:
+      - iMVofO4sQSyNeT1W2ZyX2P1gRnl8H9qoIXPN94HwGjgzXACA0AFQtxOjnjLbHYaO5kNxZXQzyGA=
+      X-Amz-Request-Id:
+      - 785A989FBAF48B21
+      Date:
+      - Wed, 06 May 2020 19:51:17 GMT
+      Etag:
+      - '"c47442cfdf6c62d07579dda8f083e058"'
+      Content-Length:
+      - '0'
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: ''
+    http_version: 
+  recorded_at: Wed, 06 May 2020 19:51:16 GMT
+- request:
+    method: get
+    uri: https://quickbooks-desktop-integration.s3.amazonaws.com/nurelmremote/quickbooks_pending/products_.json
+    body:
+      encoding: ASCII-8BIT
+      string: ''
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby2/2.10.22 ruby/2.4.2 x86_64-linux resources
+      X-Amz-Date:
+      - 20200506T195116Z
+      Host:
+      - quickbooks-desktop-integration.s3.amazonaws.com
+      X-Amz-Content-Sha256:
+      - e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+      Authorization:
+      - AUTHORIZATION
+      Content-Length:
+      - '0'
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Amz-Id-2:
+      - 4tqsgnQrItx0mmhwURMXS6rN9XDjhpeSQnbdRfll4K5kHRDSZ3uM+0XMQldQvlTYMG9cEa8D18o=
+      X-Amz-Request-Id:
+      - 89CC0CA1E1A05469
+      Date:
+      - Wed, 06 May 2020 19:51:18 GMT
+      Last-Modified:
+      - Wed, 06 May 2020 19:51:17 GMT
+      Etag:
+      - '"c47442cfdf6c62d07579dda8f083e058"'
+      Accept-Ranges:
+      - bytes
+      Content-Type:
+      - ''
+      Content-Length:
+      - '1277'
+      Server:
+      - AmazonS3
+    body:
+      encoding: UTF-8
+      string: '[{"id":"the internets","name":"the internets","sku":"the internets","description":"new
+        description","price":35,"cost_price":22.33,"available_on":"2014-01-29T14:01:28.000Z","permalink":"spree-tshirt","meta_description":null,"meta_keywords":null,"shipping_category":"Default"},{"id":"SPREE-T-SHIRT293178","name":"Spree
+        T-Shirt","sku":"SPREE-T-SHIRT","product_id":"SPREE-T-SHIRT","description":"Awesome
+        Spree T-Shirt","price":35,"cost_price":22.33,"available_on":"2014-01-29T14:01:28.000Z","permalink":"spree-tshirt","meta_description":null,"meta_keywords":null,"shipping_category":"Default","taxons":[["Categories","Clothes","T-Shirts"],["Brands","Spree"],["Brands","Open
+        Source"]],"options":["color","size"],"properties":{"material":"cotton","fit":"smart
+        fit"},"images":[{"url":"http://dummyimage.com/600x400/000/fff.jpg&text=Spree
+        T-Shirt","position":1,"title":"Spree T-Shirt - Grey Small","type":"thumbnail","dimensions":{"height":220,"width":100}}],"variants":[{"sku":"SPREE-T-SHIRT-S","price":39.99,"cost_price":22.33,"quantity":1,"options":{"color":"GREY","size":"S"},"images":[{"url":"http://dummyimage.com/600x400/000/fff.jpg&text=Spree
+        T-Shirt Grey Small","position":1,"title":"Spree T-Shirt - Grey Small","type":"thumbnail","dimensions":{"height":220,"width":100}}]}]}]'
+    http_version: 
+  recorded_at: Wed, 06 May 2020 19:51:17 GMT
+recorded_with: VCR 3.0.3

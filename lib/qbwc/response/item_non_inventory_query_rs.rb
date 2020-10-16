@@ -23,10 +23,10 @@ module QBWC
         noninventoryproduct_params = receive_configs.find { |c| c['noninventoryproducts'] }
 
         if noninventoryproduct_params
-          payload = { noninventoryproducts: noninventoryproducts_to_flowlink }
+          payload = { noninventoryproducts: products_to_flowlink }
           config = { origin: 'quickbooks' }.merge config.reject{|k,v| k == :origin || k == "origin"}
           poll_persistence = Persistence::Polling.new(config, payload)
-          poll_persistence.save_for_polling
+          poll_persistence.save_for_polling_without_timestamp
 
           noninventoryproduct_params['noninventoryproducts']['quickbooks_since'] = last_time_modified
           noninventoryproduct_params['noninventoryproducts']['quickbooks_force_config'] = 'true'
@@ -65,28 +65,27 @@ module QBWC
 
       def build_product_id_or_ref(object)
         return object['Name'] if object['ParentRef'].nil?
-        
+
         if object['ParentRef'].is_a?(Array)
           arr = object['ParentRef']
         else
           arr = [object['ParentRef']]
         end
-        
+
         arr.map do |item|
           next unless item['FullName']
           "#{item['FullName']}:"
         end.join('') + object['Name']
       end
 
-      def noninventoryproducts_to_flowlink
-        puts "NON inv Product object from QBE: #{records.first}"
+      def products_to_flowlink
         records.map do |record|
           object = {
             id: record['Name'],
             sku: record['Name'],
             product_id: record['Name'],
             qbe_id: record['ListID'],
-            key: 'qbe_id',
+            key: ['qbe_id', 'external_guid'],
             name: record['Name'],
             fullname: record['FullName'],
             is_active: record['IsActive'],
@@ -101,7 +100,7 @@ module QBWC
             parent_name: record.dig('ParentRef', 'FullName'),
             unit_measure: record.dig('UnitOfMeasureSetRef', 'FullName'),
             sales_tax_code_name: record.dig('SalesTaxCodeRef', 'FullName'),
-            item_type: 'non_inventory'
+            qbe_item_type: 'non_inventory'
           }.compact
 
           if record['SalesOrPurchase']
@@ -136,7 +135,16 @@ module QBWC
             }.compact)
           end
 
-          object
+          custom_fields = {}
+
+          if record['DataExtRet']
+            data = [record['DataExtRet']] if record['DataExtRet'].is_a?(Hash)
+            (data || record['DataExtRet']).each do |custom_field|
+              custom_fields[custom_field["DataExtName"]] = custom_field["DataExtValue"]
+            end
+          end
+
+          object.merge(custom_fields).compact
         end
       end
     end

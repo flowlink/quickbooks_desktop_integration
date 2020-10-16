@@ -19,8 +19,6 @@ module QBWC
       def process(config = {})
         return if records.empty?
 
-        puts records.inspect
-
         receive_configs = config[:receive] || []
         order_params = receive_configs.find { |c| c['orders'] }
 
@@ -29,7 +27,7 @@ module QBWC
           config = { origin: 'quickbooks' }.merge config.reject{|k,v| k == :origin || k == "origin"}
 
           poll_persistence = Persistence::Polling.new(config, payload)
-          poll_persistence.save_for_polling
+          poll_persistence.save_for_polling_without_timestamp
 
           order_params['orders']['quickbooks_since'] = last_time_modified
           order_params['orders']['quickbooks_force_config'] = 'true'
@@ -109,7 +107,6 @@ module QBWC
 
       def orders_to_flowlink
         records.map do |record|
-          puts "sales order from qbe: #{record}"
           {
             id: record['RefNumber'],
             transaction_id: record['TxnID'],

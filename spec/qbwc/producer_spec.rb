@@ -2,6 +2,9 @@ require 'spec_helper'
 
 module QBWC
   describe Producer do
+    before(:each) do
+      Aws.config[:stub_responses] = true
+    end
     before do
       allow(Persistence::Session).to receive(:save).and_return('1f8d3ff5-6f6c-43d6-a084-0ac95e2e29ad')
     end
@@ -68,6 +71,28 @@ module QBWC
           expect(request).to include('CustomerQueryRq')
           expect(request).to include(since_date)
         end
+
+        it 'does not use given since-date in query' do
+          subject = described_class.new({connection_id: '54591b3a5869632afc090000'}, {})
+          since_date = "2020-03-01T06:39:43-08:00"
+          allow_any_instance_of(Persistence::Settings).to receive(:settings).and_return(
+            [
+              {
+                customers: {
+                  "connection_id" => "nurelmremote",
+                  "flow" => "get_customers",
+                  "origin" => "flowlink",
+                  "quickbooks_since" => since_date,
+                  "return_all" => "1"
+                }
+              }
+            ]
+          )
+
+          request = subject.build_polling_request
+          expect(request).to include('CustomerQueryRq')
+          expect(request).not_to include(since_date)
+        end
       end
 
       describe '/get_products' do
@@ -91,10 +116,8 @@ module QBWC
           expect(request).to include('ItemInventoryQueryRq')
           expect(request).to include(since_date)
         end
-      end
 
-      describe 'noninventory params products' do
-        it 'only returns ItemNonInventoryQueryRq' do
+        it 'does not use given since-date in query' do
           subject = described_class.new({connection_id: '54591b3a5869632afc090000'}, {})
           since_date = "2020-03-01T06:39:43-08:00"
           allow_any_instance_of(Persistence::Settings).to receive(:settings).and_return(
@@ -102,20 +125,65 @@ module QBWC
               {
                 products: {
                   "connection_id" => "nurelmremote",
-                  "quickbooks_since" => since_date,
                   "flow" => "get_products",
                   "origin" => "flowlink",
-                  "return_all" => "true",
-                  "quickbooks_force_config" => "1",
-                  "quickbooks_specify_products" => "[\"noninventory\"]"
+                  "quickbooks_since" => since_date,
+                  "return_all" => "1"
                 }
               }
             ]
           )
 
           request = subject.build_polling_request
-          expect(request).to include('ItemNonInventoryQueryRq')
-          expect(request).not_to include('ItemInventoryQueryRq')
+          expect(request).to include('ItemInventoryQueryRq')
+          expect(request).not_to include(since_date)
+        end
+      end
+
+      describe '/get_inventoryproducts' do
+        it 'uses given since-date in query' do
+          subject = described_class.new({connection_id: '54591b3a5869632afc090000'}, {})
+          since_date = "2020-03-01T06:39:43-08:00"
+          allow_any_instance_of(Persistence::Settings).to receive(:settings).and_return(
+            [
+              {
+                inventoryproducts: {
+                  "connection_id" => "nurelmremote",
+                  "flow" => "get_inventoryproducts",
+                  "origin" => "flowlink",
+                  "quickbooks_since" => since_date,
+                }
+              }
+            ]
+          )
+
+          request = subject.build_polling_request
+          expect(request).to include('ItemInventoryQueryRq')
+          expect(request).not_to include('ItemNonInventoryQueryRq')
+          expect(request).to include(since_date)
+        end
+        
+        it 'uses given since-date in query' do
+          subject = described_class.new({connection_id: '54591b3a5869632afc090000'}, {})
+          since_date = "2020-03-01T06:39:43-08:00"
+          allow_any_instance_of(Persistence::Settings).to receive(:settings).and_return(
+            [
+              {
+                inventoryproducts: {
+                  "connection_id" => "nurelmremote",
+                  "flow" => "get_inventoryproducts",
+                  "origin" => "flowlink",
+                  "quickbooks_since" => since_date,
+                  "return_all" => "1"
+                }
+              }
+            ]
+          )
+
+          request = subject.build_polling_request
+          expect(request).to include('ItemInventoryQueryRq')
+          expect(request).not_to include('ItemNonInventoryQueryRq')
+          expect(request).not_to include(since_date)
         end
       end
 
@@ -138,6 +206,300 @@ module QBWC
 
           request = subject.build_polling_request
           expect(request).to include('VendorQueryRq')
+          expect(request).to include(since_date)
+        end
+
+        it 'does not use given since-date in query' do
+          subject = described_class.new({connection_id: '54591b3a5869632afc090000'}, {})
+          since_date = "2020-03-01T06:39:43-08:00"
+          allow_any_instance_of(Persistence::Settings).to receive(:settings).and_return(
+            [
+              {
+                vendors: {
+                  "connection_id" => "nurelmremote",
+                  "flow" => "get_vendors",
+                  "origin" => "flowlink",
+                  "quickbooks_since" => since_date,
+                  "return_all" => "1"
+                }
+              }
+            ]
+          )
+
+          request = subject.build_polling_request
+          expect(request).to include('VendorQueryRq')
+          expect(request).not_to include(since_date)
+        end
+      end
+
+      describe '/get_serviceproducts' do
+        it 'uses given since-date in query' do
+          subject = described_class.new({connection_id: '54591b3a5869632afc090000'}, {})
+          since_date = "2020-03-01T06:39:43-08:00"
+          allow_any_instance_of(Persistence::Settings).to receive(:settings).and_return(
+            [
+              {
+                serviceproducts: {
+                  "connection_id" => "nurelmremote",
+                  "flow" => "get_serviceproducts",
+                  "origin" => "flowlink",
+                  "quickbooks_since" => since_date,
+                }
+              }
+            ]
+          )
+
+          request = subject.build_polling_request
+          expect(request).to include('ItemServiceQueryRq')
+          expect(request).to include(since_date)
+        end
+
+        it 'does not use given since-date in query' do
+          subject = described_class.new({connection_id: '54591b3a5869632afc090000'}, {})
+          since_date = "2020-03-01T06:39:43-08:00"
+          allow_any_instance_of(Persistence::Settings).to receive(:settings).and_return(
+            [
+              {
+                serviceproducts: {
+                  "connection_id" => "nurelmremote",
+                  "flow" => "get_serviceproducts",
+                  "origin" => "flowlink",
+                  "quickbooks_since" => since_date,
+                  "return_all" => "1"
+                }
+              }
+            ]
+          )
+
+          request = subject.build_polling_request
+          expect(request).to include('ItemServiceQueryRq')
+          expect(request).not_to include(since_date)
+        end
+      end
+
+      describe '/get_salestaxproducts' do
+        it 'uses given since-date in query' do
+          subject = described_class.new({connection_id: '54591b3a5869632afc090000'}, {})
+          since_date = "2020-03-01T06:39:43-08:00"
+          allow_any_instance_of(Persistence::Settings).to receive(:settings).and_return(
+            [
+              {
+                salestaxproducts: {
+                  "connection_id" => "nurelmremote",
+                  "flow" => "get_salestaxproducts",
+                  "origin" => "flowlink",
+                  "quickbooks_since" => since_date,
+                }
+              }
+            ]
+          )
+
+          request = subject.build_polling_request
+          expect(request).to include('ItemSalesTaxQueryRq')
+          expect(request).to include(since_date)
+        end
+
+        it 'does not use given since-date in query' do
+          subject = described_class.new({connection_id: '54591b3a5869632afc090000'}, {})
+          since_date = "2020-03-01T06:39:43-08:00"
+          allow_any_instance_of(Persistence::Settings).to receive(:settings).and_return(
+            [
+              {
+                salestaxproducts: {
+                  "connection_id" => "nurelmremote",
+                  "flow" => "get_salestaxproducts",
+                  "origin" => "flowlink",
+                  "quickbooks_since" => since_date,
+                  "return_all" => "1"
+                }
+              }
+            ]
+          )
+
+          request = subject.build_polling_request
+          expect(request).to include('ItemSalesTaxQueryRq')
+          expect(request).not_to include(since_date)
+        end
+      end
+
+      describe '/get_discountproducts' do
+        it 'uses given since-date in query' do
+          subject = described_class.new({connection_id: '54591b3a5869632afc090000'}, {})
+          since_date = "2020-03-01T06:39:43-08:00"
+          allow_any_instance_of(Persistence::Settings).to receive(:settings).and_return(
+            [
+              {
+                discountproducts: {
+                  "connection_id" => "nurelmremote",
+                  "flow" => "get_discountproducts",
+                  "origin" => "flowlink",
+                  "quickbooks_since" => since_date,
+                }
+              }
+            ]
+          )
+
+          request = subject.build_polling_request
+          expect(request).to include('ItemDiscountQueryRq')
+          expect(request).to include(since_date)
+        end
+
+        it 'does not use given since-date in query' do
+          subject = described_class.new({connection_id: '54591b3a5869632afc090000'}, {})
+          since_date = "2020-03-01T06:39:43-08:00"
+          allow_any_instance_of(Persistence::Settings).to receive(:settings).and_return(
+            [
+              {
+                discountproducts: {
+                  "connection_id" => "nurelmremote",
+                  "flow" => "get_discountproducts",
+                  "origin" => "flowlink",
+                  "quickbooks_since" => since_date,
+                  "return_all" => "1"
+                }
+              }
+            ]
+          )
+
+          request = subject.build_polling_request
+          expect(request).to include('ItemDiscountQueryRq')
+          expect(request).not_to include(since_date)
+        end
+      end
+
+      describe '/get_noninventoryproducts' do
+        it 'uses given since-date in query' do
+          subject = described_class.new({connection_id: '54591b3a5869632afc090000'}, {})
+          since_date = "2020-03-01T06:39:43-08:00"
+          allow_any_instance_of(Persistence::Settings).to receive(:settings).and_return(
+            [
+              {
+                noninventoryproducts: {
+                  "connection_id" => "nurelmremote",
+                  "flow" => "get_noninventoryproducts",
+                  "origin" => "flowlink",
+                  "quickbooks_since" => since_date,
+                }
+              }
+            ]
+          )
+
+          request = subject.build_polling_request
+          expect(request).to include('ItemNonInventoryQueryRq')
+          expect(request).to include(since_date)
+        end
+
+        it 'does not use given since-date in query' do
+          subject = described_class.new({connection_id: '54591b3a5869632afc090000'}, {})
+          since_date = "2020-03-01T06:39:43-08:00"
+          allow_any_instance_of(Persistence::Settings).to receive(:settings).and_return(
+            [
+              {
+                noninventoryproducts: {
+                  "connection_id" => "nurelmremote",
+                  "flow" => "get_noninventoryproducts",
+                  "origin" => "flowlink",
+                  "quickbooks_since" => since_date,
+                  "return_all" => "1"
+                }
+              }
+            ]
+          )
+
+          request = subject.build_polling_request
+          expect(request).to include('ItemNonInventoryQueryRq')
+          expect(request).not_to include(since_date)
+        end
+      end
+
+      describe '/get_purchaseorders' do
+        it 'uses given since-date in query' do
+          subject = described_class.new({connection_id: '54591b3a5869632afc090000'}, {})
+          since_date = "2020-03-01T06:39:43-08:00"
+          allow_any_instance_of(Persistence::Settings).to receive(:settings).and_return(
+            [
+              {
+                purchaseorders: {
+                  "connection_id" => "nurelmremote",
+                  "flow" => "get_purchaseorders",
+                  "origin" => "flowlink",
+                  "quickbooks_since" => since_date,
+                }
+              }
+            ]
+          )
+
+          request = subject.build_polling_request
+          expect(request).to include('PurchaseOrderQueryRq')
+          expect(request).to include(since_date)
+        end
+      end
+
+      describe '/get_salesreceipts' do
+        it 'uses given since-date in query' do
+          subject = described_class.new({connection_id: '54591b3a5869632afc090000'}, {})
+          since_date = "2020-03-01T06:39:43-08:00"
+          allow_any_instance_of(Persistence::Settings).to receive(:settings).and_return(
+            [
+              {
+                salesreceipts: {
+                  "connection_id" => "nurelmremote",
+                  "flow" => "get_salesreceipts",
+                  "origin" => "flowlink",
+                  "quickbooks_since" => since_date,
+                }
+              }
+            ]
+          )
+
+          request = subject.build_polling_request
+          expect(request).to include('SalesReceiptQueryRq')
+          expect(request).to include(since_date)
+        end
+      end
+
+      describe '/get_orders' do
+        it 'uses given since-date in query' do
+          subject = described_class.new({connection_id: '54591b3a5869632afc090000'}, {})
+          since_date = "2020-03-01T06:39:43-08:00"
+          allow_any_instance_of(Persistence::Settings).to receive(:settings).and_return(
+            [
+              {
+                orders: {
+                  "connection_id" => "nurelmremote",
+                  "flow" => "get_orders",
+                  "origin" => "flowlink",
+                  "quickbooks_since" => since_date,
+                }
+              }
+            ]
+          )
+
+          request = subject.build_polling_request
+          expect(request).to include('SalesOrderQueryRq')
+          expect(request).to include(since_date)
+        end
+      end
+
+      describe '/get_invoices' do
+        it 'uses given since-date in query' do
+          subject = described_class.new({connection_id: '54591b3a5869632afc090000'}, {})
+          since_date = "2020-03-01T06:39:43-08:00"
+          allow_any_instance_of(Persistence::Settings).to receive(:settings).and_return(
+            [
+              {
+                invoices: {
+                  "connection_id" => "nurelmremote",
+                  "flow" => "get_invoices",
+                  "origin" => "flowlink",
+                  "quickbooks_since" => since_date,
+                }
+              }
+            ]
+          )
+
+          request = subject.build_polling_request
+          expect(request).to include('InvoiceQueryRq')
           expect(request).to include(since_date)
         end
       end

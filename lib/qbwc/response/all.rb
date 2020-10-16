@@ -25,6 +25,7 @@ require 'qbwc/response/item_non_inventory_mod_rs'
 require 'qbwc/response/item_non_inventory_query_rs'
 
 require 'qbwc/response/item_other_charge_add_rs'
+require 'qbwc/response/item_other_charge_mod_rs'
 require 'qbwc/response/item_other_charge_query_rs'
 
 require 'qbwc/response/item_receipt_query_rs'
@@ -63,6 +64,12 @@ require 'qbwc/response/vendor_add_rs'
 require 'qbwc/response/vendor_mod_rs'
 require 'qbwc/response/vendor_query_rs'
 
+require 'qbwc/response/item_site_query_rs'
+
+require 'qbwc/response/credit_memo_add_rs'
+require 'qbwc/response/credit_memo_mod_rs'
+require 'qbwc/response/credit_memo_query_rs'
+
 module QBWC
   module Response
     class All
@@ -73,16 +80,24 @@ module QBWC
       end
 
       def process(config = {})
-        response_hash.map do |key, value|
+        puts({connection: config[:connection_id], message: "Processing response", response_hash: response_hash})
+
+        finished_processing = response_hash.map do |key, value|
 
           class_name = "QBWC::Response::#{key}".constantize
           value = value.is_a?(Hash)? [value] : Array(value)
           #value.map(&:values).flatten.select { |value| value.is_a?(Hash) }
 
-          records = value.map { |item| item.values.flatten.select { |value| value.is_a?(Hash) }
-                                           .flatten
-                                           .map { |sub| sub.merge({ 'request_id' => item['@requestID'] }) }
-                              }.flatten
+          records = value.map do |item| 
+            item.values.flatten.map do |value|
+              response_item = nil
+              response_item = value.last if value.is_a?(Array)
+              response_item = value if value.is_a?(Hash)
+              response_item
+            end.compact.flatten.map { |sub| sub.merge({ 'request_id' => item['@requestID'] }) }
+          end.flatten
+
+          puts({class_name: class_name, connection: config[:connection_id], message: "Processing response", records: records})
 
           # NOTE delete in case it's useless
           errors = value.map do |response|
@@ -102,6 +117,11 @@ module QBWC
             response_processor.handle_error(errors, config)
           end
         end
+
+        config  = config.merge(origin: 'flowlink', connection_id: config[:connection_id]).with_indifferent_access
+        Persistence::Object.new(config, {}).retry_in_progress_objects_that_are_stuck
+
+        finished_processing
       end
 
       private

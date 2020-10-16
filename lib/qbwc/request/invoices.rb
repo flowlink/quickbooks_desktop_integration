@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+require 'active_support/core_ext/hash'
 
 module QBWC
   module Request
@@ -45,11 +46,8 @@ module QBWC
         end
 
         def polling_current_items_xml(params, config)
-          timestamp = params
-          timestamp = params['quickbooks_since'] if params['return_all']
-
+          timestamp = params['quickbooks_since']
           session_id = Persistence::Session.save(config, 'polling' => timestamp)
-
           time = Time.parse(timestamp).in_time_zone 'Pacific Time (US & Canada)'
 
           <<~XML
@@ -58,13 +56,13 @@ module QBWC
               <MaxReturned>300</MaxReturned>
               #{query_by_date(params, time)}
               <IncludeLineItems>true</IncludeLineItems>
+              <IncludeLinkedTxns>true</IncludeLinkedTxns>
               <!-- <IncludeRetElement>Name</IncludeRetElement> -->
             </InvoiceQueryRq>
           XML
         end
 
         def query_by_date(config, time)
-          puts "Invoices config for polling: #{config}"
           return query_by_txn_date(config, time) if config['return_all']
 
           <<~XML
@@ -96,6 +94,7 @@ module QBWC
             <InvoiceAddRq requestID="#{session_id}">
               <InvoiceAdd>
                 #{invoice record, params}
+                #{external_guid(record)}
                 #{items(record).map { |l| invoice_line_add l }.join('')}
                 #{adjustments_add_xml record, params}
               </InvoiceAdd>
@@ -161,11 +160,22 @@ module QBWC
               <PostalCode>#{record['shipping_address']['zipcode']}</PostalCode>
               <Country>#{record['shipping_address']['country']}</Country>
             </ShipAddress>
-            #{po_number(record)}
+						#{po_number(record)}
+						#{terms_ref_for_invoice(record)}
             #{sales_rep(record)}
             #{shipping_method(record)}
+            #{memo(record)}
             #{is_to_be_printed(record)}
             #{is_to_be_emailed(record)}
+            #{credit_list(record)}
+          XML
+        end
+
+        def external_guid(record)
+          return '' unless record['external_guid']
+
+          <<~XML
+          <ExternalGUID>#{record['external_guid']}</ExternalGUID>
           XML
         end
 
@@ -176,6 +186,14 @@ module QBWC
             <ShipMethodRef>
               <FullName>#{record['shipping_method']['name']}</FullName>
             </ShipMethodRef>
+          XML
+        end
+
+        def memo(record)
+          return '' unless record.dig('memo')
+
+          <<~XML
+            <Memo>#{record['memo']}</Memo>
           XML
         end
 
@@ -195,6 +213,41 @@ module QBWC
           XML
         end
 
+        def credit_list(record)
+          return '' unless record['credit_memos']
+
+          record['credit_memos'].map do |memo|
+            next if transaction_already_occured?(record, memo)
+
+            <<~XML
+              <SetCredit>
+                <CreditTxnID>#{memo['qbe_id']}</CreditTxnID>
+                <AppliedAmount>#{'%.2f' % memo['applied_amount']}</AppliedAmount>
+                <Override>#{false}</Override>
+              </SetCredit>
+            XML
+          end.join
+        end
+
+        def transaction_already_occured?(record, memo)
+          inv_txns = record['linked_qbe_transactions']
+          cm_txns = memo['linked_qbe_transactions']
+          return false unless inv_txns.is_a?(Array) && cm_txns.is_a?(Array)
+
+          is_matching = false
+          inv_txns.each do |inv_hash|
+            inv_hash = inv_hash.with_indifferent_access
+            cm_txns.each do |cm_hash|
+              cm_hash = cm_hash.with_indifferent_access
+              if inv_hash['qbe_transaction_id'] == memo['qbe_id'] && cm_hash['qbe_transaction_id'] == record['qbe_id']
+                is_matching = true
+              end
+            end
+          end
+          
+          is_matching
+        end
+
         def sales_rep(record)
           return '' unless record.dig('sales_rep','name')
 
@@ -202,6 +255,16 @@ module QBWC
             <SalesRepRef>
               <FullName>#{record['sales_rep']['name']}</FullName>
             </SalesRepRef>
+          XML
+				end
+				
+				def terms_ref_for_invoice(record)
+          return '' unless record['terms_name']
+
+          <<~XML
+            <TermsRef>
+              <FullName>#{record['terms_name']}</FullName>
+            </TermsRef>
           XML
         end
 
@@ -291,7 +354,7 @@ module QBWC
         def invoice_line_mod(line)
           <<~XML
             <InvoiceLineMod>
-              <TxnLineID>#{line['txn_line_id']}</TxnLineID>
+              <TxnLineID>#{line['txn_line_id'] || -1}</TxnLineID>
               #{invoice_line(line)}
             </InvoiceLineMod>
           XML
@@ -308,6 +371,8 @@ module QBWC
           line['tax_code_id'] = adjustment['tax_code_id'] if adjustment['tax_code_id']
           line['amount'] = adjustment['amount'] if adjustment['amount']
 
+          line['use_amount'] = true if params['use_amount_for_tax'].to_s == "1"
+          
           invoice_line_mod line
         end
 
@@ -331,9 +396,10 @@ module QBWC
             <Desc>#{line['name']}</Desc>
             #{quantity(line)}
             #{rate_line(line)}
+            #{class_ref_for_receipt_line(line)}
             #{amount_line(line)}
-            #{tax_code_line(line)}
             #{inventory_site(line)}
+            #{tax_code_line(line)}
           XML
         end
 
@@ -344,6 +410,16 @@ module QBWC
             <InventorySiteRef>
               <FullName>#{line['inventory_site_name']}</FullName>
             </InventorySiteRef>
+          XML
+        end
+
+        def class_ref_for_receipt_line(line)
+          return '' unless line['class_name']
+
+          <<~XML
+            <ClassRef>
+              <FullName>#{line['class_name']}</FullName>
+            </ClassRef>
           XML
         end
 
@@ -381,7 +457,6 @@ module QBWC
             <Amount>#{'%.2f' % amount.to_f}</Amount>
           XML
         end
-
 
         def build_customer_from_invoice(object)
           billing_address = object['billing_address']
@@ -431,7 +506,7 @@ module QBWC
         # If the quickbooks_use_tax_line_items is set, then don't include tax from the adjustments object, and instead
         # use tax_line_items if it exists.
         def adjustments_add_xml(record, params)
-          puts "record is #{record}"
+          puts "In 'adjustments_add_xml' - record is #{record}"
           final_adjustments = []
           use_tax_line_items = !params['quickbooks_use_tax_line_items'].nil? &&
                                params['quickbooks_use_tax_line_items'] == '1' &&

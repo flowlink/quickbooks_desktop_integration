@@ -20,11 +20,12 @@ module QBWC
         return { 'statuses_objects' => nil } if records.empty?
 
         products = []
-        records.each do |object|
+        records.each do |record|
           products << { payments: {
-            id: object['RefNumber'],
-            list_id: object['TxnID'],
-            edit_sequence: object['EditSequence']
+            object_ref: record['RefNumber'],
+            id: record['RefNumber'],
+            list_id: record['TxnID'],
+            edit_sequence: record['EditSequence']
           }
                       }
         end
