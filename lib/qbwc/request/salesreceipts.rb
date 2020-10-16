@@ -166,7 +166,7 @@ module QBWC
 
           if is_mod
             line_xml = items(object).map { |line|
-              if line[:is_bom]
+              if line[:is_group]
                 sales_receipt_group_line_mod(line)
               else
                 sales_receipt_line_mod(line)
@@ -175,7 +175,7 @@ module QBWC
             adj_line_xml = adjustments_mod_xml(object, config)
           else
             line_xml = items(object).map { |line|
-              if line[:is_bom]
+              if line[:is_group]
                 sales_receipt_group_line_add(line)
               else
                 sales_receipt_line_add(line)
