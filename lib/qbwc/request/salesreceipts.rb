@@ -168,7 +168,13 @@ module QBWC
             line_xml = items(object).map { |line| sales_receipt_line_mod(line) }.join('')
             adj_line_xml = adjustments_mod_xml(object, config)
           else
-            line_xml = items(object).map { |line| sales_receipt_line_add(line) }.join('')
+            line_xml = items(object).map { |line|
+              if line[:is_bom]
+                sales_receipt_group_line_add(line)
+              else
+                sales_receipt_line_add(line)
+              end
+            }.join('')
             adj_line_xml = adjustments_add_xml(object, config)
           end
           
@@ -214,6 +220,14 @@ module QBWC
             <SalesReceiptLineAdd>
               #{sales_receipt_line(line)}
             </SalesReceiptLineAdd>
+          XML
+        end
+
+        def sales_receipt_group_line_add(line)
+          <<~XML
+            <SalesReceiptGroupLineAdd>
+              #{sales_receipt_group_line(line)}
+            </SalesReceiptGroupLineAdd>
           XML
         end
 
@@ -318,6 +332,21 @@ module QBWC
             <ItemRef>
               <FullName>#{line['product_id']}</FullName>
             </ItemRef>
+            <Desc>#{line['name']}</Desc>
+            #{quantity(line)}
+            #{rate(line)}
+            #{class_ref_for_receipt_line(line)}
+            #{amount_line(line)}
+            #{inventory_site(line)}
+            #{tax_code_line(line)}
+          XML
+        end
+
+        def sales_receipt_group_line(line)
+          <<~XML
+            <ItemGroupRef>
+              <FullName>#{line['product_id']}</FullName>
+            </ItemGroupRef>
             <Desc>#{line['name']}</Desc>
             #{quantity(line)}
             #{rate(line)}
