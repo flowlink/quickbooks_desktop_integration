@@ -165,7 +165,13 @@ module QBWC
           object = pre_mapping_logic(initial_object)
 
           if is_mod
-            line_xml = items(object).map { |line| sales_receipt_line_mod(line) }.join('')
+            line_xml = items(object).map { |line|
+              if line[:is_bom]
+                sales_receipt_group_line_mod(line)
+              else
+                sales_receipt_line_mod(line)
+              end
+            }.join('')
             adj_line_xml = adjustments_mod_xml(object, config)
           else
             line_xml = items(object).map { |line|
@@ -289,6 +295,15 @@ module QBWC
               <TxnLineID>#{line['txn_line_id'] || -1}</TxnLineID>
               #{sales_receipt_line(line)}
             </SalesReceiptLineMod>
+          XML
+        end
+
+        def sales_receipt_group_line_mod(line)
+          <<~XML
+            <SalesReceiptLineGroupMod>
+              <TxnLineID>#{line['txn_line_id'] || -1}</TxnLineID>
+              #{sales_receipt_group_line(line)}
+            </SalesReceiptLineGroupMod>
           XML
         end
 
