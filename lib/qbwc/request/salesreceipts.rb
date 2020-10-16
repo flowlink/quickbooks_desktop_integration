@@ -348,11 +348,8 @@ module QBWC
               <FullName>#{line['product_id']}</FullName>
             </ItemGroupRef>
             #{quantity(line)}
-            #{rate(line)}
             #{class_ref_for_receipt_line(line)}
-            #{amount_line(line)}
             #{inventory_site(line)}
-            #{tax_code_line(line)}
           XML
         end
 
