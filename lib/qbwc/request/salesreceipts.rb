@@ -347,7 +347,6 @@ module QBWC
             <ItemGroupRef>
               <FullName>#{line['product_id']}</FullName>
             </ItemGroupRef>
-            <Desc>#{line['name']}</Desc>
             #{quantity(line)}
             #{rate(line)}
             #{class_ref_for_receipt_line(line)}
