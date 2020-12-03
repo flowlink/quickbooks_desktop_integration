@@ -387,6 +387,7 @@ module QBWC
               invoice_txn_id: object['transaction_id'],
               amount: payment['amount'],
               payment_method: payment['payment_method'],
+              deposit_account: payment['deposit_account'],
               credit_amount: payment['credit_amount'],
               credit_txn_id: payment['credit_txn_id']
             }
