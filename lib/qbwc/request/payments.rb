@@ -109,6 +109,7 @@ module QBWC
             <PaymentMethodRef>
               <FullName>#{payment['payment_method']}</FullName>
             </PaymentMethodRef>
+            #{deposit_account(payment)}
           XML
         end
         
@@ -117,6 +118,16 @@ module QBWC
 
           <<~XML
           <ExternalGUID>#{record['external_guid']}</ExternalGUID>
+          XML
+        end
+
+        def deposit_account(record)
+          return '' unless record['deposit_account']
+
+          <<~XML
+          <DepositToAccountRef>
+            <FullName>#{record['deposit_account']}</FullName>
+          </DepositToAccountRef>
           XML
         end
       end
