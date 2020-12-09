@@ -37,6 +37,7 @@ GET_ENDPOINTS =  %w(
   get_purchaseorders
   get_customers
   get_orders
+  get_salesreceipts
   get_vendors
   get_noninventoryproducts
   get_serviceproducts
