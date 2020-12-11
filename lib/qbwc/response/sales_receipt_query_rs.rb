@@ -19,13 +19,29 @@ module QBWC
       def process(config = {})
         return if records.empty?
 
-        config  = { origin: 'flowlink', connection_id: config[:connection_id]  }
+        receive_configs = config[:receive] || []
+        salesreceipt_params = receive_configs.find { |c| c['salesreceipts'] }
 
         to_update = objects_to_update
 
         puts({method: "process", class_based: "SalesReceiptQueryRs", to_update: to_update})
 
+        if salesreceipt_params
+          payload = { salesreceipts: sales_receipts_to_flowlink }
+          config = { origin: 'quickbooks' }.merge config.reject{|k,v| k == :origin || k == 'origin'}
 
+          poll_persistence = Persistence::Polling.new(config, payload)
+          poll_persistence.save_for_polling_without_timestamp
+
+          salesreceipt_params['salesreceipts']['quickbooks_since'] = last_time_modified
+          salesreceipt_params['salesreceipts']['quickbooks_force_config'] = 'true'
+          params = salesreceipt_params['salesreceipts']
+          Persistence::Settings.new(params.with_indifferent_access).setup
+        else
+        end
+
+
+        config  = { origin: 'flowlink', connection_id: config[:connection_id]  }
         Persistence::Object.new(config, {}).update_objects_with_query_results(to_update)
 
         nil
@@ -166,6 +182,11 @@ module QBWC
           }
       end
     end
+
+      def last_time_modified
+        date = records.sort_by { |r| r['TimeModified'] }.last['TimeModified'].to_s
+        Date.parse(date).to_time.in_time_zone('Pacific Time (US & Canada)').iso8601
+      end
 
       def grouped_line_items(record)
         return unless record['SalesReceiptLineGroupRet']
