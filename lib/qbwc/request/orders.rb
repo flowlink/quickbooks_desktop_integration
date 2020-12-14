@@ -114,6 +114,7 @@ module QBWC
           <<~XML
             #{customer_ref_for_order(record)}
             #{class_ref_for_order(record)}
+            #{template_ref_for_order(record)}
             <TxnDate>#{Time.parse(record['placed_on']).to_date}</TxnDate>
             <RefNumber>#{record['id']}</RefNumber>
             <BillAddress>
@@ -172,6 +173,16 @@ module QBWC
             <ClassRef>
               <FullName>#{record['class_name']}</FullName>
             </ClassRef>
+          XML
+        end
+
+        def template_ref_for_order(record)
+          return '' unless record['template']
+
+          <<~XML
+            <TemplateRef>
+              <FullName>#{record['template']}</FullName>
+            </TemplateRef>
           XML
         end
 
