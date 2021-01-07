@@ -46,9 +46,6 @@ module Persistence
 
         done = true
 
-
-        
-
         records = collection.map do |s3_object|
           _, _, filename = s3_object.key.split('/')
           object_type    = filename.split('_').first
@@ -64,16 +61,19 @@ module Persistence
           })
 
           if content.count > page_size
-            puts({
-              message: "Paginating waiting records", 
-              connection_id: @config["connection_id"], 
-              count: content.count,
-              page_size: page_size
-            })
 
             page = content[0..(page_size - 1)]
 
             left = content[page_size..-1]
+
+            puts({
+              message: "Paginating waiting records", 
+              connection_id: @config["connection_id"], 
+              count: content.count,
+              page_size: page_size,
+              real_page_size: page.count,
+              left_size: left.count
+            })
 
             done = false
           else
