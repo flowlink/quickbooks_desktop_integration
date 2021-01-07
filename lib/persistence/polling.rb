@@ -60,11 +60,11 @@ module Persistence
             page_size: page_size
           })
 
-          if content.count > page_size
+          if content.count >= page_size
 
-            page = content[0..(page_size - 1)]
+            page = content[(content.count - page_size)..-1]
 
-            left = content[page_size..-1]
+            left = content[0..(content.count - page_size - 1)]
 
             puts({
               message: "Paginating waiting records", 
