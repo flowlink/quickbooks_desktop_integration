@@ -15,7 +15,7 @@ module Persistence
       @config      = { origin: 'flowlink' }.merge(config).with_indifferent_access
       @amazon_s3   = S3Util.new
       @path        = Persistence::Path.new(@config)
-      @page_size   = @config["page_size"].to_i || PAGE_DEFAULT_SIZE
+      @page_size   = (@config["page_size"] && @config["page_size"] != "" && @config["page_size"].to_i) || PAGE_DEFAULT_SIZE
     end
 
     def save_for_polling
