@@ -73,8 +73,7 @@ module Persistence
 
             page = content[0..(page_size - 1)]
 
-            @objects = content[page_size..-1]
-            @config[:origin] = "quickbooks"
+            left = content[page_size..-1]
 
             done = false
           else
@@ -82,7 +81,7 @@ module Persistence
           end
 
           s3_object.move_to("#{path.base_name_w_bucket}/#{path.processed}/#{filename}")
-          save_for_polling_without_timestamp unless done
+          amazon_s3.export file_name: "#{prefix}.json", objects: left unless done
 
           # return the content of file to create the requests
           { object_type => page }
