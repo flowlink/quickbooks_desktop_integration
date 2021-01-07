@@ -46,6 +46,9 @@ module Persistence
 
         done = true
 
+
+        
+
         records = collection.map do |s3_object|
           _, _, filename = s3_object.key.split('/')
           object_type    = filename.split('_').first
@@ -53,7 +56,21 @@ module Persistence
 
           content = amazon_s3.convert_download('json', s3_object.get.body.read)
 
+          puts({
+            message: "Processing waiting records", 
+            connection_id: @config["connection_id"], 
+            count: content.count,
+            page_size: page_size
+          })
+
           if content.count > page_size
+            puts({
+              message: "Paginating waiting records", 
+              connection_id: @config["connection_id"], 
+              count: content.count,
+              page_size: page_size
+            })
+
             page = content[0..(page_size - 1)]
 
             @objects = content[page_size..-1]
