@@ -62,7 +62,8 @@ describe QuickbooksDesktopEndpoint do
   #   end
   # end
 
-  it 'gets inventories from quickbooks' do
+  # TODO: rewrite specs below, out of date.
+  xit 'gets inventories from quickbooks' do
     headers = auth.merge('HTTP_X_HUB_STORE' => '54591b3a5869632afc090000')
     request = {
       parameters: {
@@ -85,7 +86,7 @@ describe QuickbooksDesktopEndpoint do
     end
   end
 
-  it 'gets no inventories' do
+  xit 'gets no inventories' do
     headers = auth.merge('HTTP_X_HUB_STORE' => '54591b3a5869632afc090000')
 
     Aws.config[:stub_responses] = false
@@ -99,7 +100,7 @@ describe QuickbooksDesktopEndpoint do
     end
   end
 
-  it 'gets products from quickbooks' do
+  xit 'gets products from quickbooks' do
     headers = auth.merge('HTTP_X_HUB_STORE' => '54591b3a5869632afc090000')
     request = {
       parameters: {
