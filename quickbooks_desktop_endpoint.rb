@@ -188,8 +188,7 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
       add_parameter 'quickbooks_force_config', false
 
       persistence = Persistence::Polling.new config, @payload, object_type
-      records, done = persistence.process_waiting_records
-
+      records = persistence.process_waiting_records
       integration = Persistence::Object.new config, @payload
       notifications = integration.get_notifications
 
@@ -215,9 +214,7 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
         params = s3_settings.fetch(path).first[object_type]
         add_parameter 'quickbooks_since', params['quickbooks_since']
 
-        status = done ? 200 : 206
-
-        result status, "Received #{names.uniq.join(', ')} records from quickbooks"
+        result 200, "Received #{names.uniq.join(', ')} records from quickbooks"
       else
         result 200
       end
