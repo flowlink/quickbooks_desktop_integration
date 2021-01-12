@@ -178,10 +178,10 @@ module QBWC
 
             if line['debit'].to_f == 0.0
               line["line_type"] = "Credit"
-              line["amount"] = line['credit']
+              line["amount"] = '%.2f' % line['credit'].to_f
               credit_lines << line
             elsif line['credit'].to_f == 0.0
-              line["amount"] = line['debit']
+              line["amount"] = '%.2f' % line['debit'].to_f
               line["line_type"] = "Debit"
               debit_lines << line
             end
