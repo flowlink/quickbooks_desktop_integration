@@ -184,6 +184,8 @@ module QBWC
               line["amount"] = '%.2f' % line['debit'].to_f
               line["line_type"] = "Debit"
               debit_lines << line
+            else
+              raise "Both the credit and debit amounts are non-zero. Journal lines must contain at least one credit or debit amount of $0.0."
             end
           end
 
