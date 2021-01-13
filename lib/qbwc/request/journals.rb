@@ -3,7 +3,7 @@ require 'time'
 module QBWC
   module Request
     class Journals
-
+      LINE_MISSING_ZERO_ERROR ||= "Both the credit and debit amounts are non-zero. Journal lines must contain at least one credit or debit amount of $0.0."
       MAPPING_ONE = [
         {qbe_name: "TxnDate", flowlink_name: "transaction_date", is_ref: false},
         {qbe_name: "RefNumber", flowlink_name: "id", is_ref: false},
@@ -185,7 +185,7 @@ module QBWC
               line["line_type"] = "Debit"
               debit_lines << line
             else
-              raise "Both the credit and debit amounts are non-zero. Journal lines must contain at least one credit or debit amount of $0.0."
+              raise LINE_MISSING_ZERO_ERROR
             end
           end
 
