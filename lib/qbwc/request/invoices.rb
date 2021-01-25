@@ -160,6 +160,7 @@ module QBWC
               <PostalCode>#{record['shipping_address']['zipcode']}</PostalCode>
               <Country>#{record['shipping_address']['country']}</Country>
             </ShipAddress>
+						#{is_pending(record)}
 						#{po_number(record)}
 						#{terms_ref_for_invoice(record)}
             #{sales_rep(record)}
@@ -194,6 +195,14 @@ module QBWC
 
           <<~XML
             <Memo>#{record['memo']}</Memo>
+          XML
+        end
+
+        def is_pending(record)
+          return '' unless record.dig('is_pending')
+
+          <<~XML
+            <IsPending>#{record['is_pending']}</IsPending>
           XML
         end
 
