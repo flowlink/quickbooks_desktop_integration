@@ -27,7 +27,7 @@ module QBWC
           config = { origin: 'quickbooks' }.merge config.reject{|k,v| k == :origin || k == 'origin'}
 
           poll_persistence = Persistence::Polling.new(config, payload)
-          poll_persistence.save_for_polling
+          poll_persistence.save_for_polling_without_timestamp
 
           invoice_params['invoices']['quickbooks_since'] = last_time_modified
           invoice_params['invoices']['quickbooks_force_config'] = 'true'
@@ -190,9 +190,13 @@ module QBWC
             suggested_discount_date: record['SuggestedDiscountDate'].to_s,
             other: record['Other'],
             external_guid: record['ExternalGUID'],
+            sales_order: {
+              purchase_order_number: record['PONumber']
+            },
             relationships: [
               { object: 'customer', key: 'qbe_id' },
-              { object: 'product', key: 'qbe_id', location: 'line_items' }
+              { object: 'product', key: 'qbe_id', location: 'line_items' },
+              { object: 'order', key: 'purchase_order_number', location: 'sales_order' }
             ],
             linked_qbe_transactions: linked_qbe_transactions(record)
           }.compact
@@ -211,7 +215,7 @@ module QBWC
             transaction_date: txn['TxnDate'].to_s,
             link_type: txn['LinkType'],
             amount: txn['Amount'],
-            line_item_amount: item['Amount']
+            line_item_amount: txn['Amount']
           }
         end
       end

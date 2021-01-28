@@ -117,6 +117,7 @@ module QBWC
               <FullName>#{record['supplier']['name']}</FullName>
             </VendorRef>
             #{class_ref_for_order(record)}
+            #{inventory_site_ref(record)}
             <TxnDate>#{Time.parse(record['placed_on']).to_date}</TxnDate>
             <RefNumber>#{record['id']}</RefNumber>
             <VendorAddress>
@@ -135,7 +136,36 @@ module QBWC
               <PostalCode>#{record['shipping_address']['zipcode']}</PostalCode>
               <Country>#{record['shipping_address']['country']}</Country>
             </ShipAddress>
+            #{terms_ref(record)}
+            #{due_date(record)}
+            #{expected_date(record)}
             #{cancel_order?(record)}
+          XML
+        end
+
+        def terms_ref(record)
+          return '' unless record['terms_name']
+
+          <<~XML
+          <TermsRef>
+            <FullName>#{record['terms_name']}</FullName>
+          </TermsRef>
+          XML
+        end
+
+        def due_date(record)
+          return '' unless record['due_date']
+
+          <<~XML
+          <DueDate>#{Time.parse(record['due_date']).to_date}</DueDate>
+          XML
+        end
+
+        def expected_date(record)
+          return '' unless record['expected_date']
+
+          <<~XML
+          <ExpectedDate>#{Time.parse(record['expected_date']).to_date}</ExpectedDate>
           XML
         end
 
@@ -154,6 +184,16 @@ module QBWC
             <ClassRef>
               <FullName>#{record['class_name']}</FullName>
             </ClassRef>
+          XML
+        end
+
+        def inventory_site_ref(record)
+          return '' unless record['inventory_site_name']
+
+          <<~XML
+            <InventorySiteRef>
+              <FullName>#{record['inventory_site_name']}</FullName>
+            </InventorySiteRef>
           XML
         end
 
@@ -206,7 +246,7 @@ module QBWC
         def purchaseorder_line_mod(line)
           <<~XML
             <PurchaseOrderLineMod>
-              <TxnLineID>#{line['txn_line_id']}</TxnLineID>
+              <TxnLineID>#{line['txn_line_id'] || -1}</TxnLineID>
               #{purchaseorder_line(line)}
             </PurchaseOrderLineMod>
           XML

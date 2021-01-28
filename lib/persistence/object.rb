@@ -14,6 +14,7 @@ module Persistence
     )
 
     IDS_TO_LOG_S3_OBJ_MOVEMENT = ENV.fetch('IDS_TO_LOG', '').split(',')
+    RETRY_CUTOFF = ENV.fetch('RETRY_CUTOFF', 3)
 
     class << self
       def handle_error(config, error_context, object_type, request_id)
@@ -168,6 +169,8 @@ module Persistence
         s3_object = amazon_s3.bucket.object("#{filename}.json")
         puts({connection_id: config[:connection_id], method: "update_objects_with_query_results", message: "First try using list_id as filename", object: object, filename: filename, filename_with_bucket: filename_with_bucket}) if should_log
 
+        # We first checked for a filename using the list_id field, but lots of objects don't use the list_id as the "id" in FlowLink so the list_id is not in the filename. 
+        # These objects will have been created in QBE and set the refNumber to equal whatever other identifier they use
         unless s3_object.exists?
           filename = "#{prefix}/#{type_and_identifier_filename(object, object[:object_ref])}"
           filename_with_bucket = "#{prefix_with_bucket}/#{type_and_identifier_filename(object, object[:object_ref])}"
@@ -449,6 +452,44 @@ module Persistence
       amazon_s3.export file_name: new_file_name, objects: save_object
     end
 
+    def retry_in_progress_objects_that_are_stuck
+      collection = amazon_s3.bucket.objects(prefix: "#{path.base_name}/#{path.in_progress}")
+
+      collection.each do |s3_object|
+        _, _, filename    = s3_object.key.split('/')
+        object_type, identifier, _ = filename.split('_')
+        
+        s3_object_json = amazon_s3.convert_download('json', s3_object.get.body.read).first
+
+        unless should_retry_in_progress_object?(s3_object_json)
+          puts "generating error"
+          create_error_notifications(
+                          retry_max_error(object_type),
+                          object_type,
+                          s3_object_json['request_id']
+                        )
+          next
+        end
+
+        remove_old_object_and_update_retry_counter(s3_object, s3_object_json)
+
+        @payload_key = object_type # Need to set here because `two_phase?` uses payload_key
+        reverted_filename = "#{object_type.pluralize}_#{identifier}_.json"
+        destination_folder_name = two_phase? ? path.two_phase_pending : path.pending
+        new_file_name = "#{path.base_name}/#{destination_folder_name}/#{reverted_filename}"
+
+        unless amazon_s3.bucket.object("#{new_file_name}.json").exists?
+          amazon_s3.export file_name: new_file_name, objects: [s3_object_json]
+        else
+          create_error_notifications(
+                          outdated_error(object_type),
+                          object_type,
+                          s3_object_json['request_id']
+                        )
+        end
+      end
+    end
+
     private
 
     def auto_create_products
@@ -461,6 +502,26 @@ module Persistence
       return !@config[:quickbooks_auto_create_payments].nil? &&
              !@config[:quickbooks_auto_create_payments].empty? &&
               @config[:quickbooks_auto_create_payments].to_s == '1'
+    end
+
+    def use_customer_object?
+      @config[:quickbooks_use_customer_object].to_s == '1'
+    end
+
+    def do_not_update_customer(object)
+      object['quickbooks_do_not_update_customer'] == '1' || @config[:quickbooks_do_not_update_customer].to_s == '1'
+    end
+
+    def do_not_update_vendor(object)
+      object['quickbooks_do_not_update_vendor'] == '1' || @config[:quickbooks_do_not_update_vendor].to_s == '1'
+    end
+
+    def use_vendor_object?
+      @config[:quickbooks_use_vendor_object].to_s == '1'
+    end
+
+    def use_product_objects?
+      @config[:quickbooks_use_product_objects].to_s == '1'
     end
 
     def success_notification_message(object)
@@ -571,10 +632,15 @@ module Persistence
     end
 
     def generate_inserts_for_two_phase(object, use_customer_email_param)
-      # TODO Create a better way to choose between types
+
       if payload_key.pluralize == 'inventories'
         if auto_create_products
-          products = QBWC::Request::Orders.build_products_from_order(objects)
+          if use_product_objects?
+            products = object['products']
+          else
+            products = QBWC::Request::Orders.build_products_from_order(objects)
+          end
+
           products.flatten.each do |product|
             save_pending_file(product['id'], 'products', product)
           end
@@ -587,12 +653,22 @@ module Persistence
       elsif payload_key.pluralize == 'orders'
 
         if !use_customer_email_param
-          customer = QBWC::Request::Orders.build_customer_from_order(object)
-          save_pending_file(customer['name'], 'customers', customer)
+          if use_customer_object?
+            customer = object['customer']
+          else
+            customer = QBWC::Request::Orders.build_customer_from_order(object)
+          end
+          
+          save_pending_file(customer['name'], 'customers', customer) unless do_not_update_customer(object)
         end
 
         if auto_create_products
-          products = QBWC::Request::Orders.build_products_from_order(objects)
+          if use_product_objects?
+            products = object['products']
+          else
+            products = QBWC::Request::Orders.build_products_from_order(objects)
+          end
+
           products.flatten.each do |product|
             save_pending_file(product['id'], 'products', product)
           end
@@ -606,22 +682,30 @@ module Persistence
       elsif payload_key.pluralize == 'invoices'
 
         if !use_customer_email_param
-          customer = QBWC::Request::Orders.build_customer_from_order(object)
-          save_pending_file(customer['name'], 'customers', customer)
+          if use_customer_object?
+            customer = object['customer']
+          else
+            customer = QBWC::Request::Orders.build_customer_from_order(object)
+          end
+          
+          save_pending_file(customer['name'], 'customers', customer) unless do_not_update_customer(object)
         end
 
         if auto_create_products
-          products = QBWC::Request::Orders.build_products_from_order(objects)
+          if use_product_objects?
+            products = object['products']
+          else
+            products = QBWC::Request::Orders.build_products_from_order(objects)
+          end
+
           products.flatten.each do |product|
             save_pending_file(product['id'], 'products', product)
           end
         end
 
         if auto_create_payments
-          # puts "BUILDING PAYMENTS FOR INVOICES"
           payments = QBWC::Request::Orders.build_payments_from_order(object)
           payments.each do |payment|
-            # puts payment
             next unless (payment[:id] && payment[:customer] && payment[:amount] && payment[:payment_method])
             file = "#{path.base_name}/#{path.two_phase_pending}/payments_#{payment[:id]}_.json"
             amazon_s3.export file_name: file, objects: [payment]
@@ -635,15 +719,38 @@ module Persistence
           save_pending_file(customer['name'], 'customers', customer)
         end
 
+      elsif payload_key.pluralize == 'creditmemos'
+
+        if !use_customer_email_param
+          if use_customer_object?
+            customer = object['customer']
+          else
+            customer = QBWC::Request::Orders.build_customer_from_order(object)
+          end
+          save_pending_file(customer['name'], 'customers', customer) unless do_not_update_customer(object)
+        end
+
+        ## TODO: Look for the invoice?
+
       elsif payload_key.pluralize == 'purchaseorders'
 
         if !use_customer_email_param
-          vendor = QBWC::Request::Purchaseorders.build_vendor_from_purchaseorder(object)
-          save_pending_file(vendor['name'], 'vendors', vendor)
+          if use_vendor_object?
+            vendor = object['supplier']
+          else
+            vendor = QBWC::Request::Purchaseorders.build_vendor_from_purchaseorder(object)
+          end
+
+          save_pending_file(vendor['name'], 'vendors', vendor) unless do_not_update_vendor(object)
         end
 
         if auto_create_products
-          products = QBWC::Request::Orders.build_products_from_order(objects)
+          if use_product_objects?
+            products = object['products']
+          else
+            products = QBWC::Request::Orders.build_products_from_order(objects)
+          end
+          
           products.flatten.each do |product|
             save_pending_file(product['id'], 'products', product)
           end
@@ -657,12 +764,22 @@ module Persistence
       elsif payload_key.pluralize == 'salesreceipts'
 
         if !use_customer_email_param
-          customer = QBWC::Request::Orders.build_customer_from_order(object)
-          save_pending_file(customer['name'], 'customers', customer)
+          if use_customer_object?
+            customer = object['customer']
+          else
+            customer = QBWC::Request::Orders.build_customer_from_order(object)
+          end
+          
+          save_pending_file(customer['name'], 'customers', customer) unless do_not_update_customer(object)
         end
 
         if auto_create_products
-          products = QBWC::Request::Orders.build_products_from_order(objects)
+          if use_product_objects?
+            products = object['products']
+          else
+            products = QBWC::Request::Orders.build_products_from_order(objects)
+          end
+
           products.flatten.each do |product|
             save_pending_file(product['id'], 'products', product)
           end
@@ -703,13 +820,14 @@ module Persistence
     end
 
     def two_phase?
-      %w(orders shipments invoices salesreceipts purchaseorders payments inventories).include?(payload_key.pluralize)
+      %w(orders shipments invoices salesreceipts purchaseorders payments inventories creditmemos).include?(payload_key.pluralize)
     end
 
 
     def id_of_object(object)
       id = id_for_object(object, payload_key.pluralize)
       id = id.to_s
+      id = id.gsub("_","-")
       id = id.gsub("/","-")
       id = id.gsub("(","-")
       id = id.gsub(")","-")
@@ -755,6 +873,29 @@ module Persistence
 
     def should_log_s3_obj_movement?(id)
       IDS_TO_LOG_S3_OBJ_MOVEMENT.include?(id)
+    end
+
+    def remove_old_object_and_update_retry_counter(obj, json)
+      amazon_s3.bucket.object(obj.key).delete
+      json['qbe_integration_retry_counter'] = json['qbe_integration_retry_counter'].to_i + 1
+    end
+
+    def outdated_error(object_type)
+      {
+        message: "This #{object_type.singularize} never finshed syncing to QuickBooks Desktop. FlowLink attempted to retry the sync, but found a more update object with the same ID.",
+        context: 'Attempting to retry sync of out of date object'
+      }
+    end
+
+    def retry_max_error(object_type)
+      {
+        message: "This #{object_type.singularize} never finshed syncing to QuickBooks Desktop. FlowLink retried it 3x, but each time it failed.",
+        context: 'Attempting to retry sync of out of date object'
+      }
+    end
+
+    def should_retry_in_progress_object?(s3_object_json)
+      s3_object_json['qbe_integration_retry_counter'].to_i < RETRY_CUTOFF
     end
   end
 end

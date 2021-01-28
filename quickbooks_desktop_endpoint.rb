@@ -2,6 +2,8 @@ require 'endpoint_base'
 require 'sinatra/reloader'
 require 'securerandom'
 
+require 'honeybadger'
+
 require File.expand_path(File.dirname(__FILE__) + '/lib/quickbooks_desktop_integration')
 
 ENDPOINTS = %w(
@@ -22,6 +24,8 @@ ENDPOINTS = %w(
   add_salestaxproducts
   add_discountproducts
   add_otherchargeproducts
+  add_creditmemos
+  add_creditmemosaspayments
 )
 
 GET_ENDPOINTS =  %w(
@@ -33,6 +37,7 @@ GET_ENDPOINTS =  %w(
   get_purchaseorders
   get_customers
   get_orders
+  get_salesreceipts
   get_vendors
   get_noninventoryproducts
   get_serviceproducts
@@ -41,6 +46,7 @@ GET_ENDPOINTS =  %w(
   get_inventoryproducts
   get_inventoryassemblyproducts
   get_otherchargeproducts
+  get_creditmemos
 )
 
 CUSTOM_OBJECT_TYPES = %w(
@@ -52,6 +58,9 @@ CUSTOM_OBJECT_TYPES = %w(
   inventoryproducts
   inventoryassemblyproducts
   otherchargeproducts
+  purchaseorders
+  salesreceipts
+  creditmemos
 )
 
 OBJECT_TYPES_MAPPING_DATA_OBJECT = {
@@ -62,7 +71,10 @@ OBJECT_TYPES_MAPPING_DATA_OBJECT = {
   'noninventoryproducts' => 'products',
   'inventoryproducts' => 'products',
   'discountproducts' => 'products',
-  'inventoryassemblyproducts' => 'products'
+  'inventoryassemblyproducts' => 'products',
+  'purchaseorders' => 'purchase_orders',
+  'salesreceipts' => 'sales_receipts',
+  'creditmemos' => 'credit_memos'
 }
 
 class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
@@ -125,6 +137,21 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
     result 200, "Notifications retrieved"
   end
 
+  post '/get_health_check' do
+    config = {
+      connection_id: request.env['HTTP_X_HUB_STORE'],
+      flow: "get_health_check",
+      quickbooks_force_config: 'true'
+    }.merge(@config).with_indifferent_access
+
+    s3_settings = Persistence::Settings.new(config)
+    if s3_settings.healthceck_is_failing?
+      result 500, "Health check was not successful"
+    else
+      result 200, "Health check was successful"
+    end
+  end
+
   post '/set_inventory' do
     config = {
       connection_id: request.env['HTTP_X_HUB_STORE'],
@@ -145,7 +172,7 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
     result 200, "Inventory waiting for Quickbooks Desktop scheduler"
   end
 
- GET_ENDPOINTS.each do |path|
+  GET_ENDPOINTS.each do |path|
     post "/#{path}" do
       object_type = path.split('_').last.pluralize
 
@@ -161,7 +188,8 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
       add_parameter 'quickbooks_force_config', false
 
       persistence = Persistence::Polling.new config, @payload, object_type
-      records = persistence.process_waiting_records
+      records, done = persistence.process_waiting_records
+
       integration = Persistence::Object.new config, @payload
       notifications = integration.get_notifications
 
@@ -187,7 +215,9 @@ class QuickbooksDesktopEndpoint < EndpointBase::Sinatra::Base
         params = s3_settings.fetch(path).first[object_type]
         add_parameter 'quickbooks_since', params['quickbooks_since']
 
-        result 200, "Received #{names.uniq.join(', ')} records from quickbooks"
+        status = done ? 200 : 206
+
+        result status, "Received #{names.uniq.join(', ')} records from quickbooks"
       else
         result 200
       end

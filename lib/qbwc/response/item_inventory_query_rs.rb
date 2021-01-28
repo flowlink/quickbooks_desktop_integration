@@ -1,7 +1,7 @@
 module QBWC
   module Response
     class ItemInventoryQueryRs
-      attr_reader :records
+      attr_reader :records, :config
 
       def initialize(records)
         @records = records
@@ -25,16 +25,16 @@ module QBWC
 
         if inventory_params
           payload = { inventories: inventories_to_flowlink }
-          config = { origin: 'quickbooks' }.merge config.reject{|k,v| k == :origin || k == "origin"}
+          @config = { origin: 'quickbooks' }.merge config.reject{|k,v| k == :origin || k == "origin"}
 
-          poll_persistence = Persistence::Polling.new(config, payload)
+          poll_persistence = Persistence::Polling.new(@config, payload)
           poll_persistence.save_for_polling
         end
 
         if product_params
-          payload = { products: products_to_flowlink }
-          config = { origin: 'quickbooks' }.merge config.reject{|k,v| k == :origin || k == "origin"}
-          poll_persistence = Persistence::Polling.new(config, payload)
+          @config = { origin: 'quickbooks' }.merge config.reject{|k,v| k == :origin || k == "origin"}
+          payload = { products: products_to_flowlink(@config) }
+          poll_persistence = Persistence::Polling.new(@config, payload)
           poll_persistence.save_for_polling_without_timestamp
 
           product_params['products']['quickbooks_since'] = last_time_modified
@@ -46,8 +46,8 @@ module QBWC
           Persistence::Settings.new(params.with_indifferent_access).setup
         end
 
-        config = config.merge(origin: 'flowlink')
-        object_persistence = Persistence::Object.new config
+        @config = config.merge(origin: 'flowlink')
+        object_persistence = Persistence::Object.new @config
         object_persistence.update_objects_with_query_results(objects_to_update)
 
         nil
@@ -89,21 +89,23 @@ module QBWC
 
       def build_product_id_or_ref(object)
         return object['Name'] if object['ParentRef'].nil?
-        
+
         if object['ParentRef'].is_a?(Array)
           arr = object['ParentRef']
         else
           arr = [object['ParentRef']]
         end
-        
+
         arr.map do |item|
           next unless item['FullName']
           "#{item['FullName']}:"
         end.join('') + object['Name']
       end
 
-      def products_to_flowlink
+      def products_to_flowlink(config)
         records.map do |record|
+          puts({connection: config[:connection_id], method: "products_to_flowlink", class: "ItemInventoryQueryRs", record: record})
+
           object = {
             id: record['Name'],
             sku: record['Name'],
@@ -147,9 +149,18 @@ module QBWC
             max: record['Max'],
             external_guid: record['ExternalGUID'],
             qbe_item_type: 'qbe_inventory'
-          }.compact
+          }
 
-          object
+          custom_fields = {}
+
+          if record['DataExtRet']
+            data = [record['DataExtRet']] if record['DataExtRet'].is_a?(Hash)
+            (data || record['DataExtRet']).each do |custom_field|
+              custom_fields[custom_field["DataExtName"]] = custom_field["DataExtValue"]
+            end 
+          end
+
+          object.merge(custom_fields).compact
         end
       end
     end

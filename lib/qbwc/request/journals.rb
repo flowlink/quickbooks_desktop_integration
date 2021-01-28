@@ -3,7 +3,7 @@ require 'time'
 module QBWC
   module Request
     class Journals
-
+      LINE_MISSING_ZERO_ERROR ||= "Both the credit and debit amounts are non-zero. Journal lines must contain at least one credit or debit amount of $0.0."
       MAPPING_ONE = [
         {qbe_name: "TxnDate", flowlink_name: "transaction_date", is_ref: false},
         {qbe_name: "RefNumber", flowlink_name: "id", is_ref: false},
@@ -178,12 +178,14 @@ module QBWC
 
             if line['debit'].to_f == 0.0
               line["line_type"] = "Credit"
-              line["amount"] = line['credit']
+              line["amount"] = '%.2f' % line['credit'].to_f
               credit_lines << line
             elsif line['credit'].to_f == 0.0
-              line["amount"] = line['debit']
+              line["amount"] = '%.2f' % line['debit'].to_f
               line["line_type"] = "Debit"
               debit_lines << line
+            else
+              raise LINE_MISSING_ZERO_ERROR
             end
           end
 
@@ -213,14 +215,17 @@ module QBWC
         def add_basic_xml(object, mapping)
           flowlink_field = object[mapping[:flowlink_name]]
           qbe_field_name = mapping[:qbe_name]
-          float_fields = ['price', 'cost']
+          float_fields = ['price', 'cost', 'amount']
 
-          return '' if flowlink_field.nil? || flowlink_field == ""
+          return '' if flowlink_field.nil?
 
-          flowlink_field = '%.2f' % flowlink_field.to_f if float_fields.include?(mapping[:flowlink_name])
+          if flowlink_field != "" && float_fields.include?(mapping[:flowlink_name])
+            flowlink_field = '%.2f' % flowlink_field.to_f
+          end
 
           "<#{qbe_field_name}>#{flowlink_field}</#{qbe_field_name}>"
         end
+
 
         def add_ref_xml(object, mapping, config)
           flowlink_field = object[mapping[:flowlink_name]]
@@ -233,7 +238,7 @@ module QBWC
                                 config[mapping[:flowlink_name].to_sym] ||
                                 config["quickbooks_#{mapping[:flowlink_name]}".to_sym]
 
-          return '' if full_name.nil? || full_name == ""
+          return '' if full_name.nil?
           "<#{qbe_field_name}><FullName>#{full_name}</FullName></#{qbe_field_name}>"
         end
       end

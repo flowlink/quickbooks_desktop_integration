@@ -1,0 +1,191 @@
+{
+  "id": "103",
+  "billing_address": {
+    "address1": "My Customer",
+    "address2": "456 DGF Road",
+    "address3": "Suite 5",
+    "address4": "CC Email: mycustomer@test.com",
+    "address5": null,
+    "city": "Dallas",
+    "state": "Georgia",
+    "zipcode": "30157",
+    "company": null,
+    "country": null,
+    "phone": null
+  },
+  "shipping_address": {
+    "address1": "My Customer",
+    "address2": "789 JKL Street",
+    "address3": "Unit 1",
+    "address4": "",
+    "address5": null,
+    "city": "Rockmart",
+    "state": "Georgia",
+    "zipcode": "12345",
+    "company": null,
+    "country": null,
+    "phone": null
+  },
+  "placed_on": "2020-06-17T16:33:25.804Z",
+  "customer": {
+    "id": "8000113A-1590500864",
+    "name": "My Customer",
+    "firstname": "",
+    "middlename": "",
+    "lastname": "",
+    "company": "My Customer",
+    "salutation": "Miss",
+    "shipping_address": {
+      "address1": "My Customer",
+      "address2": "789 JKL Street",
+      "address3": "Unit 10",
+      "address4": "",
+      "address5": null,
+      "city": "Atlanta",
+      "state": "Georgia",
+      "zipcode": "30339",
+      "company": null,
+      "country": null,
+      "phone": "+1 8885554444"
+    },
+    "billing_address": {
+      "address1": "My Customer",
+      "address2": "456 DGF Road",
+      "address3": "Suite 5",
+      "address4": "CC Email: mycustomer@test.com",
+      "address5": null,
+      "city": "Dallas",
+      "state": "Georgia",
+      "zipcode": "30157",
+      "company": null,
+      "country": null,
+      "phone": "+1 8885552222"
+    },
+    "sales_rep_name": "HSE",
+    "job_title": null,
+    "phone": "+1 8885552222",
+    "mobile": "+1 8885554444",
+    "fax": null,
+    "email": "customer@test.com",
+    "cc": null,
+    "contact": null,
+    "alternative_contact": null,
+    "open_balance": null,
+    "open_balance_date": null,
+    "sales_tax_country": null,
+    "resale_number": null,
+    "account_number": "2911",
+    "credit_limit": null,
+    "job_status": null,
+    "job_description": null,
+    "notes": null,
+    "preferred_delivery_method": null,
+    "tax_registration_number": null,
+    "job_start_date": null,
+    "job_projected_end_date": null,
+    "job_end_date": null,
+    "external_guid": "{49DC5409-AC11-410B-A5A0-54FBA17AF1BA}",
+    "list_id": "8000113A-1590500864"
+  },
+  "payments": [],
+  "sales_rep": {
+    "name": "HSE"
+  },
+  "adjustments": [
+    {
+      "name": "Tax",
+      "value": 97.8,
+      "amount": 97.8
+    },
+    {
+      "name": "Discounts",
+      "value": 80
+    },
+    {
+      "name": "Shipping",
+      "value": 50
+    }
+  ],
+  "line_items": [
+    {
+      "name": "",
+      "price": 10,
+      "quantity": 1,
+      "systum_id": 173519,
+      "product_id": "Some Product",
+      "description": ""
+    },
+    {
+      "name": "",
+      "price": 900,
+      "quantity": 1,
+      "systum_id": 173521,
+      "product_id": "Inv Part B",
+      "description": "",
+      "inventory_site_name": "DFW"
+    },
+    {
+      "name": "",
+      "price": 800,
+      "quantity": 1,
+      "systum_id": 173520,
+      "product_id": "Inv Part A",
+      "description": "",
+      "inventory_site_name": "ATL"
+    }
+  ],
+  "purchase_order_number": "456123",
+  "external_guid": "{77C2BA76-7F41-463D-9063-57D5022BDBED}",
+  "list_id": "A9FB3-1592413975",
+  "qbe_id": "A9FB3-1592413975",
+  "transaction_id": "A9FB3-1592413975",
+  "qbe_transaction_id": "A9FB3-1592413975",
+  "linked_qbe_transactions": [
+    {
+      "amount": "-120.00",
+      "link_type": "AMTTYPE",
+      "line_item_amount": "-120.00",
+      "transaction_date": "2020-02-17",
+      "transaction_type": "Payment",
+      "qbe_transaction_id": "A83FI9-1039018048",
+      "qbe_reference_number": "22"
+    },
+    {
+      "amount": "-120.00",
+      "link_type": "AMTTYPE",
+      "line_item_amount": "-120.00",
+      "transaction_date": "2020-06-17",
+      "transaction_type": "Credit",
+      "qbe_transaction_id": "B7D37-1595450715",
+      "qbe_reference_number": "16"
+    }
+  ],
+  "terms_name": "Due on receipt",
+  "credit_memos": [
+    {
+      "applied_amount": 5,
+      "qbe_id": "B7D3B-1595450716",
+      "linked_qbe_transactions": null
+    },
+    {
+      "applied_amount": 120,
+      "qbe_id": "B7D37-1595450715",
+      "linked_qbe_transactions": [
+        {
+          "amount": "-120.00",
+          "link_type": "AMTTYPE",
+          "line_item_amount": "-120.00",
+          "transaction_date": "2020-06-17",
+          "transaction_type": "Invoice",
+          "qbe_transaction_id": "A9FB3-1592413975",
+          "qbe_reference_number": "103"
+        }
+      ]
+    },
+    {
+      "applied_amount": 100,
+      "qbe_id": "B7CA8-1595449464",
+      "linked_qbe_transactions": null
+    }
+  ]
+}

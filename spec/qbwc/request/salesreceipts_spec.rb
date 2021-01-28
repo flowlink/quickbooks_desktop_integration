@@ -128,6 +128,23 @@ RSpec.describe QBWC::Request::Salesreceipts do
       request_xml = QBWC::Request::Salesreceipts.add_xml_to_send(sales_receipt.with_indifferent_access, configs.with_indifferent_access, session_id)
       expect(request_xml).to include("<FullName>CA State Tax</FullName>\n</ItemRef>\n<Desc></Desc>\n\n\n\n\n<Amount>4.87</Amount>")
     end
+
+    it 'sets the tax_list_id if its given' do
+      edited_receipt = sales_receipt
+      edited_receipt[:line_items][0][:tax_code_id] = 'Tax'
+      request_xml = QBWC::Request::Salesreceipts.add_xml_to_send(edited_receipt.with_indifferent_access, configs.with_indifferent_access, session_id)
+      expect(request_xml).to include("<SalesTaxCodeRef>")
+      expect(request_xml).not_to include("<ListID>")
+    end
+
+    it 'sets the tax_list_id if its given' do
+      edited_receipt = sales_receipt
+      list_id = "80000053-1550177824"
+      edited_receipt[:line_items][0][:tax_code_id] = 'Tax'
+      edited_receipt[:line_items][0][:tax_list_id] = list_id
+      request_xml = QBWC::Request::Salesreceipts.add_xml_to_send(edited_receipt.with_indifferent_access, configs.with_indifferent_access, session_id)
+      expect(request_xml).to include("<ListID>#{list_id}</ListID>")
+    end
   end
 
   describe "add update and search xml" do

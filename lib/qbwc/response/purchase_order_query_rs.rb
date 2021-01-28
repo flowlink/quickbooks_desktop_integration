@@ -27,7 +27,7 @@ module QBWC
           config = { origin: 'quickbooks' }.merge config.reject{|k,v| k == :origin || k == 'origin'}
 
           poll_persistence = Persistence::Polling.new(config, payload)
-          poll_persistence.save_for_polling
+          poll_persistence.save_for_polling_without_timestamp
 
           purchaseorder_params['purchaseorders']['quickbooks_since'] = last_time_modified
           purchaseorder_params['purchaseorders']['quickbooks_force_config'] = 'true'
@@ -41,6 +41,8 @@ module QBWC
         config  = config.merge(origin: 'flowlink', connection_id: config[:connection_id]).with_indifferent_access
         objects_updated = objects_to_update(config)
 
+        Persistence::Object.new(config, {}).update_objects_with_query_results(objects_updated)
+
         nil
       end
 
@@ -51,6 +53,7 @@ module QBWC
           {
             object_type: 'purchaseorder',
             object_ref: record['RefNumber'],
+            id: record['RefNumber'],
             list_id: record['TxnID'],
             edit_sequence: record['EditSequence']
           }.with_indifferent_access

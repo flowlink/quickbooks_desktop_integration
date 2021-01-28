@@ -4,6 +4,9 @@ Aws.config[:stub_responses] = false
 
 module Persistence
   describe Polling do
+    before(:each) do
+      Aws.config[:stub_responses] = false
+    end
     it '#save_for_polling' do
       payload = { products: [] }
       config = { origin: 'quickbooks', connection_id: 'nurelmremote' }

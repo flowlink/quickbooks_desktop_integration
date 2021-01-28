@@ -114,6 +114,7 @@ module QBWC
           <<~XML
             #{customer_ref_for_order(record)}
             #{class_ref_for_order(record)}
+            #{template_ref_for_order(record)}
             <TxnDate>#{Time.parse(record['placed_on']).to_date}</TxnDate>
             <RefNumber>#{record['id']}</RefNumber>
             <BillAddress>
@@ -132,6 +133,9 @@ module QBWC
               <PostalCode>#{record['shipping_address']['zipcode']}</PostalCode>
               <Country>#{record['shipping_address']['country']}</Country>
             </ShipAddress>
+            #{po_number(record)}
+            #{terms_ref_for_order(record)}
+            #{ship_date(record)}
             #{cancel_order?(record)}
           XML
         end
@@ -169,6 +173,46 @@ module QBWC
             <ClassRef>
               <FullName>#{record['class_name']}</FullName>
             </ClassRef>
+          XML
+        end
+
+        def template_ref_for_order(record)
+          return '' unless record['template']
+
+          <<~XML
+            <TemplateRef>
+              <FullName>#{record['template']}</FullName>
+            </TemplateRef>
+          XML
+        end
+
+        def terms_ref_for_order(record)
+          return '' unless record['terms_name']
+
+          <<~XML
+            <TermsRef>
+              <FullName>#{record['terms_name']}</FullName>
+            </TermsRef>
+          XML
+        end
+
+        def po_number(record)
+          return '' unless record['purchase_order_number']
+
+          <<~XML
+            <PONumber>
+              #{record['purchase_order_number']}
+            </PONumber>
+          XML
+        end
+
+        def ship_date(record)
+          return '' unless record['ship_date']
+
+          <<~XML
+            <ShipDate>
+              #{record['ship_date']}
+            </ShipDate>
           XML
         end
 
@@ -302,7 +346,6 @@ module QBWC
           XML
         end
 
-
         def cancel_order?(object)
           return '' unless object['status'].to_s == 'cancelled' || object['status'].to_s == 'closed'
 
@@ -315,7 +358,7 @@ module QBWC
           billing_address = object['billing_address']
 
           {
-            'list_id'          => object['list_id'],
+            'list_id'          => object['customer']['list_id'],
             'id'               => object['customer']['name'],
             'firstname'        => billing_address['firstname'],
             'lastname'         => billing_address['lastname'],
@@ -329,6 +372,8 @@ module QBWC
         end
 
         def build_products_from_order(object)
+          puts "Building products from #{object}"
+
           object.first['line_items'].reject { |line| line['quantity'].to_f == 0.0 }.map do |item|
             {
               'id'          => item['product_id'],
@@ -352,7 +397,10 @@ module QBWC
               customer: object['customer'],
               invoice_txn_id: object['transaction_id'],
               amount: payment['amount'],
-              payment_method: payment['payment_method']
+              payment_method: payment['payment_method'],
+              deposit_account: payment['deposit_account'],
+              credit_amount: payment['credit_amount'],
+              credit_txn_id: payment['credit_txn_id']
             }
           end
         end
@@ -363,7 +411,6 @@ module QBWC
           line['line_item_price'] || line['price']
         end
 
-
         def items(record)
           record['line_items'].to_a.sort { |a, b| a['product_id'] <=> b['product_id'] }
         end
@@ -372,7 +419,7 @@ module QBWC
         # If the quickbooks_use_tax_line_items is set, then don't include tax from the adjustments object, and instead
         # use tax_line_items if it exists.
         def adjustments_add_xml(record, params)
-        puts "record is #{record}"
+          puts "record is #{record}"
           final_adjustments = []
           use_tax_line_items = !params['quickbooks_use_tax_line_items'].nil? &&
                                 params['quickbooks_use_tax_line_items'] == "1" &&

@@ -2,6 +2,9 @@ require 'spec_helper'
 
 module QBWC
   describe Producer do
+    before(:each) do
+      Aws.config[:stub_responses] = true
+    end
     before do
       allow(Persistence::Session).to receive(:save).and_return('1f8d3ff5-6f6c-43d6-a084-0ac95e2e29ad')
     end

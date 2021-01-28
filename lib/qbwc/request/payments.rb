@@ -54,7 +54,18 @@ module QBWC
             <AppliedToTxnAdd>
                 <TxnID>#{payment['invoice_txn_id']}</TxnID>
                 <PaymentAmount>#{'%.2f' % payment['amount'].to_f}</PaymentAmount>
+                #{credit_info(payment)}
             </AppliedToTxnAdd>
+          XML
+        end
+
+        def credit_info(payment)
+          return '' unless payment['credit_txn_id'] && payment['credit_amount']
+          <<~XML
+            <SetCredit>
+                <CreditTxnID>#{payment['credit_txn_id']}</CreditTxnID>
+                <AppliedAmount>#{'%.2f' % payment['credit_amount'].to_f}</AppliedAmount>
+            </SetCredit>
           XML
         end
 
@@ -83,6 +94,7 @@ module QBWC
             <AppliedToTxnMod>
               <TxnID>#{payment['invoice_txn_id']}</TxnID>
               <PaymentAmount>#{'%.2f' % payment['amount'].to_f}</PaymentAmount>
+              #{credit_info(payment)}
             </AppliedToTxnMod>
           XML
         end
@@ -97,6 +109,7 @@ module QBWC
             <PaymentMethodRef>
               <FullName>#{payment['payment_method']}</FullName>
             </PaymentMethodRef>
+            #{deposit_account(payment)}
           XML
         end
         
@@ -105,6 +118,16 @@ module QBWC
 
           <<~XML
           <ExternalGUID>#{record['external_guid']}</ExternalGUID>
+          XML
+        end
+
+        def deposit_account(record)
+          return '' unless record['deposit_account']
+
+          <<~XML
+          <DepositToAccountRef>
+            <FullName>#{record['deposit_account']}</FullName>
+          </DepositToAccountRef>
           XML
         end
       end

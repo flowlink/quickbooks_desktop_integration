@@ -7,6 +7,8 @@ module QBWC
       @payload     = payload
       @integration = Persistence::Object.new config, payload
       @s3_settings = Persistence::Settings.new config
+
+      @s3_settings.update_qbwc_last_contact_timestamp
     end
 
     def digest_response_into_actions(response_xml)

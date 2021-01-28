@@ -66,6 +66,10 @@ require 'qbwc/response/vendor_query_rs'
 
 require 'qbwc/response/item_site_query_rs'
 
+require 'qbwc/response/credit_memo_add_rs'
+require 'qbwc/response/credit_memo_mod_rs'
+require 'qbwc/response/credit_memo_query_rs'
+
 module QBWC
   module Response
     class All
@@ -78,7 +82,7 @@ module QBWC
       def process(config = {})
         puts({connection: config[:connection_id], message: "Processing response", response_hash: response_hash})
 
-        response_hash.map do |key, value|
+        finished_processing = response_hash.map do |key, value|
 
           class_name = "QBWC::Response::#{key}".constantize
           value = value.is_a?(Hash)? [value] : Array(value)
@@ -113,6 +117,11 @@ module QBWC
             response_processor.handle_error(errors, config)
           end
         end
+
+        config  = config.merge(origin: 'flowlink', connection_id: config[:connection_id]).with_indifferent_access
+        Persistence::Object.new(config, {}).retry_in_progress_objects_that_are_stuck
+
+        finished_processing
       end
 
       private

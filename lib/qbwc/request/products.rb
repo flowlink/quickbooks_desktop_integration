@@ -1,7 +1,7 @@
 module QBWC
   module Request
     class Products
-      
+
       MAPPING = [
         {qbe_name: "IsActive", flowlink_name: "is_active", is_ref: false},
         {qbe_name: "ClassRef", flowlink_name: "class_name", is_ref: true},
@@ -130,7 +130,7 @@ module QBWC
 
         def inventory_date(product)
           return '' unless product['quantity']
-          
+
           date_to_use = Time.now.to_date
           date_to_use = Time.parse(product['inventory_date']).to_date if product['inventory_date']
           <<~XML
@@ -143,16 +143,15 @@ module QBWC
           session_id = Persistence::Session.save(config, 'polling' => timestamp)
           time = Time.parse(timestamp).in_time_zone 'Pacific Time (US & Canada)'
 
-          inventory_max_returned = nil
-          inventory_max_returned = 10000 if params['return_all'].to_i == 1
           if params['quickbooks_max_returned'] && params['quickbooks_max_returned'] != ""
             inventory_max_returned = params['quickbooks_max_returned']
           end
 
           <<~XML
             <ItemInventoryQueryRq requestID="#{session_id}">
-              <MaxReturned>#{inventory_max_returned || 50}</MaxReturned>
+              #{query_inactive?(params)}
               #{query_by_date(params, time)}
+              <OwnerID>0</OwnerID>
             </ItemInventoryQueryRq>
           XML
         end
@@ -166,6 +165,14 @@ module QBWC
         end
 
         private
+
+        def query_inactive?(config)
+          return '' unless config['query_inactive'].to_i == 1
+
+          <<~XML
+            <ActiveStatus>All</ActiveStatus>
+          XML
+        end
 
         def product_identifier(object)
           object['product_id'] || object['sku'] || object['id']

@@ -1,28 +1,32 @@
 require 'spec_helper'
 
 describe QBWC::Response::ItemInventoryQueryRs do
+  before(:each) do
+    Aws.config[:stub_responses] = true
+  end
   subject { described_class.new Factory.item_inventory_query_rs_hash }
+  let(:config) { {connection_id: 123} }
 
   describe '#products_to_flowlink' do
     it 'converts to flowlink format' do
-      expect(subject.send(:products_to_flowlink).size).to eq 1
+      expect(subject.send(:products_to_flowlink, config).size).to eq 1
     end
   end
 
   it 'sets records as an array' do
     records = Factory.item_inventory_query_rs_hash
     subject = described_class.new records
-    expect(subject.send(:products_to_flowlink)).to be_a Array
+    expect(subject.send(:products_to_flowlink, config)).to be_a Array
 
     records = Factory.item_inventory_query_rs_multiple_hash
     subject = described_class.new records
-    expect(subject.send(:products_to_flowlink)).to be_a Array
+    expect(subject.send(:products_to_flowlink, config)).to be_a Array
   end
 
   it 'parse empty response' do
     records = Factory.item_inventory_query_rs_empty_hash
     subject = described_class.new records
-    expect(subject.send(:products_to_flowlink)).to be_empty
+    expect(subject.send(:products_to_flowlink, config)).to be_empty
   end
 
   it 'persists inventories objects in s3' do

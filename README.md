@@ -1,5 +1,15 @@
 # Quickbooks Desktop Integration
 
+## Get it Running
+
+You can run the integration locally:
+
+```sh
+scripts/run_local.sh
+```
+
+The script accepts further arguments for docker-compose like `build`, `up`, etc
+
 ## Overview
 
 [Quickbooks](http://quickbooks.intuit.com) is an accounting software package developed and marketed by [Intuit](http://www.intuit.com).
@@ -21,6 +31,7 @@ product. With this integration you can perform the following functions:
 * Send shipments to Quickbooks
 * Set/Receives inventories to Quicbooks
 * Receives inventories by site from Quicbooks
+* Run a "healthcheck" to ensure the QBWC is still contacting the integration
 
 ## Connection Parameters
 
@@ -51,6 +62,7 @@ The following webhooks are implemented:
 * **add_inventories**: Adds inventories to QuickBooks
 * **add_returns**: Adds returns to QuickBooks
 * **add_shipments**: Adds shipments to QuickBooks
+* **add_creditmemos**: Adds credit memos to QuickBooks (and apply them to an invoice)
 
 * **get_orders**: Gets orders from QuickBooks
 * **get_invoices**: Gets invoices from QuickBooks
@@ -66,6 +78,9 @@ The following webhooks are implemented:
 * **get_purchaseorders**: Gets purchase orders from QuickBooks
 * **get_inventories**: Gets inventories from QuickBooks
 * **get_inventorywithsites**: Gets inventories by Site from QuickBooks
+
+* **get_notifications**: Retrieves succes and failure notifications from previous requests
+* **get_health_check**: Runs a check to see when the last time the QBWC connected with this integration. Returns an error if the amount of time is past a certain threshold
 
 ### add_orders
 
@@ -84,6 +99,9 @@ The following parameters are required when setting up a Flow with this webhook:
 | quickbooks_customer_email       | If present, uses given email for all customers |
 | quickbooks_auto_create_products | If checked, automatically create products for orders and shipments |
 | use_amount_for_tax | If set to "1" then we use the "Amount" QBE field rather than "Rate" (used in Invoices too) |
+| quickbooks_use_customer_object | If set to "1" then we use the `customer` key (must be a hash) on the parent object rather than letting the qbe integration build the hash |
+| quickbooks_use_vendor_object | If set to "1" then we use the `vendor` key (must be a hash) on the parent object rather than letting the qbe integration build the hash |
+| quickbooks_use_product_objects | If set to "1" then we use the `products` key (must be an array of hashes) on the parent object rather than letting the qbe integration build the array |
 
 ## QBE Config and Refs
 
@@ -100,6 +118,7 @@ The following parameters are required when setting up a Flow with this webhook:
 | return_all | Use to return all objects |
 | receive | I think this gets set within the integration |
 | flow | I think this gets set within the integration |
+| health_check_threshold_in_minutes | Minute threshold to determine if the QBWC is failing it's healthcheck or not |
 
 [Adding QBE Refs Readme](./QBE_REFS.md)
 
@@ -130,6 +149,128 @@ When **adding** noninventory or service products, the block of either SalesOrPur
 When **modifying** noninventory or service products, these blocks are not required. If both `sales_and_purchase` and `sales_or_purchase` are set to true, SalesAndPurchase is still the default. If none are set, these blocks will be ignored.
 
 Some products do not allow modifying of the SalesOrPurchase and SalesAndPurchase block, so be sure you can modify when you send the request.
+
+### Adding Credit Memos
+
+You can add a credit memo easily by using the /add_creditmemos endpoint. This will create the credit memo, but won't apply it.
+
+You can automatically apply it to an invoice in QBE by utilizing the `other` field in the QBXML. `other` is used for:
+
+* Storing the invoice ID
+* Storing a dynamic payment method (If not given, defaults to "CASH")
+
+These values should be separated by 3 colons (:::)
+
+If you had a credit memo to be applied to the invoice with the ID: 192839 and you wanted the payment method to be "Credit Card", the payload should be:
+
+```ruby
+creditmemo: {
+  id: 1209102912,
+  other: "192839:::Credit Card",
+  # More fields...
+}
+```
+
+### Integration and S3
+
+#### General File Flow
+
+The general flow of objects that are being added/updated in QuickBooks Enterprise are as follows:
+
+The object gets added to S3 like this:
+
+`<Bucket Name><Folder Name><Phase Folder Name><File Name>`
+
+**Bucket Name**: Bucket named `quickbooks-desktop-integration`
+
+**Folder Name**: Folder within that bucket which corresponds to the `connection_id` found in the config params in the request.
+
+**Phase Folder Name**: Folder within that folder named either `flowlink_pending` or `flowlink_two_phase_pending` based on the object type
+
+**File Name**: File within that folder named as `<object_type_plural>_<id_of_object>_.json`, so a product with an id of 1234 would be named `products_1234_.json`
+
+A full path might be `quickbooks-desktop-integration/my-company/flowlink_two_phase_pending/products_1234_.json`
+
+Then the QBWC hits the integration and the following happens:
+
+* Any objects in `flowlink_pending` are added as QUERY requests to QBE
+
+Then the QBWC returns a response and the following happens:
+
+* Any objects in `flowlink_two_phase_pending` are moved to the `flowlink_pending` folder
+* The objects in `flowlink_pending` are updated with response info from QBE and are moved to the `flowlink_ready` folder
+
+Then the QBWC hits the integration and the following happens:
+
+* Any objects in `flowlink_pending` are added as QUERY requests to QBE
+* Any objects in `flowlink_ready` are added as ADD or MOD requests to QBE
+* The objects in `flowlink_ready` folder are moved to `flowlink_in_progress`
+
+Then the QBWC returns a response and the following happens:
+
+* Any objects in `flowlink_two_phase_pending` are moved to the `flowlink_pending` folder
+* The objects in `flowlink_pending` are updated with response info from QBE and are moved to the `flowlink_ready` folder
+* The objects in `flowlink_in_progress` are updated with response info from QBE and are moved to either `flowlink_processed` folder or the `flowlink_failed` folder
+* NOTE: Some objects may have failed for invalid QBXML or a bug in the code and **will not get moved out of the flowlink_in_progress folder** (See below for **Retrying In Progress Objects**)
+
+The cycle continues...
+
+### Retrying In Progress Objects
+
+The integration combines all requests to QuickBooks into 1 request each time. If an object has invalid QBXML or some other typo/bug, it will cause the entire request to fail (rather than just that single, poorly constructed object). This is why we move files from the `flowlink_ready` folder to the `flowlink_in_progress` folder when trying to ADD/MOD the file (Querying rarely has invalid QBXML).
+
+It helps because:
+
+1. If the request fails, future requests won't contain the object
+2. It allows us to retry valid objects that may have failed simply because they were in the same request as an invalid objects
+
+When the QBWC sends a response back the integration, we run through all the information in the response. Then, we look through the `flowlink_in_progress` folder for any objects to retry. An object only gets retried if the object has not surpassed the retry limit. Once we retry an object that gets stuck in the `flowlink_in_progress` folder 3 times, we'll stop retrying it.
+
+When retrying an object, we move it to the `flowlink_pending` folder or the `flowlink_two_phase_pending` folder, based on the object type.
+
+### Running the Health Check
+
+FlowLink relies on the QuickBooks Web Connector (QBWC) to connect with QuickBooks Enterprise applications, but FlowLink has no development control over the QBWC. So when the QBWC either gets closed or the auto-run gets turned off, FlowLink is not automatically notified.
+To ensure that clients are notified quickly if this happens, you can use the /get_health_check endpoint to determine if the QBWC is still running. The /get_health_check endpoint checks a file in S3 named /settings/healthcheck.json. This file stores the timestamp of the last time the QBWC made a request to the integration. The timestamp is updated when the QBWC makes a request to the integration (On both send_request_xml and receive_response_xml but not any of the other QBWC endpoints). The /get_health_check endpoint checks the timestamp using the following formula:
+
+```ruby
+now = Time.now.utc
+
+# Default the last contact to right now
+last_contact = healthcheck_settings[:qbwc_last_contact_at] || now.to_s
+
+# Calculate the time difference in minutes from now and the last contact with the QBWC
+difference_in_minutes = (now - Time.parse(last_contact).utc) / 60.0
+
+# Calculate the threshold for determining if we should consider the QBWC as failing the healthcheck
+threshold = config[:health_check_threshold_in_minutes] || DEFAULT_HEALTHCHECK_THRESHOLD
+
+threshold.to_i < difference_in_minutes
+```
+
+The integration will automatically set `qbwc_last_contact_at` as the QBWC runs. The default threshold (in minutes) is 5. To set your own threshold, use the `health_check_threshold_in_minutes` config parameter.
+
+Some things to note:
+
+1. If the QBWC goes down, FlowLink will continue to generate errors until the situation is rectified
+2. If the QBWC is set to autorun at a higher than normal rate, please consider this when setting the `health_check_threshold_in_minutes` parameter
+
+## Specs
+
+### Running Specs
+
+You can run all the specs for the project by using the `run_tests.sh` script. The script allows you to append further commands ("--seed 1234", a specific test to run only instead of the full suite, etc)
+
+### Specs and AWS config
+
+[VCR](https://github.com/vcr/vcr) is utilized for many of the specs while some specs simply stub out AWS connections. It's important to explicitly dictate if you want to stub out AWS or not. The tests run randomly and the global setting for stubbing AWS connections can be turned on and off per test, so it's not guaranteed to be a specific value before each test is run.
+You can explicitly set the value per test by adding `Aws.config[:stub_responses] = <boolean>` before the test runs, or you can set the value for the entire file by adding the following at the top of your specs for that file:
+
+```ruby
+before(:each) do
+  Aws.config[:stub_responses] = <boolean>
+end
+```
 
 ## About FlowLink
 
