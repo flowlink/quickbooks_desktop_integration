@@ -111,7 +111,7 @@ module QBWC
             sku: record['Name'],
             product_id: record['Name'],
             qbe_id: record['ListID'],
-            key: 'qbe_id',
+            key: ['qbe_id','product_id','sku'],
             name: record['Name'],
             fullname: record['FullName'],
             quantity: record['QuantityOnHand'],
