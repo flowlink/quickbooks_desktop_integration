@@ -1,7 +1,0 @@
-version: "2"
-services:
-  quickbooks-desktop-integration:
-    ports:
-      - '3001:5000'
-    volumes:
-      - ${PWD}:/app

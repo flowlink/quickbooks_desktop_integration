@@ -3,8 +3,11 @@ services:
   quickbooks-desktop-integration:
     build: .
     environment:
-      - RAILS_ENV=development
-      - AWS_ACCESS_KEY_ID=ENV[AWS_ACCESS_KEY_ID]
-      - AWS_SECRET_ACCESS_KEY=ENV[AWS_SECRET_ACCESS_KEY]
-      - AWS_REGION=ENV[AWS_REGION]
-      - IDS_TO_LOG=ENV[IDS_TO_LOG]
+      - AWS_ACCESS_KEY_ID
+      - AWS_REGION
+      - AWS_SECRET_ACCESS_KEY
+      - IDS_TO_LOG
+    ports:
+      - '3001:5000'
+    volumes:
+      - ${PWD}:/app

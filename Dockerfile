@@ -1,18 +1,15 @@
-FROM nurelmdevelopment/quickbooks-desktop-integration-base:0.3
+FROM ruby:2.7-alpine
 MAINTAINER NuRelm <development@nurelm.com>
 
-## help docker cache bundle
+RUN apk add --no-cache --update build-base curl-dev git libcurl linux-headers openssl-dev ruby-dev sqlite-dev tzdata
+
 WORKDIR /app
-COPY ./Gemfile .
-COPY ./Gemfile.lock .
-
-RUN NOKOGIRI_USE_SYSTEM_LIBRARIES=true bundle install --jobs=4
-
-RUN apt-get remove -yq build-essential pkg-config && \
-    apt-get autoremove -yq && \
-    apt-get clean
-
 COPY ./ /app
+
+RUN gem install bundler:1.16.0
+RUN bundle install --jobs 5
+
+RUN apk del build-base curl-dev git linux-headers openssl-dev ruby-dev
 
 ENTRYPOINT [ "bundle", "exec" ]
 CMD [ "foreman", "start" ]
