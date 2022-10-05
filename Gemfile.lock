@@ -1,11 +1,12 @@
 GIT
-  remote: git://github.com/flowlink/endpoint_base.git
-  revision: b3c06ec88b6cfcd9bea165def5f0592a0707730e
+  remote: https://github.com/flowlink/endpoint_base.git
+  revision: a976f1cf8d8c8466f2a53772927a844e5c88bb12
   specs:
-    endpoint_base (0.3)
+    endpoint_base (0.4.1)
       activesupport
       jbuilder
       json
+      tzinfo-data
 
 GEM
   remote: https://rubygems.org/
@@ -15,8 +16,8 @@ GEM
       i18n (~> 0.7)
       minitest (~> 5.1)
       tzinfo (~> 1.1)
-    addressable (2.5.1)
-      public_suffix (~> 2.0, >= 2.0.2)
+    addressable (2.8.1)
+      public_suffix (>= 2.0.2, < 6.0)
     aws-sdk (2.10.22)
       aws-sdk-resources (= 2.10.22)
     aws-sdk-core (2.10.22)
@@ -60,7 +61,7 @@ GEM
     pry-byebug (3.4.2)
       byebug (~> 9.0)
       pry (~> 0.10)
-    public_suffix (2.0.5)
+    public_suffix (5.0.0)
     rack (1.6.12)
     rack-protection (1.5.5)
       rack
@@ -109,6 +110,8 @@ GEM
       tilt (>= 1.3.0, < 3)
     tzinfo (1.2.3)
       thread_safe (~> 0.1)
+    tzinfo-data (1.2022.4)
+      tzinfo (>= 1.0.0)
     unicorn (5.3.0)
       kgio (~> 2.6)
       raindrops (~> 0.7)
