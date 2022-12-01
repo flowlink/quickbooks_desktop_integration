@@ -3,7 +3,7 @@ source 'https://rubygems.org'
 gem 'rake'
 gem 'sinatra'
 gem 'sinatra-contrib' # For sinatra/reloader which autoreloads modules on change
-gem 'tilt', '~> 1.4.1'
+gem 'tilt', '~> 2.0.11'
 gem 'tilt-jbuilder', require: 'sinatra/jbuilder'
 gem 'endpoint_base', github: 'flowlink/endpoint_base'
 gem 'foreman'
